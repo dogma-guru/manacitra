@@ -1,0 +1,32 @@
+{
+ "_note": "recorded-shape preparation result with synthetic identifiers",
+ "status": "Completed",
+ "message": null,
+ "shots": 8000,
+ "quote": [
+  {
+   "execution_plan_id": "00000000-0000-0000-0000-000000000001",
+   "name": "Public Plan",
+   "price": 3,
+   "queue_priorities": [
+    {
+     "queue_priority_id": "00000000-0000-0000-0000-000000000003",
+     "name": "Standard Queue",
+     "price_increase": 0
+    }
+   ]
+  },
+  {
+   "execution_plan_id": "00000000-0000-0000-0000-000000000002",
+   "name": "Private Plan",
+   "price": 9,
+   "queue_priorities": [
+    {
+     "queue_priority_id": "00000000-0000-0000-0000-000000000003",
+     "name": "Standard Queue",
+     "price_increase": 0
+    }
+   ]
+  }
+ ]
+}

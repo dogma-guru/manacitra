@@ -1,0 +1,9 @@
+{
+ "_note": "recorded-shape job record; the organization, user and URL fields are not kept",
+ "execution_plan_id": "00000000-0000-0000-0000-000000000001",
+ "queue_priority_id": "00000000-0000-0000-0000-000000000003",
+ "message": null,
+ "name": "kept-share",
+ "status": "Completed",
+ "calibration_data_url": null
+}
