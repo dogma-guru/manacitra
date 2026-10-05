@@ -1,6 +1,6 @@
 # Copyright 2026 Anish Patel
 # SPDX-License-Identifier: Apache-2.0
-"""The command line: manacitra map | pick | verdict | persist | report.
+"""The command line: manacitra map | pick | verdict | persist | report | seal | reveal | verify.
 
 Dry run by default. Nothing is sent to any provider without --submit, and before anything is sent the estimate and
 the ledger entry are printed. The simulator spends nothing and runs at once.
@@ -12,6 +12,9 @@ the ledger entry are printed. The simulator spends nothing and runs at once.
     manacitra pick data/ibm_fez/k31-map.json --n 8                                the pairs to use
     manacitra persist day1.json day2.json day3.json                               the persistence rule
     manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               a table, and a chip map
+    manacitra seal predictions.md                                                 commit to a file before the run
+    manacitra reveal predictions.md                                               publish its salt after the run
+    manacitra verify predictions.md                                               anyone checks it
 """
 
 from __future__ import annotations
@@ -191,6 +194,40 @@ def cmd_report(a) -> int:
     return 0
 
 
+def cmd_seal(a) -> int:
+    from .seal import SealError, seal
+
+    try:
+        rec = seal(a.file, force=a.force)
+    except SealError as e:
+        print(f"refused: {e}")
+        return 1
+    print(f"sealed {a.file} at {rec['sealed_utc']}; the salt is in .seals/ (keep it private)")
+    print(f"post this hash where you cannot edit it:\n{rec['hash']}")
+    return 0
+
+
+def cmd_reveal(a) -> int:
+    from .seal import SealError, reveal
+
+    try:
+        rec = reveal(a.file)
+    except SealError as e:
+        print(f"refused: {e}")
+        return 1
+    print(f"revealed: the salt for {a.file} is now in its commit record; publish both")
+    print(f"salt {rec['salt']}")
+    return 0
+
+
+def cmd_verify_seal(a) -> int:
+    from .seal import verify
+
+    v = verify(a.file, a.salt)
+    print(v.message)
+    return 0 if v.match else 1
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="manacitra", description="A map of a quantum processor's qubit pairs.")
     ap.add_argument("--version", action="version", version=f"manacitra {__version__}")
@@ -241,6 +278,20 @@ def main(argv=None) -> int:
     r.add_argument("--figure")
     r.add_argument("--coupling-map", help="a coupling-map.json from data/")
     r.set_defaults(func=cmd_report)
+
+    sl = sub.add_parser("seal", help="commit to a file now (salted SHA-256), without showing it")
+    sl.add_argument("file")
+    sl.add_argument("--force", action="store_true", help="seal again, replacing the earlier commitment")
+    sl.set_defaults(func=cmd_seal)
+
+    rv = sub.add_parser("reveal", help="add a sealed file's salt to its commit record, for publication")
+    rv.add_argument("file")
+    rv.set_defaults(func=cmd_reveal)
+
+    vf = sub.add_parser("verify", help="check a file and its revealed salt against its commit record")
+    vf.add_argument("file")
+    vf.add_argument("--salt", help="a salt given by hand, in hexadecimal, instead of the revealed one")
+    vf.set_defaults(func=cmd_verify_seal)
 
     a = ap.parse_args(argv)
     return a.func(a)
