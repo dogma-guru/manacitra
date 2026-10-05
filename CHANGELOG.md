@@ -17,3 +17,6 @@ The first version.
   commit records, data files and release artifacts with Sigstore's keyless signing (off until `MANACITRA_SIGN` is
   `true`). `data/SHA256SUMS` for catching corrupted files.
 - The README, the long-form documentation, five diagrams and three examples.
+- Ownership (Kickoff 01, Amendment A1): copyright Dogma LLC (doing business as Dogma Guru), developed by Anish Patel.
+  Contributions under Apache 2.0, inbound as outbound, with a Developer Certificate of Origin sign-off checked in CI.
+  The full CC BY 4.0 legal code in `data/LICENSE` and `docs/LICENSE`.

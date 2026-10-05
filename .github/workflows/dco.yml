@@ -1,0 +1,26 @@
+# Every commit in a pull request carries a Developer Certificate of Origin sign-off (CONTRIBUTING.md).
+# The signing workflow's bot commits are exempt (tools/check_dco.py).
+name: dco
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  signoff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check every commit for a Signed-off-by line
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python tools/check_dco.py "$BASE" "$HEAD"

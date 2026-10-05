@@ -37,12 +37,27 @@ needs its own discussion first.
 - **Words.** The tool maps pairs; it does not rank machines. No vendor is compared with
   another as a product. Every number carries its processor and its date.
 
-## Licences
+## Licences, and signing off your commits
 
-Code: Apache License 2.0 (`LICENSE`). Data and documentation: CC BY 4.0 (`data/LICENSE`, `docs/LICENSE`). By
-contributing you agree that your contribution is licensed the same way. Each source file starts with:
+**Inbound as outbound.** Contributions are accepted under the Apache License 2.0, the licence the code is published
+under (`LICENSE`). Data and documentation are contributed under CC BY 4.0, as published (`data/LICENSE`,
+`docs/LICENSE`). There is no contributor licence agreement.
+
+**The Developer Certificate of Origin.** Each commit carries a sign-off line, by which you certify the
+[Developer Certificate of Origin 1.1](https://developercertificate.org/): that you wrote the change, or otherwise have
+the right to submit it under the project's licence.
+
+```bash
+git commit -s -m "fix: what changed"     # adds: Signed-off-by: Your Name <your address>
+git rebase --signoff main                 # signs off commits you already made on a branch
+```
+
+A CI check (`.github/workflows/dco.yml`, `tools/check_dco.py`) fails a pull request that has a commit without a
+`Signed-off-by:` line. The signing workflow's bot commits, which only add Sigstore bundles, are exempt.
+
+The copyright holder is Dogma LLC (Dogma Guru). Each source file starts with:
 
 ```python
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 ```
