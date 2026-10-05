@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Every number the README states, recomputed from data/ and compared at the README's own rounding."""
 

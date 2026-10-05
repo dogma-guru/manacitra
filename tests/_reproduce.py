@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The acceptance bar: recompute every archived statistic from the archived counts and compare.
 

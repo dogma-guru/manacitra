@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The payoff choice, on ibm_fez's archived runs of 5 October 2026.
 

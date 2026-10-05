@@ -1,10 +1,12 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The identifier scan: it catches what it must, and the whole tree is clean."""
 
 import re
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
@@ -30,7 +32,7 @@ def test_catches_each_kind():
         "uuid": "1b4e28ba-2fa1-11d2-883f-" + "0016d3cca427",
         "client-secret-field": "client" + "_secret = 'abcdefgh12345'",
         "vocabulary-w5": "K" + "undala",
-        "vocabulary-w7": "Dogma" + " Guru",
+        "vocabulary-w7": "Dog" + "ma Guru",
     }
     for name, text in samples.items():
         assert name in hits(text), name
@@ -71,3 +73,41 @@ def test_data_checksums_match():
 
     out = subprocess.run([sys.executable, str(ROOT / "tools" / "sha256sums.py"), "--check"], capture_output=True)
     assert out.returncode == 0, out.stdout
+
+
+W7 = "Dog" + "ma"  # assembled at run time, so this file holds no instance of the word
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        f"a project of {W7} Guru",  # the trade name outside the publisher and ownership lines
+        f"{W7.lower()}guru.com",  # one word, outside the repository URL
+        f"see github.com/{W7.lower()}guru/other-repo",
+        f"{W7.upper()} GURU",  # another case
+        f"{W7}_Guru",  # another spacing
+        f"the {W7} series",  # the first word on its own
+        f"{W7} LLC (d.b.a. {W7} Guru)",  # the ownership line, reworded
+        f"Published by {W7} Guru",  # the publisher line, another case
+    ],
+)
+def test_w7_is_flagged_in_any_other_context(text):
+    assert "vocabulary-w7" in hits(text), text
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        f"Copyright 2026 {W7} LLC",
+        f"Copyright 2026 {W7} LLC (doing business as {W7} Guru)",
+        f"The copyright holder is {W7} LLC ({W7} Guru).",
+        f"Manacitra is developed by Anish Patel and published by {W7} Guru.",
+        f"https://github.com/{W7.lower()}guru/manacitra",
+    ],
+)
+def test_w7_allowed_only_in_exact_strings(text):
+    assert "vocabulary-w7" not in hits(text), text
+
+
+def test_a_word_that_starts_the_same_is_not_w7():
+    assert "vocabulary-w7" not in hits("dog" + "matic")

@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The identifier scan: fails on any credential, identifier, personal path or out-of-scope word in the tree.
 

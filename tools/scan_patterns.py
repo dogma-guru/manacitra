@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Patterns for tools/scan_secrets.py.
 
@@ -44,16 +44,22 @@ PATTERNS = [
     ("vocabulary-w4", r"\bg[l]ass(es)?\b", "i"),
     ("vocabulary-w5", r"k[u]ndala", "i"),
     ("vocabulary-w6", r"g[u]rutva", "i"),
-    ("vocabulary-w7", r"d[o]gma[\s_.-]*guru", "i"),
+    # W7 (Amendment A1): the first word on its own, or with the second in any spacing or case; allowed only in
+    # the exact strings of ALLOW below
+    ("vocabulary-w7", r"\bd[o]gma(?:[\s_.-]*guru)?\b", "i"),
 ]
 
 # A match that lies inside one of these is not a finding.
 ALLOW = [
     # IBM job IDs may stay (kickoff, section 5)
     ("ibm-job-id", r"\b[a-z0-9]{20}\b", ""),
-    # The repository's own address, which carries the hosting organisation's name; flagged for the author in
-    # build-report.md
+    # The repository's own address, which carries the hosting organisation's name (kept by the author's ruling)
     ("repository-url", r"github\.com/d[o]gmaguru/manacitra", "i"),
+    # Amendment A1: the ownership and publisher lines, exactly as written (case-sensitive)
+    ("owner", r"D[o]gma LLC", ""),
+    ("owner-and-trade-name", r"D[o]gma LLC \(doing business as D[o]gma Guru\)", ""),
+    ("owner-short", r"D[o]gma LLC \(D[o]gma Guru\)", ""),
+    ("publisher", r"published by D[o]gma Guru", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]

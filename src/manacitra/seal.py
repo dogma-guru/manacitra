@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Sealed commitments: show later that a file (a set of predictions, a rule) existed, unchanged, before the results.
 

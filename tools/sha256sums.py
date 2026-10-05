@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Write, or check, data/SHA256SUMS: a plain SHA-256 of every file in data/, for catching corrupted files.
 

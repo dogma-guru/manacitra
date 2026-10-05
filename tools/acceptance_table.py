@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Print the acceptance table: each reproduction case, the archived value, the reproduced value, the difference,
 and the count and largest difference of every numeric value compared."""

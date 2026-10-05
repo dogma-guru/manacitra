@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The stand-in workload of Kickoff 33: random two-qubit circuits unrelated to the test circuits, and a pair's score.
 

@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Reproduce the ibm_fez numbers of 5 October 2026 from the archived counts in data/.
 

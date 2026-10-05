@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Write, or check, src/manacitra/pinned_circuits.json: every circuit the package runs, as an exact gate list.
 

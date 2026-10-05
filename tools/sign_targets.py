@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """List the files the signing workflow signs: every *.commit.json, and every file in data/, that has no Sigstore
 bundle beside it yet or that changed between two commits. Prints them separated by spaces (none: an empty line).

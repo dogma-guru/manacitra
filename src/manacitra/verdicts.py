@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The three verdict rules, each a pure function of its inputs that returns the verdict and every number it used.
 

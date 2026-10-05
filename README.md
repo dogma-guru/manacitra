@@ -105,4 +105,6 @@ Please cite the software and, if you use them, the data, using [`CITATION.cff`](
 
 ## Licence
 
-Code: Apache License 2.0 ([`LICENSE`](LICENSE), [`NOTICE`](NOTICE)). Data in `data/` and documentation in `docs/`: Creative Commons Attribution 4.0 ([`data/LICENSE`](data/LICENSE), [`docs/LICENSE`](docs/LICENSE)). Built by Anish Patel.
+The code is licensed under the Apache License 2.0 ([`LICENSE`](LICENSE), [`NOTICE`](NOTICE)). The data in `data/` and the documentation in `docs/` are licensed under Creative Commons Attribution 4.0 ([`data/LICENSE`](data/LICENSE), [`docs/LICENSE`](docs/LICENSE)). The copyright holder is Dogma LLC (Dogma Guru).
+
+Manacitra is developed by Anish Patel and published by Dogma Guru.

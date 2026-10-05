@@ -1,4 +1,4 @@
-# Copyright 2026 Anish Patel
+# Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The test circuits: a four-site Hamiltonian encoded in two qubits, in variants differing only in single-qubit angles.
 
