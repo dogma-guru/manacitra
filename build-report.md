@@ -3,7 +3,7 @@
 Branch `feat/initial-implementation`, 5 October 2026. Built by Claude Code (Opus 5.5) in the confirmed clone of the
 repository (`manacitra/` in the author's projects folder), default branch `main`. Nothing was submitted to any
 provider; every test runs on simulation or on the archived results. Updated for the kickoff's section 7b (sealing and
-signing); see section 8.
+signing; see section 8) and for Amendment A1 (ownership and the open items; see section 10).
 
 **Summary.**
 - Every reproduction test passes. Every archived statistic recomputes from the archived counts. Across 2,992 numeric
@@ -13,9 +13,10 @@ signing); see section 8.
   layers on different platforms. The circuits are now pinned (section 7).
 - Section 7b is in place: `seal`, `reveal` and `verify`, with their tests, and a signing workflow that stays off. Its
   gate was dry-run on this branch and skipped as required (section 8).
-- Two things need the author's ruling (section 6):
-  - kingston's payoff figure: the data give 16%, not 18%;
-  - the repository's own address carries the hosting organisation's name.
+- The two rulings asked for in section 6 were given in Amendment A1:
+  - kingston's payoff is 16%;
+  - the repository address stays.
+  Section 10 records the amendment's changes.
 
 ## 1. Paths: what the kickoff named, and what was read
 
@@ -226,9 +227,9 @@ the `[cirq]` extra now lists.
 
 ## 6. What needs the author's ruling, and what could not be verified
 
-**Needs a ruling.**
+**Needed a ruling (given in Amendment A1; see section 10).**
 
-1. **ibm_kingston's payoff: 16%, not 18%.** The kickoff says "On ibm_kingston, 18% less". The figure that gives
+1. **ibm_kingston's payoff: 16%, not 18%.** Ruled: 16% stands. The kickoff says "On ibm_kingston, 18% less". The figure that gives
    ibm_fez's 35% is the mean of (1 − W) for the map's 8 pairs against that of the published pick. From the archived
    counts it gives:
    - ibm_fez: 35.6% (0.00221 against 0.00343);
@@ -244,7 +245,7 @@ the `[cirq]` extra now lists.
 
    Kickoff 33's report gives no kingston percentage. The README states 16% and 35.6%, and
    `tests/test_readme_numbers.py` checks both. Nothing in the code was changed to fit.
-2. **The repository URL.** `github.com/dogmaguru/manacitra` carries W7 as one word. CITATION.cff must name the
+2. **The repository URL.** Ruled: the address stays. `github.com/dogmaguru/manacitra` carries W7 as one word. CITATION.cff must name the
    repository, so the URL is kept in `CITATION.cff`, `pyproject.toml` and the README, and allow-listed in the scan as
    that exact string. Options:
    - keep it;
@@ -396,3 +397,87 @@ Python 3.14.7, qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0, numpy
 cirq-core and cirq-google 1.7.0, ply 3.11, matplotlib 3.11.2, ruff 0.16.10, pytest 9.1.1; sigstore 4.5.0 (in a
 scratch environment, only to check the verification command's form). qiskit, numpy and scipy are
 the same versions the source runs recorded.
+
+## 10. Amendment A1: ownership, and the open items
+
+**The author's rulings, as received.**
+- The copyright holder is Dogma LLC (doing business as Dogma Guru), a New York limited liability company; Anish
+  Patel stays the author.
+- ibm_kingston's payoff is 16%. The README's figure and the test that checks it (`tests/test_readme_numbers.py`) stay
+  as they were.
+- The repository address stays.
+
+**The changes, one by one.**
+
+| # | change | what was done |
+|---|---|---|
+| 1 | copyright lines | "Copyright 2026 Anish Patel" replaced by "Copyright 2026 Dogma LLC" in all 46 files that carried it: every source file header, `NOTICE`, `CONTRIBUTING.md`, `data/LICENSE` and `docs/LICENSE`. No other copyright line remains. |
+| 2 | `NOTICE` | The first lines are now "Manacitra / Copyright 2026 Dogma LLC (doing business as Dogma Guru) / Developed by Anish Patel." The rest is unchanged. |
+| 3 | `CITATION.cff` | Unchanged: Anish Patel is the author, and nothing about ownership is in it. |
+| 4 | `pyproject.toml` | Confirmed: `authors = [{ name = "Anish Patel" }]` and `license = "Apache-2.0"` (with `license-files = ["LICENSE", "NOTICE"]`). Nothing changed. |
+| 5 | README | The licence section now names the code's licence (Apache 2.0), the data and docs' licence (CC BY 4.0), and the copyright holder, Dogma LLC (Dogma Guru). The last line is "Manacitra is developed by Anish Patel and published by Dogma Guru." |
+| 6 | the vocabulary boundary | See below. |
+| 7 | contributions | Apache 2.0, inbound as outbound, with no CLA. Each commit carries a DCO sign-off. A CI check fails a pull request with an unsigned commit and exempts the signing bot. See below. |
+| 8 | the CC BY 4.0 text | Fetched from creativecommons.org (`legalcode.txt`, HTTP 200, 396 lines, SHA-256 `9ba9550a…`). The full legal code is now in `data/LICENSE` and `docs/LICENSE`, under a short preamble naming the licence and the copyright holder. |
+| 9 | this section | |
+
+**6. The vocabulary boundary, narrowed.** I read W7 as covering its first word on its own, since the amendment lists
+"Dogma LLC" among the strings W7 may appear in. The scan's W7 pattern was widened to match: before, it caught only the
+two words together; now it also catches the first word alone, in any case and spacing. A word that merely begins the
+same way does not match ("dogmatic").
+
+The allow-list holds exactly these strings, case-sensitive:
+- "Dogma LLC";
+- "Dogma LLC (doing business as Dogma Guru)" (the NOTICE line);
+- "Dogma LLC (Dogma Guru)" (the README's licence line);
+- "published by Dogma Guru" (the README's publisher line);
+- the repository URL.
+
+The trade name is not allowed on its own, only inside those ownership and publisher lines. The pattern file writes them
+with a character class, so it matches none of its own patterns.
+
+The new tests (`tests/test_scan.py`):
+- W7 is still flagged in eight other contexts: the trade name in other prose, the one-word form outside the
+  repository URL, another repository under the same organisation, upper case, an underscore, the first word alone, a
+  reworded ownership line, and a capitalised "Published by".
+- Each of the five allowed strings passes.
+- "dogmatic" is not flagged.
+
+The other six words stay banned everywhere, as before.
+
+**7. Contributions.**
+- **`CONTRIBUTING.md`:**
+  - contributions are accepted under the Apache License 2.0, inbound as outbound, with no contributor licence
+    agreement;
+  - data and documentation are contributed under CC BY 4.0, the licence they are published under (my addition, so
+    that each part keeps one licence);
+  - each commit carries a `Signed-off-by:` line certifying the Developer Certificate of Origin 1.1, linked rather than
+    copied;
+  - the header template now names Dogma LLC.
+- **The check:** `.github/workflows/dco.yml` runs `tools/check_dco.py` on every pull request. It fails if any commit
+  in the pull request lacks a `Signed-off-by: Name <address>` line at the start of a line. Commits authored by
+  `github-actions[bot]` (the Sigstore bundle commits) are exempt.
+- **Tests** (`tests/test_dco.py`, on a throwaway repository):
+  - signed commits pass;
+  - an unsigned commit fails and is named;
+  - a sign-off quoted mid-line does not count;
+  - the bot is exempt.
+
+**The scan on the full tree afterwards.**
+
+```
+$ python tools/scan_secrets.py
+identifier scan: clean (89 files)
+$ CI=1 python tools/scan_secrets.py
+identifier scan: clean (89 files)
+```
+
+After the amendment: 170 tests pass, Ruff is clean, and `data/SHA256SUMS` was regenerated for the changed
+`data/LICENSE`.
+
+**Not in this amendment, and not done:**
+- merging the pull request;
+- making the repository public;
+- turning on signing;
+- anything about the IP assignment.
+
