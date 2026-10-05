@@ -1,13 +1,18 @@
 # Build report: Kickoff 01, the initial implementation
 
 Branch `feat/initial-implementation`, 5 October 2026. Built by Claude Code (Opus 5.5) in the confirmed clone of the
-repository (`manacitra/` in the author's projects folder), default branch `main`. Nothing was submitted to any provider; every test runs on simulation
-or on the archived results.
+repository (`manacitra/` in the author's projects folder), default branch `main`. Nothing was submitted to any
+provider; every test runs on simulation or on the archived results. Updated for the kickoff's section 7b (sealing and
+signing); see section 8.
 
 **Summary.**
 - Every reproduction test passes. Every archived statistic recomputes from the archived counts. Across 2,992 numeric
   values, the largest difference is 1.1·10⁻¹⁶, against the 10⁻⁶ bar.
-- 139 tests pass, Ruff is clean, and the identifier scan is clean on the whole tree.
+- 152 tests pass, Ruff is clean, and the identifier scan is clean on the whole tree.
+- The first CI run failed one test on Linux. The cause was real: the three-CZ synthesis gives different single-qubit
+  layers on different platforms. The circuits are now pinned (section 7).
+- Section 7b is in place: `seal`, `reveal` and `verify`, with their tests, and a signing workflow that stays off. Its
+  gate was dry-run on this branch and skipped as required (section 8).
 - Two things need the author's ruling (section 6):
   - kingston's payoff figure: the data give 16%, not 18%;
   - the repository's own address carries the hosting organisation's name.
@@ -144,10 +149,10 @@ The only other change made in copying data was not a vocabulary change. Every IB
 
 ```
 $ python tools/scan_secrets.py
-identifier scan: clean (76 files)
+identifier scan: clean (86 files)
 ```
 
-The tree has 80 tracked files; the 4 PNG diagrams are binary and skipped. The result is the same with `CI=1`, which
+The tree has 91 tracked files; the 5 PNG diagrams are binary and skipped. The result is the same with `CI=1`, which
 turns off the run-time user-name pattern.
 
 **What the scan catches:**
@@ -164,6 +169,9 @@ turns off the run-time user-name pattern.
 - IBM job IDs (20 lower-case characters);
 - the repository URL;
 - the synthetic `00000000-0000-0000-0000-…` identifiers in the test fixtures.
+
+**What it skips:** binary files, and `*.sigstore.json` bundles. The bundles are public signatures, base64 certificates
+and log entries written by the signing workflow; their base64 would trip the token patterns by chance.
 
 **How it is checked:**
 - The pattern file writes each word with a character class, so the file matches none of its own patterns; a test
@@ -285,15 +293,106 @@ No Kickoff 35 data was copied, because that run is still going.
 licence and link to the legal code; nothing was downloaded.
 
 **Could not verify.**
-- **Python 3.11 and 3.13.** Only Python 3.14 is on this machine. Every source file parses under the 3.11 grammar, and
-  CI runs 3.11 and 3.13; see the pull request for the result.
+- **Python 3.11 and 3.13 locally.** Only Python 3.14 is on this machine; CI runs 3.11 and 3.13 (section 7).
 - **GitHub's rendering** of the README and the SVGs. The PNG fallbacks were inspected locally.
 - **`CITATION.cff` against its schema**: `cffconvert` is not installed.
 - **Any live provider call** (section 5).
 - **The 18% figure** (above).
 
-## 7. Versions used
+## 7. The first CI run, and why the circuits are now pinned
+
+The first CI run (Linux, Python 3.11 and 3.13) passed every reproduction test and failed one other test. The
+planted-error sensitivity dk_A/dδ came out at −4.06 per radian on 3.13 and −5.90 on 3.11, against −4.01 on this
+machine, all with Qiskit 2.5.2.
+
+**The cause.** Qiskit's three-CZ synthesis is numerical, and its single-qubit layers vary with the platform's linear
+algebra. On 3.13 even numpy and scipy were the same versions as here. The unitary is the same on every platform, so
+ideal values and the reproduction of archived counts are not affected. But a coherent error after each CZ lands
+differently on different layers. A map made with circuits synthesised on one machine is therefore not strictly
+comparable with one made on another, and re-synthesising elsewhere would not run what the hardware ran.
+
+**The fix.** `src/manacitra/pinned_circuits.json` ships every circuit the package runs as an exact gate list:
+- the six test variants;
+- the eight workload circuits;
+- the Open Quantum native template.
+
+They were generated on this machine with Qiskit 2.5.2, the machine and version the published runs used, and `block()`
+loads them. `block(label, synthesise=True)` still synthesises afresh. `tools/pin_circuits.py --check`, which the tests
+run, confirms each is its exact unitary (to 6.7·10⁻¹⁶).
+
+**Checks against the sources:**
+- The pinned Open Quantum template matches the programs Kickoff 34b actually sent, angle for angle, on all four
+  variants.
+- The pinned IBM-side blocks match the gate counts Kickoff 36 recorded on all four variants (13 rz, 8 or 11 sx, 3 CZ).
+- They give Kickoff 36's sensitivity (−4.01 and −1.50 per radian).
+
+**What could not be verified:** that the pinned blocks are gate for gate the circuits Kickoffs 31 to 33 sent to IBM.
+Those runs' records keep transpile checks, not the circuits. The pinned blocks come from the same code, Qiskit
+version and machine, and they agree with everything that was recorded.
+
+## 8. Sealing and signing (section 7b)
+
+**Commitments.** `src/manacitra/seal.py` and `manacitra seal | reveal | verify`:
+- `seal` draws a 32-byte salt with `secrets.token_bytes` and keeps it in `.seals/FILE.salt` (git-ignored).
+- It writes `FILE.commit.json`: the algorithm, SHA-256(salt ‖ file), the UTC time and the tool version.
+- It prints the hash to post.
+- `reveal` checks the salt before adding it to the record.
+
+The seal tests (`tests/test_seal.py`, 9, all passing):
+
+| test | result |
+|---|---|
+| round trip: seal, reveal, verify gives MATCH; the salt is not in the record before the reveal | pass |
+| a one-byte change to the file: NO MATCH | pass |
+| a wrong salt, given by hand or written into the record: NO MATCH | pass |
+| a commit record with the salt missing: fails, saying it has not been revealed yet | pass |
+| reveal refuses a file changed since sealing, and leaves the record unrevealed | pass |
+| a file is sealed once; a second seal is refused | pass |
+| two files with the same content get different hashes (fresh salts) | pass |
+| the command line: seal, verify (fails before reveal), reveal, verify (MATCH) | pass |
+| `.seals/` is ignored by git | pass |
+
+**Keyless signing.** `.github/workflows/sign.yml` uses `sigstore/gh-action-sigstore-python`, pinned to v3.5.0's
+commit, with `id-token: write`.
+- **What it signs:** every `*.commit.json` and every file in `data/` on the default branch, choosing those with no
+  bundle yet or changed in the push (`tools/sign_targets.py`), and every release artifact.
+- **Where the bundles go:** it commits the `FILE.sigstore.json` bundles beside the files, and attaches release bundles
+  to the release.
+- **Checking its own output:** it verifies each signature against this workflow's identity right after signing.
+- **Documentation:** `docs/index.md` section 9 gives the exact `sigstore verify identity` command, with the expected
+  certificate identity (`https://github.com/dogmaguru/manacitra/.github/workflows/sign.yml@refs/heads/main`) and
+  issuer (`https://token.actions.githubusercontent.com`). The command's form was checked against sigstore 4.5.0's
+  CLI.
+
+**The gate, dry run.** The push of commit `26b8954` to this branch ran the workflow (run 37380885335) with the
+repository variable unset. The gate job logged:
+
+```
+MANACITRA_SIGN:
+MANACITRA_SIGN is not 'true': signing is off. Nothing is sent to Sigstore.
+```
+
+Both signing jobs, `sign-files` and `sign-release`, were **skipped**, and nothing was sent to Sigstore. `gh variable
+list` shows no repository variables, and the repository is private.
+
+**Not verified:**
+- **Signing itself.** It cannot be exercised without turning the gate on, which writes a public log entry naming the
+  repository.
+- **The bundle commit-back and the release attachment.** They will first run when the author sets
+  `MANACITRA_SIGN=true`.
+- **Branch protection.** If `main` has rules, the push of the bundles by `github-actions[bot]` may be refused; this
+  needs checking then.
+
+**Plain hashes.** `data/SHA256SUMS` was added (18 files, checked by a test and by `tools/sha256sums.py --check`)
+beside the `sources` hashes in each data file's `meta` block.
+
+**Diagram 5**, "How to check a sealed prediction" (`docs/diagrams/sealed-prediction.svg`): a timeline of seal and post
+the hash, run the job, reveal the salt, and anyone verifies, with one line under each step on what it shows. It is
+in the README after the payoff.
+
+## 9. Versions used
 
 Python 3.14.7, qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0, numpy 2.5.3, scipy 1.18.1, rustworkx 0.18.1,
-cirq-core and cirq-google 1.7.0, ply 3.11, matplotlib 3.11.2, ruff 0.16.10, pytest 9.1.1. qiskit, numpy and scipy are
+cirq-core and cirq-google 1.7.0, ply 3.11, matplotlib 3.11.2, ruff 0.16.10, pytest 9.1.1; sigstore 4.5.0 (in a
+scratch environment, only to check the verification command's form). qiskit, numpy and scipy are
 the same versions the source runs recorded.
