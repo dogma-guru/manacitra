@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Secrets: never in the repository
+.env
+.env*
+*.key
+*.pem
+secrets/
+**/secrets/*.json
+qiskit-ibm.json
+.qiskit/
+.openquantum/
+.cirq/
+.config/
+
+# Seal salts: private until revealed
+.seals/
+
+# Local submission ledger and run outputs
+.manacitra/
+manacitra-ledger.jsonl
+runs/
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/

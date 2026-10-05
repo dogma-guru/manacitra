@@ -1,0 +1,94 @@
+{
+ "_note": "recorded-shape response with synthetic values: field names as the provider returned them in Kickoff 34b",
+ "short_code": "rigetti:cepheus-1-108q",
+ "name": "Cepheus-1-108Q",
+ "id": "00000000-0000-0000-0000-000000000010",
+ "constraint_data": {
+  "native_ops": [
+   {
+    "name": "barrier",
+    "arity": 1
+   },
+   {
+    "name": "cz",
+    "arity": 2
+   },
+   {
+    "name": "rx",
+    "arity": 1,
+    "params": [
+     "theta"
+    ]
+   },
+   {
+    "name": "rz",
+    "arity": 1,
+    "params": [
+     "phi"
+    ]
+   }
+  ],
+  "features": [
+   "barriers",
+   "defcal",
+   "measure",
+   "physical_qubits",
+   "result_pragmas",
+   "verbatim_boxes"
+  ],
+  "limits": {
+   "max_shots": 50000,
+   "min_shots": 10,
+   "max_circuits": 1024,
+   "max_qubits_per_job": 7,
+   "min_qubits_per_job": 1
+  },
+  "n_qubits": 8,
+  "noise": {},
+  "qubit_properties": [],
+  "topology": {
+   "coupling_map": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     4
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     2,
+     6
+    ],
+    [
+     3,
+     7
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     5,
+     6
+    ],
+    [
+     6,
+     7
+    ]
+   ]
+  }
+ }
+}

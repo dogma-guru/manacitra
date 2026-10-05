@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manacitra"
+version = "0.1.0"
+description = "A map of a quantum processor's qubit pairs: which pairs keep a small, known difference, and which lose it."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Anish Patel" }]
+keywords = ["quantum computing", "qubit pairs", "two-qubit gates", "calibration", "qiskit"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "qiskit>=2.1,<3",
+]
+
+[project.optional-dependencies]
+ibm = ["qiskit-ibm-runtime>=0.40"]
+aer = ["qiskit-aer>=0.15"]
+openquantum = ["openquantum-sdk>=0.4", "openquantum-sdk-qiskit>=0.3", "pyqasm>=1.0", "requests>=2.31"]
+cirq = ["cirq-core>=1.4", "cirq-google>=1.4", "ply>=3.11"]
+docs = ["matplotlib>=3.8"]
+dev = ["pytest>=8", "ruff>=0.6", "matplotlib>=3.8"]
+
+[project.scripts]
+manacitra = "manacitra.cli:main"
+
+[project.urls]
+Repository = "https://github.com/dogmaguru/manacitra"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+manacitra = ["pinned_circuits.json"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E741", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B018"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: long-running reproduction checks",
+]

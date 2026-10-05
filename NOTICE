@@ -1,0 +1,20 @@
+Manacitra
+Copyright 2026 Dogma LLC (doing business as Dogma Guru)
+Developed by Anish Patel.
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+The data in data/ and the documentation in docs/ are licensed under the
+Creative Commons Attribution 4.0 International licence (see data/LICENSE and
+docs/LICENSE).
+
+This product depends on, and does not include, the following third-party
+software, each under its own licence:
+
+  Qiskit, qiskit-aer, qiskit-ibm-runtime   Apache License 2.0
+  rustworkx                                Apache License 2.0
+  Cirq (cirq-core, cirq-google)            Apache License 2.0
+  openquantum-sdk, openquantum-sdk-qiskit  Apache License 2.0
+  pyqasm                                   Apache License 2.0
+  NumPy                                    BSD 3-Clause License
+  SciPy                                    BSD 3-Clause License
+  Matplotlib                               Matplotlib License (PSF-based)

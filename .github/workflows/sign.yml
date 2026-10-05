@@ -1,0 +1,113 @@
+# Keyless signing with a public timestamp (Kickoff 01, section 7b).
+#
+# Signs every *.commit.json and every file in data/ when they land on the default branch, and every release
+# artifact, with Sigstore's keyless signing: a short-lived certificate tied to this workflow's own GitHub identity,
+# recorded with a timestamp in Sigstore's public transparency log. Nothing is stored, rotated or kept secret. The
+# .sigstore.json bundles are committed beside the files they cover.
+#
+# The gate: a log entry is public and names this repository and workflow, so signing runs only when the repository
+# variable MANACITRA_SIGN is "true". It stays unset while the repository is private. The gate job runs on every push
+# and says what it decided, so its behaviour can be seen on any branch.
+name: sign
+
+on:
+  push:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sign-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      sign: ${{ steps.decide.outputs.sign }}
+    steps:
+      - id: decide
+        name: Decide whether to sign
+        env:
+          MANACITRA_SIGN: ${{ vars.MANACITRA_SIGN }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEFAULT_REF: refs/heads/${{ github.event.repository.default_branch }}
+        run: |
+          if [ "$MANACITRA_SIGN" != "true" ]; then
+            echo "MANACITRA_SIGN is not 'true': signing is off. Nothing is sent to Sigstore."
+            echo "sign=false" >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT" = "release" ] || [ "$REF" = "$DEFAULT_REF" ]; then
+            echo "MANACITRA_SIGN is 'true' and this is $EVENT on $REF: signing."
+            echo "sign=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "MANACITRA_SIGN is 'true', but $REF is not the default branch: nothing to sign."
+            echo "sign=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  sign-files:
+    needs: gate
+    if: needs.gate.outputs.sign == 'true' && github.event_name != 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # commit the bundles beside the files
+      id-token: write   # keyless signing with this workflow's own identity
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: list
+        name: List what to sign
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          files="$(python tools/sign_targets.py --before "$BEFORE" --after "$AFTER")"
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+          echo "to sign: ${files:-nothing}"
+      - name: Sign
+        if: steps.list.outputs.files != ''
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9  # v3.5.0
+        with:
+          inputs: ${{ steps.list.outputs.files }}
+          verify: true
+          verify-cert-identity: https://github.com/${{ github.repository }}/.github/workflows/sign.yml@${{ github.ref }}
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
+          release-signing-artifacts: false
+      - name: Commit the bundles
+        if: steps.list.outputs.files != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.sigstore.json'
+          if git diff --cached --quiet; then echo "no new bundles"; exit 0; fi
+          git commit -m "chore: Sigstore bundles for ${GITHUB_SHA::7}"
+          git push
+
+  sign-release:
+    needs: gate
+    if: needs.gate.outputs.sign == 'true' && github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # attach the bundles to the release
+      id-token: write
+    steps:
+      - name: Download the release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir dist
+      - name: Sign
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9  # v3.5.0
+        with:
+          inputs: ./dist/*
+          verify: true
+          verify-cert-identity: https://github.com/${{ github.repository }}/.github/workflows/sign.yml@${{ github.ref }}
+          verify-oidc-issuer: https://token.actions.githubusercontent.com
+          release-signing-artifacts: true

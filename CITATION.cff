@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Manacitra or its data, please cite it as below."
+title: "Manacitra: a map of a quantum processor's qubit pairs"
+type: software
+authors:
+  - given-names: Anish
+    family-names: Patel
+version: 0.1.0
+date-released: 2026-10-05
+license: Apache-2.0
+repository-code: "https://github.com/dogmaguru/manacitra"
+abstract: >-
+  Manacitra measures, for each qubit pair on a processor, how much of a small,
+  known difference between two short circuits the pair keeps, and uses the
+  resulting map to choose pairs for a job. The archived data (CC BY 4.0) are
+  the per-pair counts from runs on two IBM processors and from simulations.
+keywords:
+  - quantum computing
+  - qubit pairs
+  - two-qubit gates
+  - calibration
+  - Qiskit
