@@ -1,0 +1,6 @@
+#!/bin/sh
+# The identifier scan on staged files. Enable once per clone with:
+#   git config core.hooksPath .githooks
+PY="${MANACITRA_PYTHON:-python3}"
+[ -x .venv/bin/python ] && PY=.venv/bin/python
+exec "$PY" tools/scan_secrets.py --staged

@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Identifier scan (whole tree)
+        run: python tools/scan_secrets.py
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,aer,ibm,cirq,docs]"
+      - name: Lint
+        run: ruff check src tests tools examples docs
+      - name: Format
+        run: ruff format --check src tests tools examples docs
+      - name: Tests (including the reproduction of every archived number)
+        run: pytest -q
+      - name: Diagrams build
+        run: python docs/make_diagrams.py --out "$RUNNER_TEMP/diagrams"
+      - name: Examples run
+        run: |
+          python examples/01_map_simulated.py
+          python examples/02_map_from_archive.py
+          python examples/03_pick_pairs.py
