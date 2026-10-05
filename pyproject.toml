@@ -45,6 +45,9 @@ Repository = "https://github.com/dogmaguru/manacitra"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+manacitra = ["pinned_circuits.json"]
+
 [tool.ruff]
 line-length = 120
 target-version = "py311"

@@ -78,3 +78,23 @@ def test_refuses_anything_but_three_per_pair():
 def test_unknown_label():
     with pytest.raises(ValueError):
         c.parse_label("C no")
+
+
+def test_pinned_circuits_are_the_exact_unitaries():
+    """The package runs pinned gate lists, the same on every platform; each must be its exact unitary."""
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    tool = Path(__file__).resolve().parent.parent / "tools" / "pin_circuits.py"
+    assert subprocess.run([sys.executable, str(tool), "--check"], capture_output=True).returncode == 0
+
+
+def test_block_is_pinned_and_synthesis_is_equivalent():
+    from qiskit.quantum_info import Operator
+
+    for label in ("A no", "B off"):
+        pinned, fresh = c.block(label), c.block(label, synthesise=True)
+        assert c.circuit_record(pinned) == c.pinned()["blocks"][label]
+        u, v = Operator(pinned).data, Operator(fresh).data
+        assert abs(abs(np.vdot(u.flatten(), v.flatten())) / 4 - 1) < 1e-10

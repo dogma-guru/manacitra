@@ -101,17 +101,10 @@ def pair_block(label: str):
             qc.x(1)
         return qc
     if label.startswith("R"):
-        from ..workload import workload_block
+        from ..circuits import pinned_block
 
-        return workload_block(_units()[int(label[1:]) - 1])
+        return pinned_block(label)
     return block(label)
-
-
-@lru_cache(maxsize=1)
-def _units():
-    from ..workload import draw_unitaries
-
-    return draw_unitaries()
 
 
 @lru_cache(maxsize=64)

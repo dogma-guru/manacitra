@@ -77,7 +77,13 @@ def template(m) -> list:
     return [("rz", w(lam)), ("rx90",), ("rz", w(t + math.pi)), ("rx90",), ("rz", w(p + math.pi))]
 
 
-def native_ops(label: str) -> list[tuple]:
+def native_ops(label: str, synthesise: bool = False) -> list[tuple]:
+    """The variant as (gate, local qubits, angle): the pinned sequence by default (see circuits.pinned), else a fresh
+    synthesis."""
+    if not synthesise:
+        from ..circuits import pinned
+
+        return [(g, tuple(qs), ang) for g, qs, ang in pinned()["native_rz_rx"][label]]
     seq = []
     for item in layers(label):
         if item == "cz":

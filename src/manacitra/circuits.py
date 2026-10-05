@@ -20,8 +20,10 @@ does to the gap is therefore about how it carries a small, known difference thro
 
 from __future__ import annotations
 
+import json
 import math
 from dataclasses import dataclass
+from functools import lru_cache
 
 import numpy as np
 from scipy.linalg import expm
@@ -142,10 +144,57 @@ def synthesise_three_cz(u: np.ndarray, euler_basis: str = "ZSX"):
     return qc
 
 
-def block(label: str, euler_basis: str = "ZSX"):
-    """The two-qubit circuit of a variant: the exact unitary with exactly three CZ, no measurement."""
+def block(label: str, euler_basis: str = "ZSX", synthesise: bool = False):
+    """The two-qubit circuit of a variant: the exact unitary with exactly three CZ, no measurement.
+
+    By default the circuit is the pinned one (see pinned_block): the gate sequence synthesised once, with the Qiskit
+    the published runs used, and shipped with the package. synthesise=True runs the synthesis afresh instead. The
+    two are the same unitary, but the synthesis is numerical and its single-qubit layers can differ from one platform's
+    linear-algebra library to another's, and a coherent error after each CZ lands differently on different layers.
+    """
+    if not synthesise and euler_basis == "ZSX":
+        return pinned_block(label)
     circ, _ = parse_label(label)
     return synthesise_three_cz(unitary(CIRCUITS[circ].c, offset_of(label)), euler_basis=euler_basis)
+
+
+PINNED_FILE = "pinned_circuits.json"
+
+
+@lru_cache(maxsize=1)
+def pinned() -> dict:
+    """Every test variant and workload circuit as an exact gate list (see tools/pin_circuits.py)."""
+    from importlib.resources import files
+
+    return json.loads(files("manacitra").joinpath(PINNED_FILE).read_text())
+
+
+def circuit_record(qc) -> dict:
+    """A two-qubit circuit as a JSON-safe gate list (floats round-trip exactly)."""
+    return {
+        "global_phase": float(qc.global_phase),
+        "ops": [
+            [ins.operation.name, [qc.find_bit(q).index for q in ins.qubits], [float(x) for x in ins.operation.params]]
+            for ins in qc.data
+        ],
+    }
+
+
+def circuit_from_record(rec: dict):
+    from qiskit import QuantumCircuit
+    from qiskit.circuit.library import get_standard_gate_name_mapping
+
+    gates = get_standard_gate_name_mapping()
+    qc = QuantumCircuit(2, global_phase=rec["global_phase"])
+    for name, qubits, params in rec["ops"]:
+        g = gates[name]
+        qc.append(type(g)(*params) if params else g, qubits)
+    return qc
+
+
+def pinned_block(key: str):
+    """A pinned circuit by its label: 'A no' ... 'B wrong', or a workload circuit 'R1' ... 'R8'."""
+    return circuit_from_record(pinned()["blocks"][key])
 
 
 def ideal_p11(label: str) -> float:
