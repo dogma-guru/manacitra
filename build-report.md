@@ -463,6 +463,12 @@ The other six words stay banned everywhere, as before.
   - a sign-off quoted mid-line does not count;
   - the bot is exempt.
 
+**Signing off this branch.** All 12 earlier commits on this branch lacked a sign-off, so the new check would have
+failed this pull request. On the author's go, the branch was rebased with `git rebase --signoff main`, so every commit
+now carries a `Signed-off-by:` line under the branch's git identity. It was then force-pushed with
+`--force-with-lease`. The commit hashes changed and the contents did not: the rebased tree is identical to the one
+tested. `python tools/check_dco.py main HEAD` passes locally.
+
 **The scan on the full tree afterwards.**
 
 ```
