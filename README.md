@@ -8,7 +8,7 @@ Manacitra runs two short circuits on every pair of a processor at once. The two 
 
 It maps pairs. It does not rank machines.
 
-## The idea in four pictures
+## The idea in five pictures
 
 ### 1. The kept share
 
@@ -33,6 +33,12 @@ Map, then verdict, then pick, then run. The verdict decides whether the map is w
 ![A scatter of 27 ibm_fez pairs: the kept share measured about two hours earlier on the horizontal axis, and fidelity on eight random two-qubit circuits on the vertical axis. The 8 pairs with the highest kept share are filled blue; the 8 with the lowest published error are ringed in orange; some pairs carry both. Dashed lines mark each pick's mean: error 0.0022 for the map's pick and 0.0034 for the published pick. The title reads: choosing by the map, 35.6% less error than choosing by the published rates.](docs/diagrams/payoff.svg)
 
 On ibm_fez on 5 October 2026, the map measured at 13:17 UTC chose 8 pairs, and the published error rates chose another 8. At 15:20 UTC all 27 pairs ran eight random circuits, unrelated to the map, with nine CZ gates each. The map's 8 pairs had a mean error of 0.0022 against 0.0034 for the published pick: 35.6% less. The absolute numbers are small, because every pair's fidelity was above 0.98.
+
+### 5. How to check a sealed prediction
+
+![A timeline of four steps. 1, seal and post the hash (manacitra seal): shows the file existed then, without showing what it says. 2, run the job: the file stays as it was. 3, reveal the salt (manacitra reveal): publishes the file and its salt. 4, anyone verifies (manacitra verify): a match shows the predictions came before the results.](docs/diagrams/sealed-prediction.svg)
+
+This one is for a stranger who wants to know whether the predictions came before the results. `manacitra seal` commits to a file with a salted SHA-256 hash, which is posted somewhere the producer cannot edit; after the run, `manacitra reveal` publishes the salt, and `manacitra verify` lets anyone check that the file is the one committed to. Once the repository is public, a CI workflow also signs every commit record and every data file with Sigstore's keyless signing, which records who signed and when in a public log ([`docs/index.md`](docs/index.md#9-sealing-and-signing)).
 
 ## Install and try it
 

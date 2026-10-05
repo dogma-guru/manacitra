@@ -11,4 +11,9 @@ The first version.
   guard, the usage read and the time cap. Experimental: Open Quantum, and a Cirq simulation of a published noise model.
 - The dataset: the counts and analyses of the runs on ibm_fez and ibm_kingston (5 October 2026) and of the simulated
   control, with a test that reproduces every archived statistic.
-- The README, the long-form documentation, four diagrams and three examples.
+- Pinned circuits: every circuit the package runs ships as an exact gate list, so every platform runs the same
+  gate sequences (`src/manacitra/pinned_circuits.json`, `tools/pin_circuits.py`).
+- Sealing: `manacitra seal | reveal | verify`, salted SHA-256 commitments. Signing: a gated CI workflow that signs
+  commit records, data files and release artifacts with Sigstore's keyless signing (off until `MANACITRA_SIGN` is
+  `true`). `data/SHA256SUMS` for catching corrupted files.
+- The README, the long-form documentation, five diagrams and three examples.

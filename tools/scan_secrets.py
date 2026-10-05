@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from scan_patterns import ALLOW, PATTERNS, SKIP_DIRS, SKIP_SUFFIXES  # noqa: E402
+from scan_patterns import ALLOW, PATTERNS, SKIP_DIRS, SKIP_NAME_ENDINGS, SKIP_SUFFIXES  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -105,7 +105,11 @@ def expand(paths: list[Path]) -> list[Path]:
 
 
 def skipped(path: Path) -> bool:
-    return bool(set(path.parts) & SKIP_DIRS) or path.suffix.lower() in SKIP_SUFFIXES
+    return (
+        bool(set(path.parts) & SKIP_DIRS)
+        or path.suffix.lower() in SKIP_SUFFIXES
+        or path.name.endswith(SKIP_NAME_ENDINGS)
+    )
 
 
 def scan_files(files: list[Path]) -> dict[str, list[tuple[int, str, str]]]:

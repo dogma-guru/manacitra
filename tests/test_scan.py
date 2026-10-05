@@ -58,3 +58,16 @@ def test_runtime_user_name_is_not_written_down():
 def test_whole_tree_is_clean():
     result = scan_secrets.scan_files(scan_secrets.tracked_files(ROOT))
     assert result == {}, result
+
+
+def test_sigstore_bundles_are_skipped(tmp_path):
+    f = tmp_path / "k31-map.json.sigstore.json"
+    f.write_text('{"cert": "' + "someone" + "@" + 'example.org"}')
+    assert scan_secrets.skipped(f)
+
+
+def test_data_checksums_match():
+    import subprocess
+
+    out = subprocess.run([sys.executable, str(ROOT / "tools" / "sha256sums.py"), "--check"], capture_output=True)
+    assert out.returncode == 0, out.stdout

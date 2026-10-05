@@ -43,6 +43,12 @@ publishes for willow_pink (median calibration of 16 August 2024): they are not a
 - **Order**: `order` lists the circuit at each position. A, B: the two test circuits; `no`, `off`, `wrong`: no offset,
   the offset, the offset with the wrong sign. `R1` to `R8`: the random workload circuits. `CAL ab`: readout calibration.
 
+## Checksums and signatures
+
+`SHA256SUMS` holds a plain SHA-256 of every file here, for catching corrupted files (`python tools/sha256sums.py
+--check`). Once signing is turned on, each file also gets a Sigstore bundle beside it (`FILE.sigstore.json`), which
+shows who published it and when; `docs/index.md` gives the command to verify one.
+
 ## What was changed when copying
 
 Nothing in the counts or the analyses. From IBM's usage blocks, the `details` list was dropped, because it carries

@@ -1,6 +1,6 @@
 # Copyright 2026 Anish Patel
 # SPDX-License-Identifier: Apache-2.0
-"""Make the four README diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the five README diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -8,6 +8,7 @@
 2. chip-map.svg     ibm_fez's coupling map, the 27 pairs coloured by kept share, beside the published error rates
 3. pipeline.svg     map, verdict, pick, run
 4. payoff.svg       workload fidelity against the prior kept share, with the two picks of 8 marked
+5. sealed-prediction.svg   how to check a sealed prediction: seal, run, reveal, verify
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. The figures carry their own light surface so they read on light and dark pages alike.
@@ -341,6 +342,49 @@ def diagram_payoff(out: Path):
     save(fig, out, "payoff")
 
 
+# --------------------------------------------------------------------------- 5. how to check a sealed prediction
+def diagram_seal(out: Path):
+    fig, ax = plt.subplots(figsize=(12, 3.9))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 3.9)
+    ax.axis("off")
+    steps = [
+        (
+            "1  Seal, post the hash",
+            "manacitra seal p.md",
+            "Shows the file existed then,\nwithout showing what\nit says.",
+        ),
+        ("2  Run the job", "results arrive", "The file stays as it was;\nchanging it now would\nbreak step 4."),
+        ("3  Reveal the salt", "manacitra reveal p.md", "Publishes the file and\nits salt, so anyone\ncan check."),
+        ("4  Anyone verifies", "manacitra verify p.md", "MATCH: the predictions\ncame before the results."),
+    ]
+    xs = [0.3 + i * 2.9 for i in range(4)]
+    y = 2.85
+    ax.plot([xs[0], xs[-1] + 2.3], [y, y], color=MUTED, lw=1.2, zorder=1)
+    ax.add_patch(
+        FancyArrowPatch((xs[-1] + 2.1, y), (xs[-1] + 2.55, y), arrowstyle="-|>", mutation_scale=12, color=MUTED, lw=1.2)
+    )
+    ax.text(xs[-1] + 2.55, y + 0.2, "time", ha="right", fontsize=8.5, color=MUTED)
+    for i, (title, cmd, what) in enumerate(steps):
+        x = xs[i]
+        ax.plot(x + 0.08, y, "o", ms=11, color=RAMP[3] if i != 1 else RAMP[1], mec=SURFACE, mew=2, zorder=3)
+        ax.text(x, y + 0.45, title, fontsize=10.5, color=INK, weight="bold", va="bottom")
+        ax.text(x, y - 0.35, cmd, fontsize=8.6, color=INK_2, family="DejaVu Sans Mono", va="top")
+        ax.text(x, y - 0.75, what, fontsize=8.8, color=INK_2, va="top", linespacing=1.4)
+    ax.text(
+        0.3,
+        0.15,
+        "The hash in step 1 is SHA-256 of a secret random salt followed by the file, so a short prediction cannot be "
+        "guessed from it.\nWhere the hash is posted, and the Sigstore signature on the commit record "
+        "(a public log entry naming this repository's\nworkflow, with its time), show who sealed it and when.",
+        fontsize=8.4,
+        color=MUTED,
+        va="bottom",
+        linespacing=1.4,
+    )
+    save(fig, out, "sealed-prediction")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -349,7 +393,8 @@ def main(argv=None):
     diagram_chip_map(a.out)
     diagram_pipeline(a.out)
     diagram_payoff(a.out)
-    print(f"wrote 4 diagrams (SVG and PNG) to {a.out}")
+    diagram_seal(a.out)
+    print(f"wrote 5 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

@@ -61,3 +61,5 @@ ALLOW = [
 # Never scanned: generated caches and binary formats
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ruff_cache", "build", "dist", ".mypy_cache"}
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".ico", ".zip", ".gz", ".whl", ".pyc"}
+# Sigstore bundles: public signatures (base64 certificates and log entries), written by the signing workflow
+SKIP_NAME_ENDINGS = (".sigstore.json",)

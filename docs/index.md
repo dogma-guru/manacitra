@@ -1,7 +1,7 @@
 # Manacitra, the long version
 
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
-safety guards, and how to reproduce every number in the README from `data/`. The README is the short version.
+safety guards, how to reproduce every number in the README from `data/`, and how sealing and signing work. The README is the short version.
 
 ## 1. The circuit, and why the gap is known
 
@@ -206,7 +206,7 @@ pytest tests/test_readme_numbers.py   # every number the README states
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the four diagrams, from data/
+python docs/make_diagrams.py          # the five diagrams, from data/
 ```
 
 Where each README number comes from:
@@ -237,3 +237,60 @@ in Kickoff 36's own report.
   picks better pairs for other work, and that it lasts long enough to plan by. Each part names what would discredit it
   (section 3). On two IBM processors on one day, the first held on both, the second held on one and was not settled
   on the other, and the third is open.
+
+## 9. Sealing and signing
+
+A SHA-256 hash beside a file only catches accidents: whoever can change the file can recompute the hash. To show a
+stranger **who** sealed something and **when**, the hash has to sit somewhere the producer cannot edit, with a public
+timestamp. Manacitra does this in two layers.
+
+### Commitments (in the package)
+
+```bash
+manacitra seal predictions.md      # before the run
+manacitra reveal predictions.md    # after the run
+manacitra verify predictions.md    # anyone, any time after the reveal
+```
+
+- **`seal`** draws a 32-byte random salt (`secrets.token_bytes`), keeps it in `.seals/predictions.md.salt` (the
+  `.seals/` folder is git-ignored), and writes `predictions.md.commit.json`: the algorithm, the hash SHA-256(salt ‖
+  file), the UTC time and the tool's version. It prints the hash, to be posted somewhere the producer cannot edit, such
+  as the chat with the reader. A file is sealed once; sealing it again is refused.
+- **`reveal`** checks that the salt opens the commitment and then adds it to the commit record, for publication.
+- **`verify`** recomputes the hash from the file and the revealed salt and says plainly whether they match. A commit
+  record whose salt has not been revealed cannot be checked yet, and `verify` says so.
+- The salt is why the hash can be posted early: without it, a short prediction ("DIAGNOSTIC") could be guessed by
+  hashing the few possible answers.
+
+### Keyless signing with a public timestamp (in CI)
+
+`.github/workflows/sign.yml` signs with Sigstore's keyless signing, through the official action
+(`sigstore/gh-action-sigstore-python`, pinned to v3.5.0). The workflow has `id-token: write`, gets a short-lived
+certificate tied to its own GitHub identity, and writes each signature to Sigstore's public transparency log with a
+timestamp. There is no key to store, rotate or keep secret.
+
+- **What is signed:** every `*.commit.json` file and every file in `data/` when it lands on the default branch (those
+  with no bundle yet, or changed in that push; `tools/sign_targets.py` lists them), and every release artifact. Each
+  bundle is committed beside the file it covers, as `FILE.sigstore.json`. Release bundles are attached to the release.
+- **The gate:** a log entry is public and names this repository and workflow, so signing runs only when the
+  repository variable `MANACITRA_SIGN` is `true`. It stays unset while the repository is private. The workflow's
+  `gate` job runs on every push and states its decision in the log.
+
+**To verify a signed file** (here, one data file):
+
+```bash
+pip install sigstore
+sigstore verify identity data/ibm_fez/k31-map.json \
+  --cert-identity https://github.com/dogmaguru/manacitra/.github/workflows/sign.yml@refs/heads/main \
+  --cert-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+`sigstore` finds the bundle `data/ibm_fez/k31-map.json.sigstore.json` beside the file. The expected certificate
+identity is this repository's signing workflow on the default branch, and the issuer is GitHub Actions' OIDC issuer.
+For a release artifact, the identity ends in `@refs/tags/<the release tag>`. For a sealed prediction, verify both: the
+commit record's signature (`sigstore verify identity predictions.md.commit.json ...`), which shows who published the
+commitment and when, and the commitment itself (`manacitra verify predictions.md`), which shows the file is the one
+committed to.
+
+**Plain SHA-256 stays** for catching corrupted files: `data/SHA256SUMS` (checked by `python tools/sha256sums.py
+--check` and by the tests) and the `sources` hashes in every data file's `meta` block.
