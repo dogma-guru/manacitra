@@ -1,6 +1,9 @@
 # Copyright 2026 Anish Patel
 # SPDX-License-Identifier: Apache-2.0
+import importlib.util
 import json
+
+import pytest
 
 from manacitra import archive
 from manacitra.cli import main
@@ -25,6 +28,7 @@ def test_map_on_the_simulator_then_pick(tmp_path, capsys):
     assert capsys.readouterr().out.count("k_A") == 5
 
 
+@pytest.mark.skipif(importlib.util.find_spec("qiskit_ibm_runtime") is None, reason="needs the [ibm] extra")
 def test_ibm_is_a_dry_run_without_submit(capsys):
     assert main(["map", "--backend", "ibm", "--processor", "ibm_fez", "--offline", "--pairs", "114-115,70-71"]) == 0
     out = capsys.readouterr().out

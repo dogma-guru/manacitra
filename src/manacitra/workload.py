@@ -9,7 +9,7 @@ CZ, so every circuit carries nine. A pair's score W is the mean over the circuit
 correction (inverse confusion matrix, projected to the probability simplex).
 
 Outcome index s = a + 2 b, a being the bit of the pair's first qubit and b of its second (Qiskit's order on the pair).
-These circuits are a stand-in workload for choosing pairs, not a benchmark of any machine.
+These circuits are a stand-in workload for choosing pairs; they do not rank machines.
 """
 
 from __future__ import annotations

@@ -34,7 +34,7 @@ needs its own discussion first.
 - **Nothing is sent to a provider by default.** The command line is a dry run unless `--submit` is given, and the
   submit-once guard in `backends/base.py` refuses a second send of the same job unless `--allow-resubmit` is given.
 - **Exactly three two-qubit gates per pair.** A transpiled circuit that carries anything else on a pair is refused.
-- **Words.** The tool maps pairs; it does not rank machines, and it is not a benchmark. No vendor is compared with
+- **Words.** The tool maps pairs; it does not rank machines. No vendor is compared with
   another as a product. Every number carries its processor and its date.
 
 ## Licences
