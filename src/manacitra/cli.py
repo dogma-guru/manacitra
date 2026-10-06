@@ -111,8 +111,11 @@ def cmd_map(a) -> int:
         ledger = Ledger(a.ledger)
         print(f"ledger: {ledger.path}, job hash {job.job_hash(backend.name, backend.processor)[:12]}")
         if a.allow_resubmit:
-            print("--allow-resubmit given: a second send of this job is allowed and is logged")
-        handle = submit_once(backend, job, ledger, allow_resubmit=a.allow_resubmit)
+            print(
+                "--allow-resubmit given: a second send of this job is allowed and is logged, with the reason: "
+                f"{a.resubmit_reason or 'none given'}"
+            )
+        handle = submit_once(backend, job, ledger, allow_resubmit=a.allow_resubmit, reason=a.resubmit_reason)
         print(f"sent: {handle.job_ids}. Fetch it later with the Python API (backend.fetch(handle)).")
         Path(a.out).write_text(json.dumps({"handle": handle.__dict__}, indent=1, default=list))
         return 0
@@ -274,6 +277,7 @@ def main(argv=None) -> int:
     m.add_argument("--offline", action="store_true", help="ibm: dry run on the offline snapshot, no account")
     m.add_argument("--submit", action="store_true", help="actually send the job (spends time or credits)")
     m.add_argument("--allow-resubmit", action="store_true", help="allow a second send of the same job (logged)")
+    m.add_argument("--resubmit-reason", default=None, help="why the job is sent again, logged with --allow-resubmit")
     m.add_argument("--ledger", default=None)
     m.add_argument("--out", default="map-counts.json")
     m.set_defaults(func=cmd_map)

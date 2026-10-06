@@ -9,9 +9,12 @@ Before any submission:
 
 1. the usage is read from the runtime client (numbers and dates only; every identifier field is dropped);
 2. the job is estimated at 0.3 ms per shot plus 5 s (Kickoffs 32 to 35; the observed rate was about 0.28 ms);
-3. the job is refused if used + estimate exceeds the cap (default 540 s of the Open plan's 600 s window);
-4. every circuit is transpiled onto the pairs and refused unless each pair carries exactly 3 CZ, nothing is routed,
-   and the layout is kept.
+3. every circuit is transpiled onto the pairs and refused unless each pair carries exactly 3 CZ, nothing is routed,
+   and the layout is kept;
+4. under the ledger's lock, the job is refused if used + the estimates of every open IBM reservation + this job's
+   estimate exceeds the cap (default 540 s of the Open plan's 600 s window). The provider's usage figure lags a
+   submission, so the open reservations stand in for jobs it does not yet count. This job's estimate is reserved in
+   the ledger before it is sent; a fetch that reports the job's charged time settles the reservation.
 
 Each pub is (circuit, None, shots): the second slot holds parameter values, and passing (circuit, shots) is rejected by
 the sampler (the fix recorded in Kickoff 33's scorecard).
@@ -23,19 +26,32 @@ import re
 
 from ..circuits import parallel_circuit, require_three_per_pair
 from ..keptshare import pair_outcomes_from_bitstrings
-from .base import Estimate, GuardedSubmit, JobHandle, Ledger, MapCounts, MapJob, PairFigures, Target, utc_now
+from .base import (
+    Estimate,
+    GuardedSubmit,
+    JobHandle,
+    Ledger,
+    MapCounts,
+    MapJob,
+    PairFigures,
+    SpendRefused,
+    Target,
+    utc_now,
+)
 
 SECONDS_PER_SHOT = 0.3e-3
 OVERHEAD_S = 5.0
 CAP_S = 540.0
+#: The ledger scope of IBM reservations: the usage window is the account's, across processors
+IBM_SCOPE = "ibm"
 _ID_FIELD = re.compile(r"id|crn|instance|account|email|name|user|plan|token|key", re.I)
 
 
-class CapExceeded(RuntimeError):
+class CapExceeded(SpendRefused):
     pass
 
 
-class UsageUnavailable(RuntimeError):
+class UsageUnavailable(SpendRefused):
     pass
 
 
@@ -58,8 +74,9 @@ def safe_usage(raw: dict) -> dict:
 
 
 class IBMBackend(GuardedSubmit):
-    """IBM Quantum through Qiskit Runtime. submit() is the submit-once guard (GuardedSubmit); _send() checks the cap
-    and the transpiled circuits, then sends."""
+    """IBM Quantum through Qiskit Runtime. submit() is the submit-once guard (GuardedSubmit): _preflight reads the
+    usage and checks the transpiled circuits, _reserve checks the cap against the ledger's open reservations under the
+    ledger's lock, and _send sends."""
 
     name = "ibm"
     spends = True
@@ -82,6 +99,7 @@ class IBMBackend(GuardedSubmit):
         self.seed_transpiler = seed_transpiler
         self.optimization_level = optimization_level
         self.usage_log: list[dict] = []
+        self._prepared: dict[str, tuple] = {}
 
     # -- the runtime client, created lazily from the saved account
     @property
@@ -154,21 +172,58 @@ class IBMBackend(GuardedSubmit):
         self.usage_log.append(u)
         return u
 
-    def check_cap(self, job: MapJob) -> dict:
-        u = self.usage()
-        used = float(u["usage_consumed_seconds"])
+    def _cap(self, job: MapJob, used: float, open_s: float) -> dict:
         est = estimate_seconds(job.total_shots)
-        rec = {
+        total = used + open_s + est
+        return {
             "used_s": used,
+            "open_reservations_s": open_s,
             "estimate_s": est,
-            "used_plus_estimate_s": used + est,
+            "total_s": total,
             "cap_s": self.cap_s,
-            "within_cap": used + est <= self.cap_s,
+            "within_cap": total <= self.cap_s,
+        }
+
+    @staticmethod
+    def _cap_failure(rec: dict) -> str:
+        return (
+            f"used {rec['used_s']:.0f} s + open reservations {rec['open_reservations_s']:.1f} s + estimate "
+            f"{rec['estimate_s']:.1f} s > cap {rec['cap_s']:.0f} s"
+        )
+
+    def check_cap(self, job: MapJob) -> dict:
+        """The cap as it stands now: the usage read now, plus the ledger's open IBM reservations, plus this job. For a
+        look before submitting; the guard checks it again under the ledger's lock."""
+        u = self.usage()
+        rec = {
+            **self._cap(job, float(u["usage_consumed_seconds"]), self._ledger().open_seconds(IBM_SCOPE)),
             "read_utc": u["read_utc"],
         }
         if not rec["within_cap"]:
-            raise CapExceeded(f"refused: used {used:.0f} s + estimate {est:.1f} s > cap {self.cap_s:.0f} s")
+            raise CapExceeded("refused: " + self._cap_failure(rec))
         return rec
+
+    def _preflight(self, job: MapJob, ledger: Ledger) -> dict:
+        """Before the lock: the usage (refused if it cannot be read) and the transpile checks."""
+        u = self.usage()
+        backend = self.backend()
+        isa, checks = self.transpile(job, backend)
+        self._prepared[job.job_hash(self.name, self.processor)] = (backend, isa, checks)
+        return {"used_s": float(u["usage_consumed_seconds"]), "read_utc": u["read_utc"]}
+
+    def _reserve(self, job: MapJob, pre: dict, entries: list[dict]) -> tuple[list[str], dict]:
+        """Under the lock: used + every open IBM reservation + this job's estimate, against the cap."""
+        rec = {
+            **self._cap(job, pre["used_s"], self._ledger().open_seconds(IBM_SCOPE, entries)),
+            "read_utc": pre["read_utc"],
+        }
+        self._last_cap = rec
+        if not rec["within_cap"]:
+            return [self._cap_failure(rec)], {}
+        return [], {"scope": IBM_SCOPE, "seconds": rec["estimate_s"], "used_s_at_send": rec["used_s"]}
+
+    def _refusal(self, failed: list[str]) -> CapExceeded:
+        return CapExceeded("refused: " + "; ".join(failed))
 
     def transpile(self, job: MapJob, backend=None) -> tuple[list, list[dict]]:
         """Every active circuit on the pairs, each checked: exactly 3 CZ per pair, no swaps, layout kept."""
@@ -207,10 +262,9 @@ class IBMBackend(GuardedSubmit):
         return isa, checks
 
     def _send(self, job: MapJob) -> JobHandle:
-        """The raw send, reached only through submit(): the cap (read now), the transpile checks, then SamplerV2."""
-        cap = self.check_cap(job)
-        backend = self.backend()
-        isa, checks = self.transpile(job, backend)
+        """The raw send, reached only through submit() after the guard has reserved the job: SamplerV2."""
+        h = job.job_hash(self.name, self.processor)
+        backend, isa, checks = self._prepared.pop(h, None) or (self.backend(), *self.transpile(job))
         pubs = [(c, None, job.shots) for c in isa]
         if self._sampler_factory is None:
             from qiskit_ibm_runtime import SamplerV2
@@ -220,7 +274,7 @@ class IBMBackend(GuardedSubmit):
             sampler = self._sampler_factory(mode=backend)
         rj = sampler.run(pubs)
         handle = JobHandle.for_job(self.name, self.processor, [rj.job_id()], job)
-        self.last_submission = {"cap": cap, "checks": checks, "handle": handle}
+        self.last_submission = {"cap": getattr(self, "_last_cap", None), "checks": checks, "handle": handle}
         return handle
 
     def fetch(self, handle: JobHandle) -> MapCounts:
@@ -241,6 +295,10 @@ class IBMBackend(GuardedSubmit):
             meta["charged_s"] = (m.get("usage") or {}).get("qpu_charge_time_seconds")
         except Exception:
             pass
+        if meta.get("charged_s") is not None:  # the provider now counts this job: its reservation is settled
+            self._ledger().append(
+                {"event": "settled", "job_hash": handle.job_hash, "utc": utc_now(), "charged_s": meta["charged_s"]}
+            )
         return MapCounts(handle.pairs, handle.order, handle.shots, outcomes, meta)
 
 

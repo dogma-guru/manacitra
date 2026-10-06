@@ -285,10 +285,12 @@ class OpenQuantumBackend(GuardedSubmit):
 
     submit() is the submit-once guard (GuardedSubmit). Immediately before sending, _preflight re-reads the balance and
     every task's preparation, and checks: the quote passed its own tests and is younger than quote_valid_s; every task
-    is still prepared, on the Public plan, at the expected price; the credits reserved in the ledger for this budget
-    scope plus this job stay within budget_credits; and the balance after stays at or above balance_floor. Any failure
-    refuses the send and names the check. A passing job's credits are reserved in the ledger before it is sent, and the
-    reservation is kept after a failed send (which may have created tasks) until a fetch settles it.
+    is still prepared, on the Public plan, at the expected price; and the balance after stays at or above
+    balance_floor. Then, under the ledger's interprocess lock, _reserve checks that the credits committed in this
+    budget scope (settled charges plus open reservations, read from the ledger under the lock) plus this job stay
+    within budget_credits. Any failure refuses the send and names every failed check. A passing job's credits are
+    reserved in the ledger, still under the lock, before it is sent, and the reservation is kept after a failed send
+    (which may have created tasks) until a fetch settles it.
 
     The budget scope is provider:processor:job_name, so the waves of one run share one budget. A new run with the same
     job name and ledger shares it too: give the run its own ledger or job name.
@@ -389,9 +391,6 @@ class OpenQuantumBackend(GuardedSubmit):
     def budget_scope(self) -> str:
         return f"{self.name}:{self.processor}:{self.job_name}"
 
-    def _ledger(self) -> Ledger:
-        return self.ledger or Ledger()
-
     def _price(self, res) -> tuple[str, float]:
         """A preparation's Public plan and its standard-queue price."""
         from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
@@ -467,8 +466,8 @@ class OpenQuantumBackend(GuardedSubmit):
         return Estimate(rec["quote_credits"], "credits", f"{len(rec['preparations'])} tasks; tests {rec['tests']}")
 
     def _preflight(self, job: MapJob, ledger: Ledger, after: JobHandle | None = None) -> dict:
-        """Every spending check, run again immediately before sending. Refuses (SpendRefused) naming each failure;
-        otherwise returns the credits to reserve."""
+        """Every provider check, run again immediately before sending, before the ledger's lock. Returns the failed
+        checks (the guard adds the budget's and refuses, naming each) and what _reserve needs."""
         rec = self._quotes.get(job.job_hash(self.name, self.processor))
         if not rec:
             raise QuoteRefused("refused: no quote for this job; run estimate() first and read its tests")
@@ -485,9 +484,6 @@ class OpenQuantumBackend(GuardedSubmit):
             if plan != "Public Plan" or price != self.credits_per_task:
                 failed.append(f"position {p['position']}: {plan} at {price} credits, expected {self.credits_per_task}")
         q = rec["quote_credits"]
-        reserved = ledger.reserved_credits(self.budget_scope)
-        if self.budget_credits is not None and reserved + q > self.budget_credits:
-            failed.append(f"budget: {reserved:g} reserved + {q:g} for this job > {self.budget_credits:g}")
         bal = self.balance()
         total = bal["spark_credits"] + bal["full_credits"]
         if total - q < self.balance_floor:
@@ -496,10 +492,20 @@ class OpenQuantumBackend(GuardedSubmit):
             st = [sch.get_job(j).status for j in after.job_ids]
             if any(s != "Completed" for s in st):
                 failed.append(f"the earlier wave has not completed ({st})")
-        if failed:
-            cls = QuoteRefused if any(f.startswith(("quote", "position")) for f in failed) else SpendRefused
-            raise cls("refused before sending: " + "; ".join(failed))
-        return {"reserve": {"scope": self.budget_scope, "credits": q, "balance_at_send": total}}
+        return {"failed": failed, "credits": q, "balance": total}
+
+    def _reserve(self, job: MapJob, pre: dict, entries: list[dict]) -> tuple[list[str], dict]:
+        """Under the ledger's lock: the credits committed in this budget scope (settled and open reservations, from
+        the ledger as read under the lock) plus this job, against the budget."""
+        q = pre["credits"]
+        committed = self._ledger().reserved_credits(self.budget_scope, entries)
+        if self.budget_credits is not None and committed + q > self.budget_credits:
+            return [f"budget: {committed:g} reserved + {q:g} for this job > {self.budget_credits:g}"], {}
+        return [], {"scope": self.budget_scope, "credits": q, "balance_at_send": pre["balance"]}
+
+    def _refusal(self, failed: list[str]) -> SpendRefused:
+        cls = QuoteRefused if any(f.startswith(("quote", "position")) for f in failed) else SpendRefused
+        return cls("refused before sending: " + "; ".join(failed))
 
     def _send(self, job: MapJob, after: JobHandle | None = None) -> JobHandle:
         """The raw send, reached only through submit() after _preflight: create each prepared task once, never

@@ -4,86 +4,26 @@
 
 import json
 import sys
-import types
 from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from _fakes import OQ_PAIRS, ORG, FakeOQService, sdk_stub_modules
 
 from manacitra.backends import openquantum as oq
 from manacitra.backends.base import MapJob
 from manacitra.circuits import ORDER_16
 
-FIX = Path(__file__).parent / "fixtures" / "openquantum"
-PUB, STD = "00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000003"
-ORG = "00000000-0000-0000-0000-000000000099"
-PAIRS = [(0, 1), (2, 3), (5, 6)]
-
-
-def ns(d):
-    return json.loads(json.dumps(d), object_hook=lambda x: SimpleNamespace(**x))
+PAIRS = OQ_PAIRS
+FakeService = FakeOQService
 
 
 @pytest.fixture(autouse=True)
 def sdk_stub(monkeypatch):
     """The SDK's enums and request models, stubbed with placeholder identifiers."""
-    enums = types.ModuleType("openquantum_sdk.enums")
-    enums.ExecutionPlanType = SimpleNamespace(PUBLIC=SimpleNamespace(value=PUB))
-    enums.QueuePriorityType = SimpleNamespace(STANDARD=SimpleNamespace(value=STD))
-    models = types.ModuleType("openquantum_sdk.models")
-    models.JobPreparationCreate = lambda **kw: kw
-    models.JobCreate = lambda **kw: kw
-    pkg = types.ModuleType("openquantum_sdk")
-    for name, mod in (("openquantum_sdk", pkg), ("openquantum_sdk.enums", enums), ("openquantum_sdk.models", models)):
+    for name, mod in sdk_stub_modules().items():
         monkeypatch.setitem(sys.modules, name, mod)
-
-
-class FakeScheduler:
-    def __init__(self, price=3, status="Completed"):
-        self.price, self.status = price, status
-        self.uploads, self.created, self.outputs = [], [], {}
-
-    def get_backend_class(self, code):
-        return json.loads((FIX / "backend_class.json").read_text())
-
-    def _resolve_organization_id(self, _):
-        return ORG
-
-    def upload_job_input(self, file_content):
-        self.uploads.append(file_content.decode())
-        return f"upload-{len(self.uploads)}"
-
-    def prepare_job(self, req):
-        assert req["organization_id"] == ORG and req["shots"] == 8000
-        return SimpleNamespace(id=f"prep-{len(self.uploads)}")
-
-    def _wait_for_preparation(self, preparation_id, timeout, interval):
-        d = json.loads((FIX / "preparation.json").read_text())
-        d["quote"][0]["price"] = self.price
-        return ns(d)
-
-    def create_job(self, req):
-        assert req["execution_plan_id"] == PUB and req["queue_priority_id"] == STD
-        jid = f"task-{len(self.created) + 1}"
-        self.created.append(jid)
-        return SimpleNamespace(id=jid, status="Pending")
-
-    def get_job(self, jid):
-        rec = json.loads((FIX / "job_record.json").read_text())
-        return SimpleNamespace(
-            id=jid, status=self.status, message=None, calibration_data_url=rec["calibration_data_url"]
-        )
-
-    def download_job_output(self, r):
-        return self.outputs[r.id]
-
-
-class FakeService:
-    def __init__(self, **kw):
-        self.scheduler = FakeScheduler(**kw)
-        bal = json.loads((FIX / "balance.json").read_text())
-        self.management = SimpleNamespace(get_credit_balance=lambda org: SimpleNamespace(**bal))
 
 
 def output_for(pairs, outcomes):
