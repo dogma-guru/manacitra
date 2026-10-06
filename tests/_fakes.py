@@ -218,7 +218,7 @@ def child_fake(who, ledger_path, sends_dir, barrier, queue, job_name="same", loc
     _report(queue, who, lambda: be.submit(MapJob([(0, 1)], name=job_name), log=lambda m: None))
 
 
-def child_openquantum(who, ledger_path, sends_dir, barrier, queue, positions, budget):
+def child_openquantum(who, ledger_path, sends_dir, barrier, queue, positions, budget, floor=None):
     for name, mod in sdk_stub_modules().items():
         sys.modules[name] = mod
     from manacitra.backends import openquantum as oq
@@ -231,7 +231,8 @@ def child_openquantum(who, ledger_path, sends_dir, barrier, queue, positions, bu
             return pre
 
     svc = FakeOQService(sends_dir=sends_dir)
-    be = Barriered(service=svc, budget_credits=budget, ledger=Ledger(ledger_path))
+    floor = {} if floor is None else {"balance_floor": floor}
+    be = Barriered(service=svc, budget_credits=budget, ledger=Ledger(ledger_path), **floor)
     job = MapJob(OQ_PAIRS, positions=positions)
 
     def go():
@@ -239,6 +240,31 @@ def child_openquantum(who, ledger_path, sends_dir, barrier, queue, positions, bu
         return be.submit(job, log=lambda m: None)
 
     _report(queue, who, go)
+
+
+def balance_race_worker(who, ledger, sends_dir, barrier, queue):
+    """The worker of the reviewer's balance_race.py (third review, Amendment A6), as written but for the imports and
+    the layout: a barrier after preflight, a budget of 100, a floor of 90, wave a positions 1 to 8, wave b 9 to 16."""
+    sys.modules.update(sdk_stub_modules())
+    from manacitra.backends.base import Ledger
+    from manacitra.backends.openquantum import OpenQuantumBackend
+
+    class Synchronized(OpenQuantumBackend):
+        def _preflight(self, job, ledger, **kw):
+            pre = super()._preflight(job, ledger, **kw)
+            barrier.wait(timeout=30)
+            return pre
+
+    backend = Synchronized(
+        service=FakeOQService(sends_dir=Path(sends_dir)), budget_credits=100, balance_floor=90, ledger=Ledger(ledger)
+    )
+    job = MapJob(OQ_PAIRS, positions=list(range(1, 9)) if who == "a" else list(range(9, 17)))
+    try:
+        quote = backend.estimate(job)
+        h = backend.submit(job, log=lambda _: None)
+        queue.put({"who": who, "result": "sent", "quote": quote.amount, "tasks": len(h.job_ids)})
+    except Exception as e:
+        queue.put({"who": who, "result": type(e).__name__, "message": str(e)})
 
 
 def child_ibm(who, ledger_path, sends_dir, barrier, queue, positions, cap_s):

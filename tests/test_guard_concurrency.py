@@ -10,7 +10,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
-from _fakes import FakeSpender, child_fake, child_ibm, child_openquantum, hold_lock, sends
+from _fakes import FakeSpender, balance_race_worker, child_fake, child_ibm, child_openquantum, hold_lock, sends
 
 from manacitra.backends.base import Ledger, LockTimeout, MapJob, ResubmitRefused
 
@@ -56,6 +56,26 @@ def test_two_processes_two_jobs_one_open_quantum_budget(tmp_path):
     assert len(sends(sent)) == 8  # one wave's eight tasks
     led = Ledger(ledger)
     assert [e["credits"] for e in led.entries() if e["event"] == "reserved"] == [24]
+
+
+def test_two_processes_one_open_quantum_balance_floor(tmp_path):
+    """Amendment A6, the reviewer's race: balance 122, floor 90, budget 100. Two waves of 24 credits from two
+    processes, meeting after preflight. Each fits the budget (48 <= 100) and each alone keeps the floor (122 - 24 =
+    98), but together they would leave 74. Exactly one sends; the other is refused, naming the floor and the open
+    reservation it counted."""
+    pytest.importorskip("qiskit")
+    ledger, sent = tmp_path / "ledger.jsonl", tmp_path / "sends"
+    out = run_pair(
+        child_openquantum, (ledger, sent, list(range(1, 9)), 100, 90), (ledger, sent, list(range(9, 17)), 100, 90)
+    )
+    kinds = sorted(k for k, _ in out.values())
+    assert kinds == ["SpendRefused", "sent"], out
+    (msg,) = [m for k, m in out.values() if k == "SpendRefused"]
+    assert "balance floor: balance 122 - open reservations 24 - 24 for this job = 74 < floor 90" in msg
+    assert "budget" not in msg
+    (res,) = [e for e in Ledger(ledger).entries() if e["event"] == "reserved"]
+    assert res["credits"] == 24 and res["job_hash"][:12] in msg
+    assert len(sends(sent)) == 8
 
 
 def test_two_processes_two_jobs_one_ibm_cap(tmp_path):
@@ -153,3 +173,44 @@ def test_the_reviewers_thread_race(tmp_path):
     with pytest.raises(ResubmitRefused):
         be.barrier = None
         be.submit(job)
+
+
+def test_the_reviewers_balance_race(tmp_path):
+    """The reviewer's balance_race.py (third review), adapted: two processes, a barrier after preflight, a budget of
+    100 credits and a floor of 90 against a balance of 122, waves of 24. Before A6 both sent and the balance would have
+    fallen to 74. Now the floor holds."""
+    pytest.importorskip("qiskit")
+    ledger, sent = tmp_path / "ledger.jsonl", tmp_path / "sends"
+    barrier, q = CTX.Barrier(2), CTX.Queue()
+    ps = [CTX.Process(target=balance_race_worker, args=(w, str(ledger), str(sent), barrier, q)) for w in ("a", "b")]
+    for p in ps:
+        p.start()
+    outputs = [q.get(timeout=90) for _ in ps]
+    for p in ps:
+        p.join(timeout=30)
+    reservations = [e for e in Ledger(ledger).entries() if e["event"] == "reserved"]
+    spent = sum(e["credits"] for e in reservations)
+    assert sorted(o["result"] for o in outputs) == ["SpendRefused", "sent"], outputs
+    assert len(sends(sent)) == 8 and spent == 24
+    assert 122 - spent >= 90  # floor_breached is False
+
+
+def test_a_settled_record_settles_only_an_earlier_open_reservation(tmp_path):
+    """Amendment A6: settlement is read in order. A settled record naming task IDs settles the reservation whose send
+    created them; one without IDs (before A6) settles the earliest open reservation of its hash; neither reaches a
+    reservation written after it."""
+    led = Ledger(tmp_path / "ledger.jsonl")
+    for e in (
+        {"event": "reserved", "job_hash": "h", "scope": "s", "credits": 3},
+        {"event": "sent", "job_hash": "h", "handle": {"job_ids": ["t1"]}},
+        {"event": "settled", "job_hash": "h", "job_ids": ["t1"]},
+        {"event": "reserved", "job_hash": "h", "scope": "s", "credits": 3},
+        {"event": "sent", "job_hash": "h", "handle": {"job_ids": ["t2"]}},
+        {"event": "settled", "job_hash": "h", "job_ids": ["t1"]},  # the first send, fetched again
+    ):
+        led.append({"utc": "t", **e})
+    assert [r["settled"] for r in led.reservations("s")] == [True, False]
+    led.append({"event": "settled", "job_hash": "h", "utc": "t"})  # no IDs: the earliest open one
+    assert [r["settled"] for r in led.reservations("s")] == [True, True]
+    led.append({"event": "reserved", "job_hash": "h", "utc": "t", "scope": "s", "credits": 3})
+    assert [r["settled"] for r in led.reservations("s")] == [True, True, False]

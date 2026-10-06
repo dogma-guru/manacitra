@@ -161,7 +161,9 @@ def test_the_balance_is_read_again_at_send_time(ledger):
     be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
     assert be.estimate(wave(W1)).amount == 24
     svc.management.get_credit_balance = lambda org: SimpleNamespace(spark_credits=0, full_credits=0)
-    with pytest.raises(oq.SpendRefused, match=r"balance floor: balance now 0 - 24 < floor 10"):
+    with pytest.raises(
+        oq.SpendRefused, match=r"balance floor: balance 0 - open reservations 0 - 24 for this job = -24 < floor 10"
+    ):
         be.submit(wave(W1))
     assert svc.scheduler.created == [] and "sending" not in events(be) and "reserved" not in events(be)
 
@@ -223,6 +225,124 @@ def test_a_fetch_settles_the_reservation(ledger):
         svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
     be.fetch(h)
     assert ledger.reservations(be.budget_scope)[0]["settled"]
+
+
+# --------------------------------------------------------------------------- Amendment A6: the floor, under the lock
+def test_open_reservations_on_the_account_count_against_the_floor(ledger):
+    """Balance 122, floor 90: one wave of 24 leaves 98; a second, with the first still open, would leave 74."""
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger)
+    be.estimate(wave(W1))
+    h1 = be.submit(wave(W1))
+    rec = be.quote(wave(W2))
+    assert rec["open_on_account_credits"] == 24 and not rec["tests"]["balance_after_at_least_floor"]
+    with pytest.raises(oq.SpendRefused) as e:
+        be.submit(wave(W2), after=h1)
+    msg = str(e.value)
+    assert "balance floor: balance 122 - open reservations 24 - 24 for this job = 74 < floor 90" in msg
+    assert f"{h1.job_hash[:12]} (24 credits, reserved " in msg and "on the saved account 'default'" in msg
+    assert "quote test failed: balance_after_at_least_floor" in msg  # the early refusal, from the quote, too
+    assert len(svc.scheduler.created) == 8 and events(be)[-1] == "refused"
+
+
+def test_a_settled_reservation_no_longer_counts_against_the_floor(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger)
+    be.estimate(wave(W1))
+    h1 = be.submit(wave(W1))
+    assert [r["credits"] for r in be.open_on_account()] == [24]
+    for jid in h1.job_ids:
+        svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
+    be.fetch(h1)
+    assert be.open_on_account() == []
+    be.estimate(wave(W2))
+    h2 = be.submit(wave(W2), after=h1)  # 122 - 0 open - 24 = 98 >= 90
+    reserved = [e for e in ledger.entries() if e["event"] == "reserved"]
+    assert len(h2.job_ids) == 8 and reserved[-1]["open_on_account_credits"] == 0
+    assert reserved[-1]["account"] == be.account_scope and "default" not in be.account_scope
+
+
+def test_the_floor_counts_every_job_name_on_the_account_and_no_other_account(ledger):
+    svc = FakeService()
+    run1 = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger, job_name="run-1")
+    run1.estimate(wave(W1))
+    run1.submit(wave(W1))
+    # another run on the same account: its own budget scope, the same balance
+    run2 = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger, job_name="run-2")
+    run2.estimate(wave(W2))
+    with pytest.raises(oq.SpendRefused, match="balance floor"):
+        run2.submit(wave(W2))
+    # another saved account: another balance
+    other = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger, job_name="run-2", account="second")
+    other.estimate(wave(W2))
+    other.submit(wave(W2))
+    assert len(svc.scheduler.created) == 16
+
+
+def test_a_reservation_from_before_a6_counts_against_every_account(ledger):
+    """A reservation with no account field (written before A6) cannot be placed, so it counts against any account."""
+    be = oq.OpenQuantumBackend(service=FakeService(), balance_floor=90, ledger=ledger, account="second")
+    ledger.append(
+        {"event": "reserved", "job_hash": "a" * 64, "utc": "t", "scope": "openquantum:x:kept-share", "credits": 24}
+    )
+    ledger.append({"event": "reserved", "job_hash": "b" * 64, "utc": "t", "scope": "ibm", "seconds": 9.8})
+    assert [r["job_hash"] for r in be.open_on_account()] == ["a" * 64]
+    be.estimate(wave(W1))
+    with pytest.raises(
+        oq.SpendRefused, match=r"open reservations 24 - 24 for this job = 74 < floor 90; .*aaaaaaaaaaaa"
+    ):
+        be.submit(wave(W1))
+
+
+def test_a_resubmitted_job_is_not_settled_by_the_earlier_fetch(ledger):
+    """Before A6, any settled record of a job hash settled every reservation of it, including a later re-send's."""
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
+    be.estimate(wave(W1))
+    h1 = be.submit(wave(W1))
+    for jid in h1.job_ids:
+        svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
+    be.fetch(h1)
+    be.estimate(wave(W1))
+    h2 = be.submit(wave(W1), allow_resubmit=True, reason="test", log=lambda m: None)
+    assert [r["settled"] for r in ledger.reservations(be.budget_scope)] == [True, False]
+    be.fetch(h1)  # fetching the first send again settles nothing new
+    assert [r["settled"] for r in ledger.reservations(be.budget_scope)] == [True, False]
+    assert [r["credits"] for r in be.open_on_account()] == [24]
+    for jid in h2.job_ids:
+        svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
+    be.fetch(h2)
+    assert [r["settled"] for r in ledger.reservations(be.budget_scope)] == [True, True]
+
+
+def test_a_reservation_settled_after_the_balance_read_still_counts(ledger):
+    """Another process reserves, sends, is charged and is fetched between this send's balance read and its lock. The
+    balance read does not show that charge, so the settled reservation must still count against the floor."""
+    svc = FakeService()
+
+    class Late(oq.OpenQuantumBackend):
+        def _preflight(self, job, led, **kw):
+            pre = super()._preflight(job, led, **kw)
+            for e in (
+                {"event": "reserved", "scope": "openquantum:x:other", "account": self.account_scope, "credits": 24},
+                {"event": "sent", "handle": {"job_ids": ["t-other"]}},
+                {"event": "settled", "job_ids": ["t-other"]},
+            ):
+                led.append({"job_hash": "c" * 64, "utc": "t", **e})
+            return pre
+
+    be = Late(service=svc, balance_floor=90, ledger=ledger)
+    be.estimate(wave(W1))
+    with pytest.raises(
+        oq.SpendRefused, match=r"open reservations 24 - 24 for this job = 74 < floor 90; .*cccccccccccc"
+    ):
+        be.submit(wave(W1))
+    assert svc.scheduler.created == [] and be.open_on_account() == []  # settled, for any later balance read
+    # read again now, the balance is taken to show that charge: the job goes
+    be2 = oq.OpenQuantumBackend(service=svc, balance_floor=90, ledger=ledger)
+    be2.estimate(wave(W1))
+    be2.submit(wave(W1))
+    assert len(svc.scheduler.created) == 8
 
 
 # --------------------------------------------------------------------------- Amendment A3: the SDK's private methods

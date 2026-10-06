@@ -205,16 +205,23 @@ class IBMBackend(GuardedSubmit):
 
     def _preflight(self, job: MapJob, ledger: Ledger) -> dict:
         """Before the lock: the usage (refused if it cannot be read) and the transpile checks."""
+        mark = len(ledger.entries())  # before the usage read: see Ledger.unsettled_at
         u = self.usage()
         backend = self.backend()
         isa, checks = self.transpile(job, backend)
         self._prepared[job.job_hash(self.name, self.processor)] = (backend, isa, checks)
-        return {"used_s": float(u["usage_consumed_seconds"]), "read_utc": u["read_utc"]}
+        return {"used_s": float(u["usage_consumed_seconds"]), "read_utc": u["read_utc"], "ledger_mark": mark}
 
     def _reserve(self, job: MapJob, pre: dict, entries: list[dict]) -> tuple[list[str], dict]:
-        """Under the lock: used + every open IBM reservation + this job's estimate, against the cap."""
+        """Under the lock: used + every open IBM reservation + this job's estimate, against the cap. A reservation
+        settled after the usage was read still counts, since that usage may not include it (Amendment A6)."""
+        open_s = sum(
+            r["seconds"]
+            for r in self._ledger().unsettled_at(pre["ledger_mark"], entries)
+            if r.get("scope") == IBM_SCOPE and "seconds" in r
+        )
         rec = {
-            **self._cap(job, pre["used_s"], self._ledger().open_seconds(IBM_SCOPE, entries)),
+            **self._cap(job, pre["used_s"], float(open_s)),
             "read_utc": pre["read_utc"],
         }
         self._last_cap = rec
@@ -297,7 +304,13 @@ class IBMBackend(GuardedSubmit):
             pass
         if meta.get("charged_s") is not None:  # the provider now counts this job: its reservation is settled
             self._ledger().append(
-                {"event": "settled", "job_hash": handle.job_hash, "utc": utc_now(), "charged_s": meta["charged_s"]}
+                {
+                    "event": "settled",
+                    "job_hash": handle.job_hash,
+                    "utc": utc_now(),
+                    "charged_s": meta["charged_s"],
+                    "job_ids": list(handle.job_ids),
+                }
             )
         return MapCounts(handle.pairs, handle.order, handle.shots, outcomes, meta)
 

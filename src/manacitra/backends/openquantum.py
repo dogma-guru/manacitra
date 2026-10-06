@@ -28,6 +28,7 @@ the classical-index reading fixed in Kickoff 34b.
 
 from __future__ import annotations
 
+import hashlib
 import math
 import re
 import time
@@ -285,16 +286,26 @@ class OpenQuantumBackend(GuardedSubmit):
     """Experimental. service: an OpenQuantumService (created from the saved account when not given).
 
     submit() is the submit-once guard (GuardedSubmit). Immediately before sending, _preflight re-reads the balance and
-    every task's preparation, and checks: the quote passed its own tests and is younger than quote_valid_s; every task
-    is still prepared, on the Public plan, at the expected price; and the balance after stays at or above
-    balance_floor. Then, under the ledger's interprocess lock, _reserve checks that the credits committed in this
-    budget scope (settled charges plus open reservations, read from the ledger under the lock) plus this job stay
-    within budget_credits. Any failure refuses the send and names every failed check. A passing job's credits are
-    reserved in the ledger, still under the lock, before it is sent, and the reservation is kept after a failed send
-    (which may have created tasks) until a fetch settles it.
+    every task's preparation, and checks that the quote passed its own tests and is younger than quote_valid_s, and
+    that every task is still prepared, on the Public plan, at the expected price. Then, under the ledger's interprocess
+    lock, _reserve makes the two checks on shared quantities, each against the ledger as read under the lock:
+
+    * the budget: the credits committed in this budget scope (settled charges plus open reservations) plus this job
+      stay within budget_credits;
+    * the balance floor (Amendment A6): the balance read in _preflight, less the credits of every open reservation on
+      the same account, less this job's quote, stays at or above balance_floor. An open reservation whose charge may
+      already show in that balance is still counted until a fetch settles it: that can only refuse too much, never too
+      little. So between two waves, fetch the first before sending the second, or its credits count twice.
+
+    Any failure refuses the send and names every failed check; a floor refusal names the open reservations it counted.
+    A passing job's credits are reserved in the ledger, still under the lock, before it is sent, and the reservation is
+    kept after a failed send (which may have created tasks) until a fetch settles it.
 
     The budget scope is provider:processor:job_name, so the waves of one run share one budget. A new run with the same
-    job name and ledger shares it too: give the run its own ledger or job name.
+    job name and ledger shares it too: give the run its own job name. The account is the saved account's name (in the
+    ledger, a hash of it: account_scope). Reach one organization through one saved account name, because two names for
+    one organization are counted as two accounts. Reservations from before A6, which name no account, are counted
+    against every account. Runs on one account should share one ledger: a reservation in another ledger is not seen.
     """
 
     name = "openquantum"
@@ -392,6 +403,42 @@ class OpenQuantumBackend(GuardedSubmit):
     def budget_scope(self) -> str:
         return f"{self.name}:{self.processor}:{self.job_name}"
 
+    @property
+    def account_scope(self) -> str:
+        """The account whose balance the floor protects, as written in the ledger: a hash of the saved account's local
+        name, so that the ledger holds neither the name nor any provider identifier."""
+        return f"{self.name}:account-{hashlib.sha256(self.account.encode()).hexdigest()[:12]}"
+
+    def open_on_account(self, entries: list[dict] | None = None, mark: int | None = None) -> list[dict]:
+        """Every open reservation drawing on this account's balance: those naming it, and any Open Quantum reservation
+        from before A6, which names no account. With mark (the ledger's length when the balance was read), a
+        reservation settled after that read is still open: the balance read may not show its charge."""
+        prefix = f"{self.name}:"
+        led = self._ledger()
+        rs = led.all_reservations(entries) if mark is None else led.unsettled_at(mark, entries)
+        return [
+            r
+            for r in rs
+            if (mark is not None or not r["settled"])
+            and "credits" in r
+            and (
+                r.get("account") == self.account_scope or ("account" not in r and r.get("scope", "").startswith(prefix))
+            )
+        ]
+
+    def _floor(self, balance: float, q: float, held: list[dict]) -> str | None:
+        """The balance-floor failure, or None: the balance, less every open reservation on the account, less q."""
+        held_credits = float(sum(r["credits"] for r in held))
+        after = balance - held_credits - q
+        if after >= self.balance_floor:
+            return None
+        named = ", ".join(f"{r['job_hash'][:12]} ({r['credits']:g} credits, reserved {r['utc']})" for r in held)
+        return (
+            f"balance floor: balance {balance:g} - open reservations {held_credits:g} - {q:g} for this job = "
+            f"{after:g} < floor {self.balance_floor:g}; open reservations on the saved account {self.account!r}: "
+            f"{named or 'none'}"
+        )
+
     def _price(self, res) -> tuple[str, float]:
         """A preparation's Public plan and its standard-queue price."""
         from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
@@ -408,6 +455,7 @@ class OpenQuantumBackend(GuardedSubmit):
 
         if committed_credits is None:
             committed_credits = self._ledger().reserved_credits(self.budget_scope)
+        held = self.open_on_account()
         sch = self.service.scheduler
         bal = self.balance()
         org = self._org()
@@ -445,7 +493,7 @@ class OpenQuantumBackend(GuardedSubmit):
         tests = {
             "exact_credits_every_task": all(p["credits"] == self.credits_per_task for p in preps),
             "within_budget": self.budget_credits is None or committed_credits + q <= self.budget_credits,
-            "balance_after_at_least_floor": total - q >= self.balance_floor,
+            "balance_after_at_least_floor": self._floor(total, q, held) is None,
             "public_plan_every_task": all(p["plan"] == "Public Plan" for p in preps),
             "every_preparation_completed": all(p["status"] == "Completed" for p in preps),
             "shots_echoed": all(p["shots_echoed"] == job.shots for p in preps),
@@ -453,6 +501,7 @@ class OpenQuantumBackend(GuardedSubmit):
         rec = {
             "quoted_at": time.time(),
             "committed_credits": committed_credits,
+            "open_on_account_credits": float(sum(r["credits"] for r in held)),
             "balance_before": bal,
             "quote_credits": q,
             "tests": tests,
@@ -468,7 +517,9 @@ class OpenQuantumBackend(GuardedSubmit):
 
     def _preflight(self, job: MapJob, ledger: Ledger, after: JobHandle | None = None) -> dict:
         """Every provider check, run again immediately before sending, before the ledger's lock. Returns the failed
-        checks (the guard adds the budget's and refuses, naming each) and what _reserve needs."""
+        checks (the guard adds the budget's and the floor's, from _reserve, and refuses, naming each) and what _reserve
+        needs: the quote and the balance read now. The floor is not decided here (Amendment A6): another process may
+        reserve credits on the account between this read and the send."""
         rec = self._quotes.get(job.job_hash(self.name, self.processor))
         if not rec:
             raise QuoteRefused("refused: no quote for this job; run estimate() first and read its tests")
@@ -485,24 +536,37 @@ class OpenQuantumBackend(GuardedSubmit):
             if plan != "Public Plan" or price != self.credits_per_task:
                 failed.append(f"position {p['position']}: {plan} at {price} credits, expected {self.credits_per_task}")
         q = rec["quote_credits"]
+        mark = len(ledger.entries())  # before the balance read: see Ledger.unsettled_at
         bal = self.balance()
         total = bal["spark_credits"] + bal["full_credits"]
-        if total - q < self.balance_floor:
-            failed.append(f"balance floor: balance now {total:g} - {q:g} < floor {self.balance_floor:g}")
         if after is not None:
             st = [sch.get_job(j).status for j in after.job_ids]
             if any(s != "Completed" for s in st):
                 failed.append(f"the earlier wave has not completed ({st})")
-        return {"failed": failed, "credits": q, "balance": total}
+        return {"failed": failed, "credits": q, "balance": total, "ledger_mark": mark}
 
     def _reserve(self, job: MapJob, pre: dict, entries: list[dict]) -> tuple[list[str], dict]:
-        """Under the ledger's lock: the credits committed in this budget scope (settled and open reservations, from
-        the ledger as read under the lock) plus this job, against the budget."""
-        q = pre["credits"]
+        """Under the ledger's lock, against the ledger as read under it: the credits committed in this budget scope
+        (settled and open reservations) plus this job, against the budget; and the balance read in _preflight, less
+        every open reservation on the account, less this job, against the floor (Amendment A6)."""
+        q, balance = pre["credits"], pre["balance"]
+        failed = []
         committed = self._ledger().reserved_credits(self.budget_scope, entries)
         if self.budget_credits is not None and committed + q > self.budget_credits:
-            return [f"budget: {committed:g} reserved + {q:g} for this job > {self.budget_credits:g}"], {}
-        return [], {"scope": self.budget_scope, "credits": q, "balance_at_send": pre["balance"]}
+            failed.append(f"budget: {committed:g} reserved + {q:g} for this job > {self.budget_credits:g}")
+        held = self.open_on_account(entries, pre["ledger_mark"])
+        floor = self._floor(balance, q, held)
+        if floor:
+            failed.append(floor)
+        if failed:
+            return failed, {}
+        return [], {
+            "scope": self.budget_scope,
+            "account": self.account_scope,
+            "credits": q,
+            "balance_at_send": balance,
+            "open_on_account_credits": float(sum(r["credits"] for r in held)),
+        }
 
     def _refusal(self, failed: list[str]) -> SpendRefused:
         cls = QuoteRefused if any(f.startswith(("quote", "position")) for f in failed) else SpendRefused
@@ -546,6 +610,7 @@ class OpenQuantumBackend(GuardedSubmit):
                 "job_hash": handle.job_hash,
                 "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "tasks_completed": len(handle.job_ids),
+                "job_ids": list(handle.job_ids),
             }
         )
         return MapCounts(

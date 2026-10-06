@@ -106,9 +106,10 @@ def cmd_map(a) -> int:
                 print(f"estimate: {estimate_seconds(job.total_shots):.1f} s (0.3 ms per shot + 5 s)")
             print("nothing was sent. Add --submit to send it once.")
             return 0
+        ledger = Ledger(a.ledger)
+        backend.ledger = ledger  # the quote's early checks, the guard and a later fetch all read this one (A6)
         est = backend.estimate(job)
         print(f"estimate: {est.amount:g} {est.unit} ({est.detail})")
-        ledger = Ledger(a.ledger)
         print(f"ledger: {ledger.path}, job hash {job.job_hash(backend.name, backend.processor)[:12]}")
         if a.allow_resubmit:
             print(
@@ -116,7 +117,10 @@ def cmd_map(a) -> int:
                 f"{a.resubmit_reason or 'none given'}"
             )
         handle = submit_once(backend, job, ledger, allow_resubmit=a.allow_resubmit, reason=a.resubmit_reason)
-        print(f"sent: {handle.job_ids}. Fetch it later with the Python API (backend.fetch(handle)).")
+        print(
+            f"sent: {handle.job_ids}. Fetch it later with the Python API (backend.fetch(handle)), giving the backend "
+            f"this ledger ({ledger.path}), so that the fetch settles the job's reservation."
+        )
         Path(a.out).write_text(json.dumps({"handle": handle.__dict__}, indent=1, default=list))
         return 0
     counts = backend.fetch(backend.submit(job))

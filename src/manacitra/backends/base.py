@@ -21,6 +21,14 @@ guard reads the ledger again, refuses a job already sent or reserved, does the b
 reservation (_reserve), and writes and fsyncs the reservation and the "sending" record. The lock is then released and
 the job sent, so two processes cannot both send one job, or both spend the last of one budget. The provider reads that
 need no ledger (_preflight) run before the lock; a refusal there is logged as "refused", which is not a send.
+
+The rule for every spending check (Amendment A6). A check that depends on a shared quantity (an account balance, a run
+budget, a usage cap) is evaluated in _reserve, under the ledger's lock, against every open reservation in the ledger
+that draws on the same quantity. A check made before the lock (in a quote, or in _preflight) is only an early refusal;
+it is never the deciding one, because another process may reserve between it and the send. A reservation counts as open
+until a fetch settles it, even when its charge may already show in a figure the provider reports: that can only refuse
+too much, never too little. For the same reason, a reservation settled after the provider's figure was read still
+counts against that figure (Ledger.unsettled_at). The rule holds only between callers that share one ledger.
 """
 
 from __future__ import annotations
@@ -334,15 +342,52 @@ class Ledger:
     def find(self, job_hash: str) -> list[dict]:
         return [e for e in self.entries() if e.get("job_hash") == job_hash]
 
-    def reservations(self, scope: str, entries: list[dict] | None = None) -> list[dict]:
-        """Every reservation in a budget scope, each marked settled once a fetch has settled its job."""
+    def all_reservations(self, entries: list[dict] | None = None) -> list[dict]:
+        """Every reservation in the ledger, in order, each marked settled once a fetch has settled it.
+
+        A "settled" record settles only an open reservation of the same job hash written before it (Amendment A6), so
+        a job sent again with allow_resubmit is not taken as settled by the fetch of its earlier send. A settled record
+        that names the task IDs it fetched settles the reservation whose send created them, and nothing if none did;
+        one without them (written before A6) settles the earliest open reservation of its job hash.
+        """
         es = self.entries() if entries is None else entries
-        settled = {e["job_hash"] for e in es if e.get("event") == "settled"}
-        return [
-            {**e, "settled": e["job_hash"] in settled}
-            for e in es
-            if e.get("event") == "reserved" and e.get("scope") == scope
-        ]
+        out: list[dict] = []
+        open_: dict[str, list[dict]] = {}
+        ids: dict[int, list] = {}  # reservation -> the task IDs its send created, keyed by id() of the record
+        for e in es:
+            event, h = e.get("event"), e.get("job_hash")
+            if event == "reserved":
+                r = {**e, "settled": False}
+                out.append(r)
+                open_.setdefault(h, []).append(r)
+            elif event in ("sent", "failed"):  # the outcome of the earliest reservation of this hash without one
+                created = (e.get("handle") or {}).get("job_ids") if event == "sent" else e.get("job_ids_created")
+                r = next((r for r in open_.get(h, []) if id(r) not in ids), None)
+                if r is not None:
+                    ids[id(r)] = list(created or [])
+            elif event == "settled":
+                fetched = e.get("job_ids")
+                waiting = open_.get(h, [])
+                r = next((r for r in waiting if fetched is None or ids.get(id(r)) == list(fetched)), None)
+                if r is not None:
+                    r["settled"] = True
+                    waiting.remove(r)
+        return out
+
+    def unsettled_at(self, mark: int, entries: list[dict] | None = None) -> list[dict]:
+        """Every reservation in entries that was not settled within the ledger's first `mark` entries.
+
+        For a figure the provider reported (a balance, a usage) when the ledger held `mark` entries: a reservation
+        settled after that read may be missing from the figure, so it still counts (Amendment A6). Reading `mark`
+        before the provider's figure can only count a reservation too often, never too rarely.
+        """
+        es = self.entries() if entries is None else entries
+        then = self.all_reservations(es[:mark])  # the same reservations, in the same order, as far as they go
+        return [r for i, r in enumerate(self.all_reservations(es)) if not (i < len(then) and then[i]["settled"])]
+
+    def reservations(self, scope: str, entries: list[dict] | None = None) -> list[dict]:
+        """Every reservation in a budget scope, each marked settled once a fetch has settled it."""
+        return [r for r in self.all_reservations(entries) if r.get("scope") == scope]
 
     def reserved_credits(self, scope: str, entries: list[dict] | None = None) -> float:
         """Credits reserved in a scope, settled or not: a settled reservation was spent, an open one may have been."""
@@ -491,7 +536,8 @@ class GuardedSubmit:
         _preflight(job, ledger, **send_kw) -> dict
             the provider reads, before the lock; failed checks go in its "failed" list
         _reserve(job, pre, entries) -> (failed, reservation)
-            the budget accounting, under the lock, against the ledger's entries as read under it
+            every check on a shared quantity (a balance, a budget, a cap), under the lock, against the ledger's
+            entries as read under it: the deciding check (see the module docstring's rule)
         _refusal(failed) -> SpendRefused
             the exception naming every failed check
     """

@@ -208,3 +208,26 @@ def test_a_resubmission_logs_the_reason(setup):
     last = [e for e in ledger.entries() if e["event"] == "sending"][-1]
     assert last["allow_resubmit"] and last["resubmit_reason"] == "the first job was cancelled on the platform"
     assert "the first job was cancelled" in msgs[0]
+
+
+def test_a_reservation_settled_after_the_usage_read_still_counts(setup):
+    """Amendment A6: a job reserved, charged and settled between this send's usage read and its lock is not in the
+    usage read, so it still counts against the cap."""
+    be, svc, ledger = setup
+    be.cap_s = 310.0 + 10.0
+    read = be._preflight
+
+    def late(job, led, **kw):
+        pre = read(job, led, **kw)
+        for e in (
+            {"event": "reserved", "scope": "ibm", "seconds": 9.8},
+            {"event": "sent", "handle": {"job_ids": ["other"]}},
+            {"event": "settled", "job_ids": ["other"], "charged_s": 9.8},
+        ):
+            led.append({"job_hash": "d" * 64, "utc": "t", **e})
+        return pre
+
+    be._preflight = late
+    with pytest.raises(CapExceeded, match=r"open reservations 9\.8 s \+ estimate 9\.8 s > cap 320 s"):
+        be.submit(MapJob(PAIRS, positions=[1, 2]))
+    assert Sampler.calls == [] and ledger.open_seconds("ibm") == 0
