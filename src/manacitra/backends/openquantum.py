@@ -46,6 +46,38 @@ class QuoteRefused(SpendRefused):
     pass
 
 
+# --------------------------------------------------------------------------- the SDK's private methods
+#: Private SchedulerClient methods the adapter calls; checked against openquantum-sdk 0.4.3 (offline, no account)
+PRIVATE_SDK_METHODS = ("_wait_for_preparation", "_resolve_organization_id")
+SDK_CHECKED = "openquantum-sdk 0.4.3"
+
+
+class SDKIncompatible(ImportError):
+    """The installed Open Quantum SDK lacks a private method this adapter calls."""
+
+
+def check_sdk(clients=None) -> bool:
+    """Stop (SDKIncompatible) if the SDK's SchedulerClient lacks either private method the adapter calls. Returns
+    False, checking nothing, when the SDK is not installed; the check then runs when the service is first used."""
+    if clients is None:
+        try:
+            from openquantum_sdk import clients
+        except ImportError:
+            return False
+    scheduler = getattr(clients, "SchedulerClient", None)
+    missing = [m for m in PRIVATE_SDK_METHODS if not callable(getattr(scheduler, m, None))]
+    if missing:
+        raise SDKIncompatible(
+            f"the installed Open Quantum SDK's SchedulerClient lacks {' and '.join(missing)}. The adapter calls two "
+            f"private SDK methods, {PRIVATE_SDK_METHODS[0]} and {PRIVATE_SDK_METHODS[1]}, checked against "
+            f"{SDK_CHECKED}; install a version that has them: pip install 'manacitra[openquantum]'."
+        )
+    return True
+
+
+check_sdk()  # at import: stop now, not mid-submission, if the installed SDK lacks them
+
+
 # --------------------------------------------------------------------------- programs
 def layers(label: str) -> list:
     """The variant's exact unitary with exactly 3 CZ, as single-qubit layers (2x2 matrices) between the CZs."""
@@ -292,6 +324,7 @@ class OpenQuantumBackend(GuardedSubmit):
     @property
     def service(self):
         if self._service is None:
+            check_sdk()
             from openquantum_sdk_qiskit import OpenQuantumService
 
             self._service = OpenQuantumService.from_saved_account(name=self.account)

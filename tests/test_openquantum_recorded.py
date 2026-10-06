@@ -283,3 +283,50 @@ def test_a_fetch_settles_the_reservation(ledger):
         svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
     be.fetch(h)
     assert ledger.reservations(be.budget_scope)[0]["settled"]
+
+
+# --------------------------------------------------------------------------- Amendment A3: the SDK's private methods
+IMPORT_WITH_FAKE_SDK = """
+import sys, types
+pkg, clients = types.ModuleType("openquantum_sdk"), types.ModuleType("openquantum_sdk.clients")
+class SchedulerClient:
+{body}
+clients.SchedulerClient = SchedulerClient
+pkg.clients = clients
+sys.modules["openquantum_sdk"], sys.modules["openquantum_sdk.clients"] = pkg, clients
+import manacitra.backends.openquantum
+print("imported")
+"""
+
+
+def import_with(body):
+    import subprocess
+
+    code = IMPORT_WITH_FAKE_SDK.format(body=body)
+    return subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+
+
+def test_an_sdk_without_the_private_methods_stops_the_import():
+    p = import_with("    def _wait_for_preparation(self): pass")
+    assert p.returncode != 0 and "SDKIncompatible" in p.stderr
+    assert "lacks _resolve_organization_id" in p.stderr
+    assert "_wait_for_preparation and _resolve_organization_id" in p.stderr and "openquantum-sdk 0.4.3" in p.stderr
+
+
+def test_an_sdk_with_them_imports():
+    p = import_with("    def _wait_for_preparation(self): pass\n    def _resolve_organization_id(self): pass")
+    assert p.returncode == 0 and p.stdout.strip() == "imported", p.stderr
+
+
+def test_the_check_names_both_when_both_are_missing():
+    with pytest.raises(oq.SDKIncompatible, match="lacks _wait_for_preparation and _resolve_organization_id"):
+        oq.check_sdk(SimpleNamespace(SchedulerClient=object))
+    assert oq.check_sdk(SimpleNamespace(SchedulerClient=type("S", (), dict.fromkeys(oq.PRIVATE_SDK_METHODS, len))))
+
+
+def test_the_extra_is_limited_to_the_checked_versions():
+    import tomllib
+
+    py = tomllib.loads((Path(__file__).resolve().parent.parent / "pyproject.toml").read_text())
+    extra = py["project"]["optional-dependencies"]["openquantum"]
+    assert "openquantum-sdk>=0.4.3,<0.5" in extra and "openquantum-sdk-qiskit>=0.3.3,<0.4" in extra

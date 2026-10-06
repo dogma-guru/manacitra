@@ -31,7 +31,9 @@ dependencies = [
 [project.optional-dependencies]
 ibm = ["qiskit-ibm-runtime>=0.40"]
 aer = ["qiskit-aer>=0.15"]
-openquantum = ["openquantum-sdk>=0.4", "openquantum-sdk-qiskit>=0.3", "pyqasm>=1.0", "requests>=2.31"]
+# Open Quantum: limited to the SDK versions every adapter call was checked against (0.4.3 and 0.3.3, offline);
+# the adapter calls two private SDK methods, which a newer minor version may change
+openquantum = ["openquantum-sdk>=0.4.3,<0.5", "openquantum-sdk-qiskit>=0.3.3,<0.4", "pyqasm>=1.0", "requests>=2.31"]
 cirq = ["cirq-core>=1.4", "cirq-google>=1.4", "ply>=3.11"]
 docs = ["matplotlib>=3.8"]
 dev = ["pytest>=8", "ruff>=0.6", "matplotlib>=3.8"]
