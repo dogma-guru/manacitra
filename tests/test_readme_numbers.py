@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from _reproduce import k31, k32, k33, k34b, k36
+from _reproduce import k31, k32, k33, k34b, k36, k37
 
 from manacitra import archive
 
@@ -114,7 +114,9 @@ def test_finding_2_the_second_vendor():
     assert (hhmm(w["wave_1_completed"][0]), hhmm(w["wave_2_completed"][1])) == ("22:15", "22:29")
 
 
-def test_the_open_question_on_the_rigetti_platform():
+def test_kickoff_34b_across_runs():
+    """Kickoff 34b's lines across runs, as docs/index.md and the adapter's docs still show them (the README replaced
+    them with Kickoff 37's result, Amendment A5)."""
     d = k34b()[2]["descriptive"]
     across = [d[k]["pearson"] for k in ("r_test_main", "r_screen_main", "r_test_screen")]
     assert (r(min(across), 2), r(max(across), 2)) == (0.10, 0.23)
@@ -150,11 +152,8 @@ def test_every_ibm_run_time_shown(path, shown):
 
 def test_the_rigetti_times_shown():
     m = archive.load(f"{archive.RIGETTI}/main.json")["meta"]
-    assert hhmm(m["utc_screen"]["completed_by"]) == "18:55" and "the screen (18:55 UTC)" in README
-    assert hhmm(m["utc_main_job"]["wave_1_completed"][0]) == "22:15" and "the main job (22:15 UTC)" in README
-    assert "main job 22:15 to 22:29 UTC" in README
-    note = archive.load(f"{archive.RIGETTI}/main.json")["archived"]["descriptive"]["across_runs"]["note"]
-    assert "test task (16:44 to 17:01 UTC" in note and "the test task (17:01 UTC)" in README
+    assert hhmm(m["utc_main_job"]["wave_1_completed"][0]) == "22:15" and "main job 22:15 to 22:29 UTC" in README
+    assert hhmm(m["utc_main_job"]["wave_2_completed"][1]) == "22:29"
 
 
 def test_the_payoff_prior_is_about_two_hours_older():
@@ -189,3 +188,89 @@ def test_the_chip_map_table_matches_the_data():
         p = tuple(int(q) for q in pair.split("-"))
         assert (kv, xv.rstrip(" |")) == (f"{k[p]:.3f}", f"{x[p]:.4f}")
     assert "docs/diagrams/chip-map-table.md" in README
+
+
+# --------------------------------------------------------------------------- Amendment A5: Kickoff 37
+K37 = f"{archive.RIGETTI}/k37-placement.json"
+
+
+def _utc(s):
+    return datetime.fromisoformat(s.replace("Z", "+00:00"))
+
+
+def test_the_findings_dates():
+    assert "The findings come from runs on 5 and 6 October 2026." in README
+    runs = [
+        p for p in archive.data_dir().rglob("*.json") if p.parent.name != "simulated" and "k33-workload" not in p.name
+    ]
+    days = {archive.load(p)["meta"]["utc"][:10] for p in runs if not p.name.endswith("coupling-map.json")}
+    assert days == {"2026-10-05", "2026-10-06"}
+    assert "- **Three processors, two days.**" in README and "all on 5 and 6 October 2026." in README
+
+
+def test_finding_6_times():
+    t = archive.load(K37)["meta"]["tasks"]
+    assert {x["created_utc"][:10] for x in t} | {x["completed_utc"][:10] for x in t} == {"2026-10-06"}
+    w = {n: [x for x in t if x["wave"] == n] for n in (1, 2)}
+    span = {n: (hhmm(min(x["created_utc"] for x in w[n])), hhmm(max(x["completed_utc"] for x in w[n]))) for n in w}
+    assert span == {1: ("00:45", "02:22"), 2: ("11:31", "11:35")}
+    assert "6 October 2026; first wave 00:45 to 02:22 UTC, second wave 11:31 to 11:35 UTC" in README
+    done2 = sorted(_utc(x["completed_utc"]) for x in w[2])
+    assert round((done2[-1] - done2[0]).total_seconds() / 60) == 3
+    assert "when all three tasks ran within 3 minutes" in README
+    assert [x["program"] for x in t] == ["P27", "P53", "P27"] * 2
+
+
+def test_finding_6_programs():
+    rec = archive.load(K37)
+    p27 = [tuple(p) for p in rec["programs"]["P27"]["pairs"]]
+    p53 = {tuple(p) for p in rec["programs"]["P53"]["pairs"]}
+    assert (len(p27), len(p53), set(p27) <= p53) == (27, 53, True)
+    assert [tuple(p) for p in archive.load(f"{archive.RIGETTI}/main.json")["pairs"]] == p27
+    assert "the main job's 27-pair program and the 53-pair screen, which contains the same 27 pairs" in README
+
+
+def test_finding_6_numbers():
+    run = k37()[2]
+    m = {k: v["pearson"] for k, v in run["measures"].items()}
+    assert (r(m["c_2"], 3), r(m["c_1"], 3)) == (0.997, 0.998) and "r = 0.997 to 0.998 minutes apart" in README
+    assert (r(m["t27"], 2), r(m["t53"], 2)) == (0.97, 0.76)
+    assert "0.97 (27-pair) and 0.76 (53-pair) across about 9 hours" in README
+    d = run["descriptive"]
+    pair = (d["r_T1w1_vs_34b_main_A_no_mean_of_four"]["pearson"], d["r_T2w1_vs_34b_screen"]["pearson"])
+    assert (r(pair[0], 2), r(pair[1], 2)) == (0.99, 0.98)
+    assert "0.99 and 0.98 against its own Kickoff 34b run the day before" in README
+    assert (r(m["d_1"], 2), r(m["d_2"], 2)) == (0.07, -0.25)
+    assert "r = 0.07 in the first wave and −0.25 in the second" in README
+    assert (
+        run["verdict"]["on_pearson"] == "PLACEMENT"
+        and 'PLACEMENT, read as "the levels depend on the program"' in README
+    )
+
+
+def test_kickoff_37_gap():
+    run = k37()[2]
+    assert round(run["gap"]["seconds"] / 3600) == 9 and run["verdict"]["readings_per_amendments_A1_A2"]["N_hours"] == 9
+    assert "planned two hours after the first and ran nine hours after it" in README
+    assert "held over about 9 hours and over a day (Kickoff 37)" in README
+    assert "PLACEMENT (the levels depend on the program; they held over about 9 hours)" in README
+    assert archive.load(K37)["meta"]["second_wave"] == (
+        "The second wave was planned about two hours after the first and ran about nine hours after it; "
+        "the two-hour question was not tested."
+    )
+
+
+def test_finding_2_the_five_excluded_pairs_under_the_screen_program():
+    excluded = {tuple(p) for p in k34b()[2]["excluded_pairs"]}
+    five = k37()[2]["after_the_fact"]["the_five_low_pairs"]
+    assert {tuple(int(q) for q in k.split("-")) for k in five} == excluded and len(excluded) == 5
+    t2 = [v[f"T2_w{w}"] for v in five.values() for w in (1, 2)]
+    assert (r(min(t2), 2), r(max(t2), 2)) == (0.70, 0.84)
+    assert "under the 53-pair screen program they read 0.70 to 0.84" in README
+
+
+def test_the_kickoff_37_row_and_the_open_quantum_guidance():
+    assert "| 37, 6 October 2026 | Did the Rigetti levels change between runs" in README
+    assert "`rigetti_cepheus_1_108q/k37-placement.json` |" in README
+    assert "On Open Quantum, use a map only with the exact program that measured it." in README
+    assert "today, use a map only within the job" not in README

@@ -181,10 +181,11 @@ with a the bit of the pair's first qubit and b its second.
   The extra is limited to the SDK versions every adapter call was checked against offline (openquantum-sdk 0.4.3,
   openquantum-sdk-qiskit 0.3.3; live responses are still untested), and the module stops at import, naming them, if
   the installed SDK lacks the two private methods it calls (`_wait_for_preparation`, `_resolve_organization_id`).
-  On this platform, today, use a map only within the job that measured it: placement cannot be pinned, because the
-  platform's preprocessing breaks the provider's verbatim mode. In Kickoff 34b, pair levels held within a job
-  (r = 0.93) but not between runs a few hours apart (r between 0.10 and 0.23 on the shared pairs, computed after
-  seeing the data).
+  On Open Quantum, use a map only with the exact program that measured it. The same named pairs read by a different
+  program gave unrelated levels (Kickoff 37), so a map cannot yet be used there to choose pairs for a different
+  program. Placement cannot be pinned, because the platform's preprocessing breaks the provider's verbatim mode. In
+  Kickoff 34b, pair levels held within a job (r = 0.93) but not between runs a few hours apart (r between 0.10 and
+  0.23 on the shared pairs, computed after seeing the data).
 - **cirq_sim** (`[cirq]`, experimental): **a simulator only, not hardware access.** It loads the median calibration
   that Cirq ships for a Quantum Virtual Machine processor (willow_pink by default) and simulates each pair under
   either Kickoff 36's Pauli model built from those published figures or the QVM's own noise model. Under the same
@@ -263,6 +264,7 @@ Where each README number comes from:
 | Rigetti: 22 working pairs of 27; r_split 0.985, r_AB 0.971; MAP PRESENT; without 101-102, MAP PRESENT | `rigetti_cepheus_1_108q/main.json` | `archive.rigetti_map` |
 | Rigetti, after the fact: 20 pairs, r_split 0.84, r_AB 0.79, MAP PRESENT | `rigetti_cepheus_1_108q/after-the-fact.json` | `archive.rigetti_map` |
 | Rigetti: r = 0.93 between the waves; 0.10 to 0.23 across runs | `rigetti_cepheus_1_108q/main.json`, `screen.json` | `archive.rigetti_map` |
+| Rigetti, Kickoff 37: r = 0.997 to 0.998 minutes apart, 0.97 and 0.76 across about 9 hours, 0.07 and −0.25 between the programs; PLACEMENT; 0.99 and 0.98 against Kickoff 34b; the five excluded pairs at 0.70 to 0.84 under the screen program | `rigetti_cepheus_1_108q/k37-placement.json` (with `main.json` and `screen.json` for the lines against Kickoff 34b) | `archive.placement_or_drift` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -271,8 +273,8 @@ in Kickoff 36's own report.
 
 ## 8. What kind of claim each part is
 
-- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor returned them on 5 October
-  2026, and the simulation outputs, as run on the author's computer that day.
+- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor returned them on 5 and 6
+  October 2026, and the simulation outputs, as run on the author's computer on 5 October.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it
