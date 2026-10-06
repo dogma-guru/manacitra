@@ -26,6 +26,9 @@ The first version.
   so concurrent processes cannot both send one job or overspend one budget; IBM's cap counts the estimates of open
   reservations. `tools/make_review_archive.sh` makes a review archive from a fresh single-branch clone, and
   `tools/scan_secrets.py --git` checks the reachable git identities against an approved list.
+- Safety (Amendment A6): every spending check on a shared quantity is decided under the ledger's lock, against every
+  open reservation. Open Quantum's balance floor now counts the open reservations on the same account, so concurrent
+  processes cannot together spend below it. A fetch settles only the reservation of the send it fetched.
 - The README, the long-form documentation, six diagrams and three examples. The README explains how the results were
   made: kickoffs (Amendment A2).
 - Ownership (Kickoff 01, Amendment A1): copyright Dogma LLC (doing business as Dogma Guru), developed by Anish Patel.

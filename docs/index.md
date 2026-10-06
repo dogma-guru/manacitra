@@ -209,6 +209,15 @@ with a the bit of the pair's first qubit and b its second.
   library as well as the command line: a spending backend's public `submit()` is the guard, and its raw send is the
   private `_send()`. The simulators, which send nothing to a provider, keep a direct `submit()`. The ledger lives in
   `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and holds no credentials.
+- **The rule for every spending check** (Amendment A6). A check that depends on a shared quantity (an account
+  balance, a run budget, a usage cap) is decided under the ledger's lock, against every open reservation in the ledger
+  that draws on the same quantity. A check made before the lock, in a quote or in the provider reads just before
+  sending, is only an early refusal; it is never the deciding one, because another process may reserve between it and
+  the send. A reservation stays open until a fetch settles it, even when its charge may already show in a figure the
+  provider reports: that can only refuse too much, never too little. A "settled" record settles only a reservation
+  written before it, and the one whose send created the tasks it fetched, so a job sent again with the override is
+  not taken as settled by the fetch of its earlier send. The rule holds between callers that share one ledger: runs
+  that spend from one account or one usage window should use one ledger.
 - **The IBM cap.** The usage is read from the runtime client before every submission (numbers and dates only; every
   identifier field is dropped). The provider's figure lags a submission, so a job is refused if the usage, plus the
   estimates of every open IBM reservation in the ledger, plus this job's estimate, exceeds the cap: 540 s of the Open
@@ -217,10 +226,15 @@ with a the bit of the pair's first qubit and b its second.
 - **The Open Quantum tests.** Every task must be quoted at the expected credits, on the Public plan, within the
   budget, leaving the balance above the floor; a second wave is refused until the first has completed. The checks run
   again immediately before sending: the balance is read again; the quote must be younger than 10 minutes and every
-  task still prepared at the expected price; the credits already committed in the ledger for the run (its budget scope,
-  provider:processor:job name; settled charges and open reservations, read under the ledger's lock) plus this job must
-  stay within the budget; and the balance after must stay at or above the floor. Any failure refuses the send and names the check. A job's credits are reserved in the ledger before it is
-  sent; after a failed send, which may have created tasks, the reservation stays until a fetch settles it.
+  task still prepared at the expected price. Then, under the ledger's lock: the credits already committed in the ledger
+  for the run (its budget scope, provider:processor:job name; settled charges and open reservations) plus this job
+  must stay within the budget; and the balance read just before, less the credits of every open reservation on the
+  same saved account (any run, any job name), less this job, must stay at or above the floor (Amendment A6). Any
+  failure refuses the send and names the check; a floor refusal names the open reservations it counted. Between two
+  waves, fetch the first before sending the second, or its credits count against the floor twice. A job's credits are
+  reserved in the ledger before it is sent; after a failed send, which may have created tasks, the reservation stays
+  until a fetch settles it. The ledger records the account as a hash of the saved account's local name, never the
+  name or a provider identifier; reach one organization through one saved account name.
 - **Three CZ per pair.** Every transpiled circuit is checked: exactly three two-qubit gates per pair, none outside the
   pairs, no swaps, the layout kept.
 - **Credentials.** Only from each provider's own saved-account mechanism or environment variables. Nothing in this

@@ -22,7 +22,9 @@ pytest -q
 python tools/scan_secrets.py
 ```
 
-Every statistic listed in `tests/expected_fields.json` is recomputed from the archived counts and compared at 10⁻⁶.
+Every statistic listed in `tests/expected_fields.json` is recomputed from the archived inputs: the raw counts where the
+release includes them; for the Kickoff 29 settling runs and some Rigetti comparisons, the archived probability or level
+tables, whose counts are not in this release; and, for elapsed times, the archived timestamps, and compared at 10⁻⁶.
 Fields that cannot be recomputed from this release are named, with reasons, in `tests/excluded_fields.json`.
 `tests/test_reproduction.py` runs the comparison, which fails on a listed field that is missing on either side, has
 changed type, is not finite or differs by more than 10⁻⁶; `tests/test_field_inventory.py` fails on any field of any
