@@ -10,7 +10,10 @@ from manacitra import archive
 
 NA = "not applicable"
 STANDARD = ("processor", "provider", "kickoff", "utc", "shots_per_circuit", "sources")
-FILES = sorted(p.relative_to(archive.data_dir()).as_posix() for p in archive.data_dir().rglob("*.json"))
+try:
+    FILES = sorted(p.relative_to(archive.data_dir()).as_posix() for p in archive.data_dir().rglob("*.json"))
+except archive.DataNotFound as e:
+    pytest.skip(f"needs the dataset: {e}", allow_module_level=True)
 
 
 def test_the_index_lists_every_file():

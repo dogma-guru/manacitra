@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from pathlib import Path
 
 import numpy as np
@@ -21,19 +22,57 @@ from .keptshare import kept_from_order, p11_from_bitstrings, pair_outcomes_from_
 from .verdicts import analyse_map, analyse_payoff, leave_one_out
 from .workload import ORDER_PAYOFF, aggregate, readout_confusion, workload_scores
 
-DATA = Path(__file__).resolve().parents[2] / "data"
+#: Where data/ sits when the package is installed from a clone (pip install -e .)
+BESIDE_SOURCE = Path(__file__).resolve().parents[2] / "data"
+ENV = "MANACITRA_DATA"
+REPOSITORY = "https://github.com/dogmaguru/manacitra"
+_chosen: Path | None = None
+
+
+class DataNotFound(FileNotFoundError):
+    """The archived dataset (data/) was not found. It ships with the repository, not with the package."""
+
+
+def _is_dataset(d: Path) -> bool:
+    return d.is_dir() and (d / "SHA256SUMS").is_file()
+
+
+def set_data_dir(path) -> None:
+    """Use this folder as data/ for the rest of the process (the command line's --data). None clears it."""
+    global _chosen
+    _chosen = None if path is None else Path(path).expanduser().resolve()
 
 
 def data_dir() -> Path:
-    """The repository's data/ directory (when installed from a clone)."""
-    return DATA
+    """The archived dataset's folder: the one given by set_data_dir (CLI: --data), else $MANACITRA_DATA, else data/
+    beside the source tree (an install from a clone). Raises DataNotFound, saying how to get it and set it."""
+    given = _chosen or (Path(os.environ[ENV]).expanduser() if os.environ.get(ENV) else None)
+    if given is not None:
+        if _is_dataset(given):
+            return given
+        raise DataNotFound(
+            f"{given} is not the Manacitra dataset (no SHA256SUMS in it). Point --data or {ENV} at the data/ folder "
+            f"of a clone of {REPOSITORY}."
+        )
+    if _is_dataset(BESIDE_SOURCE):
+        return BESIDE_SOURCE
+    raise DataNotFound(
+        "the Manacitra dataset (data/) was not found. It ships with the repository, not with the package. Get it "
+        f"with: git clone {REPOSITORY}. Then either install from the clone (pip install -e .), or point at it with "
+        f"{ENV}=/path/to/manacitra/data (on the command line: manacitra --data /path/to/manacitra/data ...)."
+    )
+
+
+def resolve(path) -> Path:
+    """A file as given if it exists; otherwise the same path inside the dataset (data_dir())."""
+    p = Path(path)
+    if p.is_absolute() or p.exists():
+        return p
+    return data_dir() / p
 
 
 def load(path) -> dict:
-    p = Path(path)
-    if not p.is_absolute() and not p.exists():
-        p = DATA / p
-    return json.loads(p.read_text())
+    return json.loads(resolve(path).read_text())
 
 
 def p11_table(rec: dict) -> np.ndarray:
@@ -300,5 +339,5 @@ def workload_ideal(path="workload/k33-workload.json") -> list:
 
 def fez_or_kingston(processor: str) -> dict:
     """Every archived IBM file for one processor, keyed by run."""
-    d = DATA / processor
+    d = data_dir() / processor
     return {p.stem: json.loads(p.read_text()) for p in sorted(d.glob("*.json"))}

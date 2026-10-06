@@ -3,7 +3,9 @@
 """The command line: manacitra map | pick | verdict | persist | report | seal | reveal | verify.
 
 Dry run by default. Nothing is sent to any provider without --submit, and before anything is sent the estimate and
-the ledger entry are printed. The simulator spends nothing and runs at once.
+the ledger entry are printed. The simulator spends nothing and runs at once. --data PATH (or $MANACITRA_DATA) names
+the archived dataset's folder, for an install that is not from a clone; a file argument not found as given is looked
+up inside it.
 
     manacitra map --backend simulator --pairs 0-1,2-3,... [--planted 0.03]       map pairs on the simulator
     manacitra map --backend ibm --processor ibm_fez --pairs-from-score 27         dry run: transpile, check, estimate
@@ -37,7 +39,9 @@ def _parse_pairs(s: str) -> list[tuple[int, int]]:
 
 def _load_counts_file(path: str) -> tuple[np.ndarray, list[str], list, list | None, int]:
     """A MapCounts JSON written by `manacitra map`, or an archived map file from data/."""
-    d = json.loads(Path(path).read_text())
+    from .archive import resolve
+
+    d = json.loads(resolve(path).read_text())
     if "outcomes" in d:
         from .backends.base import MapCounts
 
@@ -244,6 +248,12 @@ def cmd_verify_seal(a) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="manacitra", description="A map of a quantum processor's qubit pairs.")
     ap.add_argument("--version", action="version", version=f"manacitra {__version__}")
+    ap.add_argument(
+        "--data",
+        metavar="PATH",
+        help="the archived dataset's folder (data/ in a clone); default: $MANACITRA_DATA, else data/ beside the "
+        "source when installed from a clone. File arguments not found as given are looked up inside it.",
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     m = sub.add_parser("map", help="map pairs (dry run unless --submit)")
@@ -307,7 +317,18 @@ def main(argv=None) -> int:
     vf.set_defaults(func=cmd_verify_seal)
 
     a = ap.parse_args(argv)
-    return a.func(a)
+    from . import archive
+
+    if a.data:
+        archive.set_data_dir(a.data)
+    try:
+        return a.func(a)
+    except archive.DataNotFound as e:
+        print(f"manacitra: {e}", file=sys.stderr)
+        return 2
+    finally:
+        if a.data:
+            archive.set_data_dir(None)
 
 
 if __name__ == "__main__":
