@@ -23,7 +23,7 @@ import re
 
 from ..circuits import parallel_circuit, require_three_per_pair
 from ..keptshare import pair_outcomes_from_bitstrings
-from .base import Estimate, JobHandle, MapCounts, MapJob, PairFigures, Target, utc_now
+from .base import Estimate, GuardedSubmit, JobHandle, Ledger, MapCounts, MapJob, PairFigures, Target, utc_now
 
 SECONDS_PER_SHOT = 0.3e-3
 OVERHEAD_S = 5.0
@@ -57,7 +57,10 @@ def safe_usage(raw: dict) -> dict:
     return keep
 
 
-class IBMBackend:
+class IBMBackend(GuardedSubmit):
+    """IBM Quantum through Qiskit Runtime. submit() is the submit-once guard (GuardedSubmit); _send() checks the cap
+    and the transpiled circuits, then sends."""
+
     name = "ibm"
     spends = True
 
@@ -69,8 +72,10 @@ class IBMBackend:
         sampler_factory=None,
         seed_transpiler: int = 31,
         optimization_level: int = 1,
+        ledger: Ledger | None = None,
     ):
         self.processor = processor
+        self.ledger = ledger
         self._service = service
         self.cap_s = cap_s
         self._sampler_factory = sampler_factory
@@ -201,7 +206,8 @@ class IBMBackend:
             isa.append(tc)
         return isa, checks
 
-    def submit(self, job: MapJob) -> JobHandle:
+    def _send(self, job: MapJob) -> JobHandle:
+        """The raw send, reached only through submit(): the cap (read now), the transpile checks, then SamplerV2."""
         cap = self.check_cap(job)
         backend = self.backend()
         isa, checks = self.transpile(job, backend)

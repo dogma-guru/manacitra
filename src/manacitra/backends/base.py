@@ -13,7 +13,13 @@ A backend does four things:
 
 The submit-once guard lives here, not in any backend: submit_once() writes a ledger record (job hash, provider, UTC
 time) before anything is sent, adds the handle once it exists, and refuses a second submission of the same job hash
-unless allow_resubmit is given, which is itself logged. Backends that spend nothing (the simulators) skip the ledger.
+unless allow_resubmit is given, which is itself logged. A backend that spends (IBM, Open Quantum) inherits
+GuardedSubmit, so its public submit() is that guard and its raw send is the private _send(); there is no unguarded
+public path. Backends that spend nothing (the simulators) keep a direct submit() and skip the ledger.
+
+A spending backend may also define _preflight(job, ledger, **kw), run after the repeat check and before the ledger's
+"sending" record. It refuses with SpendRefused, naming each check that failed (logged as "refused", which is not a
+send), or returns a credit reservation, written to the ledger before sending and kept after an ambiguous failure.
 """
 
 from __future__ import annotations
@@ -74,7 +80,8 @@ class Target:
 # --------------------------------------------------------------------------- the job
 @dataclass
 class MapJob:
-    """Every circuit of `order` on every pair at once, `shots` each. `positions` (1-based) restricts a submission
+    """Every circuit of `order` on all of the job's pairs at once, `shots` each; the pairs must not overlap, so a whole
+    chip takes several jobs (rounds). `positions` (1-based) restricts a submission
     to part of the order, for providers that take a job in waves."""
 
     pairs: list[tuple[int, int]]
@@ -200,6 +207,10 @@ class ResubmitRefused(RuntimeError):
     pass
 
 
+class SpendRefused(RuntimeError):
+    """A spending check failed immediately before sending; the message names every check that failed."""
+
+
 class Ledger:
     """An append-only JSON-lines file of submissions. Default: ./.manacitra/ledger.jsonl, or $MANACITRA_LEDGER."""
 
@@ -219,15 +230,35 @@ class Ledger:
     def find(self, job_hash: str) -> list[dict]:
         return [e for e in self.entries() if e.get("job_hash") == job_hash]
 
+    def reservations(self, scope: str) -> list[dict]:
+        """Every credit reservation in a budget scope, each marked settled once a fetch has settled its job."""
+        es = self.entries()
+        settled = {e["job_hash"] for e in es if e.get("event") == "settled"}
+        return [
+            {**e, "settled": e["job_hash"] in settled}
+            for e in es
+            if e.get("event") == "reserved" and e["scope"] == scope
+        ]
+
+    def reserved_credits(self, scope: str) -> float:
+        """Credits reserved in a scope, settled or not: a settled reservation was spent, an open one may have been."""
+        return float(sum(e["credits"] for e in self.reservations(scope)))
+
 
 def submit_once(
-    backend: Backend, job: MapJob, ledger: Ledger | None = None, allow_resubmit: bool = False, log=print
+    backend: Backend,
+    job: MapJob,
+    ledger: Ledger | None = None,
+    allow_resubmit: bool = False,
+    log=print,
+    **send_kw,
 ) -> JobHandle:
     """Submit a job once. The ledger record is written before anything is sent; a second submission of the same job
-    hash is refused unless allow_resubmit is True, and that permission is logged."""
+    hash is refused unless allow_resubmit is True, and that permission is logged. send_kw go to the backend's
+    _preflight and _send (Open Quantum: after, the earlier wave)."""
     if not getattr(backend, "spends", True):
         return backend.submit(job)
-    ledger = ledger or Ledger()
+    ledger = ledger or getattr(backend, "ledger", None) or Ledger()
     h = job.job_hash(backend.name, backend.processor)
     earlier = [e for e in ledger.find(h) if e.get("event") == "sending"]
     if earlier and not allow_resubmit:
@@ -235,6 +266,16 @@ def submit_once(
             f"refused: this job (hash {h[:12]}) was already sent at {earlier[0]['utc']}; "
             "pass allow_resubmit (CLI: --allow-resubmit) to send it again"
         )
+    reserve = None
+    preflight = getattr(backend, "_preflight", None)
+    if preflight is not None:
+        try:
+            reserve = (preflight(job, ledger, **send_kw) or {}).get("reserve")
+        except SpendRefused as e:
+            ledger.append({"event": "refused", "job_hash": h, "utc": utc_now(), "reason": str(e)})
+            raise
+    if reserve is not None:
+        ledger.append({"event": "reserved", "job_hash": h, "utc": utc_now(), **reserve})
     ledger.append(
         {
             "event": "sending",
@@ -252,9 +293,33 @@ def submit_once(
     if earlier:
         log(f"resubmitting job {h[:12]} with allow_resubmit (logged in {ledger.path})")
     try:
-        handle = backend.submit(job)
+        handle = backend._send(job, **send_kw)
     except Exception as e:
-        ledger.append({"event": "failed", "job_hash": h, "utc": utc_now(), "error": type(e).__name__})
+        failed = {"event": "failed", "job_hash": h, "utc": utc_now(), "error": type(e).__name__}
+        if getattr(e, "job_ids_created", None) is not None:
+            failed["job_ids_created"] = list(e.job_ids_created)
+        if reserve is not None:
+            failed["reservation"] = "kept: the send may have created tasks; a fetch settles it"
+        ledger.append(failed)
         raise
     ledger.append({"event": "sent", "job_hash": h, "utc": utc_now(), "handle": asdict(handle)})
     return handle
+
+
+class GuardedSubmit:
+    """Mixin for a backend that spends: submit() is the submit-once guard, and the backend's _send() does the sending.
+
+    ledger: the backend's own ledger (default: Ledger(), at ./.manacitra/ledger.jsonl or $MANACITRA_LEDGER).
+    """
+
+    spends = True
+    ledger: Ledger | None = None
+
+    def submit(
+        self, job: MapJob, *, ledger: Ledger | None = None, allow_resubmit: bool = False, log=print, **send_kw
+    ) -> JobHandle:
+        """Send the job once, through the guard: refused if this job was sent before, unless allow_resubmit."""
+        return submit_once(self, job, ledger or self.ledger, allow_resubmit=allow_resubmit, log=log, **send_kw)
+
+    def _send(self, job: MapJob, **send_kw) -> JobHandle:  # pragma: no cover - each backend defines it
+        raise NotImplementedError

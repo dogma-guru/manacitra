@@ -167,3 +167,119 @@ def test_counts_parsing_round_trip():
     got = mc.outcomes[0] / mc.outcomes[0].sum(axis=1, keepdims=True)
     assert np.allclose(got, np.array(want) / 1000)
     assert (oq.pair_covariance(mc.outcomes[0])[:2] > 0).all()
+
+
+# --------------------------------------------------------------------------- Amendment A3: the guard and the budget
+W1 = list(range(1, 9))
+W2 = list(range(9, 17))
+
+
+def wave(positions):
+    return MapJob(PAIRS, list(ORDER_16), positions=positions)
+
+
+def events(be):
+    return [e["event"] for e in be.ledger.entries()]
+
+
+@pytest.fixture
+def ledger(tmp_path):
+    from manacitra.backends.base import Ledger
+
+    return Ledger(tmp_path / "oq-ledger.jsonl")
+
+
+def test_the_public_submit_is_the_guard(ledger):
+    from manacitra.backends.base import ResubmitRefused
+
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
+    be.estimate(wave(W1))
+    be.submit(wave(W1))
+    with pytest.raises(ResubmitRefused):
+        be.submit(wave(W1))
+    assert len(svc.scheduler.created) == 8
+    assert events(be) == ["reserved", "sending", "sent"]
+
+
+def test_two_waves_against_a_budget_that_fits_one(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, budget_credits=30, ledger=ledger)
+    be.estimate(wave(W1))
+    h1 = be.submit(wave(W1))
+    rec = be.quote(wave(W2))
+    assert rec["committed_credits"] == 24 and not rec["tests"]["within_budget"]
+    with pytest.raises(oq.SpendRefused, match=r"budget: 24 reserved \+ 24 for this job > 30"):
+        be.submit(wave(W2), after=h1)
+    assert len(svc.scheduler.created) == 8
+    assert events(be)[-1] == "refused"
+    assert ledger.reserved_credits(be.budget_scope) == 24
+
+
+def test_the_balance_is_read_again_at_send_time(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
+    assert be.estimate(wave(W1)).amount == 24
+    svc.management.get_credit_balance = lambda org: SimpleNamespace(spark_credits=0, full_credits=0)
+    with pytest.raises(oq.SpendRefused, match=r"balance floor: balance now 0 - 24 < floor 10"):
+        be.submit(wave(W1))
+    assert svc.scheduler.created == [] and "sending" not in events(be) and "reserved" not in events(be)
+
+
+def test_an_expired_quote_is_refused(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger, quote_valid_s=600)
+    be.estimate(wave(W1))
+    be._quotes[wave(W1).job_hash(be.name, be.processor)]["quoted_at"] -= 601
+    with pytest.raises(oq.QuoteRefused, match="quote expired"):
+        be.submit(wave(W1))
+    assert svc.scheduler.created == []
+    be.estimate(wave(W1))  # quoted again, it goes
+    assert len(be.submit(wave(W1)).job_ids) == 8
+
+
+def test_a_price_change_after_the_quote_is_refused(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
+    be.estimate(wave(W1))
+    svc.scheduler.price = 4
+    with pytest.raises(oq.QuoteRefused, match="at 4 credits, expected 3"):
+        be.submit(wave(W1))
+    assert svc.scheduler.created == []
+
+
+def test_a_failed_send_keeps_its_reservation_until_a_fetch_settles_it(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, budget_credits=30, ledger=ledger)
+    create = svc.scheduler.create_job
+
+    def flaky(req):
+        if len(svc.scheduler.created) == 2:
+            raise ConnectionError("the platform did not answer")
+        return create(req)
+
+    svc.scheduler.create_job = flaky
+    be.estimate(wave(W1))
+    with pytest.raises(ConnectionError):
+        be.submit(wave(W1))
+    failed = ledger.entries()[-1]
+    assert failed["event"] == "failed" and failed["job_ids_created"] == ["task-1", "task-2"]
+    (res,) = ledger.reservations(be.budget_scope)
+    assert res["credits"] == 24 and not res["settled"]
+    # the open reservation still counts: a second wave of 24 would pass 30
+    be.estimate(wave(W2))
+    with pytest.raises(oq.SpendRefused, match="budget"):
+        be.submit(wave(W2))
+
+
+def test_a_fetch_settles_the_reservation(ledger):
+    svc = FakeService()
+    be = oq.OpenQuantumBackend(service=svc, ledger=ledger)
+    job = wave([1, 2])
+    be.estimate(job)
+    h = be.submit(job)
+    assert not ledger.reservations(be.budget_scope)[0]["settled"]
+    for jid in h.job_ids:
+        svc.scheduler.outputs[jid] = output_for(PAIRS, [[0, 0, 0, 1000]] * 3)
+    be.fetch(h)
+    assert ledger.reservations(be.budget_scope)[0]["settled"]

@@ -29,18 +29,20 @@ from __future__ import annotations
 
 import math
 import re
+import time
 
 import numpy as np
 
 from ..circuits import CIRCUITS, offset_of, parse_label, unitary
-from .base import Estimate, JobHandle, MapCounts, MapJob, Target
+from .base import Estimate, GuardedSubmit, JobHandle, Ledger, MapCounts, MapJob, SpendRefused, Target
 
 PROCESSOR = "rigetti:cepheus-1-108q"
 CREDITS_PER_TASK = 3
 BALANCE_FLOOR = 10
+QUOTE_VALID_S = 600  # local policy: a quote older than this is quoted again before sending
 
 
-class QuoteRefused(RuntimeError):
+class QuoteRefused(SpendRefused):
     pass
 
 
@@ -246,8 +248,19 @@ def pair_covariance(outcomes) -> np.ndarray:
 
 
 # --------------------------------------------------------------------------- the backend
-class OpenQuantumBackend:
-    """Experimental. service: an OpenQuantumService (created from the saved account when not given)."""
+class OpenQuantumBackend(GuardedSubmit):
+    """Experimental. service: an OpenQuantumService (created from the saved account when not given).
+
+    submit() is the submit-once guard (GuardedSubmit). Immediately before sending, _preflight re-reads the balance and
+    every task's preparation, and checks: the quote passed its own tests and is younger than quote_valid_s; every task
+    is still prepared, on the Public plan, at the expected price; the credits reserved in the ledger for this budget
+    scope plus this job stay within budget_credits; and the balance after stays at or above balance_floor. Any failure
+    refuses the send and names the check. A passing job's credits are reserved in the ledger before it is sent, and the
+    reservation is kept after a failed send (which may have created tasks) until a fetch settles it.
+
+    The budget scope is provider:processor:job_name, so the waves of one run share one budget. A new run with the same
+    job name and ledger shares it too: give the run its own ledger or job name.
+    """
 
     name = "openquantum"
     spends = True
@@ -261,8 +274,12 @@ class OpenQuantumBackend:
         credits_per_task: int = CREDITS_PER_TASK,
         budget_credits: float | None = None,
         balance_floor: float = BALANCE_FLOOR,
+        quote_valid_s: float = QUOTE_VALID_S,
+        ledger: Ledger | None = None,
     ):
         self.processor = processor
+        self.quote_valid_s = quote_valid_s
+        self.ledger = ledger
         self.account = account
         self._service = service
         self.job_name = job_name
@@ -335,11 +352,29 @@ class OpenQuantumBackend:
             out.append((pos, label, text))
         return out
 
-    def quote(self, job: MapJob, committed_credits: float = 0.0) -> dict:
-        """Prepare every task (no charge) and read the Public plan's standard-queue price, then test it."""
+    @property
+    def budget_scope(self) -> str:
+        return f"{self.name}:{self.processor}:{self.job_name}"
+
+    def _ledger(self) -> Ledger:
+        return self.ledger or Ledger()
+
+    def _price(self, res) -> tuple[str, float]:
+        """A preparation's Public plan and its standard-queue price."""
         from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
+
+        plan = next(p for p in res.quote if p.execution_plan_id == ExecutionPlanType.PUBLIC.value)
+        prio = next(q for q in plan.queue_priorities if q.queue_priority_id == QueuePriorityType.STANDARD.value)
+        return plan.name, plan.price + prio.price_increase
+
+    def quote(self, job: MapJob, committed_credits: float | None = None) -> dict:
+        """Prepare every task (no charge) and read the Public plan's standard-queue price, then test it.
+
+        committed_credits: credits already committed in this budget; by default, those reserved in the ledger."""
         from openquantum_sdk.models import JobPreparationCreate
 
+        if committed_credits is None:
+            committed_credits = self._ledger().reserved_credits(self.budget_scope)
         sch = self.service.scheduler
         bal = self.balance()
         org = self._org()
@@ -360,8 +395,7 @@ class OpenQuantumBackend:
                 )
             )
             res = sch._wait_for_preparation(preparation_id=pr.id, timeout=300, interval=2.0)
-            plan = next(p for p in res.quote if p.execution_plan_id == ExecutionPlanType.PUBLIC.value)
-            prio = next(q for q in plan.queue_priorities if q.queue_priority_id == QueuePriorityType.STANDARD.value)
+            plan, price = self._price(res)
             preps.append(
                 {
                     "position": pos,
@@ -369,8 +403,8 @@ class OpenQuantumBackend:
                     "preparation": pr.id,
                     "status": res.status,
                     "shots_echoed": res.shots,
-                    "plan": plan.name,
-                    "credits": plan.price + prio.price_increase,
+                    "plan": plan,
+                    "credits": price,
                 }
             )
         q = sum(p["credits"] for p in preps)
@@ -384,6 +418,8 @@ class OpenQuantumBackend:
             "shots_echoed": all(p["shots_echoed"] == job.shots for p in preps),
         }
         rec = {
+            "quoted_at": time.time(),
+            "committed_credits": committed_credits,
             "balance_before": bal,
             "quote_credits": q,
             "tests": tests,
@@ -397,30 +433,63 @@ class OpenQuantumBackend:
         rec = self.quote(job)
         return Estimate(rec["quote_credits"], "credits", f"{len(rec['preparations'])} tasks; tests {rec['tests']}")
 
-    def submit(self, job: MapJob, after: JobHandle | None = None) -> JobHandle:
-        """Create the tasks of a passing quote, once each, never retried. `after`: an earlier wave that must have
-        completed first."""
-        from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
-        from openquantum_sdk.models import JobCreate
-
+    def _preflight(self, job: MapJob, ledger: Ledger, after: JobHandle | None = None) -> dict:
+        """Every spending check, run again immediately before sending. Refuses (SpendRefused) naming each failure;
+        otherwise returns the credits to reserve."""
         rec = self._quotes.get(job.job_hash(self.name, self.processor))
-        if not rec or not rec["all_pass"]:
-            raise QuoteRefused("refused: no passing quote for this job; run estimate() first and read its tests")
+        if not rec:
+            raise QuoteRefused("refused: no quote for this job; run estimate() first and read its tests")
+        failed = [f"quote test failed: {k}" for k, ok in rec["tests"].items() if not ok]
+        age = time.time() - rec["quoted_at"]
+        if age > self.quote_valid_s:
+            failed.append(f"quote expired: {age:.0f} s old, valid for {self.quote_valid_s:.0f} s")
         sch = self.service.scheduler
+        for p in rec["preparations"]:
+            res = sch._wait_for_preparation(preparation_id=p["preparation"], timeout=60, interval=2.0)
+            plan, price = self._price(res)
+            if res.status != "Completed":
+                failed.append(f"position {p['position']}: preparation is {res.status}")
+            if plan != "Public Plan" or price != self.credits_per_task:
+                failed.append(f"position {p['position']}: {plan} at {price} credits, expected {self.credits_per_task}")
+        q = rec["quote_credits"]
+        reserved = ledger.reserved_credits(self.budget_scope)
+        if self.budget_credits is not None and reserved + q > self.budget_credits:
+            failed.append(f"budget: {reserved:g} reserved + {q:g} for this job > {self.budget_credits:g}")
+        bal = self.balance()
+        total = bal["spark_credits"] + bal["full_credits"]
+        if total - q < self.balance_floor:
+            failed.append(f"balance floor: balance now {total:g} - {q:g} < floor {self.balance_floor:g}")
         if after is not None:
             st = [sch.get_job(j).status for j in after.job_ids]
             if any(s != "Completed" for s in st):
-                raise RuntimeError(f"refused: the earlier wave has not completed ({st})")
-        ids = []
-        for p in rec["preparations"]:
-            j = sch.create_job(
-                JobCreate(
-                    job_preparation_id=p["preparation"],
-                    execution_plan_id=ExecutionPlanType.PUBLIC.value,
-                    queue_priority_id=QueuePriorityType.STANDARD.value,
+                failed.append(f"the earlier wave has not completed ({st})")
+        if failed:
+            cls = QuoteRefused if any(f.startswith(("quote", "position")) for f in failed) else SpendRefused
+            raise cls("refused before sending: " + "; ".join(failed))
+        return {"reserve": {"scope": self.budget_scope, "credits": q, "balance_at_send": total}}
+
+    def _send(self, job: MapJob, after: JobHandle | None = None) -> JobHandle:
+        """The raw send, reached only through submit() after _preflight: create each prepared task once, never
+        retried. If a creation fails, the exception carries the IDs of the tasks already created."""
+        from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
+        from openquantum_sdk.models import JobCreate
+
+        rec = self._quotes[job.job_hash(self.name, self.processor)]
+        sch = self.service.scheduler
+        ids: list[str] = []
+        try:
+            for p in rec["preparations"]:
+                j = sch.create_job(
+                    JobCreate(
+                        job_preparation_id=p["preparation"],
+                        execution_plan_id=ExecutionPlanType.PUBLIC.value,
+                        queue_priority_id=QueuePriorityType.STANDARD.value,
+                    )
                 )
-            )
-            ids.append(j.id)
+                ids.append(j.id)
+        except Exception as e:
+            e.job_ids_created = list(ids)
+            raise
         return JobHandle.for_job(self.name, self.processor, ids, job)
 
     def fetch(self, handle: JobHandle) -> MapCounts:
@@ -431,6 +500,14 @@ class OpenQuantumBackend:
             if r.status != "Completed":
                 raise RuntimeError(f"task at position {handle.job_ids.index(jid) + 1} is {r.status}; nothing fetched")
             outcomes.append(outcomes_from_output(counts_of(sch.download_job_output(r)), handle.pairs))
+        self._ledger().append(
+            {
+                "event": "settled",
+                "job_hash": handle.job_hash,
+                "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "tasks_completed": len(handle.job_ids),
+            }
+        )
         return MapCounts(
             handle.pairs,
             handle.order,

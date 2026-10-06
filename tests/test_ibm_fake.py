@@ -175,3 +175,19 @@ def test_snapshot_service_never_submits():
     be = IBMBackend("ibm_fez", service=SnapshotService("ibm_fez"))
     with pytest.raises(UsageUnavailable):
         be.submit(MapJob(PAIRS))
+
+
+def test_the_public_submit_is_the_guard(setup):
+    """Amendment A3, 1a: backend.submit() twice refuses the second call before anything is sent."""
+    be, _, ledger = setup
+    be.ledger = ledger
+    job = MapJob(PAIRS, shots=1000)
+    be.submit(job, log=lambda m: None)
+    assert len(Sampler.calls) == 1
+    with pytest.raises(ResubmitRefused):
+        be.submit(job)
+    assert len(Sampler.calls) == 1
+    msgs = []
+    be.submit(job, allow_resubmit=True, log=msgs.append)
+    assert len(Sampler.calls) == 2 and msgs
+    assert [e["allow_resubmit"] for e in ledger.entries() if e["event"] == "sending"] == [False, True]

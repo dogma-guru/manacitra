@@ -198,6 +198,8 @@ class CirqSimBackend:
         return Estimate(0.0, "s", "local simulation; nothing is spent")
 
     def submit(self, job: MapJob) -> JobHandle:
+        """Direct, with no ledger: a local simulation sends nothing to a provider and spends nothing, so there is
+        nothing for the submit-once guard to protect."""
         outcomes = []
         for pos in job.active_positions:
             label = job.order[pos - 1]
