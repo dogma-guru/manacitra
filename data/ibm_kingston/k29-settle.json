@@ -5,10 +5,6 @@
     "kickoff": "Kickoff 29 (settling run)",
     "utc": "2026-10-05T12:14:00.902705Z",
     "shots_per_circuit": 4000,
-    "n_pairs": 27,
-    "job_id": "db1p77megvvc73bhvghg",
-    "charged_s": 8,
-    "description": "Circuit A only, three variants (no offset, offset, wrong sign), each twice, all 27 pairs at once. No counts were archived for this run, only P(11) per circuit and pair.",
     "sources": [
       {
         "file": "settle-results-ibm_kingston.json",
@@ -19,6 +15,10 @@
         "sha256": "6f244b7277c7933d14abcb6dfe728549409e401ff58078f13505e1dd353f6cf2"
       }
     ],
+    "n_pairs": 27,
+    "job_id": "db1p77megvvc73bhvghg",
+    "charged_s": 8,
+    "description": "Circuit A only, three variants (no offset, offset, wrong sign), each twice, all 27 pairs at once. No counts were archived for this run, only P(11) per circuit and pair.",
     "source_script_sha256": "5158669451343423924538b432a05065948bd78d82779086e99fcacfc70ebd58"
   },
   "pairs": [[105,117],[109,110],[44,45],[89,90],[147,148],[47,48],[25,37],[91,98],[151,152],[143,144],[154,155],[79,93],[42,43],[63,64],[49,50],[21,36],[118,129],[140,141],[9,10],[123,136],[149,150],[5,6],[3,4],[39,53],[81,82],[133,134],[16,23]],

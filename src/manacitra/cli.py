@@ -9,7 +9,7 @@ the ledger entry are printed. The simulator spends nothing and runs at once.
     manacitra map --backend ibm --processor ibm_fez --pairs-from-score 27         dry run: transpile, check, estimate
     manacitra map --backend ibm --processor ibm_fez --pairs-file p.json --submit  send once (refused if already sent)
     manacitra verdict data/ibm_fez/k31-map.json                                   the map rule on a counts file
-    manacitra pick data/ibm_fez/k31-map.json --n 8                                the pairs to use
+    manacitra pick data/ibm_fez/k31-map.json --n 8                                rank pairs (verdict not checked)
     manacitra persist day1.json day2.json day3.json                               the persistence rule
     manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               a table, and a chip map
     manacitra seal predictions.md                                                 commit to a file before the run
@@ -141,11 +141,24 @@ def cmd_verdict(a) -> int:
     return 0
 
 
+USABLE_VERDICTS = ("DIAGNOSTIC", "MAP PRESENT")
+
+
 def cmd_pick(a) -> int:
+    """Rank pairs from a map. It does not condition on the verdict; it warns (on stderr) when the map's verdict is not
+    DIAGNOSTIC or MAP PRESENT. Running the user's own job on the pairs is the user's step, not Manacitra's."""
     from .keptshare import kept_from_order
     from .layout import pick_pairs
+    from .verdicts import analyse_map
 
-    P, order, pairs, x, _ = _load_counts_file(a.file)
+    P, order, pairs, x, seed = _load_counts_file(a.file)
+    v = analyse_map(P, order, x=x, seed=seed, dead_pair_floor=0.5 if x is None else None)["verdict"]["verdict"]
+    if v not in USABLE_VERDICTS:
+        print(
+            f"warning: this map's verdict is {v}, not DIAGNOSTIC or MAP PRESENT; the ranking below may not be "
+            "worth using. pick ranks pairs and does not check the verdict.",
+            file=sys.stderr,
+        )
     k = kept_from_order(P, order, "A")[0]
     idx = pick_pairs(k, a.n) if a.by == "k" else pick_pairs(x, a.n, highest=False)
     print(f"the {a.n} pairs by {'kept share (highest first)' if a.by == 'k' else 'published score (lowest first)'}:")
@@ -262,7 +275,7 @@ def main(argv=None) -> int:
     v.add_argument("--json")
     v.set_defaults(func=cmd_verdict)
 
-    p = sub.add_parser("pick", help="choose pairs from a map")
+    p = sub.add_parser("pick", help="rank pairs from a map; warns when the verdict is not DIAGNOSTIC or MAP PRESENT")
     p.add_argument("file")
     p.add_argument("--n", type=int, default=8)
     p.add_argument("--by", choices=["k", "x"], default="k")

@@ -1,7 +1,8 @@
 # Manacitra, the long version
 
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
-safety guards, how to reproduce every number in the README from `data/`, and how sealing and signing work. The README is the short version.
+safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
+README is the short version.
 
 ## 1. The circuit, and why the gap is known
 
@@ -34,6 +35,13 @@ a pair does to the gap is therefore about how its gates carry a small, known dif
 transpiled circuit in which a pair carries anything other than three two-qubit gates, or in which any two-qubit gate
 lies outside the pairs (`circuits.require_three_per_pair`).
 
+**Why the circuits are pinned.** Qiskit's three-CZ synthesis is numerical, and its single-qubit layers differ from
+one platform's linear algebra to another's; the unitary is the same, but an error after each CZ lands differently on
+different layers, so the package ships every circuit it runs as an exact gate list (`pinned_circuits.json`, checked
+by `tools/pin_circuits.py --check`). The pinned circuits come from the same code, Qiskit version and machine as the
+published runs, but they cannot be shown gate-for-gate identical to the circuits sent in Kickoffs 31 to 33, whose
+records keep transpile checks rather than the circuits themselves.
+
 ## 2. The kept share
 
 For one pair,
@@ -62,7 +70,7 @@ against a spread between pairs of 0.205.
 ## 3. The three rules
 
 Each rule is a pure function in `manacitra.verdicts` that returns the verdict, the rule's name, every input it used,
-and each condition as tested. The thresholds were fixed before the data they were first applied to.
+and each condition as tested. The thresholds were fixed before the data they were first applied to, according to the author's dated records, which are not part of this release.
 
 ### The map rule (Kickoff 31)
 
@@ -186,13 +194,21 @@ with a the bit of the pair's first qubit and b its second.
   rate was about 0.28 ms); on Open Quantum, the platform's own quote in credits.
 - **Submit once.** `backends/base.py` writes a ledger record (job hash, provider, processor, UTC time) *before*
   anything is sent, adds the handle when it exists, and refuses a second send of the same job hash. `--allow-resubmit`
-  overrides that and is itself recorded. A send that failed still counts: a second attempt needs the override. The
-  ledger lives in `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and holds no credentials.
+  (in Python, `allow_resubmit=True`) overrides that and is itself recorded. A send that failed still counts: a second
+  attempt needs the override. This holds for the library as well as the command line: a spending backend's public
+  `submit()` is the guard, and its raw send is the private `_send()`. The simulators, which send nothing to a
+  provider, keep a direct `submit()`. The ledger lives in `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and
+  holds no credentials.
 - **The IBM cap.** The usage is read from the runtime client before every submission (numbers and dates only; every
   identifier field is dropped), and a job is refused if used + estimate exceeds the cap, 540 s of the Open plan's
   600 s window by default. No usage read, no submission.
 - **The Open Quantum tests.** Every task must be quoted at the expected credits, on the Public plan, within the
-  budget, leaving the balance above the floor; a second wave is refused until the first has completed.
+  budget, leaving the balance above the floor; a second wave is refused until the first has completed. The checks run
+  again immediately before sending: the balance is read again; the quote must be younger than 10 minutes and every
+  task still prepared at the expected price; the credits already reserved in the ledger for the run (its budget scope,
+  provider:processor:job name) plus this job must stay within the budget; and the balance after must stay at or above
+  the floor. Any failure refuses the send and names the check. A job's credits are reserved in the ledger before it is
+  sent; after a failed send, which may have created tasks, the reservation stays until a fetch settles it.
 - **Three CZ per pair.** Every transpiled circuit is checked: exactly three two-qubit gates per pair, none outside the
   pairs, no swaps, the layout kept.
 - **Credentials.** Only from each provider's own saved-account mechanism or environment variables. Nothing in this
@@ -201,17 +217,20 @@ with a the bit of the pair's first qubit and b its second.
 - **The identifier scan.** `tools/scan_secrets.py` fails on credentials, identifiers, email addresses and home paths
   anywhere in the tree. It runs in CI and, once `git config core.hooksPath .githooks` is set, on every commit.
 
-## 7. Reproducing every number
+## 7. Reproducing the README's numbers
 
 ```bash
 pip install -e ".[dev]"
 pytest tests/test_reproduction.py     # every archived statistic, from the counts, to 1e-6
-pytest tests/test_readme_numbers.py   # every number the README states
+pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
 python docs/make_diagrams.py          # the six diagrams, from data/
 ```
+
+Every measured statistic in the README is checked by a test; times, ranges and counts are taken from the data files
+and listed in `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
 
 Where each README number comes from:
 

@@ -9,9 +9,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tests"))
 from _reproduce import CASES, TOL  # noqa: E402
 
+from manacitra.stats import format_p  # noqa: E402
 
-def fmt(v):
-    return v if isinstance(v, str) else f"{v:.6f}"
+
+def fmt(v, name=""):
+    """A permutation p is shown as its count of exceedances (Amendment A3, 4.7); the value compared is unchanged."""
+    if isinstance(v, str):
+        return v
+    return format_p(v) if name.startswith("p(") else f"{v:.6f}"
 
 
 def main():
@@ -22,7 +27,7 @@ def main():
         rows, leaves = fn()
         for name, a, r in rows:
             d = ("same" if a == r else "DIFFERENT") if isinstance(a, str) else f"{abs(a - r):.1e}"
-            print(f"| {case} | {name} | {fmt(a)} | {fmt(r)} | {d} |")
+            print(f"| {case} | {name} | {fmt(a, name)} | {fmt(r, name)} | {d} |")
         worst = max(leaves)
         summary.append((case, len(leaves), worst))
     print("\n| case | numeric values compared | largest difference | within 1e-6 |")

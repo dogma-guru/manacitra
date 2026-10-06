@@ -3,26 +3,8 @@
     "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
     "provider": "Open Quantum (Rigetti)",
     "kickoff": "Kickoff 34b",
-    "utc_screen": {
-      "submitted": "2026-10-05T17:26:39Z",
-      "completed_by": "2026-10-05T18:54:32Z",
-      "note": "completion as seen by the runner's status poller (run.log)"
-    },
-    "utc_main_job": {
-      "wave_1_submitted": "2026-10-05T19:00:34Z",
-      "wave_1_completed": [
-        "2026-10-05T22:14:42Z",
-        "2026-10-05T22:19:48Z"
-      ],
-      "wave_2_submitted": "2026-10-05T22:20:37Z",
-      "wave_2_completed": [
-        "2026-10-05T22:21:45Z",
-        "2026-10-05T22:28:51Z"
-      ],
-      "note": "16 tasks in two waves of 8; completion times at the status poller's one-minute resolution (run.log). Both waves executed within 22:14 to 22:29 UTC."
-    },
+    "utc": "2026-10-05T17:26:39Z to 2026-10-05T18:54:32Z",
     "shots_per_circuit": 8000,
-    "description": "The screen: circuit A without the offset on all 53 disjoint candidate pairs at once (106 qubits), one task, 8000 shots. L_s is each candidate's P(11). The pair rule then took the 27 highest L_s at or above 0.5. The screen's counts are not copied here.",
     "sources": [
       {
         "file": "screen-34b.json",
@@ -41,6 +23,25 @@
         "sha256": "99f1769e32ad1a7c7dbda7812ca4487e383a2e182d111dd33398e7cffdf458db"
       }
     ],
+    "utc_screen": {
+      "submitted": "2026-10-05T17:26:39Z",
+      "completed_by": "2026-10-05T18:54:32Z",
+      "note": "completion as seen by the runner's status poller (run.log)"
+    },
+    "utc_main_job": {
+      "wave_1_submitted": "2026-10-05T19:00:34Z",
+      "wave_1_completed": [
+        "2026-10-05T22:14:42Z",
+        "2026-10-05T22:19:48Z"
+      ],
+      "wave_2_submitted": "2026-10-05T22:20:37Z",
+      "wave_2_completed": [
+        "2026-10-05T22:21:45Z",
+        "2026-10-05T22:28:51Z"
+      ],
+      "note": "16 tasks in two waves of 8; completion times at the status poller's one-minute resolution (run.log). Both waves completed between 22:15 and 22:29 UTC, to the nearest minute."
+    },
+    "description": "The screen: circuit A without the offset on all 53 disjoint candidate pairs at once (106 qubits), one task, 8000 shots. L_s is each candidate's P(11). The pair rule then took the 27 highest L_s at or above 0.5. The screen's counts are not copied here.",
     "source_archive_sha256": "9357a5f74a27a1eca0b5fd9ca35c40058d4a4721dd91c41297c88f100df97b28",
     "source_script_sha256": "5678d9dd40d0c80fe4663f2cb2eaeea5f48ee5976b09494fc6f3ec14917e2af4",
     "n_candidates": 53,

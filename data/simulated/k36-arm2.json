@@ -5,16 +5,16 @@
     "kickoff": "Kickoff 36 (can the method say no?)",
     "utc": "2026-10-05T18:34:53Z",
     "shots_per_circuit": 8000,
-    "arm": 2,
-    "description": "Arm 1 plus the planted map (planted-36.json)",
-    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
-    "permutation_seed": 36,
     "sources": [
       {
         "file": "results-36-arm2.json",
         "sha256": "47ce0c225c8123a089a2481a1903ea7ffabecb70b68462680b1465d35469d7d1"
       }
     ],
+    "arm": 2,
+    "description": "Arm 1 plus the planted map (planted-36.json)",
+    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
+    "permutation_seed": 36,
     "source_script_sha256": "abb386e39f28f666774e2faa61e2cf64574bba3b51c0ae00aa22884b0530c241"
   },
   "arm": 2,

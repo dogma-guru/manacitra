@@ -33,7 +33,7 @@ PATTERNS = [
     ),
     ("private-key", r"-----BEGIN [A-Z ]*PRIVATE KEY-----", ""),
     # People and machines
-    ("email-address", r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", ""),
+    ("email-address", r"[A-Za-z0-9._%+\[\]-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", ""),
     ("home-path-mac", r"/Users/[A-Za-z0-9._-]+", ""),
     ("home-path-linux", r"/home/[A-Za-z0-9._-]+", ""),
     ("home-path-windows", r"[A-Za-z]:\\\\?Users\\\\?[A-Za-z0-9._-]+", ""),
@@ -60,6 +60,10 @@ ALLOW = [
     ("owner-and-trade-name", r"D[o]gma LLC \(doing business as D[o]gma Guru\)", ""),
     ("owner-short", r"D[o]gma LLC \(D[o]gma Guru\)", ""),
     ("publisher", r"published by D[o]gma Guru", ""),
+    # Amendment A3: GitHub's public automation identity for workflow commits (the Sigstore bundle commits, and the
+    # DCO check's exemption for them). It is a published noreply address, not a person's and not a secret. Exactly
+    # this string; any other address, including another bot's, is still a finding.
+    ("github-actions-bot", r"41898282\+github-actions\[bot\]@users\.noreply\.github\.com", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]

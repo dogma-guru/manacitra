@@ -5,16 +5,16 @@
     "kickoff": "Kickoff 36 (can the method say no?)",
     "utc": "2026-10-05T18:34:51Z",
     "shots_per_circuit": 8000,
-    "arm": 1,
-    "description": "Pauli only (arm 1)",
-    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
-    "permutation_seed": 36,
     "sources": [
       {
         "file": "results-36-arm1.json",
         "sha256": "ae51bb5f09a85d5cf5bd1321b890144a715ede973f43ffda6e94b2dc9bd79be6"
       }
     ],
+    "arm": 1,
+    "description": "Pauli only (arm 1)",
+    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
+    "permutation_seed": 36,
     "source_script_sha256": "abb386e39f28f666774e2faa61e2cf64574bba3b51c0ae00aa22884b0530c241"
   },
   "arm": 1,

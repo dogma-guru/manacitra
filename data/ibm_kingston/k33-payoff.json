@@ -5,13 +5,6 @@
     "kickoff": "Kickoff 33 (the payoff)",
     "utc": "2026-10-05T15:22:32.445105Z",
     "shots_per_circuit": 8000,
-    "calibration_shots_per_circuit": 4000,
-    "n_pairs": 27,
-    "job_id": "db1s1davog1s73fij0qg",
-    "charged_s": 57,
-    "description": "Readout calibration (4 circuits), then circuit A and the 8 random workload circuits in two mirrored blocks, all 27 pairs at once. The prior map is Kickoff 32's dense run.",
-    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
-    "seed": 33,
     "sources": [
       {
         "file": "results-33-ibm_kingston.json",
@@ -22,6 +15,13 @@
         "sha256": "b8695fdc808049b92b5d64545fdb743453c9392159d0262f50da60b5d7a417e6"
       }
     ],
+    "calibration_shots_per_circuit": 4000,
+    "n_pairs": 27,
+    "job_id": "db1s1davog1s73fij0qg",
+    "charged_s": 57,
+    "description": "Readout calibration (4 circuits), then circuit A and the 8 random workload circuits in two mirrored blocks, all 27 pairs at once. The prior map is Kickoff 32's dense run.",
+    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
+    "seed": 33,
     "source_script_sha256": "c854eb37c56fc64d6d9b9b0eee1ad12b4216401aa079ddb45fb2407afcdd0bb9"
   },
   "pairs": [[105,117],[109,110],[44,45],[89,90],[147,148],[47,48],[25,37],[91,98],[151,152],[143,144],[154,155],[79,93],[42,43],[63,64],[49,50],[21,36],[118,129],[140,141],[9,10],[123,136],[149,150],[5,6],[3,4],[39,53],[81,82],[133,134],[16,23]],

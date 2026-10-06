@@ -44,10 +44,16 @@ def map_table(pairs, kA, kB=None, x=None) -> str:
 
 def verdict_lines(analysis: dict) -> str:
     """A short plain-text account of a map analysis: the verdict and every number the rule used."""
+    from .stats import N_PERMUTATIONS, format_p
+
     v = analysis["verdict"]
     lines = [f"verdict: {v['verdict']}  ({v['rule']})"]
     for k, val in v["inputs"].items():
-        if val is not None:
+        if val is None:
+            continue
+        if k.startswith("p_"):
+            lines.append(f"  {k}: {format_p(val, analysis.get('n_permutations', N_PERMUTATIONS))}")
+        else:
             lines.append(f"  {k} = {val:.4f}" if isinstance(val, float) else f"  {k} = {val}")
     for k, ok in v.get("conditions", {}).items():
         lines.append(f"  [{'x' if ok else ' '}] {k}")

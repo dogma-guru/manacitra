@@ -65,6 +65,6 @@ def test_the_signing_bot_is_exempt(tmp_path):
         repo,
         "chore: Sigstore bundles for abc1234",
         name="github-actions[bot]",
-        email="41898282+github-actions[bot]" + "@users.noreply.github.com",
+        email="41898282+github-actions[bot]@users.noreply.github.com",
     )
     assert check_dco.missing_signoff(base, head, cwd=repo) == []

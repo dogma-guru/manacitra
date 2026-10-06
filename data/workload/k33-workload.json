@@ -1,15 +1,18 @@
 {
   "meta": {
+    "processor": "not applicable",
+    "provider": "not applicable",
     "kickoff": "Kickoff 33 (the payoff)",
-    "description": "The 8 random two-qubit workload circuits: the drawing rule, every unitary, and each circuit's ideal output distribution.",
+    "utc": "2026-10-05T14:58:13Z",
+    "shots_per_circuit": "not applicable",
     "sources": [
       {
         "file": "ideal-33.json",
         "sha256": "4920266b130a0d17b6f8a10f3141087bc433046c9d8ab33153a77874c8338b6b"
       }
     ],
-    "source_script_sha256": "dc2314e27e1d11daaec4d21fce893cf592258fb8ad17ac0f134ba24f99160da3",
-    "utc": "2026-10-05T14:58:13Z"
+    "description": "The 8 random two-qubit workload circuits: the drawing rule, every unitary, and each circuit's ideal output distribution.",
+    "source_script_sha256": "dc2314e27e1d11daaec4d21fce893cf592258fb8ad17ac0f134ba24f99160da3"
   },
   "drawing": "numpy default_rng(33); for circuit 1..8, for unitary 1..3: Z = (N + iN)/sqrt2 (4x4 normals, real part drawn before imaginary), QR, columns times diag(R)/|diag(R)|; circuit = U3 U2 U1 on |00>",
   "state_order": "index s = q0 + 2 q1; written q1q0 as 00, 01, 10, 11",

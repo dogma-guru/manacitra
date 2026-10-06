@@ -188,6 +188,7 @@ def analyse_map(
     }
     out.update(
         {
+            "n_permutations": n_permutations,
             "n_pairs": n,
             "pair_index": keep.tolist(),
             "mean_P": mean_P,

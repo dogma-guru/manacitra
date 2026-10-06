@@ -44,6 +44,13 @@ def test_allows_job_ids_and_placeholders():
     assert not hits("a string during a run of measuring")  # word boundaries hold
 
 
+def test_the_bot_address_is_allowed_and_nothing_else():
+    """Amendment A3, 4.1: GitHub's public workflow address passes; any other address, a bot's too, is flagged."""
+    assert not hits('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"')
+    assert "email-address" in hits("someone[bot]" + "@" + "users.noreply.github.com")
+    assert "email-address" in hits("4189828" + "3+github-actions[bot]" + "@" + "users.noreply.github.com")
+
+
 def test_pattern_file_matches_nothing_of_itself():
     text = (ROOT / "tools" / "scan_patterns.py").read_text()
     assert not hits(text)

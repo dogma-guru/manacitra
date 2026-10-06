@@ -1,8 +1,10 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Every number the README states, recomputed from data/ and compared at the README's own rounding."""
+"""The README's measured statistics, and the times, ranges and counts it shows, recomputed from data/ and compared at
+the README's own rounding (times: to the nearest minute)."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -10,9 +12,17 @@ from _reproduce import k31, k32, k33, k34b, k36
 
 from manacitra import archive
 
+README = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+
 
 def r(x, nd):
     return round(float(x), nd)
+
+
+def hhmm(utc: str) -> str:
+    """A UTC time as the README shows it: rounded to the nearest minute, the one convention used everywhere."""
+    t = datetime.fromisoformat(utc.replace("Z", "+00:00")) + timedelta(seconds=30)
+    return t.strftime("%H:%M")
 
 
 def test_the_picture_of_the_kept_share():
@@ -101,7 +111,7 @@ def test_finding_2_the_second_vendor():
     )
     rec = archive.load(f"{archive.RIGETTI}/main.json")
     w = rec["meta"]["utc_main_job"]
-    assert (w["wave_1_completed"][0][11:16], w["wave_2_completed"][1][11:16]) == ("22:14", "22:28")
+    assert (hhmm(w["wave_1_completed"][0]), hhmm(w["wave_2_completed"][1])) == ("22:15", "22:29")
 
 
 def test_the_open_question_on_the_rigetti_platform():
@@ -115,7 +125,67 @@ def test_the_open_question_on_the_rigetti_platform():
 
 def test_the_name_line_is_kept():
     """The clause is there for a reason (Amendment A2, section 4): keep it word for word."""
-    from pathlib import Path
+    assert "The name is measure-picture, map; it says nothing about minds." in README
 
-    text = (Path(__file__).resolve().parents[1] / "README.md").read_text()
-    assert "The name is measure-picture, map; it says nothing about minds." in text
+
+# --------------------------------------------------------------------------- Amendment A3: the displayed metadata
+@pytest.mark.parametrize(
+    "path,shown",
+    [
+        ("ibm_fez/k29-settle.json", "02:24"),
+        ("ibm_fez/k31-map.json", "12:37"),
+        ("ibm_kingston/k31-map.json", "12:38"),
+        ("ibm_fez/k32-isolation.json", "13:17"),
+        ("ibm_kingston/k32-isolation.json", "13:23"),
+        ("ibm_fez/k33-payoff.json", "15:20"),
+        ("ibm_kingston/k33-payoff.json", "15:23"),
+    ],
+)
+def test_every_ibm_run_time_shown(path, shown):
+    rec = archive.load(path)
+    assert rec["meta"]["utc"].startswith("2026-10-05")
+    assert hhmm(rec["meta"]["utc"]) == shown
+    assert f"{shown} UTC" in README
+
+
+def test_the_rigetti_times_shown():
+    m = archive.load(f"{archive.RIGETTI}/main.json")["meta"]
+    assert hhmm(m["utc_screen"]["completed_by"]) == "18:55" and "the screen (18:55 UTC)" in README
+    assert hhmm(m["utc_main_job"]["wave_1_completed"][0]) == "22:15" and "the main job (22:15 UTC)" in README
+    assert "main job 22:15 to 22:29 UTC" in README
+    note = archive.load(f"{archive.RIGETTI}/main.json")["archived"]["descriptive"]["across_runs"]["note"]
+    assert "test task (16:44 to 17:01 UTC" in note and "the test task (17:01 UTC)" in README
+
+
+def test_the_payoff_prior_is_about_two_hours_older():
+    f = archive.fez_or_kingston("ibm_fez")
+    t = [datetime.fromisoformat(f[n]["meta"]["utc"].replace("Z", "+00:00")) for n in ("k32-isolation", "k33-payoff")]
+    assert round((t[1] - t[0]).total_seconds() / 3600) == 2
+
+
+def test_the_published_score_range_on_the_chip_map():
+    x = [p["x"] for p in archive.load("ibm_fez/k31-map.json")["published_at_submission"]]
+    assert (len(x), r(max(x), 3), r(min(x), 3)) == (27, 0.021, 0.011)
+    assert "highest error, 0.021" in README and "lowest error, 0.011" in README
+
+
+def test_the_isolation_group_sizes():
+    for proc in ("ibm_fez", "ibm_kingston"):
+        sel = archive.load(f"{proc}/k32-isolation.json")["selection"]
+        assert (len(sel["best6"]), len(sel["worst6"]), len(sel["dense_pairs"])) == (6, 6, 27)
+    assert "The six pairs that kept the most and the six that kept the least" in README
+    assert "once with all 27 pairs active" in README
+
+
+def test_the_chip_map_table_matches_the_data():
+    """Amendment A3, 4.3: the accessible table beside diagram 2 lists every pair's k and x, as the data give them."""
+    run = archive.load("ibm_fez/k31-map.json")
+    k = dict(zip(map(tuple, run["pairs"]), archive.map_from_record(run)["kA"]))
+    x = {tuple(p["pair"]): p["x"] for p in run["published_at_submission"]}
+    table = (Path(__file__).resolve().parents[1] / "docs" / "diagrams" / "chip-map-table.md").read_text()
+    rows = [line.split(" | ") for line in table.splitlines() if line.startswith("| ") and line[2].isdigit()]
+    assert [int(row[0].lstrip("| ")) for row in rows] == list(range(1, 28))
+    for _, pair, kv, xv, _ in rows:
+        p = tuple(int(q) for q in pair.split("-"))
+        assert (kv, xv.rstrip(" |")) == (f"{k[p]:.3f}", f"{x[p]:.4f}")
+    assert "docs/diagrams/chip-map-table.md" in README

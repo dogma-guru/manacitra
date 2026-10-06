@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
 # The identifier scan on staged files. Enable once per clone with:
 #   git config core.hooksPath .githooks
 PY="${MANACITRA_PYTHON:-python3}"

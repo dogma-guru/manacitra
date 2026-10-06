@@ -5,13 +5,13 @@
     "kickoff": "Kickoff 36 (can the method say no?)",
     "utc": "2026-10-05T18:34:56Z",
     "shots_per_circuit": 4000,
-    "description": "Three simulated days of Kickoff 35's design on 27 pairs, static (each pair keeps its noise) and scrambled (pairs swap noise between days), on the planted map of arm 2.",
     "sources": [
       {
         "file": "persistence-36.json",
         "sha256": "b8f2aa8e2a56926ef168cc1391a9af60f9f1f0593684672ba8331e22d8ee590b"
       }
     ],
+    "description": "Three simulated days of Kickoff 35's design on 27 pairs, static (each pair keeps its noise) and scrambled (pairs swap noise between days), on the planted map of arm 2.",
     "source_script_sha256": "abb386e39f28f666774e2faa61e2cf64574bba3b51c0ae00aa22884b0530c241",
     "independent_analysis_module_sha256": "9ba2394a9a15fff1d09f1a623c8409f993013a9fb7180a8371c893b16201198a"
   },
