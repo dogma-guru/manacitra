@@ -1,6 +1,6 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the five README diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the six README diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -9,6 +9,7 @@
 3. pipeline.svg     map, verdict, pick, run
 4. payoff.svg       workload fidelity against the prior kept share, with the two picks of 8 marked
 5. sealed-prediction.svg   how to check a sealed prediction: seal, run, reveal, verify
+6. kickoff.svg      how a result was made: brief, sealed predictions, go, run, hand-back, independent check, scorecard
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. The figures carry their own light surface so they read on light and dark pages alike.
@@ -385,6 +386,43 @@ def diagram_seal(out: Path):
     save(fig, out, "sealed-prediction")
 
 
+# --------------------------------------------------------------------------- 6. how a result was made: a kickoff
+def diagram_kickoff(out: Path):
+    """A vertical timeline: one step a row, its name in bold and one short line beside it."""
+    steps = [
+        ("Brief", "The question and every rule, fixed in writing"),
+        ("Sealed predictions", "Hashed and timed before any data exist"),
+        ("Go", "The author approves each submission in chat"),
+        ("Run", "Each job is sent once, never resubmitted"),
+        ("Hand-back", "Code, data, a report and checksums"),
+        ("Independent check", "The results recomputed with separate code"),
+        ("Scorecard", "Every prediction marked; nothing edited"),
+    ]
+    n = len(steps)
+    fig, ax = plt.subplots(figsize=(8.2, 5.6))
+    ax.set_xlim(0, 8.2)
+    ax.set_ylim(-0.9, n)
+    ax.axis("off")
+    ys = [n - 0.5 - i for i in range(n)]
+    ax.plot([0.45, 0.45], [ys[0], ys[-1]], color=MUTED, lw=1.4, zorder=1)
+    for i, ((title, what), y) in enumerate(zip(steps, ys)):
+        ax.plot(0.45, y, "o", ms=24, color=RAMP[1] if title == "Run" else RAMP[3], mec=SURFACE, mew=2.5, zorder=3)
+        ax.text(0.45, y, str(i + 1), ha="center", va="center", fontsize=11, color=INK, weight="bold", zorder=4)
+        ax.text(0.95, y + 0.1, title, fontsize=12.5, color=INK, weight="bold", va="bottom")
+        ax.text(0.95, y - 0.06, what, fontsize=11, color=INK_2, va="top")
+    ax.text(
+        0.0,
+        -0.75,
+        "A rule changes only by a dated amendment, before the data it governs are seen;\n"
+        "the original rule is still reported beside the new one.",
+        fontsize=9.5,
+        color=MUTED,
+        va="bottom",
+        linespacing=1.4,
+    )
+    save(fig, out, "kickoff")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -394,7 +432,8 @@ def main(argv=None):
     diagram_pipeline(a.out)
     diagram_payoff(a.out)
     diagram_seal(a.out)
-    print(f"wrote 5 diagrams (SVG and PNG) to {a.out}")
+    diagram_kickoff(a.out)
+    print(f"wrote 6 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

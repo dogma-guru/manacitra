@@ -40,6 +40,66 @@ On ibm_fez on 5 October 2026, the map measured at 13:17 UTC chose 8 pairs, and t
 
 This one is for a stranger who wants to know whether the predictions came before the results. `manacitra seal` commits to a file with a salted SHA-256 hash, which is posted somewhere the producer cannot edit; after the run, `manacitra reveal` publishes the salt, and `manacitra verify` lets anyone check that the file is the one committed to. Once the repository is public, a CI workflow also signs every commit record and every data file with Sigstore's keyless signing, which records who signed and when in a public log ([`docs/index.md`](docs/index.md#9-sealing-and-signing)).
 
+## What it has shown, and what it has not
+
+All five findings come from runs on 5 October 2026. The counts are in `data/`, and every statistic below reproduces from them (`pytest tests/test_reproduction.py`).
+
+1. **Each pair keeps its own share, and the share repeats** (Kickoff 31; ibm_fez at 12:37 UTC, ibm_kingston at 12:38 UTC; 27 pairs each). Within one job, the map from one half of the circuits correlates with the map from the other half at r = 0.87 (ibm_fez) and 0.90 (ibm_kingston). It carries over to a second circuit with a different gap and its own reference: r = 0.82 and 0.89. The published score does not account for it (r = −0.18 and −0.05). Verdict on both: DIAGNOSTIC.
+2. **The map exists on a second vendor's chip, within one job** (Kickoff 34b; Rigetti Cepheus-1-108Q, through Open Quantum, 5 October 2026, main job 22:14 to 22:29 UTC). A screening run chose 27 pairs, and 22 of them were working pairs in the main job. Within that job, each pair's kept share repeated (the split halves correlate at r = 0.985) and carried over from circuit A to circuit B (r = 0.971). Verdict: MAP PRESENT. Two pairs whose offset circuits collapsed, 13-14 and 101-102, inflate these Pearson figures. Without them, on 20 pairs, the repeat check is 0.84 and the carry-over 0.79, and the rule still gives MAP PRESENT; this 20-pair figure was computed after seeing the data. (The check fixed before the run, without 101-102 alone, also gives MAP PRESENT.) The chip publishes no per-pair figures, so the test cannot say whether the map adds anything beyond them.
+3. **The share belongs to the pair's own gate, not to its neighbours** (Kickoff 32; ibm_fez at 13:17 UTC, ibm_kingston at 13:23 UTC). The six pairs that kept the most and the six that kept the least were run again, once with all 27 pairs active and once with no two active pairs coupled. The gap between the two groups did not close when the neighbours were idle: the closed fraction was 0.01 on ibm_fez (90% interval −0.21 to 0.21) and 0.03 on ibm_kingston (−0.09 to 0.16).
+4. **On ibm_fez, choosing pairs by the map gave 35.6% less error on unrelated random circuits than choosing by the published error rates** (Kickoff 33; 15:20 UTC). Gain in fidelity G = +0.0012, 90% interval +0.0004 to +0.0021; verdict USEFUL. **On ibm_kingston (15:22 UTC), 16% less, not statistically settled**: G = +0.0004 (+0.0001 to +0.0008), but the map's partial correlation with the workload, after removing the published score, was 0.29 (p = 0.073), short of the rule's 0.3 and p < 0.05. Verdict: NOT SETTLED.
+5. **The rule can say no** (Kickoff 36, a simulation of the noise model Cirq publishes for Google's willow_pink, run on a laptop; not a measurement of any device). When every difference between pairs came from the published figures, the rule called the map NOISE: those differences were too small to repeat above shot noise. When a per-pair error was planted outside the published figures, the rule found it (DIAGNOSTIC).
+
+**What it has not shown:**
+
+- **How long a map lasts.** The two platforms differ. On ibm_fez, a map held for ten hours: the map from 02:24 UTC still correlated at r = 0.68 with Kickoff 31's map ten hours later, across a recalibration. On the Rigetti processor, reached through Open Quantum, pair levels did not carry between runs a few hours apart: on the pairs shared by the test task (17:01 UTC), the screen (18:54 UTC) and the main job (22:14 UTC), r was between 0.10 and 0.23, computed after seeing the data. They held within a job: r = 0.93 between the main job's two waves, which ran minutes apart. Two ordinary causes fit. The provider's compiler may place named pairs on different physical qubits between submissions, which the platform does not record; or the pairs drift. The data cannot separate them. The difference reported here is between the two platforms' placement records, not between the two vendors' machines or products. The persistence test on ibm_fez (Kickoff 35) is still running. Kickoff 36's simulation found that the persistence rule, at that test's shot count, could not tell a fixed map from a scrambled one; the rule was amended (A1) to set a reliability floor, and Manacitra reports both forms.
+- **Whether the Rigetti map carries anything the provider's own figures do not.** The provider publishes no per-pair figures, so the rule there is capped at MAP PRESENT, and the Open Quantum adapter stays experimental.
+
+What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
+
+## Limits
+
+- **One circuit family.** Every map comes from one encoded four-site Hamiltonian, at two strengths of its diagonal coupling (circuits A and B). Other circuits might order the pairs differently.
+- **Three processors, one day.** The hardware results are from ibm_fez and ibm_kingston, and from Rigetti Cepheus-1-108Q through Open Quantum, all on 5 October 2026.
+- **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
+- **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
+
+The long version, including the three rules with their thresholds and how to reproduce every number here, is in [`docs/index.md`](docs/index.md).
+
+## How the results were made: kickoffs
+
+Every result above came from a kickoff: a written brief, fixed before a run. A brief states:
+
+- the question;
+- the exact circuits, and how pairs are chosen;
+- the shot counts;
+- the analysis;
+- the verdict rule, with every threshold;
+- the cost or time cap;
+- what goes in the hand-back.
+
+![A vertical timeline of seven numbered steps, one line under each. 1, Brief: the question and every rule, fixed in writing. 2, Sealed predictions: hashed and timed before any data exist. 3, Go: the author approves each submission in chat. 4, Run: each job is sent once, never resubmitted. 5, Hand-back: code, data, a report and checksums. 6, Independent check: the results recomputed with separate code. 7, Scorecard: every prediction marked; nothing edited. A note below: a rule changes only by a dated amendment, before the data it governs are seen, and the original rule is still reported beside the new one.](docs/diagrams/kickoff.svg)
+
+- **Predictions are sealed before the run.** The AI that carries out the kickoff writes its own predictions and records their hash and time before any data exist. The author's predictions are kept separately, unseen by the runner. Both are marked afterwards and never edited.
+- **Every submission needs a go.** Nothing goes to hardware without the author's go for that submission, given in chat. Each job is submitted once and never resubmitted.
+- **The hand-back is checked independently.** The runner returns code, data, a report and checksums. The results are then rechecked with separate code, and a scorecard marks every prediction and records the verdict.
+- **Changes are written down.** If a rule has to change, it changes by a dated amendment, before the data it governs are seen, and the original rule is still reported beside the new one.
+- **The rules were tested too.** Kickoff 36 tested the rules themselves, on a simulated chip where the right answers were set in advance.
+
+| kickoff | question | platform | verdict | data, in `data/` |
+|---|---|---|---|---|
+| 31, 5 October 2026 | Does each pair keep its own share, and does the share repeat? | ibm_fez, ibm_kingston | DIAGNOSTIC on both | `ibm_fez/k31-map.json`, `ibm_kingston/k31-map.json`, with the settling runs (`k29-settle.json`) |
+| 32, 5 October 2026 | Does the share belong to the pair's own gate, or to its neighbours? | ibm_fez, ibm_kingston | THE GATE on both | `ibm_fez/k32-isolation.json`, `ibm_kingston/k32-isolation.json` |
+| 33, 5 October 2026 | Does choosing pairs by the map do better on unrelated work? | ibm_fez, ibm_kingston | USEFUL on ibm_fez; NOT SETTLED on ibm_kingston | `ibm_fez/k33-payoff.json`, `ibm_kingston/k33-payoff.json`, `workload/k33-workload.json` |
+| 34, 5 October 2026 | Does the map exist on a second vendor's chip? | Rigetti Cepheus-1-108Q, through Open Quantum | closed at the test; replaced by 34b | none |
+| 34b, 5 October 2026 | The same question, with a screening run to choose the pairs first | Rigetti Cepheus-1-108Q, through Open Quantum | MAP PRESENT | `rigetti_cepheus_1_108q/` |
+| 35, from 5 October 2026 | How long does a map last, over three days of the whole chip? | ibm_fez | running | none yet |
+| 36, 5 October 2026 | Can the rule say no? | a simulation of the noise model Cirq publishes for willow_pink, run on a laptop | NOISE without a planted map; DIAGNOSTIC with one | `simulated/` |
+
+The kickoff texts and the sealed predictions are kept and dated, and are not part of this release.
+
+Kickoffs were written by Anish Patel with an AI assistant and carried out by AI coding agents; the hardware submissions were each approved by him.
+
 ## Install and try it
 
 Manacitra needs Python 3.11 or later. It is not yet on PyPI; install it from a clone:
@@ -68,34 +128,9 @@ print(result["verdict"]["verdict"], [pairs[i] for i in pick_pairs(result["kA"], 
 
 It prints `DIAGNOSTIC` and the eight pairs that kept the most. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
 
-Extras: `[ibm]` for IBM Quantum, `[aer]` for Qiskit Aer, `[docs]` for the diagrams; `[openquantum]` and `[cirq]` are experimental. The command line is `manacitra map | pick | verdict | persist | report`, and it is a dry run unless `--submit` is given.
+Extras: `[ibm]` for IBM Quantum, `[aer]` for Qiskit Aer, `[docs]` for the diagrams; `[openquantum]` and `[cirq]` are experimental. On Open Quantum, today, use a map only within the job that measured it: placement cannot be pinned, because the platform's preprocessing breaks the provider's verbatim mode. The command line is `manacitra map | pick | verdict | persist | report`, and it is a dry run unless `--submit` is given.
 
 **Before anything is sent to a provider:** the estimate and the ledger entry are printed; a job already sent once is refused unless `--allow-resubmit` is given (and that is logged); on IBM the usage is read and the job refused above a cap (540 s of the 600 s window by default); and any transpiled circuit without exactly three CZ on every pair is refused. Credentials come only from each provider's own saved account, never from this repository.
-
-## What it has shown, and what it has not
-
-All four findings come from runs on 5 October 2026. The counts are in `data/`, and every statistic below reproduces from them (`pytest tests/test_reproduction.py`).
-
-1. **Each pair keeps its own share, and the share repeats** (Kickoff 31; ibm_fez at 12:37 UTC, ibm_kingston at 12:38 UTC; 27 pairs each). Within one job, the map from one half of the circuits correlates with the map from the other half at r = 0.87 (ibm_fez) and 0.90 (ibm_kingston). It carries over to a second circuit with a different gap and its own reference: r = 0.82 and 0.89. The published score does not account for it (r = −0.18 and −0.05). Verdict on both: DIAGNOSTIC.
-2. **The share belongs to the pair's own gate, not to its neighbours** (Kickoff 32; ibm_fez at 13:17 UTC, ibm_kingston at 13:23 UTC). The six pairs that kept the most and the six that kept the least were run again, once with all 27 pairs active and once with no two active pairs coupled. The gap between the two groups did not close when the neighbours were idle: the closed fraction was 0.01 on ibm_fez (90% interval −0.21 to 0.21) and 0.03 on ibm_kingston (−0.09 to 0.16).
-3. **On ibm_fez, choosing pairs by the map gave 35.6% less error on unrelated random circuits than choosing by the published error rates** (Kickoff 33; 15:20 UTC). Gain in fidelity G = +0.0012, 90% interval +0.0004 to +0.0021; verdict USEFUL. **On ibm_kingston (15:22 UTC), 16% less, not statistically settled**: G = +0.0004 (+0.0001 to +0.0008), but the map's partial correlation with the workload, after removing the published score, was 0.29 (p = 0.073), short of the rule's 0.3 and p < 0.05. Verdict: NOT SETTLED.
-4. **The rule can say no** (Kickoff 36, a simulation of the noise model Cirq publishes for Google's willow_pink, run on a laptop; not a measurement of any device). When every difference between pairs came from the published figures, the rule called the map NOISE: those differences were too small to repeat above shot noise. When a per-pair error was planted outside the published figures, the rule found it (DIAGNOSTIC).
-
-**What it has not shown:**
-
-- **How long a map lasts.** On ibm_fez, the map from 02:24 UTC still correlated at r = 0.68 with the map ten hours later, across a recalibration. A three-day test of the whole chip is running (Kickoff 35). The same simulation found that the persistence rule, at that test's shot count, could not tell a fixed map from a scrambled one; the rule was amended (A1) to set a reliability floor, and Manacitra reports both forms.
-- **Whether the same property exists on a second vendor's chip.** A run on a Rigetti processor is under way (Kickoff 34b). Its adapter is included as experimental, and nothing here claims the property beyond the two IBM processors.
-
-What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
-
-## Limits
-
-- **One circuit family.** Every map comes from one encoded four-site Hamiltonian, at two strengths of its diagonal coupling (circuits A and B). Other circuits might order the pairs differently.
-- **Two processors, one day.** The hardware results are from ibm_fez and ibm_kingston on 5 October 2026.
-- **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
-- **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
-
-The long version, including the three rules with their thresholds and how to reproduce every number here, is in [`docs/index.md`](docs/index.md).
 
 ## How to cite
 

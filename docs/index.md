@@ -170,6 +170,10 @@ with a the bit of the pair's first qubit and b its second.
   sequence and differ only in rz angles. Two caveats: the platform's recompilation and qubit placement cannot be
   inspected on the Public plan, so the three-CZ check applies to the program as sent, not as run; and no calibration
   snapshot is returned, so there is no x and the map rule is capped. Tested only against recorded-shape responses.
+  On this platform, today, use a map only within the job that measured it: placement cannot be pinned, because the
+  platform's preprocessing breaks the provider's verbatim mode. In Kickoff 34b, pair levels held within a job
+  (r = 0.93) but not between runs a few hours apart (r between 0.10 and 0.23 on the shared pairs, computed after
+  seeing the data).
 - **cirq_sim** (`[cirq]`, experimental): **a simulator only, not hardware access.** It loads the median calibration
   that Cirq ships for a Quantum Virtual Machine processor (willow_pink by default) and simulates each pair under
   either Kickoff 36's Pauli model built from those published figures or the QVM's own noise model. Under the same
@@ -206,7 +210,7 @@ pytest tests/test_readme_numbers.py   # every number the README states
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the five diagrams, from data/
+python docs/make_diagrams.py          # the six diagrams, from data/
 ```
 
 Where each README number comes from:
@@ -221,6 +225,9 @@ Where each README number comes from:
 | 35.6% less error; G +0.0012 (+0.0004, +0.0021); USEFUL | `ibm_fez/k33-payoff.json` (prior map from `k32-isolation.json`) | `archive.payoff_from_record` |
 | 16% less; G +0.0004 (+0.0001, +0.0008); partial 0.29, p 0.073; NOT SETTLED | `ibm_kingston/k33-payoff.json` | the same |
 | NOISE without a planted map, DIAGNOSTIC with one | `simulated/k36-arm1.json`, `k36-arm2.json` | `archive.map_from_record` |
+| Rigetti: 22 working pairs of 27; r_split 0.985, r_AB 0.971; MAP PRESENT; without 101-102, MAP PRESENT | `rigetti_cepheus_1_108q/main.json` | `archive.rigetti_map` |
+| Rigetti, after the fact: 20 pairs, r_split 0.84, r_AB 0.79, MAP PRESENT | `rigetti_cepheus_1_108q/after-the-fact.json` | `archive.rigetti_map` |
+| Rigetti: r = 0.93 between the waves; 0.10 to 0.23 across runs | `rigetti_cepheus_1_108q/main.json`, `screen.json` | `archive.rigetti_map` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -229,14 +236,15 @@ in Kickoff 36's own report.
 
 ## 8. What kind of claim each part is
 
-- **Lived facts**: the counts in `data/`, as two IBM processors returned them on 5 October 2026, and the simulation
-  outputs, as run on the author's computer that day.
+- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor returned them on 5 October
+  2026, and the simulation outputs, as run on the author's computer that day.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it
   picks better pairs for other work, and that it lasts long enough to plan by. Each part names what would discredit it
   (section 3). On two IBM processors on one day, the first held on both, the second held on one and was not settled
-  on the other, and the third is open.
+  on the other, and the third is open. On the Rigetti processor, a per-pair map was present within one job; with no
+  published figures there, whether they carry it cannot be tested.
 
 ## 9. Sealing and signing
 

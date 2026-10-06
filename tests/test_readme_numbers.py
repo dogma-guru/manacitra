@@ -6,7 +6,7 @@ from datetime import datetime
 
 import numpy as np
 import pytest
-from _reproduce import k31, k32, k33, k36
+from _reproduce import k31, k32, k33, k34b, k36
 
 from manacitra import archive
 
@@ -81,3 +81,41 @@ def test_the_open_question_on_persistence():
 def test_the_chip_map_correlation():
     rows = {n: v for n, _, v in k31("ibm_fez")[0]}
     assert r(rows["r_Ax"], 2) == -0.18
+
+
+def test_finding_2_the_second_vendor():
+    run = k34b()[2]
+    an, a20 = run["analysis"], run["after_the_fact_20"]
+    assert (len(run["pairs"]), len(run["working_pairs"])) == (27, 22)
+    assert (r(an["S1"]["r_split_A"]["pearson"], 3), r(an["S2"]["r_AB"]["pearson"], 3)) == (0.985, 0.971)
+    assert an["verdict"]["verdict"] == "MAP PRESENT"
+    assert (a20["n_pairs"], r(a20["S1"]["r_split_A"]["pearson"], 2), r(a20["S2"]["r_AB"]["pearson"], 2)) == (
+        20,
+        0.84,
+        0.79,
+    )
+    assert a20["verdict"]["verdict"] == "MAP PRESENT"
+    assert (
+        run["leave_one_out"]["dropped_pair"] == (101, 102)
+        and run["leave_one_out"]["verdict"]["verdict"] == "MAP PRESENT"
+    )
+    rec = archive.load(f"{archive.RIGETTI}/main.json")
+    w = rec["meta"]["utc_main_job"]
+    assert (w["wave_1_completed"][0][11:16], w["wave_2_completed"][1][11:16]) == ("22:14", "22:28")
+
+
+def test_the_open_question_on_the_rigetti_platform():
+    d = k34b()[2]["descriptive"]
+    across = [d[k]["pearson"] for k in ("r_test_main", "r_screen_main", "r_test_screen")]
+    assert (r(min(across), 2), r(max(across), 2)) == (0.10, 0.23)
+    assert r(d["r_Lwave1_vs_Lwave2"]["pearson"], 2) == 0.93
+    shared = archive.load(f"{archive.RIGETTI}/main.json")["archived"]["descriptive"]["across_runs"]
+    assert shared["shared_pairs_in_all_three_runs"]["label"].startswith("after the fact")
+
+
+def test_the_name_line_is_kept():
+    """The clause is there for a reason (Amendment A2, section 4): keep it word for word."""
+    from pathlib import Path
+
+    text = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+    assert "The name is measure-picture, map; it says nothing about minds." in text
