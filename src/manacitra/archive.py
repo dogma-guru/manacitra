@@ -456,6 +456,195 @@ def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
     }
 
 
+# --------------------------------------------------------------------------- Kickoff 37: placement or drift
+#: Kickoff 37's thresholds, fixed before the run: the control and S/N at 0.7 or above, W/T below 0.4, and the short-gap
+#: label under 60 minutes
+PLACEMENT_HIGH, PLACEMENT_LOW, PLACEMENT_SHORT_GAP_S = 0.7, 0.4, 3600
+
+
+def _corr_n(a, b) -> dict:
+    return {**stats.corr(a, b), "n": len(a)}
+
+
+def _utc_seconds(s: str) -> int:
+    from datetime import datetime
+
+    return int(datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp())
+
+
+def placement_rule(c1, c2, d1, d2, t27, t53) -> tuple[str, dict]:
+    """Kickoff 37's rule. If c_1 or c_2 is below 0.7, NOT SETTLED (unstable). Otherwise W: d_1 and d_2 below 0.4;
+    N: both at or above 0.7; T: t27 and t53 below 0.4; S: both at or above 0.7. PLACEMENT = W and S, DRIFT = N and T,
+    BOTH = W and T, NEITHER = N and S, MIXED otherwise."""
+    hi, lo = PLACEMENT_HIGH, PLACEMENT_LOW
+    if c1 < hi or c2 < hi:
+        return "NOT SETTLED (unstable)", {}
+    cond = {
+        "W": d1 < lo and d2 < lo,
+        "N": d1 >= hi and d2 >= hi,
+        "T": t27 < lo and t53 < lo,
+        "S": t27 >= hi and t53 >= hi,
+    }
+    for v, (a, b) in {"PLACEMENT": "WS", "DRIFT": "NT", "BOTH": "WT", "NEITHER": "NS"}.items():
+        if cond[a] and cond[b]:
+            return v, cond
+    return "MIXED", cond
+
+
+def placement_or_drift(rec: dict, main34b: dict | None = None, screen34b: dict | None = None) -> dict:
+    """Kickoff 37, recomputed from its archived counts and task times. Like settle_analysis, this recomputes one
+    archived run's own rule; it is not a public verdict and has no command.
+
+    Two programs from Kickoff 34b ran unchanged as three tasks per wave (T1 = P27, T2 = P53, T3 = P27), in two waves.
+    Level L = P(11) per pair per task, in Kickoff 34b's classical-index reading. Per wave w, on the 27 P27 pairs:
+    c_w = r(T1, T3); d_w = the mean of r(T1, T2) and r(T3, T2), T2 restricted to the 27 pairs. Across the waves:
+    t27 = r(the mean of T1 and T3 in wave 1, the same in wave 2); t53 = r(T2 in wave 1, T2 in wave 2), on 53 pairs.
+    The gap is the first wave 2 completion minus the last wave 1 completion; the mean completion times are beside it.
+    The verdict's readings are Amendments A1 and A2's, with N the gap in hours, rounded.
+
+    Outside the verdict: the crowding lean (A1), and, given Kickoff 34b's main job and screen, wave 1's T1 against
+    34b's "A no" levels (the mean of its four identical tasks, and its first alone) and wave 1's T2 against 34b's screen
+    levels. The checks computed after seeing the data are under "after_the_fact"."""
+    p27 = [tuple(p) for p in rec["programs"]["P27"]["pairs"]]
+    p53 = [tuple(p) for p in rec["programs"]["P53"]["pairs"]]
+    at = [p53.index(p) for p in p27]
+    tasks = {t["label"]: t for t in rec["meta"]["tasks"]}
+    L = {
+        t["label"]: p11_classical_index(rec["counts"][t["label"]], rec["programs"][t["program"]]["n_pairs"])
+        for t in rec["tasks"]
+    }
+    waves = ("wave1", "wave2")
+    m: dict = {}
+    for i, w in enumerate(waves, 1):
+        T1, T2, T3 = L[f"{w}-T1"], L[f"{w}-T2"][at], L[f"{w}-T3"]
+        m[f"c_{i}"] = _corr_n(T1, T3)
+        r12, r32 = _corr_n(T1, T2), _corr_n(T3, T2)
+        m[f"d_{i}"] = {
+            "pearson": (r12["pearson"] + r32["pearson"]) / 2,
+            "spearman": (r12["spearman"] + r32["spearman"]) / 2,
+            "r_T1_T2": r12,
+            "r_T3_T2": r32,
+            "n": len(at),
+        }
+    mean_w = {w: (L[f"{w}-T1"] + L[f"{w}-T3"]) / 2 for w in waves}
+    m["t27"] = _corr_n(mean_w["wave1"], mean_w["wave2"])
+    m["t53"] = _corr_n(L["wave1-T2"], L["wave2-T2"])
+    names = ("c_1", "c_2", "d_1", "d_2", "t27", "t53")
+    v, cond = placement_rule(*(m[k]["pearson"] for k in names))
+    vs, conds = placement_rule(*(m[k]["spearman"] for k in names))
+
+    done = {w: [_utc_seconds(t["completed_utc"]) for t in tasks.values() if t["label"].startswith(w)] for w in waves}
+    gap = min(done["wave2"]) - max(done["wave1"])
+    short = gap < PLACEMENT_SHORT_GAP_S
+    h = round(gap / 3600)
+    readings = {
+        "N_hours": h,
+        "PLACEMENT": f"program-dependent (placement or crowding); the chip's levels held over about {h} hours",
+        "DRIFT": f"time-dependent over about {h} hours; the chip changed, or the compiler re-placed after a "
+        "recalibration; the design cannot separate the two",
+        "BOTH": f"program-dependent (placement or crowding), and time-dependent over about {h} hours (the chip "
+        "changed, or the compiler re-placed after a recalibration)",
+        "NEITHER": f"neither shows: not program-dependent, and the levels held over about {h} hours",
+    }
+    order = {
+        w: [
+            t["task"]
+            for t in sorted((t for t in tasks.values() if t["label"].startswith(w)), key=lambda t: t["completed_utc"])
+        ]
+        for w in waves
+    }
+
+    desc: dict = {}
+    if main34b is not None and screen34b is not None:
+        P = np.array([p11_classical_index(c, len(main34b["pairs"])) for c in main34b["counts"]])
+        assert [tuple(p) for p in main34b["pairs"]] == p27, "Kickoff 34b's main job ran the P27 pairs, in this order"
+        a_no = P[[i for i, lab in enumerate(main34b["order"]) if lab == "A no"]]
+        Ls_of = {tuple(c["pair"]): c["L_s"] for c in screen34b["pair_rule"]["candidates"]}
+        Ls = np.array([Ls_of[p] for p in p53])
+        desc = {
+            "r_T1w1_vs_34b_main_A_no_mean_of_four": _corr_n(L["wave1-T1"], a_no.mean(axis=0)),
+            "r_T1w1_vs_34b_main_position1": _corr_n(L["wave1-T1"], a_no[0]),
+            "r_T2w1_vs_34b_screen": _corr_n(L["wave1-T2"], Ls),
+            "r_T2w1_on_27_vs_34b_screen_on_27": _corr_n(L["wave1-T2"][at], Ls[at]),
+        }
+    shots = rec["meta"]["shots_per_task"]
+    crowd: dict = {}
+    for w in waves:
+        T1, T2, T3 = L[f"{w}-T1"], L[f"{w}-T2"][at], L[f"{w}-T3"]
+
+        def var(p):
+            return p * (1 - p) / shots
+
+        m1, m3 = 3 * np.sqrt(var(T2) + var(T1)), 3 * np.sqrt(var(T2) + var(T3))
+        hi = [list(p27[i]) for i in range(len(p27)) if T2[i] - T1[i] > m1[i] and T2[i] - T3[i] > m3[i]]
+        lo = [list(p27[i]) for i in range(len(p27)) if T1[i] - T2[i] > m1[i] and T3[i] - T2[i] > m3[i]]
+        crowd[w] = {
+            "mean_T2_minus_T1": float(np.mean(T2 - T1)),
+            "mean_T2_minus_T3": float(np.mean(T2 - T3)),
+            "n_T2_higher_than_both": len(hi),
+            "n_T2_lower_than_both": len(lo),
+            "pairs_higher": hi,
+            "pairs_lower": lo,
+        }
+    desc["crowding_lean"] = crowd
+
+    after: dict = {}
+    if main34b is not None:
+        excluded = sorted(
+            (float(np.mean(a_no[:, i])), i)
+            for i in range(len(p27))
+            if np.mean(a_no[:, i]) < main34b["meta"]["dead_pair_floor"]
+        )
+        five = [i for _, i in excluded]
+        keep = [i for i in range(len(p27)) if i not in five]
+        T2k = {w: L[f"{w}-T2"][at][keep] for w in waves}
+        after["without_34b_five_low_pairs"] = {
+            "pairs_dropped": [list(p27[i]) for i in five],
+            "n": len(keep),
+            "d_1_pearson_T1_vs_T2": _corr_n(L["wave1-T1"][keep], T2k["wave1"]),
+            "d_2_pearson_T1_vs_T2": _corr_n(L["wave2-T1"][keep], T2k["wave2"]),
+            "t27": _corr_n(mean_w["wave1"][keep], mean_w["wave2"][keep]),
+        }
+        after["the_five_low_pairs"] = {
+            f"{p27[i][0]}-{p27[i][1]}": {
+                f"{t}_w{w[-1]}": float(L[f"{w}-{t}"][at[i] if t == "T2" else i])
+                for w in waves
+                for t in ("T1", "T3", "T2")
+            }
+            for i in five
+        }
+    others = [j for j in range(len(p53)) if j not in at]
+    after["t53_split"] = {
+        "on_the_27_P27_pairs": _corr_n(L["wave1-T2"][at], L["wave2-T2"][at]),
+        "on_the_26_other_pairs": _corr_n(L["wave1-T2"][others], L["wave2-T2"][others]),
+    }
+    change = sorted(range(len(p53)), key=lambda j: -abs(L["wave2-T2"][j] - L["wave1-T2"][j]))[:6]
+    after["largest_P53_changes_wave1_to_wave2"] = [
+        {"pair": list(p53[j]), "w1": float(L["wave1-T2"][j]), "w2": float(L["wave2-T2"][j])} for j in change
+    ]
+    return {
+        "per_task_P11": {k: v.tolist() for k, v in L.items()},
+        "measures": m,
+        "verdict": {
+            "on_pearson": v,
+            "conditions": cond,
+            "spearman_reading_beside": vs,
+            "spearman_conditions": conds,
+            "time_half_label": "short gap" if short else "normal",
+            "readings_per_amendments_A1_A2": readings,
+        },
+        "gap": {
+            "seconds": gap,
+            "minutes": gap / 60,
+            "midpoint_to_midpoint_minutes": float(np.mean(done["wave2"]) - np.mean(done["wave1"])) / 60,
+            "short_gap": short,
+        },
+        "completion_order": order,
+        "descriptive": desc,
+        "after_the_fact": after,
+    }
+
+
 def workload_ideal(path="workload/k33-workload.json") -> list:
     return [c["ideal"] for c in load(path)["circuits"]]
 

@@ -10,7 +10,8 @@ The first version.
 - Backends: a simulator (Qiskit Aer or numpy, always available) and IBM Quantum (Qiskit Runtime), with the submit-once
   guard, the usage read and the time cap. Experimental: Open Quantum, and a Cirq simulation of a published noise model.
 - The dataset: the counts and analyses of the runs on ibm_fez and ibm_kingston (5 October 2026), of the run on Rigetti
-  Cepheus-1-108Q through Open Quantum (Kickoff 34b, the same day; Amendment A2) and of the simulated control, with a
+  Cepheus-1-108Q through Open Quantum (Kickoff 34b, the same day; Amendment A2), of the run on the same processor
+  that tested placement against drift (Kickoff 37, 6 October 2026; Amendment A5) and of the simulated control, with a
   test that recomputes every statistic listed in `tests/expected_fields.json` and compares it at 10⁻⁶; the fields
   not recomputed are named, with reasons, in `tests/excluded_fields.json` (Amendment A4).
 - Pinned circuits: every circuit the package runs ships as an exact gate list, so every platform runs the same

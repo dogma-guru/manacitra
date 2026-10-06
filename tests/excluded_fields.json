@@ -239,6 +239,20 @@
    "circuits/[*]/synthesised_noise_free": "a check of the workload's synthesis, noise-free, at design time; tests/test_workload.py checks the same property",
    "circuits/[*]/W_noise_free": "a check of the workload's synthesis, noise-free, at design time; tests/test_workload.py checks the same property",
    "max_abs_1_minus_W_noise_free": "a check of the workload's synthesis, noise-free, at design time; tests/test_workload.py checks the same property"
+  },
+  "rigetti_cepheus_1_108q/k37-placement.json": {
+   "meta": "record metadata (provenance, sources, task times, descriptions), not a statistic; the gap and the run order are recomputed from the task times here",
+   "programs": "input: the pairs each program measures, in pair-index order, and the program sizes",
+   "bit_order": "a note or definition in words, not a statistic",
+   "tasks": "input: the label, wave, task and program of each task",
+   "counts": "input: the archived counts, from which the statistics are recomputed",
+   "archived/gap/definition": "a note or definition in words, not a statistic",
+   "archived/descriptive/crowding_lean/note": "a note or definition in words, not a statistic"
+  },
+  "rigetti_cepheus_1_108q/k37-after-the-fact.json": {
+   "meta": "record metadata (provenance, sources, task times, descriptions), not a statistic",
+   "label": "a note or definition in words, not a statistic",
+   "selection_note": "a note in words on how the 27 pairs were chosen, not a statistic; its two SDs (P53's between-pair SD on the 27 pairs, per wave) are checked at its rounding in tests/test_reproduction.py"
   }
  }
 }

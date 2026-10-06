@@ -130,6 +130,10 @@ MUTATED = {
         "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict",
     ),
     "Kickoff 34b, Rigetti Cepheus-1-108Q": ("rigetti_cepheus_1_108q/main.json", "archived/analysis/S2/r_AB/pearson"),
+    "Kickoff 37, Rigetti Cepheus-1-108Q": (
+        "rigetti_cepheus_1_108q/k37-placement.json",
+        "archived/measures/d_2/pearson",
+    ),
 }
 HOW = ["999", "remove", "None", "NaN"]
 

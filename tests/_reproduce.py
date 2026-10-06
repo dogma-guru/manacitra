@@ -193,7 +193,20 @@ def _hours(t0: str, t1: str) -> float:
 # --------------------------------------------------------------------------- the cases
 def clear_caches() -> None:
     """Forget every recomputed case, so the next call loads the data again (the mutation tests use it)."""
-    for fn in (k31, k31_baseline, k32, k31_map, k33, k36, k36_persistence, k34b, k34b_after_the_fact):
+    for fn in (
+        k31,
+        k31_baseline,
+        k32,
+        k31_map,
+        k33,
+        k36,
+        k36_persistence,
+        k34b,
+        k34b_after_the_fact,
+        k37_recomputed,
+        k37,
+        k37_after_the_fact,
+    ):
         fn.cache_clear()
 
 
@@ -501,6 +514,80 @@ def k34b_after_the_fact():
     return rows, leaves
 
 
+@cache
+def k37_recomputed():
+    R = ar.RIGETTI
+    return ar.placement_or_drift(
+        ar.load(f"{R}/k37-placement.json"), ar.load(f"{R}/main.json"), ar.load(f"{R}/screen.json")
+    )
+
+
+@cache
+def k37():
+    """Kickoff 37: the measures, the verdict, the gap, the run order and the descriptive lines, from the counts."""
+    file = f"{ar.RIGETTI}/k37-placement.json"
+    doc = ar.load(file)
+    r = k37_recomputed()
+    recomputed = {
+        "per_task_P11": r["per_task_P11"],
+        "archived": {k: r[k] for k in ("measures", "verdict", "gap", "completion_order", "descriptive")},
+    }
+    leaves = compare("Kickoff 37, Rigetti Cepheus-1-108Q", {file: recomputed}, {file: doc})
+    a, m = doc["archived"], r["measures"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"]["on_pearson"], r["verdict"]["on_pearson"]),
+            *(
+                (name, _pearson(a["measures"][name]), _pearson(m[name]))
+                for name in ("c_1", "c_2", "d_1", "d_2", "t27", "t53")
+            ),
+            ("gap, minutes", a["gap"]["minutes"], r["gap"]["minutes"]),
+            (
+                "wave 1 P27 against 34b's main-job A no",
+                _pearson(a["descriptive"]["r_T1w1_vs_34b_main_A_no_mean_of_four"]),
+                _pearson(r["descriptive"]["r_T1w1_vs_34b_main_A_no_mean_of_four"]),
+            ),
+            (
+                "wave 1 P53 against 34b's screen",
+                _pearson(a["descriptive"]["r_T2w1_vs_34b_screen"]),
+                _pearson(r["descriptive"]["r_T2w1_vs_34b_screen"]),
+            ),
+        ]
+    )
+    return rows, leaves, r
+
+
+@cache
+def k37_after_the_fact():
+    """Computed after seeing the data, outside the verdict."""
+    file = f"{ar.RIGETTI}/k37-after-the-fact.json"
+    doc = ar.load(file)
+    a = k37_recomputed()["after_the_fact"]
+    leaves = compare("Kickoff 37, after the fact", {file: a}, {file: doc})
+    w, s = doc["without_34b_five_low_pairs"], doc["t53_split"]
+    rows = _rows(
+        lambda: [
+            (
+                "without the five: r(T1, T2), wave 1",
+                _pearson(w["d_1_pearson_T1_vs_T2"]),
+                _pearson(a["without_34b_five_low_pairs"]["d_1_pearson_T1_vs_T2"]),
+            ),
+            (
+                "without the five: r(T1, T2), wave 2",
+                _pearson(w["d_2_pearson_T1_vs_T2"]),
+                _pearson(a["without_34b_five_low_pairs"]["d_2_pearson_T1_vs_T2"]),
+            ),
+            ("without the five: t27", _pearson(w["t27"]), _pearson(a["without_34b_five_low_pairs"]["t27"])),
+            (
+                "t53 on the other 26 pairs",
+                _pearson(s["on_the_26_other_pairs"]),
+                _pearson(a["t53_split"]["on_the_26_other_pairs"]),
+            ),
+        ]
+    )
+    return rows, leaves
+
+
 CASES = {
     "Kickoff 31, ibm_fez": lambda: k31("ibm_fez"),
     "Kickoff 31, ibm_kingston": lambda: k31("ibm_kingston"),
@@ -517,6 +604,8 @@ CASES = {
     "Kickoff 36, persistence, scrambled days": lambda: k36_persistence("scrambled")[:2],
     "Kickoff 34b, Rigetti Cepheus-1-108Q": lambda: k34b()[:2],
     "Kickoff 34b, after the fact: 20 pairs": k34b_after_the_fact,
+    "Kickoff 37, Rigetti Cepheus-1-108Q": lambda: k37()[:2],
+    "Kickoff 37, after the fact": k37_after_the_fact,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -528,4 +617,5 @@ REQUIRED = {
     "Kickoff 36, arm 1": "NOISE",
     "Kickoff 36, arm 2": "DIAGNOSTIC",
     "Kickoff 34b, Rigetti Cepheus-1-108Q": "MAP PRESENT",
+    "Kickoff 37, Rigetti Cepheus-1-108Q": "PLACEMENT",
 }
