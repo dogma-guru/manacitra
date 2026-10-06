@@ -110,6 +110,63 @@ def settle_baseline(rec: dict) -> dict:
     return {"r_split": stats.corr(k1, k2), "r_k_x": stats.corr(k, x), "r_k_wrong": stats.corr(k, kw), "k": k.tolist()}
 
 
+SETTLE_VARIANTS = {"no offset": "A no", "offset": "A off", "wrong sign": "A wrong"}
+
+
+def settle_analysis(rec: dict) -> dict:
+    """Kickoff 29's settling run, recomputed from its archived P(11) table (the run archived no counts).
+
+    Per pair, each variant's P(11) is the mean of its two copies; d = P(offset) - P(no offset). The standard error is
+    the spread of d over the pairs, sd(d) / sqrt(n); z = mean(d) / SE. The shot-noise standard error of mean(d) is
+    sqrt(mean over pairs of P_off (1 - P_off) + P_no (1 - P_no)) / (2 shots) / n), each variant having two copies of
+    `shots` shots. The repetitions pair the first copies of offset and no offset (repetition 1) and the last copies
+    (repetition 2). The settling run's decision rule: SETTLED-DETECTED if z >= 3 and SE <= 0.004; SETTLED-NULL if
+    SE <= 0.004 and z < 2; otherwise NOT SETTLED. The ideal values are each variant's exact P(11)."""
+    from .circuits import ideal_exact
+
+    P_c = np.asarray(rec["per_circuit_P11"], float)
+    order = list(rec["order"])
+    n = P_c.shape[1]
+    shots = rec["meta"]["shots_per_circuit"]
+    P = {
+        v: P_c[[i for i, lab in enumerate(order) if lab == lab_v]].mean(axis=0) for v, lab_v in SETTLE_VARIANTS.items()
+    }
+    d = P["offset"] - P["no offset"]
+    w = P["wrong sign"] - P["no offset"]
+    mean_d, se = float(d.mean()), float(d.std(ddof=1) / math.sqrt(n))
+    z = mean_d / se if se > 0 else float("inf")
+    if z >= 3 and se <= 0.004:
+        verdict = "SETTLED-DETECTED"
+    elif se <= 0.004 and z < 2:
+        verdict = "SETTLED-NULL"
+    else:
+        verdict = "NOT SETTLED"
+    var = P["offset"] * (1 - P["offset"]) + P["no offset"] * (1 - P["no offset"])
+    shot_se = float(math.sqrt(np.mean(var) / (2 * shots) / n))
+    first, last = order.index, (lambda lab: len(order) - 1 - order[::-1].index(lab))
+    rep = {
+        "1": float(np.mean(P_c[first("A off")] - P_c[first("A no")])),
+        "2": float(np.mean(P_c[last("A off")] - P_c[last("A no")])),
+    }
+    return {
+        "analysis": {
+            "P_per_pair": {v: P[v].tolist() for v in P},
+            "mean_P": {v: float(P[v].mean()) for v in P},
+            "d_per_pair": d.tolist(),
+            "mean_d": mean_d,
+            "se_d_between_pairs": se,
+            "z": z,
+            "shot_noise_se_of_mean_d": shot_se,
+            "pairs_offset_above_no": int(np.sum(d > 0)),
+            "pairs_wrong_below_no": int(np.sum(w < 0)),
+            "mean_wrong_minus_no": float(w.mean()),
+            "mean_d_by_repetition": rep,
+            "verdict": verdict,
+        },
+        "ideal": {v: ideal_exact(lab) for v, lab in SETTLE_VARIANTS.items()},
+    }
+
+
 # --------------------------------------------------------------------------- Kickoff 31: the map
 def map_from_record(rec: dict, prev_k=None, seed: int | None = None, **kw) -> dict:
     """The map rule on an archived map run (Kickoff 31 on IBM, Kickoff 36 in simulation)."""
@@ -170,6 +227,7 @@ def isolation_analysis(rec: dict, k31_pairs, k31_kA, seed: int = 32) -> dict:
         n = len(agg[(p, mode, "no")]) * shots
         return (off - no) / GAP["A"], math.sqrt(no * (1 - no) / n + off * (1 - off) / n) / GAP["A"]
 
+    group_of = {tuple(q): g + 1 for g, grp in enumerate(sel["groups"]) for q in grp}
     rows = []
     for side in ("worst", "best"):
         for r in sel[f"{side}6"]:
@@ -177,7 +235,19 @@ def isolation_analysis(rec: dict, k31_pairs, k31_kA, seed: int = 32) -> dict:
             kD, seD = k_and_se(p, "D")
             kS, seS = k_and_se(p, "S")
             rows.append(
-                {"pair": list(p), "side": side, "kD": kD, "kS": kS, "delta": kS - kD, "se_delta": math.hypot(seD, seS)}
+                {
+                    "pair": list(p),
+                    "side": side,
+                    "group": group_of[p],
+                    "kD": kD,
+                    "kS": kS,
+                    "delta": kS - kD,
+                    "se_delta": math.hypot(seD, seS),
+                    **{
+                        f"P_{v}_{mode}": float(np.mean(agg[(p, mode, v)])) for mode in ("D", "S") for v in ("no", "off")
+                    },
+                    "shots_per_variant": len(agg[(p, "D", "no")]) * shots,
+                }
             )
     W = [r for r in rows if r["side"] == "worst"]
     B = [r for r in rows if r["side"] == "best"]
@@ -232,6 +302,16 @@ def isolation_analysis(rec: dict, k31_pairs, k31_kA, seed: int = 32) -> dict:
     }
 
 
+def isolation_p11(rec: dict) -> list[list[float]]:
+    """Kickoff 32's P(11) per circuit, for the pairs active in that circuit (all 27 in D, one group in S1 and S2)."""
+    sel = rec["selection"]
+    out = []
+    for (cond, _), c in zip(rec["plan"], rec["counts"]):
+        n = len(sel["dense_pairs"]) if cond == "D" else len(sel["groups"][int(cond[1:]) - 1])
+        out.append([float(v) for v in p11_from_bitstrings(c, n)])
+    return out
+
+
 # --------------------------------------------------------------------------- Kickoff 33: the payoff
 def payoff_from_record(rec: dict, k_prior, L_prior, ideal: list, shots_interval: bool = False, **kw) -> dict:
     """The payoff rule on an archived payoff run, with the prior map from an earlier run."""
@@ -260,9 +340,20 @@ def payoff_from_record(rec: dict, k_prior, L_prior, ideal: list, shots_interval:
     out.update(
         {
             "W_per_circuit": ws["W_per_circuit"].tolist(),
+            "W_rc_per_circuit": ws["W_rc_per_circuit"].tolist(),
+            "measured_dists": np.asarray(ws["measured_dists"]).tolist(),
             "k_now": k_now.tolist(),
             "L_now": L_now.tolist(),
+            "P_A_no": pno.tolist(),
+            "P_A_off": poff.tolist(),
             "readout_confusion": M.tolist(),
+            "predictors": {
+                "k_prior": list(map(float, k_prior)),
+                "x": x,
+                "L_prior": list(map(float, L_prior)),
+                "k_now": k_now.tolist(),
+                "L_now": L_now.tolist(),
+            },
         }
     )
     return out
@@ -285,6 +376,36 @@ def p11_classical_index(counts: dict[str, int], n_pairs: int) -> np.ndarray:
     return p / tot
 
 
+def bit_order_check(counts, pairs, order) -> dict:
+    """Kickoff 34b's bit-order check on the main job: per pair, P(11) - P(a = 1) P(b = 1) in the classical-index
+    reading, averaged over the pairs and the B-no circuits; it passes when that is above zero. The ideal it is shown
+    beside is circuit B without the offset, noise-free: P(11) - P(a = 1) P(b = 1) from the exact distribution."""
+    from .backends.openquantum import outcomes_from_output, pair_covariance
+    from .circuits import CIRCUITS, unitary
+
+    covs = [pair_covariance(outcomes_from_output(c, pairs)).mean() for c, lab in zip(counts, order) if lab == "B no"]
+    cov = float(np.mean(covs))
+    p = np.abs(unitary(CIRCUITS["B"].c, None)[:, 0]) ** 2  # outcomes 00, 01, 10, 11 (s = a + 2 b)
+    ideal = float(p[3] - (p[1] + p[3]) * (p[2] + p[3]))
+    return {"mean_pair_covariance_B_no": cov, "ideal": ideal, "passes": cov > 0}
+
+
+def screen_pair_rule(screen: dict) -> dict:
+    """Kickoff 34b's pair rule, applied again to the screen's L_s: a candidate passes at L_s >= 0.5; the 27 highest
+    passing are taken, ties to the lower edge index; fewer than 20 passing stops."""
+    cands = screen["pair_rule"]["candidates"]
+    passing = [c for c in cands if c["L_s"] >= 0.5]
+    taken = sorted(passing, key=lambda c: (-c["L_s"], c["edge_index"]))[:27]
+    ids = {c["edge_index"] for c in taken}
+    return {
+        "candidates": [{"passes_floor": c["L_s"] >= 0.5, "taken": c["edge_index"] in ids} for c in cands],
+        "n_passing": len(passing),
+        "n_taken": len(taken),
+        "enough": len(passing) >= 20,
+        "taken_pairs": [c["pair"] for c in sorted(taken, key=lambda c: c["edge_index"])],
+    }
+
+
 def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
     """Kickoff 34b recomputed from the archived counts: the dead-pair filter, the capped map rule on the working pairs,
     the sealed leave-one-out, the 20-pair check computed after the fact, and the descriptive lines beside the verdict
@@ -301,7 +422,8 @@ def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
     twenty = [j for j, i in enumerate(keep) if pairs[i] not in extreme]
     after = analyse_map(W[:, twenty], order, shots=shots, seed=seed, halves=halves)
     a_no = np.array(an["dead_pair_filter"]["mean_P_A_no"])
-    d = {"r_Lwave1_vs_Lwave2": stats.corr((P[0] + P[7]) / 2, (P[8] + P[15]) / 2)}
+    L1, L2 = (P[0] + P[7]) / 2, (P[8] + P[15]) / 2
+    d = {"L_wave1": L1.tolist(), "L_wave2": L2.tolist(), "r_Lwave1_vs_Lwave2": stats.corr(L1, L2)}
     if screen is not None:
         Ls_all = {tuple(c["pair"]): c["L_s"] for c in screen["pair_rule"]["candidates"]}
         Ls = np.array([Ls_all[pairs[i]] for i in keep])
@@ -324,6 +446,7 @@ def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
     return {
         "P": P,
         "pairs": pairs,
+        "bit_order_check": bit_order_check(rec["counts"], pairs, order),
         "analysis": an,
         "working_pairs": [pairs[i] for i in keep],
         "excluded_pairs": [pairs[i] for i in an["dead_pair_filter"]["excluded"]],

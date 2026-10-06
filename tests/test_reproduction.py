@@ -1,6 +1,7 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""The acceptance bar: every archived statistic reproduces to 1e-6 from the archived counts in data/."""
+"""The acceptance bar: every field listed in tests/expected_fields.json reproduces to 1e-6 from the archived counts
+in data/, compared strictly (tests/_reproduce.py)."""
 
 import pytest
 from _reproduce import CASES, REQUIRED, TOL

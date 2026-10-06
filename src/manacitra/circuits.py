@@ -132,6 +132,13 @@ def ideal_value(label: str) -> float:
     return {"no": f.ideal_no, "off": f.ideal_off, "wrong": f.ideal_wrong}[kind]
 
 
+def ideal_exact(label: str) -> float:
+    """A variant's exact ideal P(11), |<11| exp(-i H t*) |00>|^2, unrounded (ideal_value gives the published six
+    places)."""
+    circ, _ = parse_label(label)
+    return float(abs(unitary(CIRCUITS[circ].c, offset_of(label))[3, 0]) ** 2)
+
+
 def synthesise_three_cz(u: np.ndarray, euler_basis: str = "ZSX"):
     """A two-qubit unitary as a circuit with exactly three CZ gates (TwoQubitBasisDecomposer, forced KAK)."""
     from qiskit.circuit.library import CZGate

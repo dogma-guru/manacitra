@@ -1,7 +1,8 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """Print the acceptance table: each reproduction case, the archived value, the reproduced value, the difference,
-and the count and largest difference of every numeric value compared."""
+and the count and largest difference of every value compared (numbers, and the strings, flags and empty values
+that must match exactly)."""
 
 import sys
 from pathlib import Path
@@ -30,7 +31,7 @@ def main():
             print(f"| {case} | {name} | {fmt(a, name)} | {fmt(r, name)} | {d} |")
         worst = max(leaves)
         summary.append((case, len(leaves), worst))
-    print("\n| case | numeric values compared | largest difference | within 1e-6 |")
+    print("\n| case | values compared | largest difference | within 1e-6 |")
     print("|---|---|---|---|")
     for case, n, (d, path) in summary:
         print(f"| {case} | {n} | {d:.1e} (`{path}`) | {'yes' if d <= TOL else 'NO'} |")
