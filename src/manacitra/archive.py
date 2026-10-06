@@ -18,7 +18,7 @@ import numpy as np
 from . import stats
 from .circuits import CIRCUITS, GAP
 from .keptshare import kept_from_order, p11_from_bitstrings, pair_outcomes_from_bitstrings
-from .verdicts import analyse_map, analyse_payoff
+from .verdicts import analyse_map, analyse_payoff, leave_one_out
 from .workload import ORDER_PAYOFF, aggregate, readout_confusion, workload_scores
 
 DATA = Path(__file__).resolve().parents[2] / "data"
@@ -227,6 +227,71 @@ def payoff_from_record(rec: dict, k_prior, L_prior, ideal: list, shots_interval:
         }
     )
     return out
+
+
+# --------------------------------------------------------------------------- Kickoff 34b: the map on Rigetti
+RIGETTI = "rigetti_cepheus_1_108q"
+
+
+def p11_classical_index(counts: dict[str, int], n_pairs: int) -> np.ndarray:
+    """P(11) per pair in Kickoff 34b's classical-index reading: pair i is measured into classical bits i and
+    2N - 1 - i, and classical bit k is the character at position 2N - 1 - k of the 2N-character key."""
+    n = 2 * n_pairs
+    tot = sum(counts.values())
+    p = np.zeros(n_pairs)
+    for key, m in counts.items():
+        for i in range(n_pairs):
+            if key[n - 1 - i] == "1" and key[i] == "1":
+                p[i] += m
+    return p / tot
+
+
+def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
+    """Kickoff 34b recomputed from the archived counts: the dead-pair filter, the capped map rule on the working pairs,
+    the sealed leave-one-out, the 20-pair check computed after the fact, and the descriptive lines beside the verdict
+    (those that need the screen's levels only if `screen` is given)."""
+    pairs = [tuple(p) for p in rec["pairs"]]
+    P = np.array([p11_classical_index(c, len(pairs)) for c in rec["counts"]])
+    order, seed, shots = rec["order"], rec["meta"]["permutation_seed"], rec["meta"]["shots_per_circuit"]
+    halves = {c: tuple(h) for c, h in rec["halves"].items()}
+    an = analyse_map(P, order, shots=shots, seed=seed, halves=halves, dead_pair_floor=rec["meta"]["dead_pair_floor"])
+    keep = an["pair_index"]
+    W = P[:, keep]
+    loo = leave_one_out(W, order, seed=seed, shots=shots, halves=halves)
+    extreme = {(13, 14), (101, 102)}
+    twenty = [j for j, i in enumerate(keep) if pairs[i] not in extreme]
+    after = analyse_map(W[:, twenty], order, shots=shots, seed=seed, halves=halves)
+    a_no = np.array(an["dead_pair_filter"]["mean_P_A_no"])
+    d = {"r_Lwave1_vs_Lwave2": stats.corr((P[0] + P[7]) / 2, (P[8] + P[15]) / 2)}
+    if screen is not None:
+        Ls_all = {tuple(c["pair"]): c["L_s"] for c in screen["pair_rule"]["candidates"]}
+        Ls = np.array([Ls_all[pairs[i]] for i in keep])
+        shared = rec["archived"]["descriptive"]["across_runs"]["shared_pairs_in_all_three_runs"]
+        idx = {p: i for i, p in enumerate(pairs)}
+        test = np.array(shared["test_17_01"])
+        scr = np.array([Ls_all[tuple(p)] for p in shared["pairs"]])
+        main = np.array([a_no[idx[tuple(p)]] for p in shared["pairs"]])
+        d.update(
+            {
+                "r_Ls_vs_Lmain": stats.corr(Ls, a_no[keep]),
+                "r_kA_vs_Ls": stats.corr(an["kA"], Ls),
+                "main_shared": main.tolist(),
+                "r_test_main": stats.corr(test, main),
+                "r_screen_main": stats.corr(scr, main),
+                "r_test_screen": stats.corr(test, scr),
+                "r_screen_main_all_27_chosen": stats.corr([Ls_all[p] for p in pairs], a_no),
+            }
+        )
+    return {
+        "P": P,
+        "pairs": pairs,
+        "analysis": an,
+        "working_pairs": [pairs[i] for i in keep],
+        "excluded_pairs": [pairs[i] for i in an["dead_pair_filter"]["excluded"]],
+        "leave_one_out": {**loo, "dropped_pair": pairs[keep[loo["dropped_index"]]]},
+        "after_the_fact_20": after,
+        "descriptive": d,
+    }
 
 
 def workload_ideal(path="workload/k33-workload.json") -> list:

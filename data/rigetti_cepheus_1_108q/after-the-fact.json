@@ -1,0 +1,39 @@
+{
+  "label": "computed after seeing the data, outside the verdict",
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
+    "provider": "Open Quantum (Rigetti)",
+    "kickoff": "Kickoff 34b",
+    "utc_screen": {
+      "submitted": "2026-10-05T17:26:39Z",
+      "completed_by": "2026-10-05T18:54:32Z",
+      "note": "completion as seen by the runner's status poller (run.log)"
+    },
+    "utc_main_job": {
+      "wave_1_submitted": "2026-10-05T19:00:34Z",
+      "wave_1_completed": [
+        "2026-10-05T22:14:42Z",
+        "2026-10-05T22:19:48Z"
+      ],
+      "wave_2_submitted": "2026-10-05T22:20:37Z",
+      "wave_2_completed": [
+        "2026-10-05T22:21:45Z",
+        "2026-10-05T22:28:51Z"
+      ],
+      "note": "16 tasks in two waves of 8; completion times at the status poller's one-minute resolution (run.log). Both waves executed within 22:14 to 22:29 UTC."
+    },
+    "shots_per_circuit": 8000,
+    "description": "The 20-pair check: the map rule without the two extreme pairs, 13-14 and 101-102. Not pre-registered.",
+    "sources": [
+      {
+        "file": "after-the-fact-34b.json",
+        "sha256": "ce900fe414f6d7b8c3542fe7c3b9fe64fada72f20a8755c8850b2ef5bff64e01"
+      }
+    ],
+    "source_archive_sha256": "9357a5f74a27a1eca0b5fd9ca35c40058d4a4721dd91c41297c88f100df97b28",
+    "source_script_sha256": "5678d9dd40d0c80fe4663f2cb2eaeea5f48ee5976b09494fc6f3ec14917e2af4",
+    "source_label": "after the fact: computed after seeing the main-job data; not pre-registered; outside the verdict"
+  },
+  "dropped_pairs": [[13,14],[101,102]],
+  "without_13-14_and_101-102": {"n":20,"r_split_A":{"pearson":0.8422809217536564,"spearman":0.7699248120300751},"r_split_B":{"pearson":0.9234045948736036,"spearman":0.8341482349957705},"r_AB":{"pearson":0.7911677803539134,"spearman":0.5097744360902255},"p_AB":0.0004,"mean_kA":0.30066695352839873,"mean_kB":0.6133965093602372,"sd_kA":0.5957174201439749,"verdict_rule_applied":"MAP PRESENT"}
+}

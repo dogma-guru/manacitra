@@ -145,6 +145,86 @@ def k36_persistence(kind):
     return rows, leaf_diffs(mine, arch), a
 
 
+@cache
+def k34b():
+    m, s = ar.load(f"{ar.RIGETTI}/main.json"), ar.load(f"{ar.RIGETTI}/screen.json")
+    r = ar.rigetti_map(m, s)
+    an, arch = r["analysis"], m["archived"]
+    mine = {k: v for k, v in an.items() if k not in ("verdict", "S3")}
+    leaves = leaf_diffs({"per_circuit_P11": r["P"].tolist()}, {"per_circuit_P11": m["per_circuit_P11"]})
+    leaves += leaf_diffs(mine, arch["analysis"])
+    f, fa = an["dead_pair_filter"], arch["dead_pair_filter"]
+    leaves += leaf_diffs(
+        {"threshold": f["floor"], "mean_P11_A_no": f["mean_P_A_no"], "working_pairs": r["working_pairs"]},
+        {**fa, "working_pairs": [tuple(p) for p in fa["working_pairs"]]},
+    )
+    loo, ra = r["leave_one_out"], arch["robustness"]
+    leaves += leaf_diffs(
+        {"dropped_pair": loo["dropped_pair"], "r_split_A": loo["S1"]["r_split_A"], "r_AB": loo["S2"]["r_AB"]}, ra
+    )
+    leaves += leaf_diffs({"p_AB": loo["S2"]["p_one_sided"]}, ra)
+    d, da = r["descriptive"], arch["descriptive"]
+    across = da["across_runs"]
+    leaves += leaf_diffs(
+        {
+            "r_Ls_vs_Lmain": d["r_Ls_vs_Lmain"],
+            "r_kA_vs_Ls": d["r_kA_vs_Ls"],
+            "r_Lwave1_vs_Lwave2": d["r_Lwave1_vs_Lwave2"],
+            "main_22_14_to_22_29": d["main_shared"],
+            "r_test_main": d["r_test_main"],
+            "r_screen_main": d["r_screen_main"],
+            "r_test_screen": d["r_test_screen"],
+            "screen_vs_main_all_27_chosen": d["r_screen_main_all_27_chosen"],
+        },
+        {
+            "r_Ls_vs_Lmain": da["r_Ls_vs_Lmain"]["r"],
+            "r_kA_vs_Ls": da["r_kA_vs_Ls"]["r"],
+            "r_Lwave1_vs_Lwave2": da["r_Lwave1_vs_Lwave2"]["r"],
+            **across["shared_pairs_in_all_three_runs"],
+            "screen_vs_main_all_27_chosen": across["screen_vs_main_all_27_chosen"]["r"],
+        },
+    )
+    a = arch["analysis"]
+    rows = [
+        ("verdict", a["verdict"], an["verdict"]["verdict"]),
+        ("working pairs", float(len(a["kA"])), float(len(r["working_pairs"]))),
+        ("r_split(k_A)", _pearson(a["S1"]["r_split_A"]), _pearson(an["S1"]["r_split_A"])),
+        ("r_AB", _pearson(a["S2"]["r_AB"]), _pearson(an["S2"]["r_AB"])),
+        ("p(r_AB), one-sided", a["S2"]["p_one_sided"], an["S2"]["p_one_sided"]),
+        ("mean k_A", a["mean_kA"], an["mean_kA"]),
+        ("leave-one-out (without 101-102): verdict", ra["verdict_rule_applied"], loo["verdict"]["verdict"]),
+        ("leave-one-out: r_split(k_A)", _pearson(ra["r_split_A"]), _pearson(loo["S1"]["r_split_A"])),
+        ("leave-one-out: r_AB", _pearson(ra["r_AB"]), _pearson(loo["S2"]["r_AB"])),
+        ("r(L_s, L_main)", _pearson(da["r_Ls_vs_Lmain"]["r"]), _pearson(d["r_Ls_vs_Lmain"])),
+        ("r(L_wave1, L_wave2)", _pearson(da["r_Lwave1_vs_Lwave2"]["r"]), _pearson(d["r_Lwave1_vs_Lwave2"])),
+    ]
+    return rows, leaves, r
+
+
+@cache
+def k34b_after_the_fact():
+    """Computed after seeing the data, outside the verdict: the rule without 13-14 and 101-102."""
+    arch = ar.load(f"{ar.RIGETTI}/after-the-fact.json")["without_13-14_and_101-102"]
+    a = k34b()[2]["after_the_fact_20"]
+    mine = {
+        "n": a["n_pairs"],
+        "r_split_A": a["S1"]["r_split_A"],
+        "r_split_B": a["S1"]["r_split_B"],
+        "r_AB": a["S2"]["r_AB"],
+        "p_AB": a["S2"]["p_one_sided"],
+        "mean_kA": a["mean_kA"],
+        "mean_kB": a["mean_kB"],
+        "sd_kA": a["sd_kA_between_pairs"],
+    }
+    rows = [
+        ("verdict, rule applied", arch["verdict_rule_applied"], a["verdict"]["verdict"]),
+        ("r_split(k_A)", _pearson(arch["r_split_A"]), _pearson(a["S1"]["r_split_A"])),
+        ("r_AB", _pearson(arch["r_AB"]), _pearson(a["S2"]["r_AB"])),
+        ("p(r_AB), one-sided", arch["p_AB"], a["S2"]["p_one_sided"]),
+    ]
+    return rows, leaf_diffs(mine, arch)
+
+
 CASES = {
     "Kickoff 31, ibm_fez": lambda: k31("ibm_fez"),
     "Kickoff 31, ibm_kingston": lambda: k31("ibm_kingston"),
@@ -159,6 +239,8 @@ CASES = {
     "Kickoff 36, arm 3": lambda: k36(3),
     "Kickoff 36, persistence, static days": lambda: k36_persistence("static")[:2],
     "Kickoff 36, persistence, scrambled days": lambda: k36_persistence("scrambled")[:2],
+    "Kickoff 34b, Rigetti Cepheus-1-108Q": lambda: k34b()[:2],
+    "Kickoff 34b, after the fact: 20 pairs": k34b_after_the_fact,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -169,4 +251,5 @@ REQUIRED = {
     "Kickoff 33, ibm_kingston": "NOT SETTLED",
     "Kickoff 36, arm 1": "NOISE",
     "Kickoff 36, arm 2": "DIAGNOSTIC",
+    "Kickoff 34b, Rigetti Cepheus-1-108Q": "MAP PRESENT",
 }
