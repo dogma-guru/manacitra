@@ -3,7 +3,8 @@
 Branch `feat/initial-implementation`, 5 October 2026. Built by Claude Code (Opus 5.5) in the confirmed clone of the
 repository (`manacitra/` in the author's projects folder), default branch `main`. Nothing was submitted to any
 provider; every test runs on simulation or on the archived results. Updated for the kickoff's section 7b (sealing and
-signing; see section 8) and for Amendment A1 (ownership and the open items; see section 10).
+signing; see section 8), for Amendment A1 (ownership and the open items; see section 10) and for Amendment A2 (the
+Rigetti result, and what a kickoff is; see section 11).
 
 **Summary.**
 - Every reproduction test passes. Every archived statistic recomputes from the archived counts. Across 2,992 numeric
@@ -487,3 +488,156 @@ After the amendment: 170 tests pass, Ruff is clean, and `data/SHA256SUMS` was re
 - turning on signing;
 - anything about the IP assignment.
 
+## 11. Amendment A2: the Rigetti result, and what a kickoff is
+
+**The source, checked before anything was copied.**
+- The hand-back archive's SHA-256 is `9357a5f7…df97b28`, as the amendment gives it. The `.sha256` file beside it and
+  a second copy elsewhere in the author's folders give the same hash.
+- Every line of the folder's `SHA256SUMS` checks (109 files), and the folder is identical to the unpacked archive.
+- The folder was read only. The builder ran from the session's scratch directory, as before, because it names the
+  source folder.
+
+**The new acceptance rows** (`python tools/acceptance_table.py`):
+
+| case | statistic | archived | reproduced | difference |
+|---|---|---|---|---|
+| Kickoff 34b, Rigetti Cepheus-1-108Q | verdict | MAP PRESENT | MAP PRESENT | same |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | working pairs | 22.000000 | 22.000000 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | r_split(k_A) | 0.985388 | 0.985388 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | r_AB | 0.970614 | 0.970614 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | p(r_AB), one-sided | 0.000000 | 0.000000 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | mean k_A | -0.284317 | -0.284317 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | leave-one-out (without 101-102): verdict | MAP PRESENT | MAP PRESENT | same |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | leave-one-out: r_split(k_A) | 0.972867 | 0.972867 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | leave-one-out: r_AB | 0.956238 | 0.956238 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | r(L_s, L_main) | -0.057658 | -0.057658 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | r(L_wave1, L_wave2) | 0.930650 | 0.930650 | 0.0e+00 |
+| Kickoff 34b, after the fact: 20 pairs | verdict, rule applied | MAP PRESENT | MAP PRESENT | same |
+| Kickoff 34b, after the fact: 20 pairs | r_split(k_A) | 0.842281 | 0.842281 | 0.0e+00 |
+| Kickoff 34b, after the fact: 20 pairs | r_AB | 0.791168 | 0.791168 | 0.0e+00 |
+| Kickoff 34b, after the fact: 20 pairs | p(r_AB), one-sided | 0.000400 | 0.000400 | 0.0e+00 |
+
+| case | numeric values compared | largest difference | within 1e-6 |
+|---|---|---|---|
+| Kickoff 34b, Rigetti Cepheus-1-108Q | 686 | 0.0e+00 (`.working_pairs[9][1]`) | yes |
+| Kickoff 34b, after the fact: 20 pairs | 11 | 0.0e+00 (`.sd_kA`) | yes |
+
+The 686 values compared for the main job cover:
+- the per-circuit P(11) table;
+- the whole archived analysis (k_A, k_B, their halves, the spreads, S1 and S2);
+- the dead-pair filter;
+- the sealed leave-one-out;
+- the descriptive lines.
+
+The new tests (`tests/test_rigetti.py`), all passing:
+
+| test | checks |
+|---|---|
+| `test_the_bit_reading_gives_the_archived_p11_exactly` | the amendment's reading, written out literally, gives the archived P(11) exactly (equality, not tolerance); so does the package's reader; the adapter reads the same key positions |
+| `test_the_layout_is_the_published_one` | the 16-circuit order, the halves, 8000 shots, permutation seed 34 |
+| `test_the_dead_pair_filter_excludes_five_and_leaves_22` | 0-1, 56-57, 63-64, 87-88 and 99-100 excluded; 22 working |
+| `test_the_headline_statistics` | r_split(k_A) = 0.985388 and r_AB = 0.970614, to 10⁻⁶ |
+| `test_the_verdict_is_map_present_under_the_capped_rule` | MAP PRESENT, by the capped rule, with no S3 |
+| `test_the_sealed_leave_one_out_without_101_102` | the dropped pair is 101-102, and the verdict stays MAP PRESENT |
+| `test_after_the_fact_20_pairs_without_13_14_and_101_102` | r_split 0.842 and r_AB 0.791, MAP PRESENT; the file carries its after-the-fact label |
+| `test_nothing_left_out_came_in` | no task IDs, credit or balance fields, or provider-record fields in the three files |
+
+`tests/test_readme_numbers.py` gained three tests: the new finding's numbers, the persistence question's Rigetti
+numbers, and the name line, word for word.
+
+**What was copied** (`data/rigetti_cepheus_1_108q/`, 7.6 MB):
+
+| file | contents |
+|---|---|
+| `screen.json` | L_s for each of the 53 candidates; the pair rule, its outcome and the 27 pairs taken; the screen's bit-order check |
+| `main.json` | the 27 pairs; the order and halves; the main job's bit-order check; the per-circuit P(11); the counts; and under `archived`: the dead-pair filter (with the working pairs), the analysis (k_A, k_B, the halves, S1, S2, the verdict), the sealed leave-one-out, and the descriptive lines r(L_s, L_main), r(k_A, L_s), r(L_wave1, L_wave2) and the across-run correlations |
+| `after-the-fact.json` | the 20-pair check, labelled "computed after seeing the data, outside the verdict"; the source's own label is kept beside it |
+
+Each `meta` block gives:
+- the processor, as the amendment words it;
+- the UTC times of the screen and of both waves of the main job, from the source's submit record and log;
+- 8000 shots per circuit;
+- "Kickoff 34b" as the source;
+- each source file's SHA-256, the archive's SHA-256 and the source script's.
+
+**What was left out:**
+- the 16 main-job task IDs and the screen's (UUIDs);
+- the credit balances and charges;
+- the raw provider records;
+- the programs as sent;
+- the runner's sealed predictions and its report.
+
+I also did not copy the screen's counts, because the amendment names only the levels and the pair rule for
+`screen.json`; this is my reading. The cost is that L_s is archived as computed, not recomputed from counts. The
+counts would add 0.9 MB and could be copied on the author's ruling. The programs as sent were not copied either. The
+pinned Open Quantum template already matches them angle for angle (section 7).
+
+**Three readings, logged.**
+- **The across-run correlations keep their label.** The amendment places "the across-run correlations on the shared
+  pairs" in `main.json`. In the source, the correlations on the 11 pairs shared by the test task, the screen and the
+  main job are in the after-the-fact file. So in `main.json` each line records when it was fixed:
+  - the 27-pair test-against-screen r (−0.16) was fixed before any main-job data (34b's section 5);
+  - the 11-pair figures (0.10 to 0.23) and the screen-against-main r on all 27 chosen pairs (0.004) carry the
+    source's after-the-fact label.
+  The README's "r between 0.10 and 0.23" says "computed after seeing the data" for the same reason. The
+  amendment's wording did not ask for this; the source labels the figures so.
+- **The 27-pair test-against-screen r is archived, not recomputed.** It needs Kickoff 34's 27 test levels, which are
+  not in 34b's archive. The 11-pair figures recompute, because 34b's after-the-fact file carries those 11 test levels.
+- **The source's medians** of k_A and k_B (in its after-the-fact file) were not copied. They follow directly from the
+  archived k values.
+
+**The scan on the full tree.**
+
+```
+$ python tools/scan_secrets.py
+identifier scan: clean (94 files)
+$ CI=1 python tools/scan_secrets.py
+identifier scan: clean (94 files)
+```
+
+The tree has 100 tracked files; the 6 PNG diagrams are binary and skipped. The source report uses W4 once, and it
+was not copied. The scan finds none of the seven words in the copied files.
+
+**The README.**
+- **Findings.** A new finding 2: the map exists on a second vendor's chip, within one job. The old findings 2 to 4
+  are now 3 to 5. "All four findings" is now "All five".
+- **The persistence question** now covers both platforms:
+  - ibm_fez, r = 0.68 over ten hours;
+  - Rigetti through Open Quantum, 0.10 to 0.23 between runs and 0.93 within a job;
+  - the two ordinary causes, placement and drift, and that the data cannot separate them;
+  - the sentence that the difference is between the platforms' placement records, not the vendors' machines or
+    products;
+  - Kickoff 35 still running.
+- **The second-vendor item** under "What it has not shown" became the question the capped rule cannot answer.
+- **Limits.** "Two processors, one day" became "Three processors, one day".
+- **The Open Quantum line** was added to the extras paragraph, to the adapter's docstring and to `docs/index.md`
+  section 5.
+- **New section** "How the results were made: kickoffs". It has the brief's contents, the four practices, the Kickoff
+  36 line, diagram 6, the table of Kickoffs 31 to 36, the one sentence on the kickoff texts, and the credit line as
+  given.
+- **Placement, and a move.** The amendment places the new section after the findings and before installation. In
+  this README, installation came before the findings. So "Install and try it" moved down, below the new section. The
+  order is now: the findings, Limits, kickoffs, then installation. I read Limits as part of the findings. **This
+  reorders the README and needs the author's look.**
+- **The name line is unchanged**, as section 4 asks. The earlier version of A2 was never applied here, so nothing
+  needed restoring. A test now checks the line word for word.
+- **Related updates.** `docs/index.md` sections 7 and 8, `data/README.md` and `CHANGELOG.md` were updated to match.
+
+**Diagram 6** (`docs/diagrams/kickoff.svg`, PNG beside it, made by `docs/make_diagrams.py`):
+- the seven steps as a vertical timeline, with one line under each;
+- a note on amendments below;
+- alt text in the README.
+
+The first draft was a horizontal row. It overlapped, and the author found it crowded. It was redrawn vertically, with
+one short line per step. Regenerating left the other five diagrams byte-identical.
+
+**After the amendment:** 184 tests pass, Ruff is clean, `data/SHA256SUMS` covers 21 files, and the acceptance table
+covers 15 cases, all within 10⁻⁶.
+
+**Not in this amendment, and not done:**
+- merging;
+- making the repository public;
+- turning on signing;
+- any provider submission;
+- the Kickoff 35 data;
+- publishing kickoff texts or sealed predictions.
