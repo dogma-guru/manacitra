@@ -1076,3 +1076,118 @@ it; nothing here was changed on my own reading.
 - Kickoff 38;
 - merging, making the repository public, or turning on signing;
 - any provider submission.
+
+## 16. Amendment A6: fixes from the third review (6 October 2026)
+
+**The review.** A third independent review, by an OpenAI Codex agent in offline run mode, of commit `983bd8c` (the A4
+commit). Its marks were 38 PASS, 3 FAIL and 3 CANNOT CHECK, with 314 tests passing. The three CANNOT CHECK items
+(fresh install, CITATION validation, the licences of the Open Quantum extras) needed the network, which the reviewer
+did not have; section 13 covers them from a networked run. Its report and probes were read from its hand-back folder,
+outside the repository. Only `balance_race.py` was taken from it, adapted into `tests/`; its SHA-256,
+`78c3ee19…0600`, matches the folder's `SHA256SUMS`.
+
+**Line numbers.** The amendment cites `openquantum.py` lines 487 to 495 and 497 to 504, from the reviewed commit. At
+`73b570c` (after A5's docstring lines) the same code was at 487 to 496 and 498 to 505.
+
+**Every number still reproduces.** The full suite passes, the acceptance cases among it. Nothing in `data/` changed,
+and `data/SHA256SUMS` matches every file.
+
+**Each finding, what changed, and the test that now covers it.**
+
+| review ID | finding | what was changed | test |
+|---|---|---|---|
+| E3 (Major) | Open Quantum's balance floor was checked in `_preflight`, before the lock, and `_reserve` never counted open reservations against it. Two processes, each reading a balance of 122 credits, each sent a wave of 24 against a floor of 90, leaving 74 | **The rule** (module docstring of `backends/base.py`; `docs/index.md` section 6): every spending check on a shared quantity (an account balance, a run budget, a usage cap) is decided in `_reserve`, under the ledger's lock, against every open reservation that draws on that quantity. A check made before the lock is only an early refusal. **The floor, under the lock:** the balance read in `_preflight`, less the credits of every open reservation on the same account, less this job's quote, must stay at or above the floor. A refusal names each open reservation it counted (job hash, credits, time reserved). **No double counting in the unsafe direction:** an open reservation is counted until a fetch settles it, even if its charge may already show in the balance; the docstrings of `base.py` and `OpenQuantumBackend` say so. **The account** is the saved account's name; the ledger records it as a hash (`account_scope`), and each reservation now carries it. **The early checks:** the quote's `balance_after_at_least_floor` test now counts open reservations too, read without the lock. `_preflight` no longer checks the floor, because the deciding check follows it at once with the same balance, and two checks would have given the same refusal twice | `test_guard_concurrency.py`: `test_two_processes_one_open_quantum_balance_floor` (the reviewer's race: one sends, the other is refused with the floor and the counted reservation named) and `test_the_reviewers_balance_race` (`balance_race.py`, adapted; its worker is `balance_race_worker` in `tests/_fakes.py`, beside A4's thread race). `test_openquantum_recorded.py`: `test_a_settled_reservation_no_longer_counts_against_the_floor`, `test_open_reservations_on_the_account_count_against_the_floor`, `test_the_floor_counts_every_job_name_on_the_account_and_no_other_account`, `test_a_reservation_from_before_a6_counts_against_every_account`. Changed: `test_the_balance_is_read_again_at_send_time`, which matches the new refusal text |
+| E3, item 5: the order of settlement | found here, not by the reviewer: a "settled" record settled every reservation of its job hash, wherever it stood. A job sent again with the override after its first send was fetched had its new reservation counted as settled at once, so neither the IBM cap nor the new floor counted it | `Ledger.all_reservations` reads the ledger in order. A "settled" record settles only an open reservation of its hash written before it. A fetch now records the task IDs it fetched (`job_ids`, both providers), and the record settles the reservation whose send created them, or nothing; a record without IDs (from before A6) settles the earliest open one | `test_a_settled_record_settles_only_an_earlier_open_reservation`; `test_a_resubmitted_job_is_not_settled_by_the_earlier_fetch` |
+| E3, item 5: settled after the read | found here, not by the reviewer: the balance (Open Quantum) and the usage (IBM) are read before the lock. Another process's reservation, settled between that read and the lock, stopped counting, though the figure read did not include its charge | Each `_preflight` notes the ledger's length before the provider read (`ledger_mark`). Under the lock, `Ledger.unsettled_at` counts a reservation as settled only if its settlement was already in the ledger at that mark. This applies to the floor and to the IBM cap | `test_a_reservation_settled_after_the_balance_read_still_counts`; `test_ibm_fake.py`: `test_a_reservation_settled_after_the_usage_read_still_counts`. With `unsettled_at` changed to ignore the mark, both fail |
+| E3, item 5: the CLI's ledger | found here: `manacitra map --submit --ledger PATH` quoted against the default ledger, and gave the backend no ledger, so a later fetch through that backend settled into the default ledger | The command builds its ledger first and gives it to the backend before the quote. Its "sent" line now says to fetch with a backend given that ledger | covered by the guard's tests; the CLI's submit path is not run by any test, since it needs a provider |
+| F1 (Minor) | "from the archived counts" overstated the inputs | `README.md` (line 45) and `CONTRIBUTING.md` (line 25) now say the statistics are recomputed "from the archived inputs: the raw counts where the release includes them; for the Kickoff 29 settling runs and some Rigetti comparisons, the archived probability or level tables, whose counts are not in this release; and, for elapsed times, the archived timestamps", with the rest of the sentence and the pointer to `tests/excluded_fields.json` kept. CONTRIBUTING's paragraph was rewrapped to the file's width | wording |
+| E5 (Blocker under the rubric) | GitHub Actions' public bot address appears in this report and in `tests/test_dco.py` and `tests/test_scan.py`, outside the two files the rubric approved | **No change.** The rubric is being revised to approve the address anywhere in the tracked tree. `tools/scan_patterns.py` already allows it tree-wide: its `ALLOW` entry `github-actions-bot` matches the exact address in any file, with no restriction by file, so there was nothing to widen. The other approved identities keep their roles | the identifier scan, clean |
+
+**Every spending check, and where it is decided** (section 1, item 5). "Early" means before the ledger's lock:
+an early refusal only. "Deciding" means under the lock, against the ledger as read under it.
+
+| backend | check | evaluated in | where | counts open reservations |
+|---|---|---|---|---|
+| guard | the same job already sent or reserved | `submit_once`, first quick check | early | its own job hash |
+| guard | the same, again | `submit_once`, `_repeat_check` | **deciding** | its own job hash |
+| guard | the ledger's lock taken within 30 s | `Ledger.lock` | at the lock | — |
+| Open Quantum | every task quoted at the expected credits, on the Public plan, prepared, shots echoed | `quote()`, then `_preflight` (the quote's tests must have passed) | early; per job, not a shared quantity | — |
+| Open Quantum | the budget: committed in the run's scope plus this job | `quote()` (`within_budget`) | early | yes, read without the lock |
+| Open Quantum | the balance floor | `quote()` (`balance_after_at_least_floor`) | early | yes, read without the lock (new) |
+| Open Quantum | the quote younger than `quote_valid_s`; each preparation still completed, on the Public plan, at the expected price; the earlier wave completed | `_preflight` | early; per job | — |
+| Open Quantum | the budget | `_reserve` | **deciding** | yes: settled and open, in the run's scope |
+| Open Quantum | the balance floor | `_reserve` (new; it was in `_preflight`) | **deciding** | yes: every open reservation on the account, including any settled after the balance read |
+| IBM | the usage can be read | `_preflight` | early; no usage read, no send | — |
+| IBM | 3 CZ per pair, no swaps, layout kept, every pair with a reported CZ | `_preflight` (`transpile`) | early; per job | — |
+| IBM | the cap, for a look before submitting | `check_cap()`, not called by the guard | early | yes, read without the lock |
+| IBM | the cap: used, plus open reservations, plus this job's estimate | `_reserve` | **deciding** | yes: every open IBM reservation, including any settled after the usage read (new) |
+
+The simulators spend nothing and have no checks. No other spending path exists: every spending send goes through
+`submit_once` (A3).
+
+**The reviewer's `balance_race.py`, rerun.** The script was run unmodified from a scratch copy, with
+`MANACITRA_REVIEW_ROOT` pointing at this checkout. Its output, less the ledger records it also prints:
+
+Before the fix (at `73b570c`):
+
+```json
+{"initial_balance": 122, "floor": 90, "budget": 100,
+ "process_results": [{"who": "a", "result": "sent", "quote": 24, "tasks": 8},
+                     {"who": "b", "result": "sent", "quote": 24, "tasks": 8}],
+ "sent_tasks": 16, "reserved_total": 48, "balance_after_if_charged": 74, "floor_breached": true}
+```
+
+After:
+
+```json
+{"initial_balance": 122, "floor": 90, "budget": 100,
+ "process_results": [{"who": "b", "result": "sent", "quote": 24, "tasks": 8},
+                     {"who": "a", "result": "SpendRefused", "message": "refused before sending: balance floor: balance
+                      122 - open reservations 24 - 24 for this job = 74 < floor 90; open reservations on the saved
+                      account 'default': b9a3674ab905 (24 credits, reserved 2026-10-06T15:11:05Z)"}],
+ "sent_tasks": 8, "reserved_total": 24, "balance_after_if_charged": 98, "floor_breached": false}
+```
+
+Only the floor refused process a. Its quote had passed, because the quote ran before process b reserved anything, so
+the deciding check is the one under the lock.
+
+**Readings and choices, logged.**
+- **A recorded reversal.** Section 14 said: "The Open Quantum balance floor uses the balance read before the lock
+  and, as in A3, does not subtract other open reservations." That is retired by this amendment. The floor now
+  subtracts them, under the lock.
+- **What "the same account" means.** The saved account's local name (`account="default"` by default). Two saved
+  names for one organization count as two accounts; the docstring says to reach one organization through one saved
+  name. The organization's ID would identify the account exactly, but it is never stored, and a hash of it would be
+  derived from it. The ledger holds a hash of the local name, not the name.
+- **Reservations from before A6** carry no account. Each Open Quantum one among them is counted against every
+  account, which can only refuse too much.
+- **One ledger per account.** The floor sees only the reservations in its own ledger. The old advice, "give the run
+  its own ledger or job name", now says job name only, because a separate ledger hides its reservations from the
+  floor.
+- **Waves double count until fetched.** A first wave's charge may show in the balance while its reservation is open,
+  so a second wave counts it twice. To avoid refusing a second wave that would fit, fetch the first before sending it.
+  This is the direction item 3 accepts.
+- **The settlement fixes go beyond the reviewer's finding.** They came from checking every spending check against the
+  rule (item 5), and both were in the unsafe direction. They change what `Ledger.reservations` reports for a
+  resubmitted job, and nothing else that the earlier tests saw.
+- **The bot address in git metadata.** Unchanged: as section 14 noted, the `--git` scan approves the bot in no git
+  role. The revised rubric concerns the tracked tree; the git roles were left alone, as the amendment says.
+- **"From the archived counts" elsewhere.** The amendment names README line 45 and CONTRIBUTING line 25. The same
+  phrase remains in the docstrings of `tests/_reproduce.py`, `tests/test_reproduction.py`, `tests/test_rigetti.py` and
+  `src/manacitra/archive.py`, in `examples/02_map_from_archive.py`, and in README line 149, about the ibm_fez example.
+  Some of these are true as they stand: the ibm_fez and Kickoff 34b statistics do come from counts. They were left
+  for the author's ruling.
+
+**After the amendment:**
+- 350 tests pass (340 before; 10 new, 1 changed), and Ruff is clean;
+- the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit (35,
+  before this amendment's commit);
+- nothing in `data/` changed, and `data/SHA256SUMS` matches every file.
+
+**Not in this amendment, and not done:**
+- merging, making the repository public, or turning on signing;
+- any provider submission;
+- new adapters (IQM, Braket). When they come, they follow the rule above from the start.
+
+The full rubric pass runs once, on the commit to be made public, with network access, so that the three CANNOT CHECK
+items can be checked too.
