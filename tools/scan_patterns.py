@@ -73,3 +73,15 @@ SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ruff_cac
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".ico", ".zip", ".gz", ".whl", ".pyc"}
 # Sigstore bundles: public signatures (base64 certificates and log entries), written by the signing workflow
 SKIP_NAME_ENDINGS = (".sigstore.json",)
+
+# Amendment A4 (R2), the author's ruling of 6 October: the identities allowed in the repository's reachable git
+# metadata, each in its roles only (scan_secrets.py --git). Written as regular expressions, escaped, so that this file
+# carries no address the tree scan would match. Any other address, in any role, is a finding.
+GIT_IDENTITIES = [
+    # the author's public authorship identity: author, committer and sign-off
+    (r"anish@d[o]gma\.guru", {"author", "committer", "Signed-off-by"}),
+    # the coding assistant's co-author line
+    (r"noreply@anthropic\.com", {"Co-Authored-By"}),
+    # GitHub, as committer of commits made through its web interface
+    (r"noreply@github\.com", {"committer"}),
+]

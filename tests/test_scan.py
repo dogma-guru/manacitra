@@ -118,3 +118,80 @@ def test_w7_allowed_only_in_exact_strings(text):
 
 def test_a_word_that_starts_the_same_is_not_w7():
     assert "vocabulary-w7" not in hits("dog" + "matic")
+
+
+# --------------------------------------------------------------------------- Amendment A4 (R2): the git identities
+AUTHOR = "anish" + "@" + "d" + "ogma.guru"
+ASSISTANT = "noreply" + "@" + "anthropic.com"
+GITHUB = "noreply" + "@" + "github.com"
+STRANGER = "someone" + "@" + "example.org"
+
+
+def _repo(tmp_path, commits):
+    """A throwaway repository; each commit is (author, committer, message)."""
+    import subprocess
+
+    def git(*a, env=None):
+        subprocess.run(["git", *a], cwd=tmp_path, check=True, capture_output=True, env=env)
+
+    git("init", "-q", "-b", "main")
+    for i, (author, committer, msg) in enumerate(commits):
+        (tmp_path / f"f{i}").write_text(str(i))
+        git("add", ".")
+        env = {
+            "GIT_AUTHOR_NAME": "a",
+            "GIT_AUTHOR_EMAIL": author,
+            "GIT_COMMITTER_NAME": "c",
+            "GIT_COMMITTER_EMAIL": committer,
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+            "PATH": __import__("os").environ["PATH"],
+            "HOME": str(tmp_path),
+        }
+        git("commit", "-q", "--no-verify", "--no-gpg-sign", "-m", msg, env=env)
+    return tmp_path
+
+
+def test_the_approved_identities_pass_in_their_roles(tmp_path):
+    repo = _repo(
+        tmp_path,
+        [
+            (AUTHOR, AUTHOR, f"feat: one\n\nCo-Authored-By: A <{ASSISTANT}>\nSigned-off-by: B <{AUTHOR}>"),
+            (AUTHOR, GITHUB, f"docs: made on the web\n\nSigned-off-by: B <{AUTHOR}>"),
+        ],
+    )
+    assert scan_secrets.scan_git(repo) == []
+    assert len(scan_secrets.git_identities(repo)) == 7
+
+
+@pytest.mark.parametrize(
+    "author,committer,trailer,role",
+    [
+        (STRANGER, AUTHOR, "", "author"),
+        (AUTHOR, STRANGER, "", "committer"),
+        (ASSISTANT, AUTHOR, "", "author"),  # the assistant's address only as co-author
+        (GITHUB, AUTHOR, "", "author"),  # GitHub's only as committer
+        (AUTHOR, AUTHOR, f"Co-Authored-By: X <{STRANGER}>", "Co-Authored-By"),
+        (AUTHOR, AUTHOR, f"Signed-off-by: X <{ASSISTANT}>", "Signed-off-by"),
+        (AUTHOR, AUTHOR, f"Reported-by: X <{AUTHOR}>", "Reported-by"),
+        (AUTHOR, AUTHOR, f"Write to {STRANGER} for details.", "message"),
+    ],
+)
+def test_anything_else_is_a_finding(tmp_path, author, committer, trailer, role):
+    repo = _repo(tmp_path, [(author, committer, f"fix: something\n\n{trailer}\nSigned-off-by: B <{AUTHOR}>")])
+    found = scan_secrets.scan_git(repo)
+    assert [r for _, r, _ in found] == [role]
+
+
+def test_this_repository_has_only_approved_identities():
+    import subprocess
+
+    if subprocess.run(["git", "rev-parse"], cwd=ROOT, capture_output=True).returncode != 0:
+        pytest.skip("not a git work tree")
+    assert scan_secrets.scan_git(ROOT) == []
+
+
+def test_the_approved_list_carries_no_address_the_tree_scan_would_match():
+    from scan_patterns import GIT_IDENTITIES
+
+    for rx, _ in GIT_IDENTITIES:
+        assert "email-address" not in hits(rx), rx
