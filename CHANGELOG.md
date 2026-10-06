@@ -11,7 +11,8 @@ The first version.
   guard, the usage read and the time cap. Experimental: Open Quantum, and a Cirq simulation of a published noise model.
 - The dataset: the counts and analyses of the runs on ibm_fez and ibm_kingston (5 October 2026), of the run on Rigetti
   Cepheus-1-108Q through Open Quantum (Kickoff 34b, the same day; Amendment A2) and of the simulated control, with a
-  test that reproduces every archived statistic.
+  test that recomputes every statistic listed in `tests/expected_fields.json` and compares it at 10⁻⁶; the fields
+  not recomputed are named, with reasons, in `tests/excluded_fields.json` (Amendment A4).
 - Pinned circuits: every circuit the package runs ships as an exact gate list, so every platform runs the same
   gate sequences (`src/manacitra/pinned_circuits.json`, `tools/pin_circuits.py`).
 - Sealing: `manacitra seal | reveal | verify`, salted SHA-256 commitments. Signing: a gated CI workflow that signs
@@ -20,6 +21,10 @@ The first version.
 - Safety (Amendment A3): every spending submission goes through the submit-once guard; Open Quantum checks the
   balance, the quote and the budget across waves again immediately before sending, and keeps credit reservations in
   the ledger. The dataset is found from a clone, `MANACITRA_DATA` or `--data`, with a clear stop when it is missing.
+- Safety (Amendment A4): the guard's check and its reservation are one step under an interprocess lock on the ledger,
+  so concurrent processes cannot both send one job or overspend one budget; IBM's cap counts the estimates of open
+  reservations. `tools/make_review_archive.sh` makes a review archive from a fresh single-branch clone, and
+  `tools/scan_secrets.py --git` checks the reachable git identities against an approved list.
 - The README, the long-form documentation, six diagrams and three examples. The README explains how the results were
   made: kickoffs (Amendment A2).
 - Ownership (Kickoff 01, Amendment A1): copyright Dogma LLC (doing business as Dogma Guru), developed by Anish Patel.

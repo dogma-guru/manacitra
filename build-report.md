@@ -10,7 +10,10 @@ section 12). Pull request #1 was merged before A2 was applied, so A2 and A3 are 
 
 **Summary.**
 - Every reproduction test passes. Every archived statistic recomputes from the archived counts. Across 2,992 numeric
-  values, the largest difference is 1.1·10⁻¹⁶, against the 10⁻⁶ bar.
+  values, the largest difference is 1.1·10⁻¹⁶, against the 10⁻⁶ bar. *(Narrowed by Amendment A4, section 14: the
+  comparison then covered only the fields present on both sides, so "every archived statistic" overclaimed. The
+  inventoried fields are now listed in `tests/expected_fields.json`, and the rest, with reasons, in
+  `tests/excluded_fields.json`.)*
 - 152 tests pass, Ruff is clean, and the identifier scan is clean on the whole tree.
 - The first CI run failed one test on Linux. The cause was real: the three-CZ synthesis gives different single-qubit
   layers on different platforms. The circuits are now pinned (section 7).
@@ -774,3 +777,155 @@ was used and no request sent:
 **Every call is verified against SDK 0.4.3 offline. The live responses are still untested.** Two of the methods,
 `_wait_for_preparation` and `_resolve_organization_id`, are private and may change without notice. The extra is now
 limited to the checked versions, and the adapter stops at import if either method is missing (section 12).
+
+## 14. Amendment A4: fixes from the second review (6 October 2026)
+
+**The review.** A second independent review, by an OpenAI Codex agent in run mode, against the rubric as revised on
+6 October, of commit `481cb93`. Its marks were 41 PASS, 3 FAIL and 0 CANNOT CHECK, with 258 tests passing. It
+reproduced every Section B number with its own code. Its report and probes were read from its hand-back folder,
+outside the repository, and are not copied into it.
+
+**Numbering.** The amendment asks for "a section 13, as A3 did for section 12". Section 13 already holds the review's
+three CANNOT CHECK items, so this is section 14.
+
+**Every number still reproduces.** That includes every statistic brought under test here for the first time (below).
+Nothing in `data/` changed, and all 21 files match `data/SHA256SUMS`.
+
+**Each finding, what changed, and the test that now covers it.**
+
+| review ID | finding | what was changed | test |
+|---|---|---|---|
+| R1 (Blocker; E2) | the guard's ledger lookup and its reservation were separate, unlocked steps: two callers held after both had read the ledger both sent one job | **One lock around the check.** Every spending path (IBM and Open Quantum, library and command line) goes through `submit_once`, which takes an exclusive lock on `ledger.jsonl.lock` beside the ledger. It uses `fcntl.flock` on POSIX and `msvcrt.locking` on Windows, and each acquisition opens its own descriptor, so the lock holds between processes and between threads. **In order, under the lock:** the ledger is read again from disk; the job hash is checked against earlier sends and open reservations; the backend's `_reserve` does the budget accounting from those entries; the reservation and the "sending" record are written in one write, then flushed and fsynced. The lock is released, and only then is the job sent. **Timeout.** A caller that cannot take the lock within 30 s is refused (`LockTimeout`) and sends nothing. **Durability.** Every ledger write is flushed and fsynced. A last line without its newline (a crash mid-write) is ignored when read and cut off before the next write; any other line that is not JSON stops the read. No new dependency. | `test_guard_concurrency.py`: `test_two_processes_one_job_exactly_one_send`, `test_a_held_lock_refuses_after_the_timeout`, `test_a_crash_after_the_reservation_still_refuses_a_repeat`, `test_an_unfinished_write_is_ignored_and_cut_off`, `test_a_corrupt_line_in_the_middle_stops_the_read`, and `test_the_reviewers_thread_race` (the reviewer's barrier script, adapted to the fake backend in `tests/_fakes.py`) |
+| R1, budgets | ledger budgets were not atomic across callers | **Open Quantum:** committed credits are settled charges plus open reservations, as in A3, now read and checked under the lock. **IBM:** the cap check is now the usage read from the provider, plus the estimates of every open IBM reservation, plus this job's estimate, against the cap. The estimate is reserved in the ledger. A fetch that reports the job's charged time settles the reservation. | `test_two_processes_two_jobs_one_open_quantum_budget`, `test_two_processes_two_jobs_one_ibm_cap`; `test_ibm_fake.py`: `test_open_reservations_count_against_the_cap`, `test_a_fetch_without_the_charged_time_settles_nothing` |
+| R1, after a failure | — | As A3 said: a reservation from a failed or ambiguous send stays until a fetch settles it, and a repeat needs `allow_resubmit=True` (`--allow-resubmit`). The override is logged with the caller's reason (`reason=`, `--resubmit-reason`); without one, it logs "none given". | `test_a_failed_send_keeps_its_ibm_reservation`, `test_a_resubmission_logs_the_reason`; the A3 Open Quantum tests, unchanged and passing |
+| R3 (Major; F1) | the acceptance comparison read only the keys present on both sides and let some missing keys and type changes through; the settling run's `archived.analysis` was never compared | **The inventory.** `tests/expected_fields.json` lists, per acceptance case, every archived field it recomputes, by its path in the data file, with a rename (`"as"`) where the recomputed value sits at another path: 1,055 fields, 38 of them renamed. Every field is compared at 10⁻⁶, and none states its own tolerance. **The exclusions.** `tests/excluded_fields.json` names every other field of every data file, with a one-line reason each (201 entries). **The strict comparison** (`tests/_reproduce.py`) fails when a listed field is missing on either side, its type differs (a number against `None`, a string or a list; a list of another length; a dictionary with other keys), a recomputed number is not finite, or the difference exceeds 10⁻⁶. **The inventory test** fails when a field is in neither file or in both, when a listed or excluded path does not exist, or when an exclusion has no reason. | `test_field_inventory.py` (33 tests); `test_reproduction.py` |
+| R3, k29 | the settling analysis, z among it, was not under test | `archive.settle_analysis` recomputes it from the archived P(11) table (the settling run archived no counts), with its decision rule. The case "Kickoff 31 step 0" is renamed "Kickoff 29 settling run and Kickoff 31 step 0". | **It reproduces with a difference of 0.0 on every field**, on both processors: z = 21.75267698823275 (ibm_fez) and 18.24544062466692 (ibm_kingston); verdict SETTLED-DETECTED on both. The ideal values differ by 2.2·10⁻¹⁶. |
+| R3, mutations | — | **Four mutations, in memory**, each on one inventoried statistic: set to 999, removed, set to `None`, set to NaN. **Where:** ibm_fez's settling run (z), ibm_kingston's Kickoff 31 leave-one-out (r_AB), ibm_fez's Kickoff 33 shots-resampled interval, and Rigetti's r_AB. **Result:** each mutation fails the comparison and names the field. The files on disk are hashed before and after each test and never change. **End to end:** two more tests mutate the loaded record and rerun the whole case from the data, as the reviewer's probe did. | `test_a_mutated_statistic_fails_the_comparison` (16 cases), `test_the_reviewers_probe_end_to_end` (2), `test_the_comparison_is_strict` (9), `test_the_comparison_reports_a_missing_key_and_a_type_change` |
+| R3, prose | README:43 and CONTRIBUTING claimed "every archived statistic" | **README and CONTRIBUTING.** Both now say: "Every statistic listed in `tests/expected_fields.json` is recomputed from the archived counts and compared at 10⁻⁶. Fields that cannot be recomputed from this release are named, with reasons, in `tests/excluded_fields.json`." The A3 wording on README numbers is kept. **Elsewhere:** the same narrowing is in `docs/index.md` section 7, the CHANGELOG and `test_reproduction.py`'s docstring. Section 0's summary line in this report keeps its words, with a dated note that this amendment narrows it. | wording |
+| R2 (Blocker under the rubric; E5) | the reviewed zip shipped the working `.git`: reflogs, and 15 unreachable commit objects | **No history is rewritten**, by the author's ruling of 6 October: public authorship identities in git metadata are allowed. **The archive script.** `tools/make_review_archive.sh` makes a fresh `git clone --no-local --single-branch --branch <branch>`. It then removes the clone's own traces: the remote, a local path; the remote-tracking refs; and every reflog, which would name whoever cloned and the path cloned from. It runs both scans, and stops without writing anything on a finding. Only then does it zip the clone and write the zip's SHA-256 beside it. **Documentation:** `CONTRIBUTING.md`, under "Independent review". | **The script on `94f1928`:** 30 reachable commits; one ref; no reflog; no remote; 0 unreachable objects (`git fsck --unreachable --no-reflogs` in the extracted archive); no local path anywhere in its `.git`. Both scans are clean. The zip's SHA-256 was `7fbb9a37…77c3`. It is a check of the script, not the archive for the re-review: that one is made on the commit to be reviewed. |
+| R2, the scan | — | **What it reads.** `tools/scan_secrets.py --git` reads the author, the committer and every address in the message of every commit reachable from any ref. It reports any address not approved for its role. **The approved list.** It is in `tools/scan_patterns.py` (`GIT_IDENTITIES`), written as escaped regular expressions so the tree scan does not match it: the author's public address as author, committer and in `Signed-off-by:`; the assistant's no-reply address in `Co-Authored-By:` only; GitHub's no-reply address as committer. **Unchanged:** the default tree scan. | `test_scan.py`: `test_the_approved_identities_pass_in_their_roles`, `test_anything_else_is_a_finding` (8 cases), `test_this_repository_has_only_approved_identities`, `test_the_approved_list_carries_no_address_the_tree_scan_would_match`. On this repository at `94f1928`: clean, 30 reachable commits. |
+
+**What R3 brought under test for the first time, all reproducing.** 9,905 values in the 15 cases, the largest
+difference 1.9·10⁻⁷ (before: 2,992 numeric values, through the lenient comparison). New, beside the settling runs:
+
+- Kickoff 31: the leave-one-out (`archived/robustness`, by `verdicts.leave_one_out`), the hours since the settling
+  run, the settling run's time, and the per-circuit P(11) table.
+- Kickoff 32: each test pair's group, its four levels and its shots, ibm_kingston's line for pair 16-23, the selection's
+  k_A and k_B from Kickoff 31's map, and the per-circuit P(11) table.
+- Kickoff 33: the per-circuit scores with readout correction, the measured distributions, P(11) of A without and with
+  the offset, the predictors, the shots-resampled 90% intervals, and the hours since Kickoff 32's job and its ID.
+- Kickoff 36: each arm's per-circuit P(11) table, and arm 2's correlations of k_A and k_B with the planted error.
+- Kickoff 34b: the bit-order check, the two waves' levels, the dead-pair filter's excluded pairs, the screen's pair
+  rule applied again to its L_s (passing, taken, the counts, the 27 pairs), the screen's L_s on the 11 shared pairs,
+  and whether the test run's low pairs stayed below 0.5 in the screen.
+
+**The reviewer's probes, rerun against the fixed code.** Both scripts were copied, byte for byte (SHA-256
+`e91988f7…1cdc` and `bec820a0…6c25`), with their relative paths pointed at this checkout.
+
+`adversarial.py`, the thread race. At `481cb93` it reported `{"sends": 2, "distinct_job_hashes": 1,
+"override_flags": [false, false]}`.
+- **Unmodified, it now stops at its concurrent step.** Its earlier sections complete: the four verdict cases give
+  NOISE, NOISE, DIAGNOSTIC and MAP PRESENT, there are 256 map and 72 payoff boundary checks, and the sequential guard
+  gives `{"sends": 2, "override_flags": [false, true]}`. Then line 71 (`f.result()`) raises:
+  `ResubmitRefused: refused: this job (hash 06771dba88d2) was already sent at 2026-10-06T02:53:20Z; its reservation
+  from 2026-10-06T02:53:20Z (no amount) is open; pass allow_resubmit (CLI: --allow-resubmit) to send it again`.
+- **With that one line changed** to collect each thread's exception instead of raising, it reports:
+  `{"outcomes": ["ResubmitRefused", "sent"], "sends": 1, "distinct_job_hashes": 1, "override_flags": [false]}`.
+  Its ledger holds one "reserved", one "sending" and one "sent".
+- **Across processes as well.** The same race, run in two processes against the reviewed commit, sent twice; against
+  the fix it sends once.
+
+`coverage_probe.py`, the z mutation. At `481cb93` it reported `"acceptance_rows_and_diffs_unchanged": true`,
+33 leaves compared, worst difference 0.0. Now:
+
+```json
+{"missing_key": [[0.0, ".checked"], [Infinity, ".omitted (missing on the recomputed side)"]],
+ "numeric_changed_to_none": [[0.0, ".checked"], [Infinity, ".omitted (type: recomputed None, archived number)"]],
+ "archived_path": "ibm_fez/k29-settle.json: archived.analysis.z", "original_z": 21.75267698823275,
+ "mutated_in_memory_z": 999, "acceptance_rows_and_diffs_unchanged": false, "compared_leaves": 157,
+ "worst_difference": 977.2473230117672}
+```
+
+**The excluded fields and their reasons** (`tests/excluded_fields.json`, 201 entries, grouped here by reason).
+
+| reason | fields (in which files) |
+|---|---|
+| record metadata (provenance, sources, identifiers, descriptions), not a statistic | `meta` (all 19 files) |
+| the provider's job times, record metadata; the hours between runs are recomputed from them where archived | `timestamps` (the 8 IBM runs) |
+| the provider's usage record for the job, metadata | `usage` (the 8 IBM runs) |
+| input: the archived counts, from which the statistics are recomputed | `counts` (10 files) |
+| input: the pairs, the circuit order, the halves, the plan, the coupling map | `pairs`, `order`, `order35`, `halves`, `plan`, `edges`, `rounds`, the selection's pairs, groups and dense pairs, Rigetti's 11 shared pairs and two dropped pairs, the screen's candidate pairs and edge indices |
+| input: the provider's published figures at submission, read from the provider | `published_at_submission`; the settling runs' `x` |
+| input: the settling run archived no counts; this P(11) table is what its analysis is recomputed from | `k29-settle.json: per_circuit_P11` (both) |
+| a copy of another field, not a statistic | `k29-settle.json: archived/k31_baseline/x`; `k31-map.json: archived/analysis/S4/calibration_last_update_at_submission`; `k36-persistence.json: arm1_verdict` |
+| metadata: the provider's calibration date; a note that no calibration snapshot was returned | `k31-map.json: calibration`; Rigetti `calibration_snapshot(s)` |
+| a record of the provider's transpiler at submission; the transpiled circuits as sent are not in this release | `transpile_checks` (Kickoff 31 and 33, both processors) |
+| the selection's checks and records, made on the coupling map before the run | `k32-isolation.json: selection/group_balance`, `distance_checks`, `all_distance_checks_ok`, `replacements` |
+| a note or definition in words, not a statistic | Rigetti: `L_s_definition`, `pair_rule/rule`, the descriptive notes, `fixed`, `pairs`, `L_main`, `definition`, `label`, `program_widths`, `archived/analysis/S3`, `archived/robustness/note`; persistence: `layout_note`, `layout`, `x_rule`, `seeds`, and the original `rule`'s wording (its verdict is compared); the arms' `model` and `seeds` |
+| needs the screening run's counts, which are not in this release (only its L_s per candidate is) | `screen.json: bit_order_check`, `pair_rule/candidates/[*]/L_s` (the pair rule is recomputed from these) |
+| needs Kickoff 34's test run, whose levels are in this release only for the 11 shared pairs | `main.json: …/test_vs_screen_27_test_pairs/r`; the shared pairs' `test_17_01` levels (an input) |
+| input: the simulated days, their seeds and scrambles, the arms' noise models, numbers and published scores | persistence `static/days`, `scrambled/days`, `day_seeds`, `scramble`, `shots_per_circuit`, `noise_source_arm`; the arms' `arm`, `pairs`, `x` |
+| the simulation's ground truth, from the noise model without shot noise; not a statistic of the archived counts, and not recomputed by the acceptance suite | the arms' `exact_P_per_variant`, `exact_k_no_shot_noise`, `exact_sd_kA_no_shot_noise`, `exact_r_kA_x_no_shot_noise` |
+| the planted map's design, computed from the noise-free model before the simulated runs; the planted model is tested in `tests/test_simulator.py` | `k36-planted.json`, every field but `meta` and the planted errors themselves (an input) |
+| input: Kickoff 33's workload, drawn from its seed; checked against a fresh draw by `tests/test_workload.py` | `k33-workload.json: unitaries`, `circuits/[*]/ideal` |
+| a noise-free check of the workload's synthesis at design time; `tests/test_workload.py` checks the same property | `k33-workload.json: circuits/[*]/synthesised_noise_free`, `W_noise_free`, `max_abs_1_minus_W_noise_free` |
+
+**Readings and choices, logged.**
+- **A recorded reversal: an IBM cap refusal is now "refused", not a send.** A3 logged a cap refusal as "sending" then
+  "failed", so that a retry needed the override; section 12 listed this as a difference between IBM and Open
+  Quantum. With the cap checked under the lock before anything is reserved, both providers now log a refusal before
+  sending the same way, and a job refused at the cap goes without the override once the usage allows it.
+  `test_cap_refuses_before_anything_is_sent` was changed to say so.
+- **What runs before the lock.** The provider's reads run before the lock (`_preflight`), so the lock never spans a
+  network call: IBM's usage and the transpile checks; Open Quantum's quote, preparations, balance and earlier wave.
+  Only the accounting against the ledger runs under it (`_reserve`). A refusal from either is logged as "refused".
+- **The Open Quantum balance floor** uses the balance read before the lock and, as in A3, does not subtract other
+  open reservations. The budget does count them. To bound concurrent spending, set `budget_credits`.
+- **IBM reservations share one scope, `ibm`.** The usage window is the account's, across processors. Several accounts
+  sharing one ledger would count each other's reservations, which errs toward refusing.
+- **A reservation whose send failed, with no job created, never settles by itself**, because there is nothing to
+  fetch. As A3 specified, it keeps counting against the cap or the budget in that ledger. A logged way to release
+  one by hand is not in this amendment.
+- **After the send.** If the lock cannot be taken to write the "sent" or "failed" record, the record is printed
+  rather than lost. The reservation written before the send already refuses a repeat.
+- **Not run on Windows.** The `msvcrt.locking` path has not been run: this machine is macOS, and CI runs Linux.
+- **The settling analysis's formula.** It was read from the runner's script for the settling runs, outside the
+  repository. That script's hash on disk differs from the one recorded in the ibm_fez file (`7ccce2…`): it is the
+  later copy for ibm_kingston, whose predictions note says it kept the same decision rule. The formula reproduces
+  every archived field on both processors with a difference of 0.0.
+- **The bit-order check's formula.** It was read from Kickoff 34b's script, whose hash matches the one recorded in
+  `main.json` (`5678d9…`). Its `ideal` differs by 1.9·10⁻⁷, within 10⁻⁶: the script computed it from six-place
+  constants, and the package from the exact unitary.
+- **Kickoff 32's analysis takes Kickoff 31's k_A from the archived file**, as before; the Kickoff 31 case compares
+  that k_A with its recomputation.
+- **What `excluded_fields.json` holds, for the author's ruling.** The prescribed sentence names fields "that cannot
+  be recomputed from this release". To make the inventory total, the file also holds inputs and metadata. It also
+  holds three groups this release could recompute in principle and does not: the simulated arms' ground truth, the
+  planted map's design, and the workload's noise-free check. Each says so in its reason. Whether to bring them under
+  test, or keep them excluded, is the author's call.
+- **The GitHub Actions bot is not approved as a git identity.** The rubric's E5 approves it "in workflows and the
+  sign-off checker", so the `--git` scan approves it in no git role. Once signing is on, the workflow's own commits
+  would be findings unless the list adds it as their author and committer. That needs a ruling before signing is
+  turned on.
+- **New package functions.**
+  - New: `archive.settle_analysis`, `archive.isolation_p11`, `archive.bit_order_check`, `archive.screen_pair_rule`
+    and `circuits.ideal_exact`.
+  - More fields from existing functions: `archive.isolation_analysis` (each row's group, levels and shots),
+    `archive.payoff_from_record` (scores, distributions, levels, predictors) and `archive.rigetti_map` (the bit-order
+    check and the wave levels).
+- **The date.** The amendment is dated 6 October. This machine's local date was still 5 October when the work began;
+  the ledger times above are already 6 October in UTC.
+
+**After the amendment:**
+- 314 tests pass (258 before; 56 new), and Ruff is clean;
+- the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit (30 at
+  `94f1928`, before this report's commit);
+- nothing in `data/` changed, and `data/SHA256SUMS` still matches.
+
+**Not in this amendment, and not done:**
+- merging;
+- making the repository public;
+- turning on signing;
+- rewriting git history;
+- publishing kickoff texts or sealed predictions;
+- any provider submission.

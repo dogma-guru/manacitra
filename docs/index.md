@@ -195,22 +195,30 @@ with a the bit of the pair's first qubit and b its second.
 - **Dry run by default.** `manacitra map` sends nothing without `--submit`.
 - **The estimate first.** Before a send, the estimate is printed: on IBM, 0.3 ms per shot plus 5 s (the observed
   rate was about 0.28 ms); on Open Quantum, the platform's own quote in credits.
-- **Submit once.** `backends/base.py` writes a ledger record (job hash, provider, processor, UTC time) *before*
-  anything is sent, adds the handle when it exists, and refuses a second send of the same job hash. `--allow-resubmit`
-  (in Python, `allow_resubmit=True`) overrides that and is itself recorded. A send that failed still counts: a second
-  attempt needs the override. This holds for the library as well as the command line: a spending backend's public
-  `submit()` is the guard, and its raw send is the private `_send()`. The simulators, which send nothing to a
-  provider, keep a direct `submit()`. The ledger lives in `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and
-  holds no credentials.
+- **Submit once.** `backends/base.py` refuses a second send of the same job hash. `--allow-resubmit` (in Python,
+  `allow_resubmit=True`) overrides that and is itself recorded, with the reason given (`--resubmit-reason`). The check
+  and the reservation are one step: under an exclusive lock on a file beside the ledger (`fcntl.flock` on POSIX,
+  `msvcrt.locking` on Windows, so it holds between processes as well as threads), the guard reads the ledger again,
+  refuses a job already sent or reserved, does the budget accounting against every reservation, and writes and fsyncs
+  the reservation and a "sending" record (job hash, provider, processor, UTC time). Only then is the lock released and
+  the job sent, so two commands started together cannot both send one job, or both spend the last of one budget. A
+  caller that cannot take the lock within 30 seconds is refused and sends nothing. A refusal before sending (a cap, a
+  quote, a budget) is recorded as "refused", which is not a send. A reservation from a send that failed, or whose
+  outcome is unknown, stays until a fetch settles it, and a second attempt needs the override. This holds for the
+  library as well as the command line: a spending backend's public `submit()` is the guard, and its raw send is the
+  private `_send()`. The simulators, which send nothing to a provider, keep a direct `submit()`. The ledger lives in
+  `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and holds no credentials.
 - **The IBM cap.** The usage is read from the runtime client before every submission (numbers and dates only; every
-  identifier field is dropped), and a job is refused if used + estimate exceeds the cap, 540 s of the Open plan's
-  600 s window by default. No usage read, no submission.
+  identifier field is dropped). The provider's figure lags a submission, so a job is refused if the usage, plus the
+  estimates of every open IBM reservation in the ledger, plus this job's estimate, exceeds the cap: 540 s of the Open
+  plan's 600 s window by default. The estimate is reserved before sending, and a fetch that reports the job's charged
+  time settles it. No usage read, no submission.
 - **The Open Quantum tests.** Every task must be quoted at the expected credits, on the Public plan, within the
   budget, leaving the balance above the floor; a second wave is refused until the first has completed. The checks run
   again immediately before sending: the balance is read again; the quote must be younger than 10 minutes and every
-  task still prepared at the expected price; the credits already reserved in the ledger for the run (its budget scope,
-  provider:processor:job name) plus this job must stay within the budget; and the balance after must stay at or above
-  the floor. Any failure refuses the send and names the check. A job's credits are reserved in the ledger before it is
+  task still prepared at the expected price; the credits already committed in the ledger for the run (its budget scope,
+  provider:processor:job name; settled charges and open reservations, read under the ledger's lock) plus this job must
+  stay within the budget; and the balance after must stay at or above the floor. Any failure refuses the send and names the check. A job's credits are reserved in the ledger before it is
   sent; after a failed send, which may have created tasks, the reservation stays until a fetch settles it.
 - **Three CZ per pair.** Every transpiled circuit is checked: exactly three two-qubit gates per pair, none outside the
   pairs, no swaps, the layout kept.
@@ -228,7 +236,8 @@ Without it, Manacitra stops and says how to get it, and the tests that need it a
 
 ```bash
 pip install -e ".[dev]"
-pytest tests/test_reproduction.py     # every archived statistic, from the counts, to 1e-6
+pytest tests/test_reproduction.py     # every field in tests/expected_fields.json, from the counts, to 1e-6
+pytest tests/test_field_inventory.py  # every field of data/ listed once: compared, or excluded with a reason
 pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
