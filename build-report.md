@@ -720,3 +720,33 @@ instruction (the amendment says #1). Nothing is merged.
 - turning on signing;
 - publishing kickoff texts or sealed predictions;
 - any provider submission.
+
+## 13. The review's three CANNOT CHECK items, run with the network (6 October 2026)
+
+All of this ran in throwaway environments outside the repository, with Python 3.14.7, the only version on this
+machine. Nothing was sent to any provider, and no account was used.
+
+| review ID | check | result |
+|---|---|---|
+| A1 | a fresh environment, from a `git archive` export of this branch, with `pip install -e ".[ibm,aer,cirq,openquantum,docs,dev]"` from PyPI | **passes.** The install took 24 s. 248 tests pass and 1 is skipped (the `git check-ignore` test, as expected outside a work tree). Ruff is clean. All 15 acceptance cases are within 10⁻⁶. Example 1 runs, and the six diagrams build. CI on the pull request passes on Python 3.11 and 3.13. |
+| H5 | `cffconvert --validate -i CITATION.cff` (cffconvert 2.0.0) | **passes**: "Citation metadata are valid according to schema version 1.2.0." |
+| H8 | the licence of every installed package, from that full install (`pip-licenses` 5.5.5, run from a separate environment so it is not counted) | **No GPL, LGPL or AGPL package, and none unknown.** The 76 packages are Apache 2.0, BSD, MIT, ISC, PSF or MIT-0/MIT-CMU, with three carrying MPL-2.0 (certifi, tqdm, and part of orjson). MPL-2.0 is file-level copyleft and binds only modified or distributed copies of those files; Manacitra depends on them and does not include them, as NOTICE says. The inventory reads each package's own metadata; it is not a legal review. |
+
+**Found on the way: a plain install has no data.** With `pip install .` (not editable), 59 tests fail with
+`FileNotFoundError`. `archive.data_dir()` looks for `data/` beside the source tree, and an installed package has no
+`data/`. The README documents only the editable install from a clone, which works, so no documented route fails. A
+clear error, or a `MANACITRA_DATA` setting, would serve users who install it the other way. Not changed here; it is
+outside A3.
+
+**The Open Quantum adapter against the real SDK, offline.** Section 5 listed the real SDK calls as untested without
+the network. With `openquantum-sdk` 0.4.3 and `openquantum-sdk-qiskit` 0.3.3 installed, their code was read; no account
+was used and no request sent:
+- every method the adapter calls exists with the argument names it passes: `get_backend_class`,
+  `upload_job_input`, `prepare_job`, `_wait_for_preparation(preparation_id, timeout, interval)`,
+  `_resolve_organization_id`, `create_job`, `get_job`, `download_job_output` and `get_credit_balance`;
+- every model field it reads or sets exists (`JobPreparationCreate`, `JobCreate`, `JobPreparationResultResponse`,
+  `CreditBalanceRead`, `JobRead`, `QuotePlan`, `QueuePriority`);
+- `ExecutionPlanType.PUBLIC` and `QueuePriorityType.STANDARD` exist.
+
+Still untested: the live responses themselves, and the enum values' meaning on the platform. Two of the methods,
+`_wait_for_preparation` and `_resolve_organization_id`, are private and may change without notice.
