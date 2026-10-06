@@ -3,8 +3,10 @@
 Branch `feat/initial-implementation`, 5 October 2026. Built by Claude Code (Opus 5.5) in the confirmed clone of the
 repository (`manacitra/` in the author's projects folder), default branch `main`. Nothing was submitted to any
 provider; every test runs on simulation or on the archived results. Updated for the kickoff's section 7b (sealing and
-signing; see section 8), for Amendment A1 (ownership and the open items; see section 10) and for Amendment A2 (the
-Rigetti result, and what a kickoff is; see section 11).
+signing; see section 8), for Amendment A1 (ownership and the open items; see section 10), for Amendment A2 (the
+Rigetti result, and what a kickoff is; see section 11) and for Amendment A3 (fixes from the independent review; see
+section 12). Pull request #1 was merged before A2 was applied, so A2 and A3 are on the branch
+`feat/amendments-a2-a3`, in a new pull request into `main`.
 
 **Summary.**
 - Every reproduction test passes. Every archived statistic recomputes from the archived counts. Across 2,992 numeric
@@ -54,7 +56,7 @@ were reproduced too.
 | Kickoff 31, ibm_fez | verdict | DIAGNOSTIC | DIAGNOSTIC | same |
 | Kickoff 31, ibm_fez | r_split(k_A) | 0.867691 | 0.867691 | 0.0e+00 |
 | Kickoff 31, ibm_fez | r_AB | 0.821290 | 0.821290 | 0.0e+00 |
-| Kickoff 31, ibm_fez | p(r_AB), one-sided | 0.000000 | 0.000000 | 0.0e+00 |
+| Kickoff 31, ibm_fez | p(r_AB), one-sided | p < 1/10000 (0 of 10000) | p < 1/10000 (0 of 10000) | 0.0e+00 |
 | Kickoff 31, ibm_fez | r_Ax | -0.178918 | -0.178918 | 0.0e+00 |
 | Kickoff 31, ibm_fez | r_AB.x | 0.816163 | 0.816163 | 0.0e+00 |
 | Kickoff 31, ibm_fez | mean k_A | 0.821755 | 0.821755 | 0.0e+00 |
@@ -62,7 +64,7 @@ were reproduced too.
 | Kickoff 31, ibm_kingston | verdict | DIAGNOSTIC | DIAGNOSTIC | same |
 | Kickoff 31, ibm_kingston | r_split(k_A) | 0.899652 | 0.899652 | 0.0e+00 |
 | Kickoff 31, ibm_kingston | r_AB | 0.894305 | 0.894305 | 0.0e+00 |
-| Kickoff 31, ibm_kingston | p(r_AB), one-sided | 0.000000 | 0.000000 | 0.0e+00 |
+| Kickoff 31, ibm_kingston | p(r_AB), one-sided | p < 1/10000 (0 of 10000) | p < 1/10000 (0 of 10000) | 0.0e+00 |
 | Kickoff 31, ibm_kingston | r_Ax | -0.047039 | -0.047039 | 0.0e+00 |
 | Kickoff 31, ibm_kingston | r_AB.x | 0.897572 | 0.897572 | 0.0e+00 |
 | Kickoff 31, ibm_kingston | mean k_A | 0.827333 | 0.827333 | 0.0e+00 |
@@ -85,7 +87,7 @@ were reproduced too.
 | Kickoff 33, ibm_fez | G 90% interval, high | 0.002134 | 0.002134 | 0.0e+00 |
 | Kickoff 33, ibm_fez | r(W, k_prior) | 0.618411 | 0.618411 | 0.0e+00 |
 | Kickoff 33, ibm_fez | partial r(W, k_prior | x) | 0.603074 | 0.603074 | 0.0e+00 |
-| Kickoff 33, ibm_fez | p(partial), one-sided | 0.001200 | 0.001200 | 0.0e+00 |
+| Kickoff 33, ibm_fez | p(partial), one-sided | p = 0.0012 (12 of 10000) | p = 0.0012 (12 of 10000) | 0.0e+00 |
 | Kickoff 33, ibm_fez | mean W | 0.995174 | 0.995174 | 0.0e+00 |
 | Kickoff 33, ibm_kingston | verdict | NOT SETTLED | NOT SETTLED | same |
 | Kickoff 33, ibm_kingston | G (top 8 by map minus top 8 by x) | 0.000447 | 0.000447 | 0.0e+00 |
@@ -93,7 +95,7 @@ were reproduced too.
 | Kickoff 33, ibm_kingston | G 90% interval, high | 0.000759 | 0.000759 | 0.0e+00 |
 | Kickoff 33, ibm_kingston | r(W, k_prior) | 0.292295 | 0.292295 | 0.0e+00 |
 | Kickoff 33, ibm_kingston | partial r(W, k_prior | x) | 0.292302 | 0.292302 | 0.0e+00 |
-| Kickoff 33, ibm_kingston | p(partial), one-sided | 0.073200 | 0.073200 | 0.0e+00 |
+| Kickoff 33, ibm_kingston | p(partial), one-sided | p = 0.0732 (732 of 10000) | p = 0.0732 (732 of 10000) | 0.0e+00 |
 | Kickoff 33, ibm_kingston | mean W | 0.996823 | 0.996823 | 0.0e+00 |
 | Kickoff 36, arm 1 | verdict | NOISE | NOISE | same |
 | Kickoff 36, arm 1 | r_split(k_A) | 0.100870 | 0.100870 | 0.0e+00 |
@@ -505,7 +507,7 @@ After the amendment: 170 tests pass, Ruff is clean, and `data/SHA256SUMS` was re
 | Kickoff 34b, Rigetti Cepheus-1-108Q | working pairs | 22.000000 | 22.000000 | 0.0e+00 |
 | Kickoff 34b, Rigetti Cepheus-1-108Q | r_split(k_A) | 0.985388 | 0.985388 | 0.0e+00 |
 | Kickoff 34b, Rigetti Cepheus-1-108Q | r_AB | 0.970614 | 0.970614 | 0.0e+00 |
-| Kickoff 34b, Rigetti Cepheus-1-108Q | p(r_AB), one-sided | 0.000000 | 0.000000 | 0.0e+00 |
+| Kickoff 34b, Rigetti Cepheus-1-108Q | p(r_AB), one-sided | p < 1/10000 (0 of 10000) | p < 1/10000 (0 of 10000) | 0.0e+00 |
 | Kickoff 34b, Rigetti Cepheus-1-108Q | mean k_A | -0.284317 | -0.284317 | 0.0e+00 |
 | Kickoff 34b, Rigetti Cepheus-1-108Q | leave-one-out (without 101-102): verdict | MAP PRESENT | MAP PRESENT | same |
 | Kickoff 34b, Rigetti Cepheus-1-108Q | leave-one-out: r_split(k_A) | 0.972867 | 0.972867 | 0.0e+00 |
@@ -515,7 +517,7 @@ After the amendment: 170 tests pass, Ruff is clean, and `data/SHA256SUMS` was re
 | Kickoff 34b, after the fact: 20 pairs | verdict, rule applied | MAP PRESENT | MAP PRESENT | same |
 | Kickoff 34b, after the fact: 20 pairs | r_split(k_A) | 0.842281 | 0.842281 | 0.0e+00 |
 | Kickoff 34b, after the fact: 20 pairs | r_AB | 0.791168 | 0.791168 | 0.0e+00 |
-| Kickoff 34b, after the fact: 20 pairs | p(r_AB), one-sided | 0.000400 | 0.000400 | 0.0e+00 |
+| Kickoff 34b, after the fact: 20 pairs | p(r_AB), one-sided | p = 0.0004 (4 of 10000) | p = 0.0004 (4 of 10000) | 0.0e+00 |
 
 | case | numeric values compared | largest difference | within 1e-6 |
 |---|---|---|---|
@@ -641,3 +643,80 @@ covers 15 cases, all within 10⁻⁶.
 - any provider submission;
 - the Kickoff 35 data;
 - publishing kickoff texts or sealed predictions.
+
+## 12. Amendment A3: fixes from the independent review
+
+**The review.** An OpenAI Codex agent reviewed commit `a982814` (A1 applied, A2 not yet) against the rubric. Its
+marks were 30 PASS, 8 FAIL and 3 CANNOT CHECK. Its report and the three probe checks were read from its hand-back
+archive, outside the repository. Every core number still reproduces after the fixes (the acceptance table, 15 cases,
+all within 10⁻⁶).
+
+**Where this landed.** Pull request #1 was merged into `main` at 23:44 UTC on 5 October, before A2 was applied. A2
+and A3 are therefore on a new branch, `feat/amendments-a2-a3`, in a new pull request into `main`, at the author's
+instruction (the amendment says #1). Nothing is merged.
+
+**Each finding, what changed, and the test that now covers it.**
+
+| review ID | finding | what was changed | test |
+|---|---|---|---|
+| E2 (Major) | a backend's public `submit()` bypassed the submit-once guard | `GuardedSubmit` in `backends/base.py`: on IBM and Open Quantum the public `submit()` is the guard (ledger record before sending, a repeat refused unless `allow_resubmit=True`, the override logged), and the raw send is the private `_send()`. The simulators keep a direct `submit()`, and their docstrings say why. The README's "a job already sent once is refused" now names the library as well as the CLI. | `test_ibm_fake.py::test_the_public_submit_is_the_guard`, `test_openquantum_recorded.py::test_the_public_submit_is_the_guard`; the CLI and `submit_once` tests unchanged and passing |
+| E3 (Major) | Open Quantum: budgets did not add up across waves; a cached quote was trusted at send time | `_preflight`, run immediately before sending. It re-reads the balance and every task's preparation, then checks five things: the quote's own tests; the quote's age (10 minutes at most); each task's plan and price; the ledger's reservations plus this job against the budget; and the balance after against the floor. Any failure refuses the send and names the check (logged as "refused", not as a send). A passing job's credits are reserved in the ledger before sending; a failed send keeps its reservation; a fetch settles it. | `test_two_waves_against_a_budget_that_fits_one`, `test_the_balance_is_read_again_at_send_time`, `test_an_expired_quote_is_refused`, `test_a_price_change_after_the_quote_is_refused`, `test_a_failed_send_keeps_its_reservation_until_a_fetch_settles_it`, `test_a_fetch_settles_the_reservation` |
+| E3, IBM part (passed) | the cap and the unreadable-usage checks | kept as they were; the public `submit()` now reaches them through the guard | `test_cap_refuses_before_anything_is_sent`, `test_no_usage_no_submission`, `test_snapshot_service_never_submits` |
+| F1, scope | "every pair at once" | the README's opening, the pipeline's alt text and the pipeline diagram now say: on a set of non-overlapping qubit pairs at once (27 in the published runs); every coupler can be covered in a few rounds. `MapJob`'s docstring says the same. | README wording |
+| F1, cause | "the share belongs to the pair's own gate" | Kickoff 32's finding is now "The gap between the best and worst pairs persisted when their neighbours were idle", with the sentence on what it rules out and what it does not separate. THE GATE stays as the sealed rule's name, explained as "not explained by the tested neighbours"; the kickoffs table's question and verdict say the same. | README wording |
+| F1, timing | rules and predictions "fixed" or "sealed" before the data, with no records in the release | each such statement (the opening, the pipeline's paragraph, alt text and diagram note, finding 2's leave-one-out, and A2's kickoff section) now says "according to the author's dated records, which are not part of this release". Added: from this release on, new commitments can be checked by anyone with `manacitra seal` and, once signing is on, a public timestamp; the published runs cannot be checked that way. `docs/index.md` section 3 carries the same qualifier. | README wording |
+| F1, status | "running" and "under way" undated | Kickoff 35 is "running as of 6 October 2026" (the open question, the kickoffs table, the pipeline diagram). The Rigetti line has been a finding since A2. | README wording |
+| F1, workflow | the pipeline implied the verdict gates selection and Manacitra runs the user's job | the README says what each step does: `manacitra pick` ranks pairs from a map, does not check the verdict, and warns; Manacitra does not run your job. In the pipeline diagram, Run is drawn dashed, as "Run (yours)". `pick` now prints a warning on stderr when the verdict is not DIAGNOSTIC or MAP PRESENT. | `test_cli.py::test_pick_warns_when_the_verdict_is_not_usable`, `test_pick_is_quiet_on_a_usable_map` |
+| F1, pinning (the review's qualifications) | the pinning rationale was only in this report | two sentences in `docs/index.md` section 1: why the circuits are pinned, and that they cannot be shown gate-for-gate identical to the circuits sent in Kickoffs 31 to 33 | documentation |
+| F1, finding 5 | "every number … to a test" was broader than the tests | narrowed in the README and `docs/index.md` to: every measured statistic in the README is checked by a test; times, ranges and counts are taken from the data files and listed in `tests/test_readme_numbers.py`. This report never made the broader claim. New assertions cover the displayed metadata. | `test_every_ibm_run_time_shown` (7 cases), `test_the_rigetti_times_shown`, `test_the_payoff_prior_is_about_two_hours_older`, `test_the_published_score_range_on_the_chip_map`, `test_the_isolation_group_sizes`, `test_finding_2_the_second_vendor` |
+| F1, times | the data index truncated 12:36:54 to 12:36, while the README rounded it to 12:37 | one convention everywhere: the nearest minute | the same time tests |
+| E5 (Blocker under the rubric) | the public bot address `41898282+github-actions[bot]@users.noreply.github.com` appears twice | kept, and allow-listed in `tools/scan_patterns.py` as that exact string, with a comment. The scan had passed only because its email pattern stopped at `]`, so it never saw the address. The pattern now reads brackets, so any other bracketed address is caught, and the allow-list carries the policy. The DCO test's address, split in two before, is now written whole. | `test_scan.py::test_the_bot_address_is_allowed_and_nothing_else` |
+| A5 (Minor) | metadata overclaimed "every file" | each JSON's `meta` carries six fields (processor, provider, kickoff, utc, shots per circuit, sources), with "not applicable" where a field does not apply. The coupling maps carry the snapshot (qiskit-ibm-runtime 0.50.0, `FakeFez` and `FakeKingston`), the SHA-256 of each snapshot's `conf_*.json`, and the extraction time: they were re-extracted at 00:41:38 UTC on 6 October, with edges identical to those first committed. `data/README.md` describes the fields by kind. Only `meta` changed in the IBM and simulated files. | `test_data_meta.py` (39 tests) |
+| G2 (Minor) | the chip map encoded values by shade alone | the measured pairs are drawn thicker the better they are, on both maps, and the main map numbers each pair by its rank. `docs/diagrams/chip-map-table.md`, generated with the diagram, lists rank, pair, k, x and rank by x, and the README's caption links to it. The alt text says so. | `test_the_chip_map_table_matches_the_data` |
+| H2 (Minor) | missing headers | the short header added to `src/manacitra/backends/__init__.py`, `.githooks/pre-commit` (after the shebang) and the three workflow files | `test_headers.py` (every Python file, the hook and the workflows) |
+| H3 (Minor) | NOTICE omitted requests and PLY | requests (Apache 2.0) and PLY (BSD 3-Clause) added. So that the test can cover every package `pyproject.toml` declares, NOTICE also lists the build and development tools (setuptools, wheel, pytest, ruff; MIT), under their own heading. | `test_notice.py` |
+| A2 note (portability) | the `git check-ignore` seal test failed outside a git repository | it skips, with its reason, outside a git work tree. Checked on a `git archive` extraction: 8 passed, 1 skipped. | `test_seal.py::test_the_seals_folder_is_ignored_by_git` |
+| B6 (passed; the interpretation) | a permutation p of zero reported as 0 | zero exceedances is reported as "p < 1/N (0 of N)", and other values as "p = … (k of N)" (`stats.format_p`). This covers the verdict printout and the acceptance table. The archived values are unchanged, and the rows above in sections 2 and 11 are shown in the new form. | `test_stats.py::test_a_permutation_p_of_zero_is_reported_as_a_bound` |
+
+**The reviewer's fake-service checks, rerun against the fixed code.** These are the reviewer's own calls (its
+`probes.py`, the Open Quantum part), with the recorded-shape fake service and each probe given its own ledger:
+
+| probe | at `a982814` | now |
+|---|---|---|
+| the same eight-task job, `submit()` twice | 16 tasks created, no ledger | 8 created; the second call refused: "this job … was already sent …; pass allow_resubmit … to send it again" |
+| two 24-credit waves against a 30-credit budget | 16 tasks, 48 credits of quoted work accepted | 8 created; the second wave refused: "quote test failed: within_budget; budget: 24 reserved + 24 for this job > 30" |
+| the balance drops to 0 after the quote, floor 10 | 8 tasks created | none created; refused: "balance floor: balance now 0 - 24 < floor 10" |
+
+**Readings and choices, logged.**
+- **IBM and Open Quantum log a refusal differently.** An IBM cap refusal is still logged as an attempt ("sending",
+  then "failed"), so a retry needs the override. This is the behaviour the kept tests check. An Open Quantum preflight
+  refusal is logged as "refused", which is not a send, and no reservation is made.
+- **What the budget counts.** The budget counts every reservation in its scope, settled or not: a settled one was
+  spent, and an open one may have been. The scope is provider:processor:job name, so a new run with the same job name
+  and ledger shares the budget. The docstring says to give such a run its own ledger or job name. No reservation is
+  released automatically.
+- **The quote's lifetime of 10 minutes is a local policy.** The platform's own quote lifetime is not known.
+- **Not exercised against the network.** Re-reading each preparation uses the SDK's private `_wait_for_preparation`,
+  as the quote already did. It is tested only against the fake service.
+- **Four displayed times changed** under the nearest-minute rule:
+  - ibm_kingston's payoff, 15:22 to 15:23 (README and data index);
+  - the Rigetti screen, 18:54 to 18:55;
+  - the Rigetti main job, 22:14 to 22:15 (README, the data index, and the notes in the Rigetti files, rebuilt with a
+    `utc` field; their counts and analyses are unchanged);
+  - in the data index only, ibm_fez's map, 12:36 to 12:37, and the simulated runs, 18:34 to 18:35.
+  The Kickoff 34 test task stays 17:01, as its source gives it to the minute.
+- **The rubric's three CANNOT CHECK items** are unchanged and still need the network or tools this machine lacks: a
+  fresh install (A1), CFF schema validation (H5) and a full licence inventory (H8).
+
+**After the amendment:**
+- 249 tests pass, and Ruff is clean;
+- every pinned circuit is its exact unitary (to 6.7·10⁻¹⁶);
+- `data/SHA256SUMS` was regenerated;
+- the scan is clean on the full tree (99 files scanned; the PNG diagrams skipped).
+
+**Not in this amendment, and not done:**
+- merging;
+- making the repository public;
+- turning on signing;
+- publishing kickoff texts or sealed predictions;
+- any provider submission.
