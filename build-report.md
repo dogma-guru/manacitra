@@ -929,3 +929,150 @@ difference 1.9·10⁻⁷ (before: 2,992 numeric values, through the lenient comp
 - rewriting git history;
 - publishing kickoff texts or sealed predictions;
 - any provider submission.
+
+## 15. Amendment A5: the Kickoff 37 result (6 October 2026)
+
+**The source, checked before anything was copied.** The hand-back folder's `SHA256SUMS` passes on all 39 files. The
+archive's SHA-256 is `f4d3e6d7351f…ee50`, as the amendment states and as its `.sha256` file records. The archive,
+unpacked into a scratch folder, is identical to the folder. The folder was only read.
+
+**What was copied** into `data/rigetti_cepheus_1_108q/`:
+
+| file | contents |
+|---|---|
+| `k37-placement.json` | the pairs of each program (P27: 27 pairs on 54 qubits; P53: 53 pairs on 106 qubits); the bit reading, with n = 54 or 106; the label, wave, task and program of each task; the raw counts of all six tasks, as bitstring-to-count tables, each summing to 8000; each task's P(11) per pair; and, under `archived`, untouched from `results-37.json`: the measures (Pearson and Spearman, and the two correlations behind each d), the verdict with its conditions, the Spearman reading and the A1 and A2 readings, the gap, the completion order, and the descriptive lines (against Kickoff 34b, and the crowding lean) |
+| `k37-after-the-fact.json` | `after-the-fact-37.json`'s checks, labelled "computed after seeing the data, outside the verdict", with the source's own label kept in `meta` |
+| `k37-P27-A-no.qasm`, `k37-P53-A-no.qasm` | the two programs as sent, byte for byte (see below) |
+
+Each JSON file's `meta` gives the processor ("Rigetti Cepheus-1-108Q, through Open Quantum, Public plan"), the UTC
+creation and completion time of every task, 8000 shots per task, "Kickoff 37" as the source, each source file's
+SHA-256, the archive's and the script's SHA-256, and the line on the second wave as the amendment words it.
+`k37-placement.json`'s `meta` also gives the two programs' SHA-256 values (`81e1e149…` and `d312052a…`, Kickoff 34b's
+`01-A-no.qasm` and `screen-A-no.qasm`).
+
+**The programs.** The amendment says to leave them out "unless the identifier scan passes on them". It passed on both
+(`tools/scan_secrets.py` on the two files: clean), so they are copied. If the clause was meant only to permit this,
+not to ask for it, removing them is two files, two index rows and two checksum lines.
+
+**What was left out:** the task IDs (and the task names); the credit balances, quotes and cost record; the raw
+provider records and the platform's processed copies; the preparations; the target reads; the runner's sealed
+predictions, its report and its plot; the run log; the reproduction file and the program check file (their results
+are recorded above and in `meta`); and the per-task spread table in `results-37.json` (mean level, between-pair SD,
+shot-noise SD), which the amendment's list does not name. The report's carried sentence is not copied; no file in
+`data/` contains it.
+
+**The inventory.** Two new acceptance cases, "Kickoff 37, Rigetti Cepheus-1-108Q" and "Kickoff 37, after the fact".
+
+- `tests/expected_fields.json`: 86 fields of `k37-placement.json` (the six P(11) tables, every measure, every verdict
+  field including the readings' text, the gap's seconds, minutes, midpoint gap and short-gap flag, the completion
+  order, the four lines against Kickoff 34b and every crowding-lean field) and 65 of `k37-after-the-fact.json` (every
+  field but the three below). No field is renamed.
+- `tests/excluded_fields.json`, 10 entries:
+
+| file | path | reason |
+|---|---|---|
+| `k37-placement.json` | `meta` | record metadata; the gap and the run order are recomputed from the task times in it |
+| | `programs` | input: each program's pairs and size |
+| | `bit_order` | a definition in words |
+| | `tasks` | input: label, wave, task and program of each task |
+| | `counts` | input: the counts the statistics are recomputed from |
+| | `archived/gap/definition` | a definition in words |
+| | `archived/descriptive/crowding_lean/note` | a note in words |
+| `k37-after-the-fact.json` | `meta` | record metadata |
+| | `label` | a note in words |
+| | `selection_note` | a note in words; its two SDs (0.039 and 0.042) are checked at its rounding by `test_k37_selection_note_sds` |
+
+**The recompute.** `archive.placement_or_drift` recomputes Kickoff 37 from `k37-placement.json`'s counts and task
+times, with `main.json` and `screen.json` for the lines against Kickoff 34b. `archive.placement_rule` is the rule, with
+its thresholds fixed as module constants (control ≥ 0.7; W: both d < 0.4; N: both d ≥ 0.7; T: both t < 0.4; S: both
+t ≥ 0.7; short gap under 60 minutes). It sits in its own section of `archive.py`, after Kickoff 34b's, and like
+`settle_analysis` it recomputes one archived run's own rule: no new verdict in `verdicts.py`, no new command. The
+amendment's "beside settle_analysis" was read as "in the same way as"; the function is not next to it in the file.
+
+**Reproduction.** Every listed field, compared strictly: 380 values in `k37-placement.json` and 80 in
+`k37-after-the-fact.json`, the largest difference 0.0 in both.
+
+| statistic | archived | recomputed | amendment |
+|---|---|---|---|
+| each task's P(11), 6 tasks | | difference 0.0 | at 10⁻⁶ |
+| c_1 | 0.9983836521792997 | the same | 0.998384 |
+| c_2 | 0.997482026465647 | the same | 0.997482 |
+| d_1 | 0.06899004265600006 | the same | 0.068990 |
+| d_2 | −0.2521745164008942 | the same | −0.252175 |
+| t27 | 0.9680385015171348 | the same | 0.968 |
+| t53 | 0.7584356165289697 | the same | 0.758 |
+| gap | 32,950 s (549.17 min) | the same, from the completion times in `meta` (11:31:39 minus 02:22:29) | 9 h 09 min |
+| verdict | PLACEMENT; W and S true, N and T false | the same, from the fixed thresholds | PLACEMENT |
+| wave 1 P27 against 34b's main-job "A no" levels (the mean of its four identical tasks, from `main.json`'s counts), 27 pairs | 0.98877 | the same | 0.989 |
+| wave 1 P53 against 34b's screen levels (`screen.json`), 53 pairs | 0.97595 | the same | 0.976 |
+
+The Spearman values, the two lines beside them (against 34b's first "A no" task alone, 0.947; on the 27 shared pairs
+of the screen, 0.850), the completion order, the crowding lean and every after-the-fact check also reproduce with a
+difference of 0.0. `test_k37_as_amendment_a5_states_it` checks the amendment's figures at its stated precision, and
+`test_the_placement_rule_at_its_thresholds` checks each verdict of the rule at its boundaries. No number failed to
+reproduce.
+
+**The mutation test.** `archived/measures/d_2/pearson` in `k37-placement.json` joins the mutation list in
+`tests/test_field_inventory.py`. Set in memory to 999, removed, set to None or set to NaN, it fails the comparison,
+which names the field; the files on disk are unchanged (4 tests).
+
+**README lines changed**, as the amendment words them:
+1. the findings' opening line: "The findings come from runs on 5 and 6 October 2026.";
+2. finding 6, after finding 5;
+3. finding 2: the sentence on the five excluded pairs, after the dead-pair sentence;
+4. "How long a map lasts": the Rigetti sentences replaced (the placement-records sentence and the Kickoff 35 and 36
+   sentences kept);
+5. the new "has not shown" bullet on why the program matters;
+6. the Open Quantum guidance, in the extras paragraph, with the verbatim-mode sentence kept after it;
+7. Limits: "Three processors, two days", ending "on 5 and 6 October 2026.";
+8. the kickoffs table's row for 37, after 36; Kickoff 35's row unchanged.
+
+**The README tests.** Seven new tests in `tests/test_readme_numbers.py` check every new number and time against the
+data at the README's rounding, with times to the nearest minute: the waves' 00:45 to 02:22 and 11:31 to 11:35 UTC (the
+first creation to the last completion of each wave); the second wave's completions within 3 minutes; 0.997 to 0.998,
+0.97 and 0.76, 0.99 and 0.98, 0.07 and −0.25; PLACEMENT; the 9-hour gap; the five excluded pairs at 0.70 to 0.84
+under the screen program (the same five pairs as Kickoff 34b's dead-pair filter); the dates; the table row; and the
+new guidance. Two earlier tests were changed because the README no longer shows what they checked: the screen's and
+the test task's times (18:55 and 17:01 UTC) left with the replaced sentences, so `test_the_rigetti_times_shown` now
+checks only the main job's, and the test of the 0.10 to 0.23 and 0.93 lines is renamed `test_kickoff_34b_across_runs`
+(those lines are still shown in `docs/index.md`).
+
+**Other files changed to match.**
+- `data/README.md`: the index rows for the two new files; the programs; the date line; the Kickoff 37 counts format;
+  and what was left out.
+- `data/SHA256SUMS`: rewritten, 25 files; `--check` passes.
+- The adapter's docs (`docs/index.md`, section 5, and `backends/openquantum.py`'s docstring): the same guidance
+  sentence, replacing "use a map only within the job that measured it". `docs/index.md` also gains a Kickoff 37 row
+  in its reproduction table, and its "Lived facts" line now says 5 and 6 October.
+- `tests/test_data_meta.py`: a run record's UTC may now start with 2026-10-06 as well as 2026-10-05.
+- `CHANGELOG.md`: the dataset line names Kickoff 37.
+
+**Scans.**
+- The identifier scan on the full tree: clean (110 files).
+- The git identity scan (`--git`): clean on every reachable commit (32 at `983bd8c`, before this amendment's
+  commits).
+
+**Readings for the author's ruling.** Each names a checkable difference. The text was written as the amendment gives
+it; nothing here was changed on my own reading.
+- **"Over a day."** The README's "a fixed program's pair levels held over about 9 hours and over a day (Kickoff 37)"
+  rests on the lines against Kickoff 34b. Those compare wave 1 (completions 01:24 to 02:22 UTC, 6 October) with
+  34b's screen (completed 18:55 UTC) and main job (22:15 to 22:29 UTC) on 5 October: about 3 to 7.5 hours apart,
+  across a change of date. The longest gap over which a program's levels were compared is 9 h 09 min, between
+  Kickoff 37's own waves. "The day before", in finding 6, is right as a calendar date.
+- **"Each program agreed with itself: r = 0.997 to 0.998 minutes apart."** Only the 27-pair program ran twice in a
+  wave; the 53-pair program ran once per wave, so it has no minutes-apart repeat. Its self-agreement is t53 = 0.76
+  across the waves and 0.98 against 34b.
+- **The adapter's docs keep the Kickoff 34b sentence** after the new guidance: levels held within a job (r = 0.93)
+  "but not between runs a few hours apart". It is still a true record of 34b, but it now sits next to Kickoff 37's
+  finding that those runs differed in program, not only in time.
+
+**After the amendment:**
+- 340 tests pass (314 before; 26 new), and Ruff is clean;
+- the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
+- `data/SHA256SUMS` matches every file.
+
+**Not in this amendment, and not done:**
+- Kickoff 35's data;
+- Kickoff 38;
+- merging, making the repository public, or turning on signing;
+- any provider submission.
