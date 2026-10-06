@@ -201,11 +201,18 @@ calibration snapshot is returned.
 value and identifier is synthetic, so that none of 34b's running data enters the repository. The SDK's enums and
 request models are stubbed in the test.
 
-**Not tested without the network:**
-- the real SDK calls: `from_saved_account`, `get_backend_class`, `upload_job_input`, `prepare_job`, the private
-  `_wait_for_preparation` and `_resolve_organization_id`, `create_job`, `get_job`, `download_job_output` and
-  `get_credit_balance`;
-- the real enum values (platform UUIDs);
+**Verified offline against the real SDK (6 October 2026; see section 13).** Every call was checked against
+`openquantum-sdk` 0.4.3 and `openquantum-sdk-qiskit` 0.3.3, installed but never connected:
+- each method exists with the argument names it is given: `from_saved_account`, `get_backend_class`,
+  `upload_job_input`, `prepare_job`, the private `_wait_for_preparation` and `_resolve_organization_id`,
+  `create_job`, `get_job`, `download_job_output` and `get_credit_balance`;
+- so does every model field and enum member the adapter reads or sets.
+
+The `[openquantum]` extra is now limited to those versions (A3 addition, section 12).
+
+**Still untested, because they need the network and an account:**
+- the live responses;
+- the enum values' meaning on the platform (their UUIDs);
 - whether the platform still returns a plain counts dict.
 
 **Cirq simulation** (`backends/cirq_sim.py`, from Kickoff 36). It is a simulator only, and its docstring says so. It
@@ -708,8 +715,25 @@ instruction (the amendment says #1). Nothing is merged.
 - **The rubric's three CANNOT CHECK items** are unchanged and still need the network or tools this machine lacks: a
   fresh install (A1), CFF schema validation (H5) and a full licence inventory (H8).
 
+**Two additions to A3, approved by the author on 6 October, before the next review.**
+
+| addition | what was changed | test |
+|---|---|---|
+| the dataset when it is not beside the source | `archive.data_dir()` looks in three places, in order: `--data` on the command line (`set_data_dir`), then `$MANACITRA_DATA`, then `data/` beside the source (an install from a clone). A folder counts only if it holds `SHA256SUMS`. If none is found, it stops with `DataNotFound`, which says to `git clone` the repository and then install from the clone, or set `MANACITRA_DATA` or `--data`. A wrong folder is named. The command line prints that message and exits 2, and `--data` holds for one command only; a file argument not found as given is looked up inside the dataset. A conftest hook turns `DataNotFound` in a test into a skip with that reason. `data/` stays out of the wheel: it holds only the package and its metadata (checked by building it). The README describes both install routes. | `test_data_location.py`: a clone finds its data; the stop and its wording; the environment variable; a wrong folder; the command line with and without `--data` |
+| Open Quantum's SDK versions | `[openquantum]` now requires `openquantum-sdk>=0.4.3,<0.5` and `openquantum-sdk-qiskit>=0.3.3,<0.4`. At import, and again when the service is first created, the adapter checks that the SDK's `SchedulerClient` has `_wait_for_preparation` and `_resolve_organization_id`. If either is missing, it stops with `SDKIncompatible`, naming both methods, the missing one or ones, the version they were checked against, and the install command. With no SDK installed, the import checks nothing, so the adapter's helpers stay usable. | `test_openquantum_recorded.py`: the import stops in a fresh process with a fake SDK that lacks one method, and passes with one that has both; the message when both are missing; the extra's pins |
+
+**Checked in a plain install.** A non-editable install of the working tree, from a fresh export, with every extra:
+- it resolved `openquantum-sdk` 0.4.3 and `openquantum-sdk-qiskit` 0.3.3, and `check_sdk()` passes against the real
+  SDK;
+- with no data: 159 tests pass and 61 skip, each with the dataset's reason, and none fail. Before the addition, 59
+  failed;
+- with `MANACITRA_DATA` set to the export's `data/`: 257 pass, and 1 skips (the `git check-ignore` test, outside a
+  work tree);
+- the command line without data exits 2 with the message, and with `--data` gives the verdict; example 2 stops with
+  the same message, and runs with `MANACITRA_DATA` set.
+
 **After the amendment:**
-- 249 tests pass, and Ruff is clean;
+- 258 tests pass, and Ruff is clean;
 - every pinned circuit is its exact unitary (to 6.7·10⁻¹⁶);
 - `data/SHA256SUMS` was regenerated;
 - the scan is clean on the full tree (99 files scanned; the PNG diagrams skipped).
@@ -734,9 +758,8 @@ machine. Nothing was sent to any provider, and no account was used.
 
 **Found on the way: a plain install has no data.** With `pip install .` (not editable), 59 tests fail with
 `FileNotFoundError`. `archive.data_dir()` looks for `data/` beside the source tree, and an installed package has no
-`data/`. The README documents only the editable install from a clone, which works, so no documented route fails. A
-clear error, or a `MANACITRA_DATA` setting, would serve users who install it the other way. Not changed here; it is
-outside A3.
+`data/`. The README documented only the editable install from a clone, which works. Fixed by the A3 addition in section 12:
+a clear stop, `MANACITRA_DATA` and `--data`, and both routes in the README.
 
 **The Open Quantum adapter against the real SDK, offline.** Section 5 listed the real SDK calls as untested without
 the network. With `openquantum-sdk` 0.4.3 and `openquantum-sdk-qiskit` 0.3.3 installed, their code was read; no account
@@ -748,5 +771,6 @@ was used and no request sent:
   `CreditBalanceRead`, `JobRead`, `QuotePlan`, `QueuePriority`);
 - `ExecutionPlanType.PUBLIC` and `QueuePriorityType.STANDARD` exist.
 
-Still untested: the live responses themselves, and the enum values' meaning on the platform. Two of the methods,
-`_wait_for_preparation` and `_resolve_organization_id`, are private and may change without notice.
+**Every call is verified against SDK 0.4.3 offline. The live responses are still untested.** Two of the methods,
+`_wait_for_preparation` and `_resolve_organization_id`, are private and may change without notice. The extra is now
+limited to the checked versions, and the adapter stops at import if either method is missing (section 12).

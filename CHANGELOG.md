@@ -17,6 +17,9 @@ The first version.
 - Sealing: `manacitra seal | reveal | verify`, salted SHA-256 commitments. Signing: a gated CI workflow that signs
   commit records, data files and release artifacts with Sigstore's keyless signing (off until `MANACITRA_SIGN` is
   `true`). `data/SHA256SUMS` for catching corrupted files.
+- Safety (Amendment A3): every spending submission goes through the submit-once guard; Open Quantum checks the
+  balance, the quote and the budget across waves again immediately before sending, and keeps credit reservations in
+  the ledger. The dataset is found from a clone, `MANACITRA_DATA` or `--data`, with a clear stop when it is missing.
 - The README, the long-form documentation, six diagrams and three examples. The README explains how the results were
   made: kickoffs (Amendment A2).
 - Ownership (Kickoff 01, Amendment A1): copyright Dogma LLC (doing business as Dogma Guru), developed by Anish Patel.

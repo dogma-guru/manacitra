@@ -178,6 +178,9 @@ with a the bit of the pair's first qubit and b its second.
   sequence and differ only in rz angles. Two caveats: the platform's recompilation and qubit placement cannot be
   inspected on the Public plan, so the three-CZ check applies to the program as sent, not as run; and no calibration
   snapshot is returned, so there is no x and the map rule is capped. Tested only against recorded-shape responses.
+  The extra is limited to the SDK versions every adapter call was checked against offline (openquantum-sdk 0.4.3,
+  openquantum-sdk-qiskit 0.3.3; live responses are still untested), and the module stops at import, naming them, if
+  the installed SDK lacks the two private methods it calls (`_wait_for_preparation`, `_resolve_organization_id`).
   On this platform, today, use a map only within the job that measured it: placement cannot be pinned, because the
   platform's preprocessing breaks the provider's verbatim mode. In Kickoff 34b, pair levels held within a job
   (r = 0.93) but not between runs a few hours apart (r between 0.10 and 0.23 on the shared pairs, computed after
@@ -218,6 +221,10 @@ with a the bit of the pair's first qubit and b its second.
   anywhere in the tree. It runs in CI and, once `git config core.hooksPath .githooks` is set, on every commit.
 
 ## 7. Reproducing the README's numbers
+
+The dataset ships with the repository, not with the package. From a clone installed with `pip install -e .` it is
+found by itself; with a plain install, point at a clone's `data/` with `MANACITRA_DATA` (or `manacitra --data`).
+Without it, Manacitra stops and says how to get it, and the tests that need it are skipped with that reason.
 
 ```bash
 pip install -e ".[dev]"
