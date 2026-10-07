@@ -583,7 +583,8 @@ def test_the_scores_compared_on_each_chip():
 
 
 # --------------------------------------------------------------------------- Amendment A8, R5: retired phrases
-#: Phrases the README has retired, with the amendment that retired each; no README line and no diagram may carry one
+#: Phrases the README has retired, with the amendment that retired each; no README line, no line of docs/index.md and
+#: no diagram may carry one
 RETIRED = [
     "running as of 6 October 2026",  # A7: Kickoff 35 ran and is reported
     "is running as of",  # A7
@@ -613,6 +614,13 @@ def svg_text(path: Path) -> str:
 
 def test_the_readme_carries_no_retired_phrase():
     flat = " ".join(README.split())
+    assert [p for p in RETIRED if p in flat] == []
+
+
+def test_the_docs_page_carries_no_retired_phrase():
+    """docs/index.md is prose a stranger reads, and it carried one of the stale sentences (A8, R4): the author's ruling
+    of 7 October puts it under the same check."""
+    flat = " ".join((Path(__file__).resolve().parents[1] / "docs" / "index.md").read_text().split())
     assert [p for p in RETIRED if p in flat] == []
 
 
