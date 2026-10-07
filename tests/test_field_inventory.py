@@ -239,19 +239,52 @@ def test_the_reviewers_probe_end_to_end(case, processor, run, field, monkeypatch
 
 # --------------------------------------------------------------------------- Amendment A7: seeded resampling
 def test_the_resampling_rule():
-    """The author's ruling of 7 October 2026: shots-resampled intervals at 10⁻³; Kickoff 42's bootstrap SDs strictly
-    under numpy 2.5 or later, not compared under an older numpy; everything else, and anything infinite, as before."""
+    """Amendments A7 and A8, R6: a marked shots-resampled field at 10⁻³; a marked bootstrap field strictly under numpy
+    2.5 or later, not compared under an older numpy; an unmarked field at 10⁻⁶ whatever its name; nothing infinite
+    relaxed."""
     from _reproduce import INF, resampling_rule
 
     shots = "x.json: archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict[1]"
-    passed = resampling_rule(3.2e-4, shots)
+    passed = resampling_rule(3.2e-4, shots, "resampled-shots")
     assert passed[0] == 0.0 and "compared at 1e-3, difference 0.00032" in passed[1]
-    assert resampling_rule(2e-3, shots)[0] == 2e-3
-    assert resampling_rule(INF, shots)[0] == INF
+    assert resampling_rule(2e-3, shots, "resampled-shots")[0] == 2e-3
+    assert resampling_rule(INF, shots, "resampled-shots")[0] == INF
+    assert resampling_rule(3.2e-4, shots, None) == (3.2e-4, shots)  # the same name, unmarked: compared at 10⁻⁶
     boot = "y.json: archived/analysis/fits/A/boot_sd[18]"
-    assert resampling_rule(0.013, boot, numpy_ok=True)[0] == 0.013
-    skipped = resampling_rule(0.013, boot, numpy_ok=False)
+    assert resampling_rule(0.013, boot, "resampled-bootstrap", numpy_ok=True)[0] == 0.013
+    skipped = resampling_rule(0.013, boot, "resampled-bootstrap", numpy_ok=False)
     assert skipped[0] == 0.0 and skipped[1].startswith(boot) and "not compared under numpy" in skipped[1]
-    assert resampling_rule(INF, boot, numpy_ok=False)[0] == INF
-    other = "z.json: archived/analysis/S2/r_AB/pearson"
-    assert resampling_rule(2e-6, other, numpy_ok=False) == (2e-6, other)
+    assert resampling_rule(INF, boot, "resampled-bootstrap", numpy_ok=False)[0] == INF
+    assert resampling_rule(0.013, boot, None, numpy_ok=False) == (0.013, boot)
+
+
+def test_the_marked_fields_are_exactly_the_intended_ones():
+    """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
+    on their names. Nine intervals that also resample shots, and Kickoff 42's nineteen bootstrap SDs."""
+    marked = {
+        (g["file"], f, o["compare"])
+        for groups in load_inventory()["cases"].values()
+        for g in groups
+        for f, o in g["fields"].items()
+        if "compare" in o
+    }
+    shots = {
+        (file, f"archived/analysis/gains/{pick}/ci90_circuits_and_shots_not_in_verdict", "resampled-shots")
+        for file in (
+            "ibm_fez/k33-payoff.json",
+            "ibm_kingston/k33-payoff.json",
+            "rigetti_cepheus_1_108q/k40-payoff.json",
+        )
+        for pick in ("k_prior", "L_prior", "k_now")
+    }
+    boot = {("rigetti_cepheus_1_108q/k42-after-the-fact.json", "median_boot_sd_deltaA", "resampled-bootstrap")}
+    for day in (1, 2):
+        file = f"rigetti_cepheus_1_108q/k42-day{day}.json"
+        boot |= {(file, f"archived/analysis/fits/{fam}/boot_sd", "resampled-bootstrap") for fam in "AB"}
+        boot.add((file, "archived/analysis/V1/median_boot_sd_deltaA", "resampled-bootstrap"))
+        boot |= {
+            (file, f"archived/analysis/beside/watch_pairs/{p}/{fam}/boot_sd", "resampled-bootstrap")
+            for p in ("94-95", "42-43", "18-19")
+            for fam in "AB"
+        }
+    assert marked == shots | boot and (len(shots), len(boot)) == (9, 19)

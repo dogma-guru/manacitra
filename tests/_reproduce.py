@@ -10,7 +10,7 @@ that every field of every data file is in exactly one of the two.
 The comparison is strict (Amendment A4, R3). A listed field fails when it is missing on either side; when its type
 differs (a number against None, a string or a list; a list of another length; a dictionary with other keys); when a
 recomputed number is not finite; or when the difference exceeds the tolerance, 10⁻⁶ for every field but the seeded
-resampling fields below (RESAMPLED), by the author's ruling of 7 October 2026 (Amendment A7).
+resampling fields, which tests/expected_fields.json marks one by one ("compare"; Amendments A7 and A8).
 
 Each case returns its headline rows (name, archived, reproduced) and the comparison of every listed field, as
 (absolute difference, path); a failure of any other kind is reported as an infinite difference with the reason in the
@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 import math
-import re
 from datetime import datetime
 from functools import cache
 from pathlib import Path
@@ -38,15 +37,17 @@ INF = float("inf")
 
 #: The seeded resampling fields, whose draws come from numpy's random generators (Amendment A7, the author's ruling of
 #: 7 October 2026). numpy does not keep a generator's stream the same across versions, and a multinomial draw can turn
-#: on the last bit of a probability, which differs between platforms. So:
-#: * the intervals that also resample shots (multinomial draws, 2,000 per interval) are compared at 10⁻³; the largest
-#:   difference seen between platforms is 3.2·10⁻⁴, below a 2,000-draw percentile's own Monte Carlo error;
-#: * the bootstrap SDs of Kickoff 42's fits (binomial draws) match on every platform with numpy 2.5, the runs' version,
-#:   and are compared at 10⁻⁶ there; with an older numpy they are reported as not compared, by name.
+#: on the last bit of a probability, which differs between platforms. Each such field is marked in
+#: tests/expected_fields.json, on the field itself (Amendment A8, R6: a mark, not a pattern on the name, so that no
+#: field is relaxed without someone deciding so):
+#: * "compare": "resampled-shots", an interval that also resamples shots (multinomial draws, 2,000 per interval), is
+#:   compared at 10⁻³; the largest difference seen between platforms is 3.2·10⁻⁴, below a 2,000-draw percentile's own
+#:   Monte Carlo error;
+#: * "compare": "resampled-bootstrap", Kickoff 42's bootstrap SDs (binomial draws), which match on every platform with
+#:   numpy 2.5, the runs' version, is compared at 10⁻⁶ there and named as not compared under an older numpy.
 #: Every other field is compared at 10⁻⁶, everywhere.
-RESAMPLED_SHOTS = re.compile(r"ci90_circuits_and_shots_not_in_verdict")
+COMPARE_MODES = ("resampled-shots", "resampled-bootstrap")
 RESAMPLED_SHOTS_TOL = 1e-3
-RESAMPLED_BOOT = re.compile(r"(^|[/.])boot_sd|median_boot_sd_deltaA")
 RESAMPLED_BOOT_NUMPY = (2, 5)
 
 
@@ -54,17 +55,17 @@ def _numpy_at_least(version) -> bool:
     return tuple(int(x) for x in np.__version__.split(".")[:2]) >= version
 
 
-def resampling_rule(diff: float, path: str, numpy_ok: bool | None = None) -> tuple[float, str]:
-    """A compared leaf under the rule for seeded resampling fields: a shots-resampled interval within 10⁻³ counts as
-    agreeing (difference 0, the measured difference named in the path); a bootstrap SD under a numpy older than 2.5 is
-    not compared (difference 0, the reason in the path). A difference that is infinite (a missing field, a type change,
-    a value that is not finite) is never relaxed."""
-    if diff == INF:
+def resampling_rule(diff: float, path: str, mode: str | None, numpy_ok: bool | None = None) -> tuple[float, str]:
+    """A compared leaf under its field's mark: a "resampled-shots" field within 10⁻³ counts as agreeing (difference 0,
+    the measured difference named in the path); a "resampled-bootstrap" field under a numpy older than 2.5 is not
+    compared (difference 0, the reason in the path). An unmarked field is compared as it is, whatever its name. A
+    difference that is infinite (a missing field, a type change, a value that is not finite) is never relaxed."""
+    if diff == INF or mode is None:
         return diff, path
-    if RESAMPLED_SHOTS.search(path) and diff <= RESAMPLED_SHOTS_TOL:
+    if mode == "resampled-shots" and diff <= RESAMPLED_SHOTS_TOL:
         return 0.0, f"{path} (seeded resampling: compared at 1e-3, difference {diff:.3g})"
     ok = _numpy_at_least(RESAMPLED_BOOT_NUMPY) if numpy_ok is None else numpy_ok
-    if RESAMPLED_BOOT.search(path) and not ok:
+    if mode == "resampled-bootstrap" and not ok:
         return 0.0, f"{path} (seeded bootstrap: not compared under numpy {np.__version__}; compared under 2.5 or later)"
     return diff, path
 
@@ -77,8 +78,12 @@ def load_inventory() -> dict:
     for case, groups in inv["cases"].items():
         for g in groups:
             for field, opt in g["fields"].items():
-                if set(opt) - {"as"}:
-                    raise ValueError(f"{case}: {g['file']}: {field}: unknown option {sorted(set(opt) - {'as'})}")
+                if set(opt) - {"as", "compare"}:
+                    raise ValueError(
+                        f"{case}: {g['file']}: {field}: unknown option {sorted(set(opt) - {'as', 'compare'})}"
+                    )
+                if opt.get("compare", COMPARE_MODES[0]) not in COMPARE_MODES:
+                    raise ValueError(f"{case}: {g['file']}: {field}: unknown compare mark {opt['compare']!r}")
     return inv
 
 
@@ -183,7 +188,7 @@ def compare(case: str, recomputed: dict, docs: dict) -> list:
             except KeyError:
                 leaves.append((INF, f"{where} (missing on the recomputed side, as {opt.get('as', field)})"))
                 continue
-            leaves += [resampling_rule(d, p) for d, p in leaf_diffs(m, a, where)]
+            leaves += [resampling_rule(d, p, opt.get("compare")) for d, p in leaf_diffs(m, a, where)]
     return leaves
 
 

@@ -1,5 +1,5 @@
 {
- "about": "For each acceptance case in tests/_reproduce.py, every archived field it recomputes from the archived counts: the field's path in its data file and, where the recomputed value sits at another path, that path ('as'). Every field is compared at the tolerance below; none states its own, except the seeded resampling fields, whose rule is in tests/_reproduce.py (RESAMPLED; Amendment A7). Fields not recomputed are in tests/excluded_fields.json, with reasons; tests/test_field_inventory.py checks that every field of every data file is in exactly one of the two files.",
+ "about": "For each acceptance case in tests/_reproduce.py, every archived field it recomputes from the archived counts: the field's path in its data file and, where the recomputed value sits at another path, that path ('as'). Every field is compared at the tolerance below; none states its own, except the seeded resampling fields, each marked on the field itself with \"compare\": \"resampled-shots\" or \"resampled-bootstrap\" (Amendments A7 and A8); tests/_reproduce.py (resampling_rule) says what each mark means. Fields not recomputed are in tests/excluded_fields.json, with reasons; tests/test_field_inventory.py checks that every field of every data file is in exactly one of the two files.",
  "tolerance": 1e-06,
  "cases": {
   "Kickoff 31, ibm_fez": [
@@ -642,15 +642,21 @@
      "archived/analysis/picks/k_now": {},
      "archived/analysis/gains/k_prior/G": {},
      "archived/analysis/gains/k_prior/ci90": {},
-     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/L_prior/G": {},
      "archived/analysis/gains/L_prior/ci90": {},
-     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/L_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/k_now/G": {},
      "archived/analysis/gains/k_now/ci90": {},
-     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_now/overlap_with_x_pick": {},
      "archived/analysis/level_beats_k": {},
      "archived/analysis/verdict": {
@@ -714,15 +720,21 @@
      "archived/analysis/picks/k_now": {},
      "archived/analysis/gains/k_prior/G": {},
      "archived/analysis/gains/k_prior/ci90": {},
-     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/L_prior/G": {},
      "archived/analysis/gains/L_prior/ci90": {},
-     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/L_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/k_now/G": {},
      "archived/analysis/gains/k_now/ci90": {},
-     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_now/overlap_with_x_pick": {},
      "archived/analysis/level_beats_k": {},
      "archived/analysis/verdict": {
@@ -2277,21 +2289,27 @@
      "archived/analysis/picks/k_now": {},
      "archived/analysis/gains/k_prior/G": {},
      "archived/analysis/gains/k_prior/ci90": {},
-     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/k_prior/mean_error_pick": {},
      "archived/analysis/gains/k_prior/mean_error_x_pick": {},
      "archived/analysis/gains/k_prior/relative_error_reduction": {},
      "archived/analysis/gains/L_prior/G": {},
      "archived/analysis/gains/L_prior/ci90": {},
-     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/L_prior/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/L_prior/overlap_with_x_pick": {},
      "archived/analysis/gains/L_prior/mean_error_pick": {},
      "archived/analysis/gains/L_prior/mean_error_x_pick": {},
      "archived/analysis/gains/L_prior/relative_error_reduction": {},
      "archived/analysis/gains/k_now/G": {},
      "archived/analysis/gains/k_now/ci90": {},
-     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {},
+     "archived/analysis/gains/k_now/ci90_circuits_and_shots_not_in_verdict": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/gains/k_now/overlap_with_x_pick": {},
      "archived/analysis/gains/k_now/mean_error_pick": {},
      "archived/analysis/gains/k_now/mean_error_x_pick": {},
@@ -3786,7 +3804,9 @@
      "archived/analysis/fits/A/fit_found/[24]": {},
      "archived/analysis/fits/A/fit_found/[25]": {},
      "archived/analysis/fits/A/fit_found/[26]": {},
-     "archived/analysis/fits/A/boot_sd": {},
+     "archived/analysis/fits/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/fits/A/shot_sd_mean": {},
      "archived/analysis/fits/A/at_grid_edge/[0]": {},
      "archived/analysis/fits/A/at_grid_edge/[1]": {},
@@ -3849,7 +3869,9 @@
      "archived/analysis/fits/B/fit_found/[24]": {},
      "archived/analysis/fits/B/fit_found/[25]": {},
      "archived/analysis/fits/B/fit_found/[26]": {},
-     "archived/analysis/fits/B/boot_sd": {},
+     "archived/analysis/fits/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/fits/B/shot_sd_mean": {},
      "archived/analysis/fits/B/at_grid_edge/[0]": {},
      "archived/analysis/fits/B/at_grid_edge/[1]": {},
@@ -3882,7 +3904,9 @@
      "archived/analysis/fits/B/vertex_shift": {},
      "archived/analysis/fits/B/peak_P11": {},
      "archived/analysis/V1/sd_deltaA_across_working": {},
-     "archived/analysis/V1/median_boot_sd_deltaA": {},
+     "archived/analysis/V1/median_boot_sd_deltaA": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/V1/verdict": {},
      "archived/analysis/V2/r/pearson": {},
      "archived/analysis/V2/r/spearman": {},
@@ -3902,42 +3926,54 @@
      "archived/analysis/beside/watch_pairs/94-95/A/v": {},
      "archived/analysis/beside/watch_pairs/94-95/A/b": {},
      "archived/analysis/beside/watch_pairs/94-95/A/rms": {},
-     "archived/analysis/beside/watch_pairs/94-95/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/94-95/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/94-95/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/94-95/A/vertex": {},
      "archived/analysis/beside/watch_pairs/94-95/B/delta": {},
      "archived/analysis/beside/watch_pairs/94-95/B/v": {},
      "archived/analysis/beside/watch_pairs/94-95/B/b": {},
      "archived/analysis/beside/watch_pairs/94-95/B/rms": {},
-     "archived/analysis/beside/watch_pairs/94-95/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/94-95/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/94-95/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/94-95/B/vertex": {},
      "archived/analysis/beside/watch_pairs/42-43/A/delta": {},
      "archived/analysis/beside/watch_pairs/42-43/A/v": {},
      "archived/analysis/beside/watch_pairs/42-43/A/b": {},
      "archived/analysis/beside/watch_pairs/42-43/A/rms": {},
-     "archived/analysis/beside/watch_pairs/42-43/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/42-43/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/42-43/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/42-43/A/vertex": {},
      "archived/analysis/beside/watch_pairs/42-43/B/delta": {},
      "archived/analysis/beside/watch_pairs/42-43/B/v": {},
      "archived/analysis/beside/watch_pairs/42-43/B/b": {},
      "archived/analysis/beside/watch_pairs/42-43/B/rms": {},
-     "archived/analysis/beside/watch_pairs/42-43/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/42-43/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/42-43/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/42-43/B/vertex": {},
      "archived/analysis/beside/watch_pairs/18-19/A/delta": {},
      "archived/analysis/beside/watch_pairs/18-19/A/v": {},
      "archived/analysis/beside/watch_pairs/18-19/A/b": {},
      "archived/analysis/beside/watch_pairs/18-19/A/rms": {},
-     "archived/analysis/beside/watch_pairs/18-19/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/18-19/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/18-19/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/18-19/A/vertex": {},
      "archived/analysis/beside/watch_pairs/18-19/B/delta": {},
      "archived/analysis/beside/watch_pairs/18-19/B/v": {},
      "archived/analysis/beside/watch_pairs/18-19/B/b": {},
      "archived/analysis/beside/watch_pairs/18-19/B/rms": {},
-     "archived/analysis/beside/watch_pairs/18-19/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/18-19/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/18-19/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/18-19/B/vertex": {},
      "archived/analysis/beside/r_abs_deltaA_vs_cz_error/pearson": {},
@@ -4209,7 +4245,9 @@
      "archived/analysis/fits/A/fit_found/[24]": {},
      "archived/analysis/fits/A/fit_found/[25]": {},
      "archived/analysis/fits/A/fit_found/[26]": {},
-     "archived/analysis/fits/A/boot_sd": {},
+     "archived/analysis/fits/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/fits/A/shot_sd_mean": {},
      "archived/analysis/fits/A/at_grid_edge/[0]": {},
      "archived/analysis/fits/A/at_grid_edge/[1]": {},
@@ -4272,7 +4310,9 @@
      "archived/analysis/fits/B/fit_found/[24]": {},
      "archived/analysis/fits/B/fit_found/[25]": {},
      "archived/analysis/fits/B/fit_found/[26]": {},
-     "archived/analysis/fits/B/boot_sd": {},
+     "archived/analysis/fits/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/fits/B/shot_sd_mean": {},
      "archived/analysis/fits/B/at_grid_edge/[0]": {},
      "archived/analysis/fits/B/at_grid_edge/[1]": {},
@@ -4305,7 +4345,9 @@
      "archived/analysis/fits/B/vertex_shift": {},
      "archived/analysis/fits/B/peak_P11": {},
      "archived/analysis/V1/sd_deltaA_across_working": {},
-     "archived/analysis/V1/median_boot_sd_deltaA": {},
+     "archived/analysis/V1/median_boot_sd_deltaA": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/V1/verdict": {},
      "archived/analysis/V2/r/pearson": {},
      "archived/analysis/V2/r/spearman": {},
@@ -4325,42 +4367,54 @@
      "archived/analysis/beside/watch_pairs/94-95/A/v": {},
      "archived/analysis/beside/watch_pairs/94-95/A/b": {},
      "archived/analysis/beside/watch_pairs/94-95/A/rms": {},
-     "archived/analysis/beside/watch_pairs/94-95/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/94-95/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/94-95/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/94-95/A/vertex": {},
      "archived/analysis/beside/watch_pairs/94-95/B/delta": {},
      "archived/analysis/beside/watch_pairs/94-95/B/v": {},
      "archived/analysis/beside/watch_pairs/94-95/B/b": {},
      "archived/analysis/beside/watch_pairs/94-95/B/rms": {},
-     "archived/analysis/beside/watch_pairs/94-95/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/94-95/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/94-95/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/94-95/B/vertex": {},
      "archived/analysis/beside/watch_pairs/42-43/A/delta": {},
      "archived/analysis/beside/watch_pairs/42-43/A/v": {},
      "archived/analysis/beside/watch_pairs/42-43/A/b": {},
      "archived/analysis/beside/watch_pairs/42-43/A/rms": {},
-     "archived/analysis/beside/watch_pairs/42-43/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/42-43/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/42-43/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/42-43/A/vertex": {},
      "archived/analysis/beside/watch_pairs/42-43/B/delta": {},
      "archived/analysis/beside/watch_pairs/42-43/B/v": {},
      "archived/analysis/beside/watch_pairs/42-43/B/b": {},
      "archived/analysis/beside/watch_pairs/42-43/B/rms": {},
-     "archived/analysis/beside/watch_pairs/42-43/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/42-43/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/42-43/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/42-43/B/vertex": {},
      "archived/analysis/beside/watch_pairs/18-19/A/delta": {},
      "archived/analysis/beside/watch_pairs/18-19/A/v": {},
      "archived/analysis/beside/watch_pairs/18-19/A/b": {},
      "archived/analysis/beside/watch_pairs/18-19/A/rms": {},
-     "archived/analysis/beside/watch_pairs/18-19/A/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/18-19/A/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/18-19/A/peak_P11": {},
      "archived/analysis/beside/watch_pairs/18-19/A/vertex": {},
      "archived/analysis/beside/watch_pairs/18-19/B/delta": {},
      "archived/analysis/beside/watch_pairs/18-19/B/v": {},
      "archived/analysis/beside/watch_pairs/18-19/B/b": {},
      "archived/analysis/beside/watch_pairs/18-19/B/rms": {},
-     "archived/analysis/beside/watch_pairs/18-19/B/boot_sd": {},
+     "archived/analysis/beside/watch_pairs/18-19/B/boot_sd": {
+      "compare": "resampled-bootstrap"
+     },
      "archived/analysis/beside/watch_pairs/18-19/B/peak_P11": {},
      "archived/analysis/beside/watch_pairs/18-19/B/vertex": {},
      "archived/analysis/beside/r_abs_deltaA_vs_cz_error/pearson": {},
@@ -4696,7 +4750,9 @@
      "edge_pairs": {},
      "n": {},
      "sd_deltaA": {},
-     "median_boot_sd_deltaA": {},
+     "median_boot_sd_deltaA": {
+      "compare": "resampled-bootstrap"
+     },
      "mean_deltaA": {},
      "mean_deltaB": {},
      "median_deltaA": {},
