@@ -31,7 +31,7 @@ def main():
             print(f"| {case} | {name} | {fmt(a, name)} | {fmt(r, name)} | {d} |")
         worst = max(leaves)
         summary.append((case, len(leaves), worst))
-    print("\n| case | values compared | largest difference | within 1e-6 |")
+    print("\n| case | values compared | largest difference | within 1e-6 (seeded resampling: tests/_reproduce.py) |")
     print("|---|---|---|---|")
     for case, n, (d, path) in summary:
         print(f"| {case} | {n} | {d:.1e} (`{path}`) | {'yes' if d <= TOL else 'NO'} |")

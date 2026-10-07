@@ -1419,8 +1419,34 @@ Each, in four ways, fails the comparison and names the field.
 images of how the map works, into an untracked `review-images/` folder. One caption used a word outside the vocabulary
 boundary (W3). It was replaced before the tree scan was run.
 
+**CI had been failing since Amendment A4, and nobody had noticed.** Since `983bd8c`, CI on this pull request had
+failed in the acceptance tests. Sections 14 to 16 did not report it, and my A6 summary said only that checks were
+running. After this amendment's push, I looked. The cause was the seeded resampling fields: their draws come from
+numpy's random generators.
+- **The shots-resampled intervals** (Kickoff 33, and Kickoff 40's stage 3) differ by 3·10⁻⁶ to 3.2·10⁻⁴ on Linux, even
+  with numpy 2.5.3, the runs' version. A multinomial draw can turn on the last bit of a probability, which differs
+  between platforms. On this macOS machine they match exactly.
+- **Kickoff 42's bootstrap SDs** (binomial draws) match on Linux with numpy 2.5.3, but differ by up to 0.013 with numpy
+  2.4.6. That is the newest numpy for Python 3.11, which CI tests; numpy 2.5 needs Python 3.12.
+- **Everything else**, every verdict, correlation and fit and all 414 compiled-program records, passed on both CI jobs.
+
+I first proposed pinning numpy 2.5 for development and CI, and the author agreed. That could not work, for both reasons
+above, so I went back to the author with the facts. **The author's ruling (7 October): a separate tolerance for these
+fields only, recorded as a change to A4's "every field at 10⁻⁶".**
+- The shots-resampled intervals are compared at 10⁻³. That is about three times the largest difference seen, and below
+  the Monte Carlo error of a 2,000-draw percentile.
+- The bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, and named as not compared under an older numpy.
+- A missing field, a type change or a value that is not finite is never relaxed. Every other field stays at 10⁻⁶
+  everywhere.
+
+The rule is `resampling_rule` in `tests/_reproduce.py` (with `RESAMPLED_SHOTS` and `RESAMPLED_BOOT`), with
+`test_the_resampling_rule`. The README, CONTRIBUTING, `docs/index.md`, `expected_fields.json`'s description and the
+acceptance table say so. Under numpy 2.4.6, installed apart from the project's environment, `test_reproduction.py`
+and `test_field_inventory.py` pass: 120 tests. The mutation tests still fail on a mutated interval: a change to 999,
+a removal, None or NaN is far beyond 10⁻³ or not finite.
+
 **After the amendment:**
-- 465 tests pass (350 before; 115 new);
+- 466 tests pass (350 before; 116 new);
 - Ruff is clean;
 - the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
 - `data/SHA256SUMS` matches every file.

@@ -235,3 +235,23 @@ def test_the_reviewers_probe_end_to_end(case, processor, run, field, monkeypatch
     bad = [p for d, p in leaves if not d <= TOL]
     assert bad and all(field in p for p in bad), bad
     assert _fingerprint() == before
+
+
+# --------------------------------------------------------------------------- Amendment A7: seeded resampling
+def test_the_resampling_rule():
+    """The author's ruling of 7 October 2026: shots-resampled intervals at 10⁻³; Kickoff 42's bootstrap SDs strictly
+    under numpy 2.5 or later, not compared under an older numpy; everything else, and anything infinite, as before."""
+    from _reproduce import INF, resampling_rule
+
+    shots = "x.json: archived/analysis/gains/k_prior/ci90_circuits_and_shots_not_in_verdict[1]"
+    passed = resampling_rule(3.2e-4, shots)
+    assert passed[0] == 0.0 and "compared at 1e-3, difference 0.00032" in passed[1]
+    assert resampling_rule(2e-3, shots)[0] == 2e-3
+    assert resampling_rule(INF, shots)[0] == INF
+    boot = "y.json: archived/analysis/fits/A/boot_sd[18]"
+    assert resampling_rule(0.013, boot, numpy_ok=True)[0] == 0.013
+    skipped = resampling_rule(0.013, boot, numpy_ok=False)
+    assert skipped[0] == 0.0 and skipped[1].startswith(boot) and "not compared under numpy" in skipped[1]
+    assert resampling_rule(INF, boot, numpy_ok=False)[0] == INF
+    other = "z.json: archived/analysis/S2/r_AB/pearson"
+    assert resampling_rule(2e-6, other, numpy_ok=False) == (2e-6, other)

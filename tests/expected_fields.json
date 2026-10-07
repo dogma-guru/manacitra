@@ -1,5 +1,5 @@
 {
- "about": "For each acceptance case in tests/_reproduce.py, every archived field it recomputes from the archived counts: the field's path in its data file and, where the recomputed value sits at another path, that path ('as'). Every field is compared at the tolerance below; none states its own. Fields not recomputed are in tests/excluded_fields.json, with reasons; tests/test_field_inventory.py checks that every field of every data file is in exactly one of the two files.",
+ "about": "For each acceptance case in tests/_reproduce.py, every archived field it recomputes from the archived counts: the field's path in its data file and, where the recomputed value sits at another path, that path ('as'). Every field is compared at the tolerance below; none states its own, except the seeded resampling fields, whose rule is in tests/_reproduce.py (RESAMPLED; Amendment A7). Fields not recomputed are in tests/excluded_fields.json, with reasons; tests/test_field_inventory.py checks that every field of every data file is in exactly one of the two files.",
  "tolerance": 1e-06,
  "cases": {
   "Kickoff 31, ibm_fez": [

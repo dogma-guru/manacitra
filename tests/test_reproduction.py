@@ -1,7 +1,7 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The acceptance bar: every field listed in tests/expected_fields.json reproduces to 1e-6 from the archived counts
-in data/, compared strictly (tests/_reproduce.py)."""
+in data/, compared strictly (tests/_reproduce.py); the seeded resampling fields by the rule there (RESAMPLED)."""
 
 import numpy as np
 import pytest

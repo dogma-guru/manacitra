@@ -281,7 +281,7 @@ Without it, Manacitra stops and says how to get it, and the tests that need it a
 
 ```bash
 pip install -e ".[dev]"
-pytest tests/test_reproduction.py     # every field in tests/expected_fields.json, from the counts, to 1e-6
+pytest tests/test_reproduction.py     # every field in tests/expected_fields.json, from the counts, to 1e-6 (*)
 pytest tests/test_field_inventory.py  # every field of data/ listed once: compared, or excluded with a reason
 pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
@@ -289,6 +289,12 @@ python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
 python docs/make_diagrams.py          # the six diagrams, from data/
 ```
+
+(*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
+random streams the same across versions, and a multinomial draw can turn on the last bit of a probability, which
+differs between platforms. So the intervals that also resample shots are compared at 10⁻³ (the largest difference seen
+between platforms is 3.2·10⁻⁴), and Kickoff 42's bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, the runs'
+version, and named as not compared under an older numpy. Every other field is compared at 10⁻⁶ everywhere.
 
 Every measured statistic in the README is checked by a test; times, ranges and counts are taken from the data files
 and listed in `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
