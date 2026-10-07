@@ -38,8 +38,12 @@ method, and it needs its own discussion first.
 A reviewer gets an archive that carries what a push would carry, and nothing more:
 
 ```bash
-tools/make_review_archive.sh feat/my-branch      # writes build/review/manacitra-<branch>-<commit>.zip and .zip.sha256
+tools/make_review_archive.sh feat/my-branch      # writes build/review/manacitra-<label>-<commit>.zip and .zip.sha256
 ```
+
+The label names what the pull request carries: the latest amendment cited ("Amendment A7") in the commits the branch
+adds to `main`, as `a7`. A branch's name is fixed when it is opened and can fall behind its pull request. A third
+argument overrides the label; with no amendment cited, the branch name is used.
 
 The script makes a fresh clone of the one branch (`git clone --no-local --single-branch --branch`), which copies only
 the commits reachable from it, not the working repository's reflogs, other branches or unreachable objects. It removes

@@ -4,10 +4,14 @@
 #
 # Make an archive for an independent review that carries what a push would carry, and nothing more (Amendment A4, R2).
 #
-#     tools/make_review_archive.sh [BRANCH] [OUT_DIR]
+#     tools/make_review_archive.sh [BRANCH] [OUT_DIR] [LABEL]
 #
 # BRANCH defaults to the current branch; OUT_DIR to build/review (ignored by git). It writes
-# OUT_DIR/manacitra-<branch>-<commit>.zip and, beside it, the zip's SHA-256 in OUT_DIR/manacitra-<branch>-<commit>.zip.sha256.
+# OUT_DIR/manacitra-<label>-<commit>.zip and, beside it, the zip's SHA-256 in OUT_DIR/manacitra-<label>-<commit>.zip.sha256.
+#
+# The label names what the pull request carries, not the branch, whose name is fixed when it is opened: it is the
+# latest amendment cited ("Amendment A7") in the messages of the commits the branch adds to the base branch (BASE,
+# default main), lower-cased ("a7"). LABEL overrides it; with no amendment cited and no LABEL, the branch name is used.
 #
 # A working .git holds more than a push does: reflogs, other branches, and objects no ref reaches. So the archive is
 # made from a fresh clone, `git clone --no-local --single-branch --branch BRANCH`, which copies only the objects
@@ -28,7 +32,13 @@ git -C "$ROOT" rev-parse --verify --quiet "refs/heads/$BRANCH" >/dev/null || {
     exit 2
 }
 COMMIT="$(git -C "$ROOT" rev-parse --short=12 "refs/heads/$BRANCH")"
-NAME="manacitra-${BRANCH//\//-}-$COMMIT"
+BASE="${BASE:-main}"
+RANGE="refs/heads/$BRANCH"
+git -C "$ROOT" rev-parse --verify --quiet "refs/heads/$BASE" >/dev/null && RANGE="refs/heads/$BASE..refs/heads/$BRANCH"
+LATEST="$(git -C "$ROOT" log --format=%B "$RANGE" | grep -oE 'Amendment A[0-9]+' | grep -oE '[0-9]+' | sort -n | tail -1 || true)"
+LABEL="${3:-${LATEST:+a$LATEST}}"
+LABEL="${LABEL:-${BRANCH//\//-}}"
+NAME="manacitra-$LABEL-$COMMIT"
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
