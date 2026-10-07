@@ -74,6 +74,16 @@ class Target:
     read_utc: str = field(default_factory=utc_now)
     notes: list[str] = field(default_factory=list)
 
+    def flags_of(self, pairs: Sequence[Sequence[int]]) -> list[str | None]:
+        """Per pair, the source of the vendor's flag (an IBM two-qubit error of exactly 1.0), or None."""
+        from ..layout import vendor_flag
+
+        out = []
+        for a, b in pairs:
+            f = (self.pairs or {}).get((min(a, b), max(a, b)))
+            out.append(None if f is None else vendor_flag(two_qubit_error=f.two_qubit_error))
+        return out
+
     def x_of(self, pairs: Sequence[Sequence[int]]) -> list[float] | None:
         """The published score of each pair, or None if the provider publishes none."""
         if not self.pairs:

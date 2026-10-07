@@ -12,6 +12,7 @@ up inside it.
     manacitra map --backend ibm --processor ibm_fez --pairs-file p.json --submit  send once (refused if already sent)
     manacitra verdict data/ibm_fez/k31-map.json                                   the map rule on a counts file
     manacitra pick data/ibm_fez/k31-map.json --n 8                                rank pairs (verdict not checked)
+    manacitra pick data/ibm_fez/k31-map.json --by level                          rank by the plain level instead
     manacitra persist day1.json day2.json day3.json                               the persistence rule
     manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               a table, and a chip map
     manacitra seal predictions.md                                                 commit to a file before the run
@@ -52,6 +53,21 @@ def _load_counts_file(path: str) -> tuple[np.ndarray, list[str], list, list | No
     x = [r["x"] for r in d["published_at_submission"]] if "published_at_submission" in d else d.get("x")
     pairs = [p["qubits"] if isinstance(p, dict) else p for p in d["pairs"]]
     return p11_table(d), d["order"], pairs, x, d["meta"].get("permutation_seed", 31)
+
+
+def _flags_in_file(path: str, n_pairs: int) -> list | None:
+    """The vendor's flag on each pair (Amendment A7): from a map written by `manacitra map`, or from an archived IBM
+    file's published two-qubit errors (exactly 1.0 is the flag)."""
+    from .archive import resolve
+    from .layout import vendor_flag
+
+    d = json.loads(resolve(path).read_text())
+    if "outcomes" in d:
+        flags = d.get("meta", {}).get("flagged")
+        return flags if flags and len(flags) == n_pairs else None
+    if "published_at_submission" in d:
+        return [vendor_flag(two_qubit_error=r.get("cz_error")) for r in d["published_at_submission"]]
+    return None
 
 
 def make_backend(a):
@@ -124,13 +140,14 @@ def cmd_map(a) -> int:
         Path(a.out).write_text(json.dumps({"handle": handle.__dict__}, indent=1, default=list))
         return 0
     counts = backend.fetch(backend.submit(job))
-    x = backend.target().x_of(pairs)
-    counts.meta.update({"x": x, "seed": a.seed})
+    target = backend.target()
+    x, flags = target.x_of(pairs), target.flags_of(pairs)
+    counts.meta.update({"x": x, "seed": a.seed, "flagged": flags})
     Path(a.out).write_text(json.dumps(counts.to_json()))
     print(f"wrote {a.out}")
     from .verdicts import analyse_map
 
-    an = analyse_map(counts.p11(), counts.order, x=x, shots=a.shots, seed=a.perm_seed)
+    an = analyse_map(counts.p11(), counts.order, x=x, shots=a.shots, seed=a.perm_seed, flagged=flags)
     print(verdict_lines(an))
     return 0
 
@@ -145,6 +162,7 @@ def cmd_verdict(a) -> int:
         x=None if a.no_score else x,
         seed=a.perm_seed or seed,
         dead_pair_floor=0.5 if (x is None or a.no_score) else None,
+        flagged=_flags_in_file(a.file, len(pairs)),
     )
     print(verdict_lines(an))
     if a.json:
@@ -155,9 +173,21 @@ def cmd_verdict(a) -> int:
 USABLE_VERDICTS = ("DIAGNOSTIC", "MAP PRESENT")
 
 
+#: What `pick --by` ranks by: the kept share k_A (highest first), the plain level, each pair's mean P(A no) (highest
+#: first; Amendment A7), or the published score x (lowest first). "k" is the earlier name of kept-share.
+PICK_BY = {
+    "kept-share": "kept share (highest first)",
+    "level": "plain level, mean P(A no) (highest first)",
+    "x": "published score (lowest first)",
+}
+
+
 def cmd_pick(a) -> int:
     """Rank pairs from a map. It does not condition on the verdict; it warns (on stderr) when the map's verdict is not
-    DIAGNOSTIC or MAP PRESENT. Running the user's own job on the pairs is the user's step, not Manacitra's."""
+    DIAGNOSTIC or MAP PRESENT. Running the user's own job on the pairs is the user's step, not Manacitra's.
+
+    --by kept-share (the default) ranks by the kept share; --by level by the plain level, which chose better pairs on
+    the Rigetti processor where the kept share did not (Kickoffs 40 and 41); --by x by the published score."""
     from .keptshare import kept_from_order
     from .layout import pick_pairs
     from .verdicts import analyse_map
@@ -170,11 +200,18 @@ def cmd_pick(a) -> int:
             "worth using. pick ranks pairs and does not check the verdict.",
             file=sys.stderr,
         )
-    k = kept_from_order(P, order, "A")[0]
-    idx = pick_pairs(k, a.n) if a.by == "k" else pick_pairs(x, a.n, highest=False)
-    print(f"the {a.n} pairs by {'kept share (highest first)' if a.by == 'k' else 'published score (lowest first)'}:")
+    k, _, level = kept_from_order(P, order, "A")
+    by = "kept-share" if a.by == "k" else a.by
+    if by == "x" and x is None:
+        raise SystemExit("this map has no published score; use --by kept-share or --by level")
+    idx = {"kept-share": lambda: pick_pairs(k, a.n), "level": lambda: pick_pairs(level, a.n)}.get(
+        by, lambda: pick_pairs(x, a.n, highest=False)
+    )()
+    print(f"the {a.n} pairs by {PICK_BY[by]}:")
     for i in idx:
-        print(f"  {list(pairs[i])}  k_A {k[i]:.3f}" + (f"  x {x[i]:.4f}" if x is not None else ""))
+        print(
+            f"  {list(pairs[i])}  k_A {k[i]:.3f}  level {level[i]:.4f}" + (f"  x {x[i]:.4f}" if x is not None else "")
+        )
     return 0
 
 
@@ -296,7 +333,12 @@ def main(argv=None) -> int:
     p = sub.add_parser("pick", help="rank pairs from a map; warns when the verdict is not DIAGNOSTIC or MAP PRESENT")
     p.add_argument("file")
     p.add_argument("--n", type=int, default=8)
-    p.add_argument("--by", choices=["k", "x"], default="k")
+    p.add_argument(
+        "--by",
+        choices=[*PICK_BY, "k"],
+        default="kept-share",
+        help="kept-share (default), level (each pair's mean P(A no)) or x (the published score); k is kept-share",
+    )
     p.set_defaults(func=cmd_pick)
 
     s = sub.add_parser("persist", help="the persistence rule over two or three days")

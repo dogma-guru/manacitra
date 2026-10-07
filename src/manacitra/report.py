@@ -59,6 +59,19 @@ def verdict_lines(analysis: dict) -> str:
         lines.append(f"  [{'x' if ok else ' '}] {k}")
     if v.get("note"):
         lines.append(f"  note: {v['note']}")
+    fl = analysis.get("flagged") or {}
+    if fl.get("pairs"):
+        lines.append(
+            f"flagged by the vendor, outside the verdict: {len(fl['pairs'])} pair(s) ({'; '.join(fl['sources'])})"
+        )
+        w = fl["without"]
+        s3 = w["S3"] if isinstance(w["S3"], dict) else {}
+        parts = [
+            f"r_split(k_A) {w['S1']['r_split_A']['pearson']:.4f}",
+            f"r_AB {w['S2']['r_AB']['pearson']:.4f}",
+            *([f"r_AB.x {s3['r_AB_given_x']:.4f}", f"r_Ax {s3['r_Ax']['pearson']:.4f}"] if s3 else []),
+        ]
+        lines.append(f"  without them ({w['n_pairs']} pairs): " + ", ".join(parts))
     return "\n".join(lines)
 
 
