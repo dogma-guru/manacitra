@@ -477,3 +477,19 @@ def test_the_new_rows_and_bullets():
     assert "- **How long a map lasts beyond two days.**" in README and "- **Two routes to one processor.**" in README
     assert "`manacitra pick --by level` ranks by the plain level instead" in README
     assert "running as of 6 October 2026" not in README
+
+
+def test_the_three_checks_picture():
+    """The third picture (added after Amendment A7, at the author's request): its caption and alt text."""
+    run = archive.load("ibm_fez/k31-map.json")
+    an = archive.map_from_record(run)
+    rs = (an["S1"]["r_split_A"]["pearson"], an["S2"]["r_AB"]["pearson"], an["S3"]["r_Ax"]["pearson"])
+    assert tuple(r(v, 2) for v in rs) == (0.87, 0.82, -0.18) and r(an["S3"]["r_AB_given_x"], 2) == 0.82
+    assert an["S2"]["p_one_sided"] < 1e-4 and an["verdict"]["verdict"] == "DIAGNOSTIC"
+    copies = sum(1 for i in run["halves"]["A"][0] if run["order"][i - 1] == "A no")
+    assert copies * run["meta"]["shots_per_circuit"] == 16_000
+    assert "each half of the runs, 16,000 shots per variant per pair, gives nearly the same k (r = 0.87)" in README
+    assert "k barely follows x (r = −0.18), and the carry-over survives with x taken out (r = 0.82)" in README
+    assert "r = 0.82, p below 1 in 10,000, needs at least 0.4 with p below 0.05" in README
+    assert "](docs/diagrams/three-checks.svg)" in README and "## The idea in six pictures" in README
+    assert (Path(__file__).resolve().parents[1] / "docs" / "diagrams" / "three-checks.png").is_file()

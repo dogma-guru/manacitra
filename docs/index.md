@@ -287,7 +287,7 @@ pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges a
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the six diagrams, from data/
+python docs/make_diagrams.py          # the seven diagrams, from data/
 ```
 
 (*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its

@@ -8,7 +8,7 @@ Manacitra runs two short circuits on a set of non-overlapping qubit pairs at onc
 
 It maps pairs. It does not rank machines.
 
-## The idea in five pictures
+## The idea in six pictures
 
 ### 1. The kept share
 
@@ -22,7 +22,13 @@ The two circuits encode a four-site Hamiltonian in two qubits; the offset makes 
 
 The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), each coloured by its kept share. Each pair is also drawn thicker the more it kept, and numbered by its rank; every pair's k, x and ranks are in [a table](docs/diagrams/chip-map-table.md). The small map on the right colours the same pairs by the published score x (the pair's two-qubit error plus both qubits' readout errors, as IBM reported them at submission). Dark means better on both. The two pictures order the pairs differently: across these 27 pairs, k and x correlate at r = −0.18.
 
-### 3. The pipeline
+### 3. The three checks
+
+![Three scatter plots of ibm_fez's 27 pairs from Kickoff 31, each answering one question of the map rule, with its correlation and threshold above it. 1, does it repeat: k from one half of the runs against k from the other half, beside a dashed line of equal values; r = 0.87, needs at least 0.5, passes. 2, does it carry over: k on circuit A against k on circuit B; r = 0.82, p below 1 in 10,000, needs at least 0.4 with p below 0.05, passes. 3, is it already in the published score: k against IBM's published error score x; r = −0.18, needs |r| below 0.5, and the A-to-B correlation with x removed is 0.82, needs at least 0.3, passes. The title gives the verdict: DIAGNOSTIC.](docs/diagrams/three-checks.svg)
+
+The verdict comes from three checks on the same map. It must repeat: each half of the runs, 16,000 shots per variant per pair, gives nearly the same k (r = 0.87). It must carry over to a second circuit with a different gap (r = 0.82). And it must not be what the published score already says: k barely follows x (r = −0.18), and the carry-over survives with x taken out (r = 0.82). All three pass on ibm_fez, so the verdict is DIAGNOSTIC; a map that fails the first is NOISE, and one that x explains is REDUNDANT.
+
+### 4. The pipeline
 
 ![Four boxes in a row joined by arrows: Map (in: 16 short circuits on a set of non-overlapping qubit pairs at once (27 in the published runs); every coupler on a chip can be covered in a few rounds; out: k per pair), Verdict (in: k from two circuits, split halves, published x; out: NOISE, REDUNDANT, DIAGNOSTIC, MAP PRESENT or NOT SETTLED), Pick (in: the map; out: the n pairs that kept the most, ranked without checking the verdict), Run, drawn dashed (your own job, run by you on the picked pairs, not by Manacitra). A dashed note above the Map box says that, according to the author's dated records, which are not part of this release, the rules and predictions were sealed before each map job was sent.](docs/diagrams/pipeline.svg)
 
@@ -30,13 +36,13 @@ Map, then verdict, then pick, then run. The verdict says whether the map is wort
 
 Which to rank by, from the two chips: on ibm_fez the kept share chose the better pairs (Kickoff 33); on the Rigetti processor the plain level, each pair's mean P(11) on circuit A without the offset, did, on the same day and a day later (Kickoffs 40 and 41), and the kept share did not. Neither has been tested on a third chip. The dead-pair filter uses the run's own levels, never a list from an earlier day: on the Rigetti processor, dead pairs came and went between consecutive days (18-19 came back; 72-73 and 76-77 went).
 
-### 4. The payoff
+### 5. The payoff
 
 ![A scatter of 27 ibm_fez pairs: the kept share measured about two hours earlier on the horizontal axis, and fidelity on eight random two-qubit circuits on the vertical axis. The 8 pairs with the highest kept share are filled blue; the 8 with the lowest published error are ringed in orange; some pairs carry both. Dashed lines mark each pick's mean: error 0.0022 for the map's pick and 0.0034 for the published pick. The title reads: choosing by the map, 35.6% less error than choosing by the published rates.](docs/diagrams/payoff.svg)
 
 On ibm_fez on 5 October 2026, the map measured at 13:17 UTC chose 8 pairs, and the published error rates chose another 8. At 15:20 UTC all 27 pairs ran eight random circuits, unrelated to the map, with nine CZ gates each. The map's 8 pairs had a mean error of 0.0022 against 0.0034 for the published pick: 35.6% less. The absolute numbers are small, because every pair's fidelity was above 0.98.
 
-### 5. How to check a sealed prediction
+### 6. How to check a sealed prediction
 
 ![A timeline of four steps. 1, seal and post the hash (manacitra seal): shows the file existed then, without showing what it says. 2, run the job: the file stays as it was. 3, reveal the salt (manacitra reveal): publishes the file and its salt. 4, anyone verifies (manacitra verify): a match shows the predictions came before the results.](docs/diagrams/sealed-prediction.svg)
 

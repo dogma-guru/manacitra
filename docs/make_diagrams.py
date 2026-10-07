@@ -1,16 +1,17 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the six README diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the seven README diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
 1. kept-share.svg   the kept share in one picture: two circuits, their ideal outcomes, one good and one poor pair
 2. chip-map.svg     ibm_fez's coupling map, the 27 pairs coloured by kept share, beside the published error rates;
                     chip-map-table.md, the same values as a table
-3. pipeline.svg     map, verdict, pick, run
-4. payoff.svg       workload fidelity against the prior kept share, with the two picks of 8 marked
-5. sealed-prediction.svg   how to check a sealed prediction: seal, run, reveal, verify
-6. kickoff.svg      how a result was made: brief, sealed predictions, go, run, hand-back, independent check, scorecard
+3. three-checks.svg the three checks behind the map's verdict on ibm_fez: halves, circuit A against B, k against x
+4. pipeline.svg     map, verdict, pick, run
+5. payoff.svg       workload fidelity against the prior kept share, with the two picks of 8 marked
+6. sealed-prediction.svg   how to check a sealed prediction: seal, run, reveal, verify
+7. kickoff.svg      how a result was made: brief, sealed predictions, go, run, hand-back, independent check, scorecard
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. The figures carry their own light surface so they read on light and dark pages alike.
@@ -268,7 +269,125 @@ def diagram_chip_map(out: Path):
     (out / "chip-map-table.md").write_text("\n".join(rows) + "\n")
 
 
-# --------------------------------------------------------------------------- 3. the pipeline
+# --------------------------------------------------------------------------- 3. the three checks
+def diagram_three_checks(out: Path):
+    """Kickoff 31 on ibm_fez, the map rule's three checks as three scatters, each with its r against its threshold."""
+    from manacitra import verdicts as V
+    from manacitra.stats import format_p
+
+    run = archive.load("ibm_fez/k31-map.json")
+    an = archive.map_from_record(run)
+    pairs = [tuple(p) for p in run["pairs"]]
+    xpub = {tuple(r["pair"]): r["x"] for r in run["published_at_submission"]}
+    x = np.array([xpub[p] for p in pairs])
+    kA, kB = np.array(an["kA"]), np.array(an["kB"])
+    h1, h2 = np.array(an["kA_half1"]), np.array(an["kA_half2"])
+    cond, v = an["verdict"]["conditions"], an["verdict"]["verdict"]
+    copies = sum(1 for i in run["halves"]["A"][0] if run["order"][i - 1] == "A no")
+    shots_half = copies * run["meta"]["shots_per_circuit"]
+
+    def minus(t):
+        return t.replace("-", "−")
+
+    def r2(val):
+        return minus(f"{val:.2f}")
+
+    fig, axs = plt.subplots(1, 3, figsize=(11.5, 4.7))
+    fig.subplots_adjust(wspace=0.42, top=0.66, bottom=0.14)
+
+    def dots(ax, xv, yv):
+        ax.scatter(xv, yv, s=42, color=SERIES_1, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+        ax.grid(True, color=GRID, lw=0.8)
+        ax.set_axisbelow(True)
+
+    def check(ax, title, text, ok):
+        ax.set_title(title, loc="left", pad=40, fontsize=11.5)
+        ax.text(
+            0.0,
+            1.03,
+            ("passes   " if ok else "fails   ") + text,
+            transform=ax.transAxes,
+            fontsize=9.5,
+            color=INK,
+            va="bottom",
+            linespacing=1.4,
+        )
+
+    a = axs[0]
+    dots(a, h1, h2)
+    lim = (min(h1.min(), h2.min()) - 0.05, max(h1.max(), h2.max()) + 0.05)
+    a.plot(lim, lim, color=MUTED, lw=1, ls=(0, (4, 3)), zorder=1)
+    a.set_xlim(lim)
+    a.set_ylim(lim)
+    a.set_xlabel("k from half 1 of the runs")
+    a.set_ylabel("k from half 2 of the runs")
+    a.text(
+        0.03,
+        0.97,
+        "dashed: the same k\nin both halves",
+        transform=a.transAxes,
+        ha="left",
+        va="top",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    check(
+        a,
+        "1  Does it repeat?",
+        f"r = {r2(an['S1']['r_split_A']['pearson'])}  (needs ≥ {V.MAP_REPEAT_AT_LEAST:g})",
+        cond["r_split >= 0.5"],
+    )
+
+    a = axs[1]
+    dots(a, kA, kB)
+    a.set_xlabel("k on circuit A")
+    a.set_ylabel(f"k on circuit B (gap {GAP['B']:.3f})")
+    p = format_p(an["S2"]["p_one_sided"], an["n_permutations"]).split(" (")[0]
+    check(
+        a,
+        "2  Does it carry over?",
+        f"r = {r2(an['S2']['r_AB']['pearson'])}, {p}\n(needs ≥ {V.MAP_TRANSFER_AT_LEAST:g} with p < {V.MAP_P_BELOW:g})",
+        cond["r_AB >= 0.4 with p < 0.05"],
+    )
+
+    a = axs[2]
+    dots(a, x, kA)
+    a.set_xlabel("published error score x (IBM; lower is better)")
+    a.set_ylabel("k on circuit A")
+    a.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(4))
+    check(
+        a,
+        "3  Is it already in x?",
+        f"r = {r2(an['S3']['r_Ax']['pearson'])}  (needs |r| < {V.MAP_SCORE_EXPLAINS:g})\n"
+        f"and A↔B with x removed: r = {r2(an['S3']['r_AB_given_x'])}  (needs ≥ {V.MAP_PARTIAL_AT_LEAST:g})",
+        cond["|r_Ax| < 0.5"] and cond["r_AB.x >= 0.3"],
+    )
+
+    t = run["meta"]["utc"]
+    when = (np.datetime64(t.rstrip("Z")) + np.timedelta64(30, "s")).astype("datetime64[m]").item()
+    fig.text(
+        0.0,
+        0.975,
+        f"The three checks behind the verdict. ibm_fez, Kickoff 31: {v}",
+        fontsize=13.5,
+        weight="bold",
+        color=INK,
+    )
+    fig.text(
+        0.0,
+        0.905,
+        f"Each dot is one of the {len(pairs)} pairs, {when.day} {when:%B %Y}, {when:%H:%M} UTC. Half 1 is the outer "
+        f"copies of circuit A in the run order, half 2 the inner ones\n({shots_half:,} shots per variant per pair "
+        f"each). {v}: the map repeats, carries over to a second circuit, and is not already in x.",
+        fontsize=9.5,
+        color=INK_2,
+        va="top",
+        linespacing=1.4,
+    )
+    save(fig, out, "three-checks")
+
+
+# --------------------------------------------------------------------------- 4. the pipeline
 def diagram_pipeline(out: Path):
     fig, ax = plt.subplots(figsize=(11, 3.9))
     ax.set_xlim(0, 11)
@@ -345,7 +464,7 @@ def diagram_pipeline(out: Path):
     save(fig, out, "pipeline")
 
 
-# --------------------------------------------------------------------------- 4. the payoff
+# --------------------------------------------------------------------------- 5. the payoff
 def diagram_payoff(out: Path):
     fez = archive.fez_or_kingston("ibm_fez")
     k31, k32, k33 = fez["k31-map"], fez["k32-isolation"], fez["k33-payoff"]
@@ -399,7 +518,7 @@ def diagram_payoff(out: Path):
     save(fig, out, "payoff")
 
 
-# --------------------------------------------------------------------------- 5. how to check a sealed prediction
+# --------------------------------------------------------------------------- 6. how to check a sealed prediction
 def diagram_seal(out: Path):
     fig, ax = plt.subplots(figsize=(12, 3.9))
     ax.set_xlim(0, 12)
@@ -442,7 +561,7 @@ def diagram_seal(out: Path):
     save(fig, out, "sealed-prediction")
 
 
-# --------------------------------------------------------------------------- 6. how a result was made: a kickoff
+# --------------------------------------------------------------------------- 7. how a result was made: a kickoff
 def diagram_kickoff(out: Path):
     """A vertical timeline: one step a row, its name in bold and one short line beside it."""
     steps = [
@@ -485,11 +604,12 @@ def main(argv=None):
     a = ap.parse_args(argv)
     diagram_kept_share(a.out)
     diagram_chip_map(a.out)
+    diagram_three_checks(a.out)
     diagram_pipeline(a.out)
     diagram_payoff(a.out)
     diagram_seal(a.out)
     diagram_kickoff(a.out)
-    print(f"wrote 6 diagrams (SVG and PNG) to {a.out}")
+    print(f"wrote 7 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":
