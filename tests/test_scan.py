@@ -44,6 +44,28 @@ def test_allows_job_ids_and_placeholders():
     assert not hits("a string during a run of measuring")  # word boundaries hold
 
 
+def test_catches_each_amazon_kind():
+    """Amendment A7, section 7: the Amazon identifiers, before any Amazon Braket file is copied."""
+    samples = {
+        "aws-arn": "ar" + "n:aws:braket:us-west-1:" + "1" + "23456789012:quantum-task/abc",
+        "aws-s3-uri": "S" + "3://some-bucket/results",
+        "aws-account-number": '"account": "' + "3" + "84726190573" + '"',
+        "aws-access-key-field": "AWS_" + "ACCESS_KEY_ID=x",
+        "aws-access-key-id": "AK" + "IA" + "ABCDEFGHIJKLMNOP",
+        "aws-secret-field": "aws_" + "secret_access_key = y",
+    }
+    for name, text in samples.items():
+        assert name in hits(text), name
+
+
+def test_amazon_patterns_leave_regions_numbers_and_counts_keys_alone():
+    assert not hits('"region": "us-west-1", "profile": "default"')
+    assert not hits('{"010011001100": 4300, "111111111111": 12}')  # six-pair counts keys
+    assert not hits("0.123456789012345 1234567890123 12345678901")  # a fraction, 13 digits, 11 digits
+    assert "aws-account-number" in hits('{"0123' + '45678912": 1}')  # a quoted twelve digits, not only 0s and 1s
+    assert not hits("the learn: section")  # the resource-name pattern needs a word boundary
+
+
 def test_the_bot_address_is_allowed_and_nothing_else():
     """Amendment A3, 4.1: GitHub's public workflow address passes; any other address, a bot's too, is flagged."""
     assert not hits('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"')

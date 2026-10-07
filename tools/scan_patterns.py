@@ -32,6 +32,14 @@ PATTERNS = [
         "i",
     ),
     ("private-key", r"-----BEGIN [A-Z ]*PRIVATE KEY-----", ""),
+    # Amazon Web Services (Amendment A7, before any Amazon Braket file is copied): resource names, bucket addresses,
+    # account numbers and access keys. Profile and region names (us-west-1) are not identifiers and are allowed.
+    ("aws-arn", r"\b[a]rn:", "i"),
+    ("aws-s3-uri", r"s[3]://", "i"),
+    ("aws-account-number", r"(?<![0-9A-Za-z_.+-])[0-9]{12}(?![0-9A-Za-z_])", ""),
+    ("aws-access-key-field", r"aws_[a]ccess_key", "i"),
+    ("aws-access-key-id", r"\bA[K]IA[A-Z0-9]{16}\b", ""),
+    ("aws-secret-field", r"aws_[s]ecret", "i"),
     # People and machines
     ("email-address", r"[A-Za-z0-9._%+\[\]-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", ""),
     ("home-path-mac", r"/Users/[A-Za-z0-9._-]+", ""),
@@ -64,6 +72,9 @@ ALLOW = [
     # DCO check's exemption for them). It is a published noreply address, not a person's and not a secret. Exactly
     # this string; any other address, including another bot's, is still a finding.
     ("github-actions-bot", r"41898282\+github-actions\[bot\]@users\.noreply\.github\.com", ""),
+    # Amendment A7: a counts key of exactly twelve 0s and 1s (a six-pair measurement) is not an AWS account number.
+    # Only a quoted string of 0s and 1s; a twelve-digit number with any other digit is still a finding.
+    ("bitstring-key", r"\"[01]{12}\"", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]
