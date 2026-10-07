@@ -27,8 +27,6 @@ import json
 import sys
 from pathlib import Path
 
-import numpy as np
-
 from . import __version__
 from .circuits import ORDER_16
 from .report import map_table, verdict_lines
@@ -38,36 +36,43 @@ def _parse_pairs(s: str) -> list[tuple[int, int]]:
     return [tuple(int(q) for q in p.split("-")) for p in s.split(",") if p.strip()]
 
 
-def _load_counts_file(path: str) -> tuple[np.ndarray, list[str], list, list | None, int]:
-    """A MapCounts JSON written by `manacitra map`, or an archived map file from data/."""
-    from .archive import resolve
+def _load_view(path: str) -> dict:
+    """A map, as pick, verdict and report read it (Amendment A8, R1): a counts file written by `manacitra map`, or an
+    archived map run from data/, read by its declared bit reading (archive.map_view). A record that declares no
+    reading, or is not a map run, is refused, naming why; nothing is decoded by default."""
+    from .archive import NotAMap, NotATable, UndeclaredReading, map_view, resolve
 
-    d = json.loads(resolve(path).read_text())
-    if "outcomes" in d:
-        from .backends.base import MapCounts
+    where = resolve(path)
+    d = json.loads(where.read_text())
+    if "outcomes" not in d:
+        try:
+            return map_view(d, where.parent)
+        except (UndeclaredReading, NotATable, NotAMap) as e:
+            raise SystemExit(f"refused: {path}: {e}") from None
+    from .backends.base import MapCounts
+    from .verdicts import analyse_map
 
-        mc = MapCounts.from_json(d)
-        return mc.p11(), mc.order, mc.pairs, d.get("meta", {}).get("x"), d.get("meta", {}).get("seed", 31)
-    from .archive import p11_table
-
-    x = [r["x"] for r in d["published_at_submission"]] if "published_at_submission" in d else d.get("x")
-    pairs = [p["qubits"] if isinstance(p, dict) else p for p in d["pairs"]]
-    return p11_table(d), d["order"], pairs, x, d["meta"].get("permutation_seed", 31)
-
-
-def _flags_in_file(path: str, n_pairs: int) -> list | None:
-    """The vendor's flag on each pair (Amendment A7): from a map written by `manacitra map`, or from an archived IBM
-    file's published two-qubit errors (exactly 1.0 is the flag)."""
-    from .archive import resolve
-    from .layout import vendor_flag
-
-    d = json.loads(resolve(path).read_text())
-    if "outcomes" in d:
-        flags = d.get("meta", {}).get("flagged")
-        return flags if flags and len(flags) == n_pairs else None
-    if "published_at_submission" in d:
-        return [vendor_flag(two_qubit_error=r.get("cz_error")) for r in d["published_at_submission"]]
-    return None
+    mc = MapCounts.from_json(d)
+    meta = d.get("meta", {})
+    P, x, seed = mc.p11(), meta.get("x"), meta.get("seed", 31)
+    flags = meta.get("flagged")
+    flags = flags if flags and len(flags) == len(mc.pairs) else None
+    an = analyse_map(P, mc.order, x=x, seed=seed, dead_pair_floor=0.5 if x is None else None, flagged=flags)
+    keep = an.get("pair_index", list(range(len(mc.pairs))))
+    return {
+        "pairs": [tuple(mc.pairs[i]) for i in keep],
+        "P": P[:, keep],
+        "order": mc.order,
+        "x": None if x is None else [x[i] for i in keep],
+        "flags": None if flags is None else [flags[i] for i in keep],
+        "analysis": an,
+        "seed": seed,
+        "shots": mc.shots,
+        "halves": None,
+        "reading": "outcomes (written by manacitra map)",
+        "set": f"{len(keep)} of {len(mc.pairs)} pairs"
+        + (" (the dead-pair filter)" if len(keep) < len(mc.pairs) else ""),
+    }
 
 
 def make_backend(a):
@@ -153,17 +158,24 @@ def cmd_map(a) -> int:
 
 
 def cmd_verdict(a) -> int:
+    """The map rule on a map: by default the analysis the run's own acceptance case computes (Amendment A8); with
+    --no-score or --perm-seed, the rule run again on the same pairs."""
     from .verdicts import analyse_map
 
-    P, order, pairs, x, seed = _load_counts_file(a.file)
-    an = analyse_map(
-        P,
-        order,
-        x=None if a.no_score else x,
-        seed=a.perm_seed or seed,
-        dead_pair_floor=0.5 if (x is None or a.no_score) else None,
-        flagged=_flags_in_file(a.file, len(pairs)),
-    )
+    v = _load_view(a.file)
+    an = v["analysis"]
+    if a.no_score or a.perm_seed:
+        kw = {"halves": v["halves"]} if v["halves"] else {}
+        an = analyse_map(
+            v["P"],
+            v["order"],
+            x=None if a.no_score else v["x"],
+            seed=a.perm_seed or v["seed"],
+            shots=v["shots"],
+            flagged=v["flags"],
+            **kw,
+        )
+    print(f"read as {v['reading']}; {v['set']}")
     print(verdict_lines(an))
     if a.json:
         Path(a.json).write_text(json.dumps(an, indent=1))
@@ -190,10 +202,10 @@ def cmd_pick(a) -> int:
     the Rigetti processor where the kept share did not (Kickoffs 40 and 41); --by x by the published score."""
     from .keptshare import kept_from_order
     from .layout import pick_pairs
-    from .verdicts import analyse_map
 
-    P, order, pairs, x, seed = _load_counts_file(a.file)
-    v = analyse_map(P, order, x=x, seed=seed, dead_pair_floor=0.5 if x is None else None)["verdict"]["verdict"]
+    view = _load_view(a.file)
+    P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
+    v = view["analysis"]["verdict"]["verdict"]
     if v not in USABLE_VERDICTS:
         print(
             f"warning: this map's verdict is {v}, not DIAGNOSTIC or MAP PRESENT; the ranking below may not be "
@@ -207,7 +219,7 @@ def cmd_pick(a) -> int:
     idx = {"kept-share": lambda: pick_pairs(k, a.n), "level": lambda: pick_pairs(level, a.n)}.get(
         by, lambda: pick_pairs(x, a.n, highest=False)
     )()
-    print(f"the {a.n} pairs by {PICK_BY[by]}:")
+    print(f"the {a.n} pairs by {PICK_BY[by]}, of {view['set']}:")
     for i in idx:
         print(
             f"  {list(pairs[i])}  k_A {k[i]:.3f}  level {level[i]:.4f}" + (f"  x {x[i]:.4f}" if x is not None else "")
@@ -233,7 +245,8 @@ def cmd_persist(a) -> int:
 def cmd_report(a) -> int:
     from .keptshare import kept_from_order
 
-    P, order, pairs, x, _ = _load_counts_file(a.file)
+    view = _load_view(a.file)
+    P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
     kA = kept_from_order(P, order, "A")[0]
     kB = kept_from_order(P, order, "B")[0] if any(lbl.startswith("B") for lbl in order) else None
     print(map_table(pairs, kA, kB, x))

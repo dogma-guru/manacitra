@@ -75,17 +75,75 @@ def load(path) -> dict:
     return json.loads(resolve(path).read_text())
 
 
+#: The bit readings a counts record can declare in meta.bit_reading (Amendment A8, R1); the data README's Formats
+#: section describes each
+BIT_READINGS = ("qiskit-adjacent", "openquantum-reversed", "braket-measured-qubits", "per-pair")
+
+
+class UndeclaredReading(ValueError):
+    """A counts record without a declared bit reading, or with one this package does not know: nothing is decoded."""
+
+
+class NotATable(ValueError):
+    """A counts record whose positions do not all measure the run's pairs (per task, or per round, or per condition):
+    it has no single per-circuit, per-pair table, and its own recompute reads it."""
+
+
+def bit_reading(rec: dict) -> str:
+    """The record's declared bit reading, or UndeclaredReading, naming the field."""
+    reading = (rec.get("meta") or {}).get("bit_reading")
+    if reading is None:
+        raise UndeclaredReading(
+            "meta.bit_reading is missing: a record with counts must declare its bit reading, one of "
+            f"{', '.join(BIT_READINGS)}; nothing was decoded"
+        )
+    if reading not in BIT_READINGS:
+        raise UndeclaredReading(
+            f"meta.bit_reading is {reading!r}, not one of {', '.join(BIT_READINGS)}; nothing was decoded"
+        )
+    return reading
+
+
 def p11_table(rec: dict) -> np.ndarray:
-    """Per circuit, per pair P(11), from the archived counts (IBM bitstrings or per-pair outcome dicts)."""
+    """Per circuit, per pair P(11), from the archived counts, read by the record's declared bit reading
+    (meta.bit_reading; Amendment A8): one reader per reading, the same ones the route-aware recomputes use.
+
+    * qiskit-adjacent (IBM): the rightmost character is classical bit 0; pair i is bits 2i and 2i + 1
+      (p11_from_bitstrings);
+    * openquantum-reversed: pair i is classical bits i and n - 1 - i, classical bit k at position n - 1 - k
+      (p11_classical_index);
+    * braket-measured-qubits: character j of a key belongs to the task's measured_qubits[j] (braket_p11);
+    * per-pair (the simulations): per pair, counts of 00, 01, 10 and 11.
+
+    A record with no counts (the settling runs) gives its archived P(11) table. A record without a declared reading,
+    or with an unknown one, is refused (UndeclaredReading); one whose positions do not all measure the run's pairs is
+    refused too (NotATable)."""
     if "counts" not in rec:
         return np.asarray(rec["per_circuit_P11"], float)
-    rows = []
-    for c in rec["counts"]:
-        if isinstance(c, list):  # per pair {"00": n, "01": n, "10": n, "11": n}
-            rows.append([pc["11"] / sum(pc.values()) for pc in c])
-        else:
-            rows.append(p11_from_bitstrings(c, len(rec["pairs"])))
-    return np.asarray(rows, float)
+    reading = bit_reading(rec)
+    counts = rec["counts"]
+    if not isinstance(counts, list):
+        raise NotATable("its counts are per task, not per circuit position; its own recompute reads them")
+    if "pairs" not in rec:
+        raise NotATable(
+            "it has no run-wide list of pairs: its positions measure different pairs (by round or by "
+            "condition); its own recompute reads them"
+        )
+    pairs = [tuple(p["qubits"]) if isinstance(p, dict) else tuple(p) for p in rec["pairs"]]
+    if reading == "per-pair":
+        return np.asarray([[pc["11"] / sum(pc.values()) for pc in c] for c in counts], float)
+    if reading == "braket-measured-qubits":
+        tasks = rec["tasks"]
+        return np.array([braket_p11(c, t["measured_qubits"], pairs) for c, t in zip(counts, tasks)])
+    width = {len(k.replace(" ", "")) for c in counts for k in list(c)[:1]}
+    if width != {2 * len(pairs)}:
+        raise NotATable(
+            f"its keys are {sorted(width)} bits wide, not {2 * len(pairs)} for its {len(pairs)} pairs: its positions "
+            "measure different pairs; its own recompute reads them"
+        )
+    if reading == "openquantum-reversed":
+        return np.array([p11_classical_index(c, len(pairs)) for c in counts])
+    return np.asarray([p11_from_bitstrings(c, len(pairs)) for c in counts], float)
 
 
 # --------------------------------------------------------------------------- Kickoff 29's settling run and the baseline
@@ -416,7 +474,7 @@ def rigetti_map(rec: dict, screen: dict | None = None) -> dict:
     the sealed leave-one-out, the 20-pair check computed after the fact, and the descriptive lines beside the verdict
     (those that need the screen's levels only if `screen` is given)."""
     pairs = [tuple(p) for p in rec["pairs"]]
-    P = np.array([p11_classical_index(c, len(pairs)) for c in rec["counts"]])
+    P = p11_table(rec)
     order, seed, shots = rec["order"], rec["meta"]["permutation_seed"], rec["meta"]["shots_per_circuit"]
     halves = {c: tuple(h) for c, h in rec["halves"].items()}
     an = analyse_map(P, order, shots=shots, seed=seed, halves=halves, dead_pair_floor=rec["meta"]["dead_pair_floor"])
@@ -1106,7 +1164,7 @@ def braket_map(
     shots = rec["tasks"][0]["shots"]
     halves = {k: tuple(v) for k, v in rec["halves"].items()} if "halves" in rec else BRAKET_HALVES
     tasks = rec["tasks"]
-    P = np.array([braket_p11(c, t["measured_qubits"], pairs) for c, t in zip(rec["counts"], tasks)])
+    P = p11_table(rec)
     cov = float(
         np.mean(
             [
@@ -2020,6 +2078,81 @@ def full_chip_persistence(day_recs: dict) -> dict:
         "largest_moves_2_to_3": [[list(E[i]), float(k[2][i]), float(k[3][i])] for i in moves],
     }
     return {"analysis": a, "levels": levels, "robustness": robustness, "rank_based_reliability": rel_s}
+
+
+# --------------------------------------------------------------------------- an archived map, as the commands read it
+class NotAMap(ValueError):
+    """An archived record that is not a map run: its circuits are not circuits A and B without and with the offset."""
+
+
+MAP_LABELS = {"A no", "A off", "B no", "B off"}
+
+
+def map_view(rec: dict, where: Path | None = None) -> dict:
+    """An archived map run as `manacitra pick`, `verdict` and `report` read it (Amendment A8, R1): by its declared bit
+    reading, with the analysis its acceptance case computes, so that a command and the reproduction agree.
+
+    * qiskit-adjacent and per-pair (IBM, the simulations): map_from_record, on every pair; x from
+      published_at_submission (or the record's x), and the vendor's flag from the published two-qubit errors.
+    * openquantum-reversed (Kickoff 34b's main job): rigetti_map, on the working pairs (its dead-pair filter); no x.
+    * braket-measured-qubits (Kickoffs 40 and 41): braket_map, on the verdict set (the working pairs with a published
+      figure), with x from the figures record that meta.figures_file names (the part meta.figures_part), found beside
+      the record in `where`.
+
+    Returns the verdict set's pairs, its columns of the P(11) table, the order, x on the set (or None), the flags, the
+    analysis (with the verdict), the permutation seed, the shots per circuit, the halves, and a line saying which pairs
+    the set holds."""
+    order = rec.get("order")
+    if not (isinstance(order, list) and all(isinstance(o, str) for o in order) and MAP_LABELS <= set(order)):
+        raise NotAMap("this record is not a map run: its circuits are not circuits A and B without and with the offset")
+    reading = bit_reading(rec)
+    P = p11_table(rec)
+    pairs = [tuple(p["qubits"]) if isinstance(p, dict) else tuple(p) for p in rec["pairs"]]
+    meta = rec["meta"]
+    seed, shots = meta.get("permutation_seed", 31), meta.get("shots_per_circuit", 8000)
+    halves = {k: tuple(v) for k, v in rec["halves"].items()} if "halves" in rec else None
+    flags, note = None, f"all {len(pairs)} pairs"
+    if reading in ("qiskit-adjacent", "per-pair"):
+        from .layout import vendor_flag
+
+        an = map_from_record(rec)
+        keep = list(range(len(pairs)))
+        if "published_at_submission" in rec:
+            x = [r["x"] for r in rec["published_at_submission"]]
+            flags = [vendor_flag(two_qubit_error=r.get("cz_error")) for r in rec["published_at_submission"]]
+        else:
+            x = rec.get("x")
+    elif reading == "openquantum-reversed":
+        an = rigetti_map(rec)["analysis"]
+        keep, x = an["pair_index"], None
+        note = f"the {len(keep)} working pairs of {len(pairs)} (the run's dead-pair filter, mean P(A no) below 0.5 out)"
+    else:
+        if "figures_file" not in meta:
+            raise NotAMap("meta.figures_file is missing: a Braket map takes its published figures from that record")
+        figures = json.loads(((where or Path(".")) / meta["figures_file"]).read_text())[meta["figures_part"]]
+        r = braket_map(rec, figures)
+        an = r["verdict_stats"]
+        keep = [pairs.index(tuple(p)) for p in r["verdict_set"]["pairs"]]
+        capped = r["verdict_set"]["capped_at_MAP_PRESENT"]
+        fig = _braket_figures(figures, pairs)
+        x = None if capped else [fig[pairs[i]]["x"] for i in keep]
+        note = (
+            f"the verdict set, {len(keep)} of {len(pairs)} pairs: the working ones (mean P(A no) at least 0.5) with a "
+            f"published figure in {meta['figures_file']}"
+        )
+    return {
+        "pairs": [pairs[i] for i in keep],
+        "P": P[:, keep],
+        "order": order,
+        "x": x,  # already on the set: every pair for IBM and the simulations, the verdict set for Braket
+        "flags": None if flags is None else [flags[i] for i in keep],
+        "analysis": an,
+        "seed": seed,
+        "shots": shots,
+        "halves": halves,
+        "reading": reading,
+        "set": note,
+    }
 
 
 def workload_ideal(path="workload/k33-workload.json") -> list:
