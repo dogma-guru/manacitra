@@ -464,7 +464,8 @@ def diagram_pipeline(out: Path):
     ax.text(
         0.25,
         0.1,
-        "Persistence (how long a map lasts) is a fifth step, open: Kickoff 35 is running as of 6 October 2026.",
+        "Persistence (how long a map lasts) is a fifth step: on ibm_fez a whole-chip map held for two days "
+        "(finding 7); beyond that is open.",
         fontsize=8.6,
         color=MUTED,
     )

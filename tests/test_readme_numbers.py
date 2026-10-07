@@ -336,15 +336,20 @@ def test_finding_7():
         top = {edges[i] for i in np.argsort(-k)[:6]}
         assert len(top & {tuple(p) for p in fl["pairs"]}) == 3, d
     assert "and three of them carry the most extreme values on the chip" in README
-    # both pairs on qubit 149 fell on Day 2 and came back on Day 3; IBM's x for them moved by less than 15%
+    # both pairs on qubit 149 fell on Day 2 and came back on Day 3, k by 3.5 and 4.1 from Day 1 to Day 2, while IBM's
+    # x for them changed by at most 16% (Amendment A8, R4: "barely moved", not "did not move")
     on149 = [i for i, e in enumerate(edges) if 149 in e]
     assert len(on149) == 2
+    falls, changes = [], []
     for i in on149:
         k1, k2, k3 = (a["per_day"][d]["k"][i] for d in "123")
         assert k2 < -4 and k1 > k2 + 2 and k3 > k2 + 2
+        falls.append(k1 - k2)
         x = [archive.load(f"ibm_fez/k35-day{d}.json")["published_at_submission"][i]["x"] for d in (1, 2, 3)]
-        assert max(x) / min(x) < 1.2  # x moved by up to 16% while k swung by more than 5
+        changes.append(max(x) / min(x) - 1)
+    assert sorted(round(f) for f in falls) == [3, 4] and round(max(changes), 2) == 0.16
     assert "On Day 2 both pairs on one qubit fell sharply and recovered on Day 3" in README
+    assert "while IBM's figures for them barely moved (x changed by at most 16%; k swung by 3 to 4)" in README
     assert min(r(ac["x_raw"][k]["pearson"], 2) for k in ("12", "23", "13")) == 0.99
     rkx = [r(a["per_day"][d]["r_k_x"]["pearson"], 2) for d in "123"]
     assert (max(rkx), min(rkx)) == (0.06, -0.07) and "(r between 0.07 and −0.07)" in README
@@ -404,10 +409,10 @@ def test_finding_9():
     S = [pairs.index(tuple(p)) for p in b["pick_set"]]
     assert len(S) == 23 and [tuple(p) for p in L["x_pick"]].index((94, 95)) == 5
     assert pairs[min(S, key=lambda i: W[i])] == (94, 95)
-    only_L = [pairs.index(tuple(p)) for p in L["pick"] if p not in L["x_pick"]]
-    only_x = [pairs.index(tuple(p)) for p in L["x_pick"] if p not in L["pick"] and tuple(p) != (94, 95)]
-    assert abs(W[only_L].mean() - W[only_x].mean()) < 0.001  # otherwise the picks tie
-    assert "rated 94-95 sixth best of 23, and it was the worst on the workload; the two picks otherwise tie" in README
+    assert (
+        "The gain is dominated by one pair: Rigetti's figures rated 94-95 sixth best of 23, and it was the worst"
+        in README
+    )
     today, before = k41_today(), k40_stage2()
     dead = {e: [tuple(x["pair"]) for x in a["dead_pair_filter"]["excluded"]] for e, a in (("t", today), ("y", before))}
     assert (18, 19) in dead["y"] and (18, 19) not in dead["t"]
@@ -535,4 +540,78 @@ def test_the_explainer_in_the_long_documentation():
     assert (
         "repeats (r = 0.87, needs at least 0.5), carries over (r = 0.82" in doc
         and "](diagrams/map-explainer.svg)" in doc
+    )
+
+
+def test_finding_9_the_level_only_pairs_against_the_x_only_pairs_apart_from_94_95():
+    """Amendment A8, R3: the three pairs only the level pick chose (0-1, 24-25, 87-88) against the two only the x pick
+    chose apart from 94-95 (22-23, 65-66), in mean workload fidelity W. The expected 0.00013 was computed by
+    tests/_independent_readings.py (k41_one_pair), which does not import manacitra."""
+    expected_difference = 0.00013  # from tests/_independent_readings.py, Amendment A8
+    b = k41_partB()
+    L = b["level"]
+    pairs, W = [tuple(p) for p in b["pairs"]], np.array(b["W"])
+    only_L = [pairs.index(tuple(p)) for p in L["pick"] if p not in L["x_pick"]]
+    only_x = [pairs.index(tuple(p)) for p in L["x_pick"] if p not in L["pick"] and tuple(p) != (94, 95)]
+    assert [pairs[i] for i in only_L] == [(0, 1), (24, 25), (87, 88)]
+    assert [pairs[i] for i in only_x] == [(22, 23), (65, 66)]
+    assert abs((W[only_L].mean() - W[only_x].mean()) - expected_difference) < 1e-4
+    assert r(W[only_L].mean() - W[only_x].mean(), 4) == 0.0001
+    assert (
+        "The three pairs only the level pick chose and the two only the x pick chose, apart from 94-95, differ in mean "
+        "fidelity by 0.0001." in README
+    )
+    assert "the two picks otherwise tie" not in README and "The whole gain is one pair" not in README
+
+
+def test_the_scores_compared_on_each_chip():
+    """Amendment A8, R4: the kept share was tested as a chooser on ibm_kingston too (finding 4, NOT SETTLED)."""
+    assert {n: v for n, _, v in k33("ibm_kingston")[0]}["verdict"] == "NOT SETTLED"
+    doc = (Path(__file__).resolve().parents[1] / "docs" / "index.md").read_text()
+    for text in (README, " ".join(doc.split())):
+        assert "was not settled on ibm_kingston" in text and "have not been compared head to head on any chip" in text
+        assert "third chip" not in text
+
+
+# --------------------------------------------------------------------------- Amendment A8, R5: retired phrases
+#: Phrases the README has retired, with the amendment that retired each; no README line and no diagram may carry one
+RETIRED = [
+    "running as of 6 October 2026",  # A7: Kickoff 35 ran and is reported
+    "is running as of",  # A7
+    "The findings come from runs on 5 and 6 October 2026",  # A7
+    "Three processors, two days",  # A7
+    "On Open Quantum, use a map only with the exact program that measured it.",  # A7
+    "today, use a map only within the job",  # A5
+    "SD of k 1.1, against 0.3",  # A7, corrected to the data
+    "15:06 to 16:20",  # A7, corrected to the data
+    "The whole gain is one pair",  # A8, R3
+    "the two picks otherwise tie",  # A8, R3
+    "Neither has been tested on a third chip",  # A8, R4
+    "IBM's figures for them did not move",  # A8, R4
+]
+DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
+
+
+def svg_text(path: Path) -> str:
+    """Every piece of text in an SVG (the diagrams write text as text, not as paths), joined by spaces."""
+    import xml.etree.ElementTree as ET
+
+    return " ".join(" ".join(t.strip() for t in ET.parse(path).getroot().itertext() if t.strip()).split())
+
+
+def test_the_readme_carries_no_retired_phrase():
+    flat = " ".join(README.split())
+    assert [p for p in RETIRED if p in flat] == []
+
+
+@pytest.mark.parametrize("svg", sorted(p.name for p in DIAGRAMS.glob("*.svg")))
+def test_no_diagram_carries_a_retired_phrase(svg):
+    text = svg_text(DIAGRAMS / svg)
+    assert text, f"{svg}: no text found; the check would pass on anything"
+    assert [p for p in RETIRED if p in text] == []
+
+
+def test_the_pipeline_diagram_says_kickoff_35_ran():
+    assert "on ibm_fez a whole-chip map held for two days (finding 7); beyond that is open." in svg_text(
+        DIAGRAMS / "pipeline.svg"
     )

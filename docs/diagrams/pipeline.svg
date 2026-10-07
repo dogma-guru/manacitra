@@ -178,7 +178,7 @@ z
     <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(27.846 44.533096)">predictions were written down, hashed and sealed before each map job was sent.</text>
    </g>
    <g id="text_14">
-    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #8a8985" x="21.15" y="217.872" transform="rotate(-0 21.15 217.872)">Persistence (how long a map lasts) is a fifth step, open: Kickoff 35 is running as of 6 October 2026.</text>
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #8a8985" x="21.15" y="217.872" transform="rotate(-0 21.15 217.872)">Persistence (how long a map lasts) is a fifth step: on ibm_fez a whole-chip map held for two days (finding 7); beyond that is open.</text>
    </g>
   </g>
  </g>

@@ -175,8 +175,15 @@ What would discredit the map's persistence: FADES.
 - `layout.pick_pairs`: the n pairs with the highest k (or the lowest x).
 - `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
   mean P(11) on circuit A without the offset; `--by x` by the published score. On ibm_fez the kept share chose the
-  better pairs (Kickoff 33); on the Rigetti processor the plain level did, on the same day and a day later (Kickoffs 40
-  and 41), and the kept share did not. Neither has been tested on a third chip.
+  better pairs on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
+  Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. The two scores
+  have not been compared head to head on any chip.
+- **Reading an archived file** (Amendment A8). `manacitra pick`, `verdict` and `report` read an archived map's counts
+  by the bit reading its `meta.bit_reading` declares (`archive.p11_table`, one reader per reading) and refuse a file
+  that declares none, or an unknown one, naming the field. They give that run's own analysis (`archive.map_view`): on
+  every pair for IBM; on the working pairs, after the run's dead-pair filter, for Open Quantum; on the verdict set, the
+  working pairs with a published figure, for Amazon Braket, whose published score comes from the figures file its
+  `meta.figures_file` names. A record that is not a map run (a payoff, a scan, an isolation run) is refused.
 - `layout.published_score_braket`: x on Amazon Braket, (1 − CZ fidelity) + (1 − readout fidelity) of each qubit, from
   Braket's standardized device properties; a CZ fidelity of exactly 0.5 is the platform's placeholder, so x is None and
   the pair leaves the verdict set.

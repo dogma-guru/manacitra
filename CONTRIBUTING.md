@@ -26,12 +26,12 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 release includes them; for the Kickoff 29 settling runs and some Rigetti comparisons, the archived probability or level
 tables, whose counts are not in this release; and, for elapsed times, the archived timestamps, and compared at 10⁻⁶,
 except the seeded resampling fields: the intervals that also resample shots, at 10⁻³, and Kickoff 42's bootstrap SDs, at
-10⁻⁶ under numpy 2.5 or later (`tests/_reproduce.py`, `RESAMPLED`). Fields that cannot be recomputed from this release
-are named, with reasons, in `tests/excluded_fields.json`. `tests/test_reproduction.py` runs the comparison, which fails
-on a listed field that is missing on either side, has changed type, is not finite or differs by more than its tolerance;
-`tests/test_field_inventory.py` fails on any field of any data file that is in neither list. A new archived statistic
-goes in one of the two, in the same change. A change that moves a published number is not a fix; it is a different
-method, and it needs its own discussion first.
+10⁻⁶ under numpy 2.5 or later (each marked in `tests/expected_fields.json`). Fields that cannot be recomputed from this
+release are named, with reasons, in `tests/excluded_fields.json`. `tests/test_reproduction.py` runs the comparison,
+which fails on a listed field that is missing on either side, has changed type, is not finite or differs by more than
+its tolerance; `tests/test_field_inventory.py` fails on any field of any data file that is in neither list. A new
+archived statistic goes in one of the two, in the same change. A change that moves a published number is not a fix; it
+is a different method, and it needs its own discussion first.
 
 ## Independent review
 
