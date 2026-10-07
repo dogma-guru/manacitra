@@ -8,7 +8,22 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from _reproduce import k31, k32, k33, k34b, k36, k37
+from _reproduce import (
+    k31,
+    k32,
+    k33,
+    k34b,
+    k35_recomputed,
+    k36,
+    k37,
+    k38,
+    k40_stage1,
+    k40_stage2,
+    k40_stage3,
+    k41_partB,
+    k41_today,
+    k42_scan,
+)
 
 from manacitra import archive
 
@@ -134,7 +149,6 @@ def test_the_name_line_is_kept():
 @pytest.mark.parametrize(
     "path,shown",
     [
-        ("ibm_fez/k29-settle.json", "02:24"),
         ("ibm_fez/k31-map.json", "12:37"),
         ("ibm_kingston/k31-map.json", "12:38"),
         ("ibm_fez/k32-isolation.json", "13:17"),
@@ -199,13 +213,13 @@ def _utc(s):
 
 
 def test_the_findings_dates():
-    assert "The findings come from runs on 5 and 6 October 2026." in README
+    assert "The findings come from runs on 5 to 7 October 2026." in README
     runs = [
         p for p in archive.data_dir().rglob("*.json") if p.parent.name != "simulated" and "k33-workload" not in p.name
     ]
     days = {archive.load(p)["meta"]["utc"][:10] for p in runs if not p.name.endswith("coupling-map.json")}
-    assert days == {"2026-10-05", "2026-10-06"}
-    assert "- **Three processors, two days.**" in README and "all on 5 and 6 October 2026." in README
+    assert days == {"2026-10-05", "2026-10-06", "2026-10-07"}
+    assert "- **Three processors, three days.**" in README and "all on 5 to 7 October 2026." in README
 
 
 def test_finding_6_times():
@@ -252,7 +266,7 @@ def test_kickoff_37_gap():
     run = k37()[2]
     assert round(run["gap"]["seconds"] / 3600) == 9 and run["verdict"]["readings_per_amendments_A1_A2"]["N_hours"] == 9
     assert "planned two hours after the first and ran nine hours after it" in README
-    assert "held over about 9 hours and over a day (Kickoff 37)" in README
+    assert "a fixed program's levels held over about 9 hours and a day (Kickoff 37)" in README
     assert "PLACEMENT (the levels depend on the program; they held over about 9 hours)" in README
     assert archive.load(K37)["meta"]["second_wave"] == (
         "The second wave was planned about two hours after the first and ran about nine hours after it; "
@@ -272,5 +286,194 @@ def test_finding_2_the_five_excluded_pairs_under_the_screen_program():
 def test_the_kickoff_37_row_and_the_open_quantum_guidance():
     assert "| 37, 6 October 2026 | Did the Rigetti levels change between runs" in README
     assert "`rigetti_cepheus_1_108q/k37-placement.json` |" in README
-    assert "On Open Quantum, use a map only with the exact program that measured it." in README
-    assert "today, use a map only within the job" not in README
+    assert "On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed" in README
+    assert "Use a map there only with the exact program that measured it, and read its pair names as labels." in README
+    assert "On Open Quantum, use a map only with the exact program that measured it." not in README
+
+
+# --------------------------------------------------------------------------- Amendment A7: findings 7 to 10
+R = archive.RIGETTI
+
+
+def test_finding_2_against_the_pinned_levels():
+    d = k40_stage2()["descriptive"]["r_kA_vs_34b_kA_shared_working"]
+    assert (d["n"], r(d["pearson"], 2)) == (20, -0.17)
+    assert "do not match the pinned levels (r = −0.17 on the 20 shared working pairs)" in README
+
+
+def test_finding_6_kickoffs_38_and_40():
+    t = archive.load(f"{R}/k38-activity.json")["meta"]["tasks"]
+    assert (hhmm(min(x["created_utc"] for x in t)), hhmm(max(x["completed_utc"] for x in t))) == ("13:42", "13:46")
+    assert "Kickoff 38 (6 October 2026, 13:42 to 13:46 UTC)" in README
+    m = k38()[2]
+    assert (r(m["measures"]["a"]["pearson"], 2), r(m["measures"]["f"]["pearson"], 2)) == (0.99, -0.15)
+    assert m["verdict"]["on_pearson"] == "ACTIVITY"
+    assert "(r = 0.99) and not like the 53-pair one (r = −0.15)" in README and "(verdict ACTIVITY)" in README
+    d = k40_stage1()["descriptive_outside_reading"]
+    rs = (r(d["r_X_vs_k37_27pair_program"]["pearson"], 2), r(d["r_X_vs_k37_53pair_program"]["pearson"], 2))
+    assert rs == (-0.18, 0.24) and "(r = −0.18 and 0.24 against the pinned levels)" in README
+
+
+def test_finding_7():
+    a = k35_recomputed()["analysis"]
+    days = [archive.load(f"ibm_fez/k35-day{d}.json")["meta"]["utc"] for d in (1, 2, 3)]
+    assert [x[:10] for x in days] == ["2026-10-05", "2026-10-06", "2026-10-07"]
+    assert [hhmm(x) for x in days] == ["17:02", "14:56", "14:21"]
+    assert "one job a day on 5, 6 and 7 October 2026 at 17:02, 14:56 and 14:21 UTC" in README
+    ac = a["across"]
+    assert (ac["edges_on_all_days"], r(ac["raw"]["13"]["pearson"], 2), r(ac["corrected"]["13"], 2)) == (176, 0.86, 0.89)
+    assert "correlates with Day 1 at r = 0.86 (0.89 after correcting" in README
+    assert (round(ac["worst_decile_overlap_13"] * 18), ac["decile_size"]) == (9, 18)
+    assert "9 of the 18 worst pairs on Day 1 were still among the 18 worst on Day 3" in README
+    assert a["original_rule"]["verdict"] == a["verdict"]["verdict"] == "HOLDS"
+    fl = a["flagged"]
+    assert len(fl["pairs"]) == 4 and r(fl["without"]["corrected"]["13"], 2) == 0.74
+    assert "without all four the corrected correlation from Day 1 to Day 3 is 0.74" in README
+    # three of the four flagged edges carry the most extreme k on the chip (among its six largest |k| every day)
+    edges = [tuple(e) for e in archive.full_chip_day(archive.load("ibm_fez/k35-day1.json"))["edges"]]
+    for d in "123":
+        k = np.abs(np.array(a["per_day"][d]["k"]))
+        top = {edges[i] for i in np.argsort(-k)[:6]}
+        assert len(top & {tuple(p) for p in fl["pairs"]}) == 3, d
+    assert "and three of them carry the most extreme values on the chip" in README
+    # both pairs on qubit 149 fell on Day 2 and came back on Day 3; IBM's x for them moved by less than 15%
+    on149 = [i for i, e in enumerate(edges) if 149 in e]
+    assert len(on149) == 2
+    for i in on149:
+        k1, k2, k3 = (a["per_day"][d]["k"][i] for d in "123")
+        assert k2 < -4 and k1 > k2 + 2 and k3 > k2 + 2
+        x = [archive.load(f"ibm_fez/k35-day{d}.json")["published_at_submission"][i]["x"] for d in (1, 2, 3)]
+        assert max(x) / min(x) < 1.2  # x moved by up to 16% while k swung by more than 5
+    assert "On Day 2 both pairs on one qubit fell sharply and recovered on Day 3" in README
+    assert min(r(ac["x_raw"][k]["pearson"], 2) for k in ("12", "23", "13")) == 0.99
+    rkx = [r(a["per_day"][d]["r_k_x"]["pearson"], 2) for d in "123"]
+    assert (max(rkx), min(rkx)) == (0.06, -0.07) and "(r between 0.07 and −0.07)" in README
+
+
+def test_finding_8():
+    s1, s2, s3 = k40_stage1(), k40_stage2(), k40_stage3()
+    t = [x for st in ("placement", "map", "payoff") for x in archive.load(f"{R}/k40-{st}.json")["tasks"]]
+    assert (hhmm(min(x["created_utc"] for x in t)), hhmm(max(x["ended_utc"] for x in t))) == ("15:17", "15:50")
+    assert "6 October 2026, 15:17 to 15:50 UTC; Kickoff 34b's 27 named pairs" in README
+    assert s1["reading"] == "PINNED" and s1["records_match_names"] and r(s1["d"]["pearson"], 2) == 0.99
+    v = s2["verdict_stats"]
+    assert (s2["n_working_with_x"], s2["verdict"]) == (23, "DIAGNOSTIC")
+    got = (r(v["S1"]["r_split_A"]["pearson"], 2), r(v["S2"]["r_AB"]["pearson"], 2), r(v["S3"]["r_Ax"]["pearson"], 2))
+    assert got == (0.97, 0.81, 0.20)
+    assert "the map repeated (r = 0.97), carried over to circuit B (r = 0.81)" in README
+    assert "and was not explained by Rigetti's figures (r = 0.20)" in README
+    assert s3["verdict"] == "NOT SETTLED" and round(100 * s3["gains"]["L_prior"]["relative_error_reduction"]) == 31
+    assert "gave 31% less error than choosing by the published figures" in README
+    fez = archive.map_from_record(archive.load("ibm_fez/k31-map.json"), n_permutations=100)
+    assert (r(v["sd_kA_between_pairs"], 1), r(fez["sd_kA_between_pairs"], 1)) == (1.1, 0.2)
+    assert "(SD of k 1.1, against 0.2 on Kickoff 31's ibm_fez pairs)" in README
+    assert sum(k < 0 for k in v["kA"]) == 3 and "a few pairs carry negative k" in README
+
+
+def test_finding_9():
+    t = [x for st in ("map", "payoff") for x in archive.load(f"{R}/k41-{st}.json")["tasks"]]
+    assert (hhmm(min(x["created_utc"] for x in t)), hhmm(max(x["ended_utc"] for x in t))) == ("15:05", "15:58")
+    assert "re-sent on 7 October 2026, 15:05 to 15:58 UTC, 23 to 24 hours after Kickoff 40" in README
+    rec = archive.load(f"{R}/k41-map.json")
+    pm = archive.pinned_map_persistence(
+        k41_today(),
+        k40_stage2(),
+        archive.load(f"{R}/k41-figures.json")["A"],
+        archive.load(f"{R}/k40-figures.json")["stage2"],
+        rec["pairs"],
+        rec["meta"]["permutation_seed"],
+    )
+    assert (r(pm["p_k"]["r"]["pearson"], 2), r(pm["p_k_prime"]["r"]["pearson"], 2), r(pm["p_L"]["pearson"], 2)) == (
+        0.85,
+        0.61,
+        0.80,
+    )
+    assert pm["verdict"] == "HOLDS"
+    assert "at r = 0.85 (0.61 without the two extreme pairs) and the plain level at r = 0.80: HOLDS" in README
+    b = k41_partB()
+    L = b["level"]
+    assert (round(100 * L["relative_error_reduction"]), r(L["G"], 4), r(L["ci90"][0], 4), r(L["ci90"][1], 4)) == (
+        27,
+        0.0122,
+        0.0077,
+        0.0168,
+    )
+    assert L["verdict"] == "USEFUL" and b["kept_share"]["verdict"] == "NOT SETTLED"
+    assert "(G = +0.0122, 90% interval +0.0077 to +0.0168): USEFUL" in README
+    pairs, W = [tuple(p) for p in b["pairs"]], np.array(b["W"])
+    S = [pairs.index(tuple(p)) for p in b["pick_set"]]
+    assert len(S) == 23 and [tuple(p) for p in L["x_pick"]].index((94, 95)) == 5
+    assert pairs[min(S, key=lambda i: W[i])] == (94, 95)
+    only_L = [pairs.index(tuple(p)) for p in L["pick"] if p not in L["x_pick"]]
+    only_x = [pairs.index(tuple(p)) for p in L["x_pick"] if p not in L["pick"] and tuple(p) != (94, 95)]
+    assert abs(W[only_L].mean() - W[only_x].mean()) < 0.001  # otherwise the picks tie
+    assert "rated 94-95 sixth best of 23, and it was the worst on the workload; the two picks otherwise tie" in README
+    today, before = k41_today(), k40_stage2()
+    dead = {e: [tuple(x["pair"]) for x in a["dead_pair_filter"]["excluded"]] for e, a in (("t", today), ("y", before))}
+    assert (18, 19) in dead["y"] and (18, 19) not in dead["t"]
+    assert {(72, 73), (76, 77)} <= set(dead["t"]) and not {(72, 73), (76, 77)} & set(dead["y"])
+    assert "18-19 was back, 72-73 and 76-77 were gone" in README
+
+
+def test_finding_10():
+    d1 = archive.load(f"{R}/k42-day1.json")["tasks"]
+    d2 = archive.load(f"{R}/k42-day2.json")["tasks"]
+    assert (min(x["created_utc"] for x in d1)[:10], hhmm(min(x["created_utc"] for x in d1))) == ("2026-10-06", "17:46")
+    assert (min(x["created_utc"] for x in d2)[:10], hhmm(min(x["created_utc"] for x in d2))) == ("2026-10-07", "16:17")
+    assert "6 October 2026 at 17:46 UTC and 7 October at 16:17 UTC" in README
+    sc = k42_scan()
+    shape = [sc[d]["beside"]["shape_fraction_rms_le_2_shot"] for d in ("day1", "day2")]
+    assert max(shape) < 0.1 and "fits fewer than one pair in ten within twice the shot noise" in README
+    assert r(sc["day1"]["V3"]["r_deltaA_vs_k40_kA"]["pearson"], 2) == 0.24 and "(r = +0.24)" in README
+    v5 = sc["V5"]
+    low = sorted(v5["per_pair_r"].values())[:2]
+    assert (r(v5["p_F"]["pearson"], 2), r(v5["median_per_pair_r"], 2), [r(x, 2) for x in low]) == (
+        0.85,
+        0.98,
+        [0.04, 0.04],
+    )
+    assert "pooled r = 0.85 a day later, median per-pair r = 0.98, with two pairs at 0.04" in README
+    for d in ("day1", "day2"):  # 94-95: a dip at the designed offset, -0.5, between higher neighbours
+        rec = archive.load(f"{R}/k42-{d}.json")
+        y = np.array(sc[d]["P11"]["A"])[[tuple(p) for p in rec["pairs"]].index((94, 95))]
+        j = archive.SCAN["A"]["offsets"].index(-0.5)
+        assert y[j] < y[j - 1] and y[j] < y[j + 1]
+    sw = v5["switch"]["pairs"]
+    assert (r(sw["11-12"]["day1_high_minus_low"], 1), r(sw["11-12"]["day2_high_minus_low"], 1)) == (0.3, 0.3)
+    assert (r(sw["72-73"]["day1_high_minus_low"], 2), r(sw["72-73"]["day2_high_minus_low"], 2)) == (0.21, 0.11)
+    assert (
+        "pair 11-12 read about 0.3 higher on the same seven programs on both days, "
+        "and 72-73 read 0.21 higher on the first day and 0.11 on the second" in README
+    )
+    v4, v4o = sc["V4_amended_governs"], sc["V4_original_rule"]
+    assert (r(v4["A"]["r"]["pearson"], 2), r(v4["B"]["r"]["pearson"], 2), v4["verdict"], v4o["verdict"]) == (
+        0.72,
+        0.90,
+        "HOLDS",
+        "PARTIAL",
+    )
+    assert "(r = 0.72 for A, 0.90 for B; HOLDS under the amended rule, PARTIAL under the original)" in README
+
+
+def test_the_flagged_line():
+    a = k35_recomputed()
+    edges = [tuple(e) for e in archive.full_chip_day(archive.load("ibm_fez/k35-day1.json"))["edges"]]
+    flagged = [edges.index(tuple(p)) for p in a["analysis"]["flagged"]["pairs"]]
+    levels = [a["levels"][d]["P_no"][i] for d in (1, 2, 3) for i in flagged]
+    assert (r(min(levels), 2), r(max(levels), 2)) == (0.19, 0.39)
+    assert r(np.median(a["levels"][1]["P_no"]), 2) == 0.89
+    assert "these four read 0.19 to 0.39, against a median of 0.89 on the chip" in README
+
+
+def test_the_new_rows_and_bullets():
+    for k in (
+        "35, 5 to 7 October 2026",
+        "38, 6 October 2026",
+        "40, 6 October 2026",
+        "41, 7 October 2026",
+        "42, 6 to 7 October 2026",
+    ):
+        assert f"| {k} |" in README
+    assert "- **How long a map lasts beyond two days.**" in README and "- **Two routes to one processor.**" in README
+    assert "`manacitra pick --by level` ranks by the plain level instead" in README
+    assert "running as of 6 October 2026" not in README

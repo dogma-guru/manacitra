@@ -126,7 +126,9 @@ The map is measured on several days. Per day: k per pair; r_split between the fi
 the second (7 to 12); the day's reliability by the Spearman-Brown formula, rel = 2·r_split/(1 + r_split). Across
 days: r(k_a, k_b), and the **corrected r** = r / √(rel_a · rel_b), which removes the part of the day-to-day drop that
 is only noise; and the **worst-decile overlap**, the share of the first day's worst tenth of pairs still in the last
-day's worst tenth (round(0.1·n) pairs).
+day's worst tenth (round(0.1·n) pairs). A tie in k at the decile's edge goes to the earlier pair in the day's order,
+as Kickoff 36's specification of the analysis says (Amendment A7: numpy's default sort left it to chance, and Kickoff
+35's Day 3 had three pairs tied at ranks 18 to 20).
 
 **Under Amendment A1** (the verdict Manacitra returns):
 
@@ -144,6 +146,16 @@ its corrected r is undefined; here a condition on an undefined value is not met.
 that gap, after Kickoff 36's simulation found that a day's split-half r can fall below zero by chance at Kickoff 35's
 shot count. In both forms FADES is tested before HOLDS, and a result meeting both is flagged.
 
+**Pairs the vendor flags** (Amendment A7). The verdicts count every pair that runs, as the kickoffs fixed them. Beside
+them, `persistence_analysis` returns a `flagged` block: the pairs the vendor flagged on any day as not measured or not
+working (an IBM two-qubit error of exactly 1.0; a Braket CZ fidelity of exactly 0.5, `layout.vendor_flag`), the flag's
+source, and, without those pairs, each day's reliability recomputed on the subset, the correlations and corrected
+correlations of each pair of days, and the decile overlaps. `analyse_map` returns the same block with the verdict's
+statistics (r_split, r_AB and its p, r_Ax, r_AB.x) without the flagged pairs. On ibm_fez (Kickoff 35) four edges carried
+IBM's 1.0 on every day; three of them carried the most extreme k on the chip, at no-offset levels of 0.19 to 0.39
+against a chip median of 0.89, where k is not a kept fraction. Without them the corrected r from Day 1 to Day 3 falls
+from 0.89 to 0.74.
+
 What would discredit the map's persistence: FADES.
 
 ## 4. Choosing pairs
@@ -157,6 +169,15 @@ What would discredit the map's persistence: FADES.
   rounds suffice; on ibm_fez's 176 couplers the rounds hold 60, 59 and 57 pairs. The round count is computed and
   reported, never assumed; a plain greedy colouring is also available (`method="greedy"`).
 - `layout.pick_pairs`: the n pairs with the highest k (or the lowest x).
+- `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
+  mean P(11) on circuit A without the offset; `--by x` by the published score. On ibm_fez the kept share chose the
+  better pairs (Kickoff 33); on the Rigetti processor the plain level did, on the same day and a day later (Kickoffs 40
+  and 41), and the kept share did not. Neither has been tested on a third chip.
+- `layout.published_score_braket`: x on Amazon Braket, (1 − CZ fidelity) + (1 − readout fidelity) of each qubit, from
+  Braket's standardized device properties; a CZ fidelity of exactly 0.5 is the platform's placeholder, so x is None and
+  the pair leaves the verdict set.
+- The dead-pair filter uses the run's own levels (mean P(A no) below 0.5), never a list from an earlier day: on the
+  Rigetti processor, dead pairs came and went between consecutive days (18-19 came back; 72-73 and 76-77 went).
 
 ## 5. The backends
 
@@ -181,11 +202,20 @@ with a the bit of the pair's first qubit and b its second.
   The extra is limited to the SDK versions every adapter call was checked against offline (openquantum-sdk 0.4.3,
   openquantum-sdk-qiskit 0.3.3; live responses are still untested), and the module stops at import, naming them, if
   the installed SDK lacks the two private methods it calls (`_wait_for_preparation`, `_resolve_organization_id`).
-  On Open Quantum, use a map only with the exact program that measured it. The same named pairs read by a different
-  program gave unrelated levels (Kickoff 37), so a map cannot yet be used there to choose pairs for a different
-  program. Placement cannot be pinned, because the platform's preprocessing breaks the provider's verbatim mode. In
+  On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed that the same named pairs,
+  sent through a route that records placement, ran on other qubits than Open Quantum's programs had used. Use a map
+  there only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned,
+  because the platform's preprocessing breaks the provider's verbatim mode. In
   Kickoff 34b, pair levels held within a job (r = 0.93) but not between runs a few hours apart (r between 0.10 and
   0.23 on the shared pairs, computed after seeing the data).
+- **Amazon Braket** (no adapter yet; Kickoff 02's work). Kickoffs 40 to 42 reached the same Rigetti processor
+  through Amazon Braket, by their own runners; nothing in the package submits to Braket. What pins placement there:
+  each program names its physical qubits (`$n`) inside one verbatim box. The device does not support Braket's rewiring
+  flag, so placement came from the named qubits, and every compiled program Braket returned carries `PRAGMA
+  INITIAL_REWIRING "NAIVE"` with a preserved block and each pair's gates on its named qubits. Those compiled programs
+  are the placement records, archived in `data/rigetti_cepheus_1_108q/compiled/`, and `archive.compiled_record`
+  reads one back: CZ per named pair, any gate or measurement off the names, the measured qubits. Each result carries
+  `measured_qubits`, and character j of a counts key belongs to `measured_qubits[j]` (`archive.braket_outcomes`).
 - **cirq_sim** (`[cirq]`, experimental): **a simulator only, not hardware access.** It loads the median calibration
   that Cirq ships for a Quantum Virtual Machine processor (willow_pink by default) and simulates each pair under
   either Kickoff 36's Pauli model built from those published figures or the QVM's own noise model. Under the same
@@ -279,6 +309,11 @@ Where each README number comes from:
 | Rigetti, after the fact: 20 pairs, r_split 0.84, r_AB 0.79, MAP PRESENT | `rigetti_cepheus_1_108q/after-the-fact.json` | `archive.rigetti_map` |
 | Rigetti: r = 0.93 between the waves; 0.10 to 0.23 across runs | `rigetti_cepheus_1_108q/main.json`, `screen.json` | `archive.rigetti_map` |
 | Rigetti, Kickoff 37: r = 0.997 to 0.998 minutes apart, 0.97 and 0.76 across about 9 hours, 0.07 and −0.25 between the programs; PLACEMENT; 0.99 and 0.98 against Kickoff 34b; the five excluded pairs at 0.70 to 0.84 under the screen program | `rigetti_cepheus_1_108q/k37-placement.json` (with `main.json` and `screen.json` for the lines against Kickoff 34b) | `archive.placement_or_drift` |
+| ibm_fez, Kickoff 35: r = 0.86 (corrected 0.89) Day 1 to Day 3; 9 of 18 worst; HOLDS under both rules; 0.74 without the four flagged edges; r = 0.99 for the published score, −0.07 to 0.07 against the map | `ibm_fez/k35-day1.json` to `k35-day3.json`, `k35-persistence.json` | `archive.full_chip_persistence` (`verdicts.persistence_analysis`) |
+| Rigetti, Kickoff 38: r = 0.99 and −0.15; ACTIVITY | `rigetti_cepheus_1_108q/k38-activity.json` | `archive.footprint_or_activity` |
+| Rigetti, Kickoff 40: d = 0.99, PINNED; r_split 0.97, r_AB 0.81, r_Ax 0.20, DIAGNOSTIC; the level's 31% less error; SD of k 1.1; r = −0.17 against Kickoff 34b; r = −0.18 and 0.24 against Kickoff 37 | `rigetti_cepheus_1_108q/k40-*.json` | `archive.braket_placement`, `braket_map`, `braket_payoff` |
+| Rigetti, Kickoff 41: r = 0.85 (0.61 without the extremes), 0.80 for the level, HOLDS; 27% less error, G +0.0122 (+0.0077, +0.0168), USEFUL | `rigetti_cepheus_1_108q/k41-*.json` (with `k40-*.json`) | `archive.pinned_map_persistence`, `day_old_payoff` |
+| Rigetti, Kickoff 42: the shape check; r = +0.24; pooled r 0.85, median 0.98; 0.72 and 0.90, HOLDS; the switch | `rigetti_cepheus_1_108q/k42-*.json` | `archive.offset_scan` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -287,15 +322,17 @@ in Kickoff 36's own report.
 
 ## 8. What kind of claim each part is
 
-- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor returned them on 5 and 6
-  October 2026, and the simulation outputs, as run on the author's computer on 5 October.
+- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor (through two routes) returned
+  them on 5 to 7 October 2026, and the simulation outputs, as run on the author's computer on 5 October.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it
   picks better pairs for other work, and that it lasts long enough to plan by. Each part names what would discredit it
   (section 3). On two IBM processors on one day, the first held on both, the second held on one and was not settled
-  on the other, and the third is open. On the Rigetti processor, a per-pair map was present within one job; with no
-  published figures there, whether they carry it cannot be tested.
+  on the other, and the third is open. Through Open Quantum, a per-pair map was present within one job, with no
+  published figures to test it against. Through Amazon Braket, with placement pinned and figures published, the first
+  held (DIAGNOSTIC), the second was not settled twice while the plain level chose better pairs, and the map held for a
+  day; on ibm_fez's whole chip, it held for two days.
 
 ## 9. Sealing and signing
 

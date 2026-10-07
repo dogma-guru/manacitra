@@ -13,9 +13,10 @@ Two caveats carried from that run:
 * **No calibration snapshot is returned.** The provider publishes no per-edge or readout figures, so there is no
   published score x: the map rule is capped at MAP PRESENT (Kickoff 34, Amendment A1), and the dead-pair filter applies.
 
-On Open Quantum, use a map only with the exact program that measured it. The same named pairs read by a different
-program gave unrelated levels (Kickoff 37), so a map cannot yet be used there to choose pairs for a different program.
-Placement cannot be pinned, because the platform's preprocessing breaks the provider's verbatim mode; in Kickoff 34b,
+On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed that the same named pairs,
+sent through a route that records placement, ran on other qubits than Open Quantum's programs had used. Use a map there
+only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned, because
+the platform's preprocessing breaks the provider's verbatim mode; in Kickoff 34b,
 pair levels held within a job (r = 0.93) but not between runs a few hours apart.
 
 Credentials come only from the SDK's saved account (OpenQuantumService.from_saved_account); the client ID, the

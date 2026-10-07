@@ -7,13 +7,22 @@ The first version.
 - The core: the two test circuits with exact three-CZ synthesis and their ideal values; the kept share and its shot
   noise; the statistics; the map rule, the payoff rule and the persistence rule (with Amendment A1 and the original
   rule beside it); disjoint pairs, rounds of disjoint pairs, pair choice; the random stand-in workload.
+- Amendment A7, the core: every analysis reports a `flagged` block beside its verdict, the headline statistics
+  without the pairs a vendor flagged as not measured or not working (an IBM two-qubit error of exactly 1.0; a Braket CZ
+  fidelity of exactly 0.5); `layout.published_score_braket` and `layout.vendor_flag`; `manacitra pick --by level`, to
+  rank by the plain level; and a tie at the decile's edge in the persistence rule now goes to the earlier pair, as
+  Kickoff 36's specification says. The identifier scan gained patterns for Amazon identifiers.
 - Backends: a simulator (Qiskit Aer or numpy, always available) and IBM Quantum (Qiskit Runtime), with the submit-once
   guard, the usage read and the time cap. Experimental: Open Quantum, and a Cirq simulation of a published noise model.
 - The dataset: the counts and analyses of the runs on ibm_fez and ibm_kingston (5 October 2026), of the run on Rigetti
   Cepheus-1-108Q through Open Quantum (Kickoff 34b, the same day; Amendment A2), of the run on the same processor
   that tested placement against drift (Kickoff 37, 6 October 2026; Amendment A5) and of the simulated control, with a
   test that recomputes every statistic listed in `tests/expected_fields.json` and compares it at 10⁻⁶; the fields
-  not recomputed are named, with reasons, in `tests/excluded_fields.json` (Amendment A4).
+  not recomputed are named, with reasons, in `tests/excluded_fields.json` (Amendment A4). Amendment A7 adds four runs
+  and finishes a fifth, each recomputed from its counts: Kickoff 35 (all 176 couplers of ibm_fez, once a day on 5, 6
+  and 7 October; HOLDS), Kickoff 38 (footprint or activity, through Open Quantum; ACTIVITY), and Kickoffs 40, 41 and 42
+  (the same Rigetti processor through Amazon Braket, pinned: placement, map and payoff; the map a day later and the
+  payoff with the day-old scores; the offset scan), with the compiled programs Braket returned as placement records.
 - Pinned circuits: every circuit the package runs ships as an exact gate list, so every platform runs the same
   gate sequences (`src/manacitra/pinned_circuits.json`, `tools/pin_circuits.py`).
 - Sealing: `manacitra seal | reveal | verify`, salted SHA-256 commitments. Signing: a gated CI workflow that signs
