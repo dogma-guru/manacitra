@@ -31,7 +31,7 @@ def test_without_data_it_stops_and_says_how(no_clone):
     with pytest.raises(archive.DataNotFound) as e:
         archive.load("ibm_fez/k31-map.json")
     msg = str(e.value)
-    assert "git clone https://github.com/dogmaguru/manacitra" in msg
+    assert "git clone https://github.com/dogma-guru/manacitra" in msg
     assert "pip install -e ." in msg and "MANACITRA_DATA=" in msg and "--data" in msg
 
 

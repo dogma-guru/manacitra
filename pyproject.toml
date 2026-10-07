@@ -42,7 +42,7 @@ dev = ["pytest>=8", "ruff>=0.6", "matplotlib>=3.8"]
 manacitra = "manacitra.cli:main"
 
 [project.urls]
-Repository = "https://github.com/dogmaguru/manacitra"
+Repository = "https://github.com/dogma-guru/manacitra"
 
 [tool.setuptools.packages.find]
 where = ["src"]

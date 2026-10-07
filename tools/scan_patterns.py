@@ -61,7 +61,10 @@ PATTERNS = [
 ALLOW = [
     # IBM job IDs may stay (kickoff, section 5)
     ("ibm-job-id", r"\b[a-z0-9]{20}\b", ""),
-    # The repository's own address, which carries the hosting organisation's name (kept by the author's ruling)
+    # The repository's own address, which carries the hosting organisation's name (kept by the author's ruling). Its
+    # home since Amendment A9 is the organisation's address; the earlier one stays allowed for the build report alone,
+    # which records it as it was (tests/test_repository_home.py keeps it out of every other file)
+    ("repository-home", r"github\.com/d[o]gma-guru/manacitra", "i"),
     ("repository-url", r"github\.com/d[o]gmaguru/manacitra", "i"),
     # Amendment A1: the ownership and publisher lines, exactly as written (case-sensitive)
     ("owner", r"D[o]gma LLC", ""),

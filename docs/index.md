@@ -395,7 +395,7 @@ timestamp. There is no key to store, rotate or keep secret.
 ```bash
 pip install sigstore
 sigstore verify identity data/ibm_fez/k31-map.json \
-  --cert-identity https://github.com/dogmaguru/manacitra/.github/workflows/sign.yml@refs/heads/main \
+  --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/heads/main \
   --cert-oidc-issuer https://token.actions.githubusercontent.com
 ```
 

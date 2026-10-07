@@ -136,12 +136,12 @@ Manacitra needs Python 3.11 or later. It is not yet on PyPI. There are two ways 
 with the clone and is found automatically.
 
 ```bash
-git clone https://github.com/dogmaguru/manacitra.git
+git clone https://github.com/dogma-guru/manacitra.git
 cd manacitra
 pip install -e ".[aer]"
 ```
 
-**As a plain package**, with `pip install ".[aer]"` from a clone or `pip install "git+https://github.com/dogmaguru/manacitra"`. This installs the package only: the dataset is not in the wheel. The simulator and the backends work without it. Anything that reads the archive needs a clone's `data/` folder: the reproductions, examples 2 and 3, and `manacitra verdict` on an archived run. Point at it in one of two ways:
+**As a plain package**, with `pip install ".[aer]"` from a clone or `pip install "git+https://github.com/dogma-guru/manacitra"`. This installs the package only: the dataset is not in the wheel. The simulator and the backends work without it. Anything that reads the archive needs a clone's `data/` folder: the reproductions, examples 2 and 3, and `manacitra verdict` on an archived run. Point at it in one of two ways:
 
 ```bash
 export MANACITRA_DATA=/path/to/manacitra/data
@@ -179,7 +179,7 @@ Extras: `[ibm]` for IBM Quantum, `[aer]` for Qiskit Aer, `[docs]` for the diagra
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of a quantum processor's qubit pairs* (version 0.1.0) [Software and data]. https://github.com/dogmaguru/manacitra
+> Patel, A. (2026). *Manacitra: a map of a quantum processor's qubit pairs* (version 0.1.0) [Software and data]. https://github.com/dogma-guru/manacitra
 
 ## Licence
 

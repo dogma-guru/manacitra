@@ -8,7 +8,7 @@ authors:
 version: 0.1.0
 date-released: 2026-10-05
 license: Apache-2.0
-repository-code: "https://github.com/dogmaguru/manacitra"
+repository-code: "https://github.com/dogma-guru/manacitra"
 abstract: >-
   Manacitra measures, for each qubit pair on a processor, how much of a small,
   known difference between two short circuits the pair keeps, and uses the

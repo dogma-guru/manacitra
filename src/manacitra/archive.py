@@ -25,7 +25,7 @@ from .workload import ORDER_PAYOFF, aggregate, readout_confusion, workload_score
 #: Where data/ sits when the package is installed from a clone (pip install -e .)
 BESIDE_SOURCE = Path(__file__).resolve().parents[2] / "data"
 ENV = "MANACITRA_DATA"
-REPOSITORY = "https://github.com/dogmaguru/manacitra"
+REPOSITORY = "https://github.com/dogma-guru/manacitra"
 _chosen: Path | None = None
 
 

@@ -1531,3 +1531,66 @@ README describes it, and the tests carry its output as literals, with a comment 
 - any provider submission.
 
 The rubric is revised beside this amendment, outside the repository (G2's count, C3c's expected picks, A5's scope).
+
+## 19. Amendment A9: the repository's home (7 October 2026)
+
+**What happened.** The author transferred the repository from the author's account to the organisation. Its home is now
+`https://github.com/dogma-guru/manacitra`; the old address, `github.com/dogmaguru/manacitra`, redirects. A citation and
+a signing identity should name the home, not a redirect, from the first public commit.
+
+**The eight replacements**, `github.com/dogmaguru/manacitra` to `github.com/dogma-guru/manacitra`, and nowhere else:
+
+| file | line | what |
+|---|---|---|
+| `README.md` | 139 | the `git clone` line |
+| `README.md` | 144 | the `pip install "git+https://..."` line |
+| `README.md` | 182 | the citation |
+| `CITATION.cff` | 11 | `repository-code` |
+| `pyproject.toml` | 45 | `Repository` under the project URLs |
+| `src/manacitra/archive.py` | 28 | `REPOSITORY`, the address the data-not-found message prints |
+| `tests/test_data_location.py` | 34 | the assertion on that message |
+| `docs/index.md` | 398 | `--cert-identity` in the documented verify command |
+
+The documented identity named `refs/heads/main`, so only the owner changed. It now reads
+`https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/heads/main`.
+
+**The signing workflow needs no change.** `.github/workflows/sign.yml` builds the identity it verifies from the
+repository's own name, on line 82 (signing on a push) and on line 113 (signing a release). Both lines read
+`verify-cert-identity: https://github.com/${{ github.repository }}/.github/workflows/sign.yml@${{ github.ref }}`, so the
+identity follows the repository's home. Signing stays off.
+
+**The build report keeps the old address twice**, in section 6's ruling on the repository URL and in section 8's
+description of the documented identity. It is the record of what was true when each section was written, so those
+lines are not rewritten.
+
+**The test.** `tests/test_repository_home.py` holds one constant,
+`HOME = "https://github.com/dogma-guru/manacitra"`, and three checks:
+- `archive.REPOSITORY`, `CITATION.cff`'s `repository-code`, `pyproject.toml`'s `Repository` and the README's citation
+  line each equal it, and the README's two install lines and the docs' verify command contain it;
+- no file that git tracks, other than `build-report.md`, contains the old owner's path (`github.com/` followed by the
+  old owner and a slash). The check walks `git ls-files`, skips binaries by extension and names any offender. With the
+  old address put back into `CONTRIBUTING.md`, it failed and named `CONTRIBUTING.md:104`;
+- every documented `--cert-identity` in `docs/index.md` starts with `HOME + "/.github/workflows/sign.yml@"`.
+
+**A reading, logged: the scan's allow-list.** The identifier scan allowed W7 inside the repository's address only as
+the one exact string ruled on in section 6, so the new address was a finding (`vocabulary-w7`) until the scan allowed
+it. `tools/scan_patterns.py` now allows the new address as one more exact string (`repository-home`). It keeps the old
+one (`repository-url`), because the build report keeps it, and the new test keeps the old address out of every other
+file. The boundary is no wider: the organisation's name outside this repository's address, and the organisation's
+address with another repository, are still findings. `tests/test_scan.py` checks the new address as allowed and both
+of those as flagged. The amendment's text did not name this change; without it, the replacements would fail the
+scan.
+
+**After the amendment:**
+- 549 tests pass (543 before; 6 new: the three above and three scan cases);
+- Ruff is clean;
+- the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
+- `data/` is unchanged, and `data/SHA256SUMS` matches every file;
+- `CHANGELOG.md` gains one line under the first version: the repository's home is `github.com/dogma-guru/manacitra`.
+
+**Not in this amendment, and not done:**
+- Kickoff 39;
+- an Amazon Braket adapter (Kickoff 02);
+- merging, making the repository public, or turning on signing;
+- any provider submission;
+- the organisation's `.github` repository (its profile README and `FUNDING.yml`), which the author handles.
