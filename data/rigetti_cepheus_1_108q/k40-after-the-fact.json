@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
+    "provider": "Amazon Braket (Rigetti)",
+    "kickoff": "Kickoff 40",
+    "utc": "2026-10-06T15:41:14Z to 2026-10-06T15:43:58Z (creation of the first task to end of the last)",
+    "shots_per_circuit": 8000,
+    "sources": [
+      {
+        "file": "after-the-fact-40-2.json",
+        "sha256": "d1aa2b692bde3bd2af99aabd8e85c5f7bcd5997750f3d1a30176588c8be5a3c3"
+      }
+    ],
+    "source_archive_sha256": "20aecb5e6ae502f5496eb666a1921cc02a193a31a1ef7dc1aa68dd94f74ce348",
+    "source_script_sha256": "b5cde8f4763442675ed8531032051d3643f1a4794001b17ec3a9b265241465ce",
+    "description": "Computed after seeing the data, not pre-registered, outside the verdict: stage 2's verdict set without its two extreme pairs."
+  },
+  "label": "computed after seeing the data, outside the verdict",
+  "note": "after the fact, not pre-registered, outside the verdict: the verdict set without the two pairs with k_A below -2 (42-43, 94-95)",
+  "n": 21,
+  "r_split_A": {
+    "pearson": 0.9432220873181199,
+    "spearman": 0.8428571428571429,
+    "n": 21
+  },
+  "r_AB": {
+    "pearson": 0.5379517522082561,
+    "spearman": 0.4623376623376624,
+    "n": 21
+  },
+  "p_AB": 0.0031,
+  "r_Ax": {
+    "pearson": 0.033008798773575355,
+    "spearman": 0.08831168831168833,
+    "n": 21
+  },
+  "r_AB_given_x": 0.5671133655368119,
+  "rule_applied": "DIAGNOSTIC",
+  "mean_kA": 1.0637526558352717,
+  "sd_kA": 0.6124382335878168
+}

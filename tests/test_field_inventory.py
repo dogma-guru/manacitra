@@ -134,6 +134,15 @@ MUTATED = {
         "rigetti_cepheus_1_108q/k37-placement.json",
         "archived/measures/d_2/pearson",
     ),
+    # Amendment A7: one field of each new recompute
+    "Kickoff 35, ibm_fez": ("ibm_fez/k35-persistence.json", "archived/across/verdict"),
+    "Kickoff 38, Rigetti Cepheus-1-108Q": ("rigetti_cepheus_1_108q/k38-activity.json", "archived/verdict/on_pearson"),
+    "Kickoff 40, stage 2, the map": ("rigetti_cepheus_1_108q/k40-map.json", "archived/analysis/verdict"),
+    "Kickoff 41, Part A, the map a day later": (
+        "rigetti_cepheus_1_108q/k41-map.json",
+        "archived/analysis/p_k/r/pearson",
+    ),
+    "Kickoff 42, Day 2": ("rigetti_cepheus_1_108q/k42-day2.json", "archived/V5/verdict"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 

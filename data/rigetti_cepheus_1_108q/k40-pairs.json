@@ -1,0 +1,1100 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
+    "provider": "Amazon Braket (Rigetti)",
+    "kickoff": "Kickoff 40",
+    "utc": "2026-10-06T15:06:51Z",
+    "shots_per_circuit": "not applicable",
+    "sources": [
+      {
+        "file": "pairs-40.json",
+        "sha256": "9156756bcfcbb57ebc0ab0c9e8a08683021e5db9554df63022216d3233e7dca5"
+      }
+    ],
+    "source_archive_sha256": "20aecb5e6ae502f5496eb666a1921cc02a193a31a1ef7dc1aa68dd94f74ce348",
+    "source_script_sha256": "60e7114b971fa823a3045c9dce867fb9a1147b6c6e4a94e1108c4ae616a89b7b",
+    "versions": {
+      "amazon-braket-sdk": "1.127.3.post0",
+      "amazon-braket-schemas": "1.32.1.post0",
+      "amazon-braket-default-simulator": "1.40.2",
+      "qiskit": "2.5.2",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "python": "3.14.8"
+    },
+    "description": "Kickoff 34b's 27 main-job pairs by name, in 34b's order, on the coupling map Braket reported; the score x and its parts from Braket's standardized device properties at discovery, with the placeholder rule."
+  },
+  "rule": "coupling map matches Kickoff 34b's: 34b's main-job 27 pairs by name, in 34b's order (section 2)",
+  "coupling_map_comparison": {
+    "braket_edges": 193,
+    "k34b_edges": 193,
+    "edge_sets_equal": true,
+    "only_braket": [],
+    "only_k34b": [],
+    "braket_qubits": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107
+    ],
+    "k34b_qubits_in_edges": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107
+    ],
+    "k34b_n_qubits_field": 108,
+    "braket_qubitCount": 107,
+    "qubit_indices_equal": true
+  },
+  "pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      11,
+      12
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      20,
+      21
+    ],
+    [
+      22,
+      23
+    ],
+    [
+      24,
+      25
+    ],
+    [
+      27,
+      28
+    ],
+    [
+      29,
+      30
+    ],
+    [
+      42,
+      43
+    ],
+    [
+      54,
+      55
+    ],
+    [
+      56,
+      57
+    ],
+    [
+      60,
+      61
+    ],
+    [
+      63,
+      64
+    ],
+    [
+      65,
+      66
+    ],
+    [
+      67,
+      68
+    ],
+    [
+      72,
+      73
+    ],
+    [
+      76,
+      77
+    ],
+    [
+      78,
+      79
+    ],
+    [
+      81,
+      82
+    ],
+    [
+      87,
+      88
+    ],
+    [
+      89,
+      98
+    ],
+    [
+      94,
+      95
+    ],
+    [
+      96,
+      97
+    ],
+    [
+      99,
+      100
+    ],
+    [
+      101,
+      102
+    ]
+  ],
+  "x_definition": "x = (1 - CZ fidelity, interleaved RB) + (1 - readout fidelity) of each qubit; Braket standardized fields at discovery",
+  "placeholder_rule": "Amendment A1.2: a CZ fidelity of exactly 0.5 is no published figure; x is None; readout taken as published",
+  "per_pair": [
+    {
+      "position": 1,
+      "pair": [
+        0,
+        1
+      ],
+      "cz_fidelity": 0.994281625707111,
+      "cz_fidelity_se": 0.0010371603743355702,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.005718374292889017,
+      "readout_fidelity": [
+        0.959,
+        0.928
+      ],
+      "readout_error": [
+        0.041000000000000036,
+        0.07199999999999995
+      ],
+      "x": 0.118718374292889,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 2,
+      "pair": [
+        9,
+        10
+      ],
+      "cz_fidelity": 0.9916013189736612,
+      "cz_fidelity_se": 0.001967700248365265,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.008398681026338783,
+      "readout_fidelity": [
+        0.959,
+        0.948
+      ],
+      "readout_error": [
+        0.041000000000000036,
+        0.052000000000000046
+      ],
+      "x": 0.10139868102633887,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 3,
+      "pair": [
+        11,
+        12
+      ],
+      "cz_fidelity": 0.9776913437420088,
+      "cz_fidelity_se": 0.0050496391163776955,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.022308656257991166,
+      "readout_fidelity": [
+        0.957,
+        0.956
+      ],
+      "readout_error": [
+        0.04300000000000004,
+        0.04400000000000004
+      ],
+      "x": 0.10930865625799124,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 4,
+      "pair": [
+        13,
+        14
+      ],
+      "cz_fidelity": 0.983237344252599,
+      "cz_fidelity_se": 0.001853773729461283,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.01676265574740099,
+      "readout_fidelity": [
+        0.977,
+        0.968
+      ],
+      "readout_error": [
+        0.02300000000000002,
+        0.03200000000000003
+      ],
+      "x": 0.07176265574740104,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 5,
+      "pair": [
+        18,
+        19
+      ],
+      "cz_fidelity": 0.5,
+      "cz_fidelity_se": 1.0,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": null,
+      "readout_fidelity": [
+        0.965,
+        0.936
+      ],
+      "readout_error": [
+        0.03500000000000003,
+        0.06399999999999995
+      ],
+      "x": null,
+      "cz_figure_is_placeholder_0p5": true
+    },
+    {
+      "position": 6,
+      "pair": [
+        20,
+        21
+      ],
+      "cz_fidelity": 0.9828003728907364,
+      "cz_fidelity_se": 0.002903036092826795,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.017199627109263593,
+      "readout_fidelity": [
+        0.97,
+        0.977
+      ],
+      "readout_error": [
+        0.030000000000000027,
+        0.02300000000000002
+      ],
+      "x": 0.07019962710926364,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 7,
+      "pair": [
+        22,
+        23
+      ],
+      "cz_fidelity": 0.992361878470761,
+      "cz_fidelity_se": 0.00164291786809315,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.007638121529239039,
+      "readout_fidelity": [
+        0.969,
+        0.97
+      ],
+      "readout_error": [
+        0.031000000000000028,
+        0.030000000000000027
+      ],
+      "x": 0.0686381215292391,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 8,
+      "pair": [
+        24,
+        25
+      ],
+      "cz_fidelity": 0.9913474103018198,
+      "cz_fidelity_se": 0.0012128714425394763,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.008652589698180169,
+      "readout_fidelity": [
+        0.946,
+        0.967
+      ],
+      "readout_error": [
+        0.05400000000000005,
+        0.03300000000000003
+      ],
+      "x": 0.09565258969818025,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 9,
+      "pair": [
+        27,
+        28
+      ],
+      "cz_fidelity": 0.9867556327682802,
+      "cz_fidelity_se": 0.0023285538230814703,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.013244367231719845,
+      "readout_fidelity": [
+        0.971,
+        0.953
+      ],
+      "readout_error": [
+        0.029000000000000026,
+        0.04700000000000004
+      ],
+      "x": 0.08924436723171991,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 10,
+      "pair": [
+        29,
+        30
+      ],
+      "cz_fidelity": 0.9881387917773944,
+      "cz_fidelity_se": 0.0021466910848147646,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.011861208222605613,
+      "readout_fidelity": [
+        0.976,
+        0.972
+      ],
+      "readout_error": [
+        0.02400000000000002,
+        0.028000000000000025
+      ],
+      "x": 0.06386120822260566,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 11,
+      "pair": [
+        42,
+        43
+      ],
+      "cz_fidelity": 0.9861878468993598,
+      "cz_fidelity_se": 0.0044468962263648675,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.013812153100640212,
+      "readout_fidelity": [
+        0.971,
+        0.97
+      ],
+      "readout_error": [
+        0.029000000000000026,
+        0.030000000000000027
+      ],
+      "x": 0.07281215310064026,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 12,
+      "pair": [
+        54,
+        55
+      ],
+      "cz_fidelity": 0.9823234354697804,
+      "cz_fidelity_se": 0.0018824496303488536,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.017676564530219596,
+      "readout_fidelity": [
+        0.979,
+        0.964
+      ],
+      "readout_error": [
+        0.02100000000000002,
+        0.03600000000000003
+      ],
+      "x": 0.07467656453021965,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 13,
+      "pair": [
+        56,
+        57
+      ],
+      "cz_fidelity": 0.9948678702300112,
+      "cz_fidelity_se": 0.0016082972313968,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.00513212976998878,
+      "readout_fidelity": [
+        0.977,
+        0.983
+      ],
+      "readout_error": [
+        0.02300000000000002,
+        0.017000000000000015
+      ],
+      "x": 0.045132129769988816,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 14,
+      "pair": [
+        60,
+        61
+      ],
+      "cz_fidelity": 0.9479567570914516,
+      "cz_fidelity_se": 0.0031934208896854405,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.05204324290854845,
+      "readout_fidelity": [
+        0.955,
+        0.944
+      ],
+      "readout_error": [
+        0.04500000000000004,
+        0.05600000000000005
+      ],
+      "x": 0.15304324290854854,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 15,
+      "pair": [
+        63,
+        64
+      ],
+      "cz_fidelity": 0.9809155910955768,
+      "cz_fidelity_se": 0.005654879350018991,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.0190844089044232,
+      "readout_fidelity": [
+        0.961,
+        0.983
+      ],
+      "readout_error": [
+        0.039000000000000035,
+        0.017000000000000015
+      ],
+      "x": 0.07508440890442325,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 16,
+      "pair": [
+        65,
+        66
+      ],
+      "cz_fidelity": 0.9916169094270504,
+      "cz_fidelity_se": 0.0017324268708164977,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.008383090572949614,
+      "readout_fidelity": [
+        0.977,
+        0.969
+      ],
+      "readout_error": [
+        0.02300000000000002,
+        0.031000000000000028
+      ],
+      "x": 0.06238309057294966,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 17,
+      "pair": [
+        67,
+        68
+      ],
+      "cz_fidelity": 0.9927355120231868,
+      "cz_fidelity_se": 0.0020516031590724956,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.0072644879768132276,
+      "readout_fidelity": [
+        0.975,
+        0.966
+      ],
+      "readout_error": [
+        0.025000000000000022,
+        0.03400000000000003
+      ],
+      "x": 0.06626448797681328,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 18,
+      "pair": [
+        72,
+        73
+      ],
+      "cz_fidelity": 0.5,
+      "cz_fidelity_se": 1.0,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": null,
+      "readout_fidelity": [
+        0.969,
+        0.959
+      ],
+      "readout_error": [
+        0.031000000000000028,
+        0.041000000000000036
+      ],
+      "x": null,
+      "cz_figure_is_placeholder_0p5": true
+    },
+    {
+      "position": 19,
+      "pair": [
+        76,
+        77
+      ],
+      "cz_fidelity": 0.5,
+      "cz_fidelity_se": 1.0,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": null,
+      "readout_fidelity": [
+        0.532,
+        0.977
+      ],
+      "readout_error": [
+        0.46799999999999997,
+        0.02300000000000002
+      ],
+      "x": null,
+      "cz_figure_is_placeholder_0p5": true
+    },
+    {
+      "position": 20,
+      "pair": [
+        78,
+        79
+      ],
+      "cz_fidelity": 0.9923501599395508,
+      "cz_fidelity_se": 0.0015458874463313535,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.00764984006044922,
+      "readout_fidelity": [
+        0.93,
+        0.949
+      ],
+      "readout_error": [
+        0.06999999999999995,
+        0.051000000000000045
+      ],
+      "x": 0.12864984006044922,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 21,
+      "pair": [
+        81,
+        82
+      ],
+      "cz_fidelity": 0.9935314357647508,
+      "cz_fidelity_se": 0.0011472108432459942,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.006468564235249219,
+      "readout_fidelity": [
+        0.98,
+        0.989
+      ],
+      "readout_error": [
+        0.020000000000000018,
+        0.01100000000000001
+      ],
+      "x": 0.037468564235249247,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 22,
+      "pair": [
+        87,
+        88
+      ],
+      "cz_fidelity": 0.991004947632924,
+      "cz_fidelity_se": 0.0013178254707118893,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.008995052367075984,
+      "readout_fidelity": [
+        0.98,
+        0.964
+      ],
+      "readout_error": [
+        0.020000000000000018,
+        0.03600000000000003
+      ],
+      "x": 0.06499505236707603,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 23,
+      "pair": [
+        89,
+        98
+      ],
+      "cz_fidelity": 0.9932107892445996,
+      "cz_fidelity_se": 0.0015613909708096182,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.006789210755400399,
+      "readout_fidelity": [
+        0.978,
+        0.964
+      ],
+      "readout_error": [
+        0.02200000000000002,
+        0.03600000000000003
+      ],
+      "x": 0.06478921075540045,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 24,
+      "pair": [
+        94,
+        95
+      ],
+      "cz_fidelity": 0.9885797229832652,
+      "cz_fidelity_se": 0.003838626171824283,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.011420277016734759,
+      "readout_fidelity": [
+        0.984,
+        0.986
+      ],
+      "readout_error": [
+        0.016000000000000014,
+        0.014000000000000012
+      ],
+      "x": 0.041420277016734786,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 25,
+      "pair": [
+        96,
+        97
+      ],
+      "cz_fidelity": 0.9925025579253776,
+      "cz_fidelity_se": 0.0008973813978755485,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.00749744207462244,
+      "readout_fidelity": [
+        0.974,
+        0.943
+      ],
+      "readout_error": [
+        0.026000000000000023,
+        0.05700000000000005
+      ],
+      "x": 0.09049744207462251,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 26,
+      "pair": [
+        99,
+        100
+      ],
+      "cz_fidelity": 0.9957393702536126,
+      "cz_fidelity_se": 0.0006577288058593562,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.004260629746387412,
+      "readout_fidelity": [
+        0.985,
+        0.986
+      ],
+      "readout_error": [
+        0.015000000000000013,
+        0.014000000000000012
+      ],
+      "x": 0.03326062974638744,
+      "cz_figure_is_placeholder_0p5": false
+    },
+    {
+      "position": 27,
+      "pair": [
+        101,
+        102
+      ],
+      "cz_fidelity": 0.9925500605746116,
+      "cz_fidelity_se": 0.0007068562785498144,
+      "cz_fidelity_type": "INTERLEAVED_RANDOMIZED_BENCHMARKING",
+      "cz_error": 0.007449939425388408,
+      "readout_fidelity": [
+        0.986,
+        0.969
+      ],
+      "readout_error": [
+        0.014000000000000012,
+        0.031000000000000028
+      ],
+      "x": 0.05244993942538845,
+      "cz_figure_is_placeholder_0p5": false
+    }
+  ],
+  "n_with_x": 24,
+  "placeholder_count": {
+    "chip_wide": 31,
+    "chip_pairs": 193,
+    "in_our_set": 3,
+    "our_pairs_hit": [
+      [
+        18,
+        19
+      ],
+      [
+        72,
+        73
+      ],
+      [
+        76,
+        77
+      ]
+    ],
+    "all_with_se_1": true
+  },
+  "stage1_halves": {
+    "Y_odd_positions_1based": [
+      [
+        0,
+        1
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        18,
+        19
+      ],
+      [
+        22,
+        23
+      ],
+      [
+        27,
+        28
+      ],
+      [
+        42,
+        43
+      ],
+      [
+        56,
+        57
+      ],
+      [
+        63,
+        64
+      ],
+      [
+        67,
+        68
+      ],
+      [
+        76,
+        77
+      ],
+      [
+        81,
+        82
+      ],
+      [
+        89,
+        98
+      ],
+      [
+        96,
+        97
+      ],
+      [
+        101,
+        102
+      ]
+    ],
+    "Yp_even_positions_1based": [
+      [
+        9,
+        10
+      ],
+      [
+        13,
+        14
+      ],
+      [
+        20,
+        21
+      ],
+      [
+        24,
+        25
+      ],
+      [
+        29,
+        30
+      ],
+      [
+        54,
+        55
+      ],
+      [
+        60,
+        61
+      ],
+      [
+        65,
+        66
+      ],
+      [
+        72,
+        73
+      ],
+      [
+        78,
+        79
+      ],
+      [
+        87,
+        88
+      ],
+      [
+        94,
+        95
+      ],
+      [
+        99,
+        100
+      ]
+    ]
+  },
+  "calibration_at_read": {
+    "service_updatedAt": "2026-10-06T14:32:04+00:00",
+    "CZ_fCZ": {
+      "first": "2026-10-06T03:04:49Z",
+      "last": "2026-10-06T03:41:46Z",
+      "n": 193
+    },
+    "MEASURE_fRO": {
+      "first": "2026-10-06T14:17:56Z",
+      "last": "2026-10-06T14:20:34Z",
+      "n": 107
+    },
+    "RB_1q": {
+      "first": "2026-10-06T14:23:32Z",
+      "last": "2026-10-06T14:30:15Z",
+      "n": 107
+    },
+    "T1": {
+      "first": "2026-09-14T14:24:11Z",
+      "last": "2026-10-06T14:28:24Z",
+      "n": 107
+    },
+    "T2": {
+      "first": "2026-09-14T14:24:06Z",
+      "last": "2026-10-06T14:28:42Z",
+      "n": 107
+    }
+  }
+}

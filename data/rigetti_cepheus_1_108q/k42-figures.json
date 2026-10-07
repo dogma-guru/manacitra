@@ -1,0 +1,1349 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
+    "provider": "Amazon Braket (Rigetti)",
+    "kickoff": "Kickoff 42",
+    "utc": "2026-10-06T17:45:43Z",
+    "shots_per_circuit": "not applicable",
+    "sources": [
+      {
+        "file": "figures-at-submission-42.json",
+        "sha256": "8a6321c60ee09086a02ddd0fe93aa016dcd08a32b7fd16a7d28d0eb8ca3a0531"
+      },
+      {
+        "file": "programs-42.json",
+        "sha256": "e6614fb7c024020c11b69631b5cf59e8e56382d83680a80dbe9adfc2cc17a018"
+      }
+    ],
+    "source_archive_sha256": "ef37defad3e172adeb10e59284cb9ea9bd89de2db6286dd4d58bc85063332952",
+    "source_script_sha256": "145764f7729c1b8f7f1287db6524b225949b9e5cd45cfd56ae12f29036bb5557",
+    "submitted_utc": {
+      "day1": "2026-10-06T17:45:55Z",
+      "day2": "2026-10-07T16:17:29Z"
+    },
+    "description": "Braket's per-pair figures for the run's pairs as read at each day's submission, with the placeholder counts and the calibration times (numbers only); and the programs: the task order drawn with seed 42, each program's SHA-256 and its checks before sending, and the check that the five programs shared with Kickoff 40 are its files, byte for byte. Day 2 re-sent Day 1's files."
+  },
+  "day1": {
+    "figures_at_submission": [
+      {
+        "pair": [
+          0,
+          1
+        ],
+        "cz_fidelity": 0.9861672920834808,
+        "cz_fidelity_se": 0.0066929409760049675,
+        "readout_fidelity": [
+          0.97,
+          0.943
+        ],
+        "x": 0.10083270791651933,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          9,
+          10
+        ],
+        "cz_fidelity": 0.9912745841597634,
+        "cz_fidelity_se": 0.0016403418371328587,
+        "readout_fidelity": [
+          0.959,
+          0.936
+        ],
+        "x": 0.11372541584023654,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          11,
+          12
+        ],
+        "cz_fidelity": 0.991448349387371,
+        "cz_fidelity_se": 0.0034470679349593077,
+        "readout_fidelity": [
+          0.945,
+          0.959
+        ],
+        "x": 0.10455165061262905,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          13,
+          14
+        ],
+        "cz_fidelity": 0.9824631500781372,
+        "cz_fidelity_se": 0.0019974823300483824,
+        "readout_fidelity": [
+          0.975,
+          0.978
+        ],
+        "x": 0.06453684992186282,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          18,
+          19
+        ],
+        "cz_fidelity": 0.5,
+        "cz_fidelity_se": 1.0,
+        "readout_fidelity": [
+          0.971,
+          0.938
+        ],
+        "x": null,
+        "cz_figure_is_placeholder_0p5": true
+      },
+      {
+        "pair": [
+          20,
+          21
+        ],
+        "cz_fidelity": 0.9863892727730011,
+        "cz_fidelity_se": 0.003166323952602315,
+        "readout_fidelity": [
+          0.982,
+          0.971
+        ],
+        "x": 0.060610727226998895,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          22,
+          23
+        ],
+        "cz_fidelity": 0.993297159000017,
+        "cz_fidelity_se": 0.0011722285139776694,
+        "readout_fidelity": [
+          0.967,
+          0.972
+        ],
+        "x": 0.06770284099998303,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          24,
+          25
+        ],
+        "cz_fidelity": 0.989998098111078,
+        "cz_fidelity_se": 0.0010323226795162866,
+        "readout_fidelity": [
+          0.952,
+          0.951
+        ],
+        "x": 0.10700190188892211,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          27,
+          28
+        ],
+        "cz_fidelity": 0.9890163991355628,
+        "cz_fidelity_se": 0.0029224565962431776,
+        "readout_fidelity": [
+          0.98,
+          0.947
+        ],
+        "x": 0.08398360086443724,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          29,
+          30
+        ],
+        "cz_fidelity": 0.9899321221733391,
+        "cz_fidelity_se": 0.0015226411668521009,
+        "readout_fidelity": [
+          0.977,
+          0.976
+        ],
+        "x": 0.057067877826660895,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          42,
+          43
+        ],
+        "cz_fidelity": 0.985439860697292,
+        "cz_fidelity_se": 0.0015412270274967506,
+        "readout_fidelity": [
+          0.975,
+          0.959
+        ],
+        "x": 0.08056013930270811,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          54,
+          55
+        ],
+        "cz_fidelity": 0.961417031167952,
+        "cz_fidelity_se": 0.008135892516468013,
+        "readout_fidelity": [
+          0.98,
+          0.963
+        ],
+        "x": 0.09558296883204809,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          56,
+          57
+        ],
+        "cz_fidelity": 0.9950861975138934,
+        "cz_fidelity_se": 0.0018670808557784465,
+        "readout_fidelity": [
+          0.978,
+          0.979
+        ],
+        "x": 0.04791380248610666,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          60,
+          61
+        ],
+        "cz_fidelity": 0.9491931709072196,
+        "cz_fidelity_se": 0.004036022401381498,
+        "readout_fidelity": [
+          0.959,
+          0.934
+        ],
+        "x": 0.15780682909278043,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          63,
+          64
+        ],
+        "cz_fidelity": 0.9858195011985152,
+        "cz_fidelity_se": 0.004997335520601632,
+        "readout_fidelity": [
+          0.977,
+          0.982
+        ],
+        "x": 0.05518049880148479,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          65,
+          66
+        ],
+        "cz_fidelity": 0.9888068147554332,
+        "cz_fidelity_se": 0.0031840994319160044,
+        "readout_fidelity": [
+          0.975,
+          0.978
+        ],
+        "x": 0.05819318524456685,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          67,
+          68
+        ],
+        "cz_fidelity": 0.9911354887181992,
+        "cz_fidelity_se": 0.0022970805102712696,
+        "readout_fidelity": [
+          0.975,
+          0.963
+        ],
+        "x": 0.07086451128180082,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          72,
+          73
+        ],
+        "cz_fidelity": 0.9917117683236004,
+        "cz_fidelity_se": 0.002168813019729363,
+        "readout_fidelity": [
+          0.973,
+          0.964
+        ],
+        "x": 0.07128823167639964,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          76,
+          77
+        ],
+        "cz_fidelity": 0.5,
+        "cz_fidelity_se": 1.0,
+        "readout_fidelity": [
+          0.529,
+          0.986
+        ],
+        "x": null,
+        "cz_figure_is_placeholder_0p5": true
+      },
+      {
+        "pair": [
+          78,
+          79
+        ],
+        "cz_fidelity": 0.9857559675276288,
+        "cz_fidelity_se": 0.0005553271136801833,
+        "readout_fidelity": [
+          0.921,
+          0.957
+        ],
+        "x": 0.13624403247237116,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          81,
+          82
+        ],
+        "cz_fidelity": 0.9890218951942784,
+        "cz_fidelity_se": 0.0024774802613166105,
+        "readout_fidelity": [
+          0.991,
+          0.986
+        ],
+        "x": 0.03397810480572161,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          87,
+          88
+        ],
+        "cz_fidelity": 0.9905382364749312,
+        "cz_fidelity_se": 0.0018150191377673784,
+        "readout_fidelity": [
+          0.971,
+          0.972
+        ],
+        "x": 0.06646176352506883,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          89,
+          98
+        ],
+        "cz_fidelity": 0.993784615259492,
+        "cz_fidelity_se": 0.0016463618350315169,
+        "readout_fidelity": [
+          0.979,
+          0.977
+        ],
+        "x": 0.05021538474050802,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          94,
+          95
+        ],
+        "cz_fidelity": 0.9654899509320528,
+        "cz_fidelity_se": 0.0033200697586604033,
+        "readout_fidelity": [
+          0.975,
+          0.981
+        ],
+        "x": 0.07851004906794723,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          96,
+          97
+        ],
+        "cz_fidelity": 0.9918219983612218,
+        "cz_fidelity_se": 0.001191324704465029,
+        "readout_fidelity": [
+          0.978,
+          0.94
+        ],
+        "x": 0.09017800163877832,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          99,
+          100
+        ],
+        "cz_fidelity": 0.9954919471548482,
+        "cz_fidelity_se": 0.0006829877272025852,
+        "readout_fidelity": [
+          0.988,
+          0.988
+        ],
+        "x": 0.028508052845151788,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          101,
+          102
+        ],
+        "cz_fidelity": 0.993838464261665,
+        "cz_fidelity_se": 0.001078749845385226,
+        "readout_fidelity": [
+          0.983,
+          0.993
+        ],
+        "x": 0.03016153573833502,
+        "cz_figure_is_placeholder_0p5": false
+      }
+    ],
+    "placeholder_count_at_submission": {
+      "chip_wide": 31,
+      "chip_pairs": 193,
+      "in_our_set": 2,
+      "our_pairs_hit": [
+        [
+          18,
+          19
+        ],
+        [
+          76,
+          77
+        ]
+      ],
+      "all_with_se_1": true
+    },
+    "calibration_at_submission": {
+      "service_updatedAt": "2026-10-06T17:32:03+00:00",
+      "CZ_fCZ": {
+        "first": "2026-10-06T15:04:49Z",
+        "last": "2026-10-06T15:41:10Z",
+        "n": 193
+      },
+      "MEASURE_fRO": {
+        "first": "2026-10-06T16:01:05Z",
+        "last": "2026-10-06T16:03:32Z",
+        "n": 107
+      }
+    }
+  },
+  "day2": {
+    "figures_at_submission": [
+      {
+        "pair": [
+          0,
+          1
+        ],
+        "cz_fidelity": 0.9948640143486494,
+        "cz_fidelity_se": 0.0012541663057217267,
+        "readout_fidelity": [
+          0.951,
+          0.939
+        ],
+        "x": 0.11513598565135075,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          9,
+          10
+        ],
+        "cz_fidelity": 0.9903895787122629,
+        "cz_fidelity_se": 0.002108318136502333,
+        "readout_fidelity": [
+          0.951,
+          0.941
+        ],
+        "x": 0.11761042128773724,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          11,
+          12
+        ],
+        "cz_fidelity": 0.9927233620653289,
+        "cz_fidelity_se": 0.0027525838867901264,
+        "readout_fidelity": [
+          0.943,
+          0.96
+        ],
+        "x": 0.10427663793467123,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          13,
+          14
+        ],
+        "cz_fidelity": 0.9852948227256624,
+        "cz_fidelity_se": 0.0012500634112301255,
+        "readout_fidelity": [
+          0.98,
+          0.981
+        ],
+        "x": 0.05370517727433766,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          18,
+          19
+        ],
+        "cz_fidelity": 0.5,
+        "cz_fidelity_se": 1.0,
+        "readout_fidelity": [
+          0.955,
+          0.937
+        ],
+        "x": null,
+        "cz_figure_is_placeholder_0p5": true
+      },
+      {
+        "pair": [
+          20,
+          21
+        ],
+        "cz_fidelity": 0.9883039840682544,
+        "cz_fidelity_se": 0.002908210186390447,
+        "readout_fidelity": [
+          0.97,
+          0.971
+        ],
+        "x": 0.07069601593174568,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          22,
+          23
+        ],
+        "cz_fidelity": 0.9925553833312108,
+        "cz_fidelity_se": 0.0013277944746904686,
+        "readout_fidelity": [
+          0.982,
+          0.98
+        ],
+        "x": 0.045444616668789184,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          24,
+          25
+        ],
+        "cz_fidelity": 0.988844045278046,
+        "cz_fidelity_se": 0.0013864158215137084,
+        "readout_fidelity": [
+          0.951,
+          0.946
+        ],
+        "x": 0.11415595472195406,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          27,
+          28
+        ],
+        "cz_fidelity": 0.9887222747892666,
+        "cz_fidelity_se": 0.0023809709952279014,
+        "readout_fidelity": [
+          0.969,
+          0.95
+        ],
+        "x": 0.09227772521073352,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          29,
+          30
+        ],
+        "cz_fidelity": 0.9912655845227046,
+        "cz_fidelity_se": 0.002279545762122858,
+        "readout_fidelity": [
+          0.978,
+          0.972
+        ],
+        "x": 0.05873441547729541,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          42,
+          43
+        ],
+        "cz_fidelity": 0.9852407801711648,
+        "cz_fidelity_se": 0.0014733614080568115,
+        "readout_fidelity": [
+          0.964,
+          0.956
+        ],
+        "x": 0.09475921982883528,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          54,
+          55
+        ],
+        "cz_fidelity": 0.979726219476289,
+        "cz_fidelity_se": 0.00143841678424988,
+        "readout_fidelity": [
+          0.981,
+          0.975
+        ],
+        "x": 0.06427378052371102,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          56,
+          57
+        ],
+        "cz_fidelity": 0.9940052280445342,
+        "cz_fidelity_se": 0.0015790886528563386,
+        "readout_fidelity": [
+          0.983,
+          0.986
+        ],
+        "x": 0.036994771955465855,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          60,
+          61
+        ],
+        "cz_fidelity": 0.9686402955083736,
+        "cz_fidelity_se": 0.011022237996869248,
+        "readout_fidelity": [
+          0.968,
+          0.95
+        ],
+        "x": 0.11335970449162647,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          63,
+          64
+        ],
+        "cz_fidelity": 0.9843282793113272,
+        "cz_fidelity_se": 0.004548035885110947,
+        "readout_fidelity": [
+          0.965,
+          0.984
+        ],
+        "x": 0.06667172068867289,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          65,
+          66
+        ],
+        "cz_fidelity": 0.9903769054742873,
+        "cz_fidelity_se": 0.0015882846466695345,
+        "readout_fidelity": [
+          0.981,
+          0.97
+        ],
+        "x": 0.05862309452571279,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          67,
+          68
+        ],
+        "cz_fidelity": 0.994830111474381,
+        "cz_fidelity_se": 0.002087743869428465,
+        "readout_fidelity": [
+          0.978,
+          0.959
+        ],
+        "x": 0.068169888525619,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          72,
+          73
+        ],
+        "cz_fidelity": 0.5,
+        "cz_fidelity_se": 1.0,
+        "readout_fidelity": [
+          0.968,
+          0.96
+        ],
+        "x": null,
+        "cz_figure_is_placeholder_0p5": true
+      },
+      {
+        "pair": [
+          76,
+          77
+        ],
+        "cz_fidelity": 0.5,
+        "cz_fidelity_se": 1.0,
+        "readout_fidelity": [
+          0.5429999999999999,
+          0.975
+        ],
+        "x": null,
+        "cz_figure_is_placeholder_0p5": true
+      },
+      {
+        "pair": [
+          78,
+          79
+        ],
+        "cz_fidelity": 0.9919871405609256,
+        "cz_fidelity_se": 0.0017275865984319886,
+        "readout_fidelity": [
+          0.937,
+          0.951
+        ],
+        "x": 0.12001285943907436,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          81,
+          82
+        ],
+        "cz_fidelity": 0.9942067416872576,
+        "cz_fidelity_se": 0.0008192703704528496,
+        "readout_fidelity": [
+          0.99,
+          0.984
+        ],
+        "x": 0.03179325831274238,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          87,
+          88
+        ],
+        "cz_fidelity": 0.9884072776079932,
+        "cz_fidelity_se": 0.0025006795780665274,
+        "readout_fidelity": [
+          0.965,
+          0.978
+        ],
+        "x": 0.06859272239200687,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          89,
+          98
+        ],
+        "cz_fidelity": 0.995666856644408,
+        "cz_fidelity_se": 0.0017641035403820355,
+        "readout_fidelity": [
+          0.979,
+          0.97
+        ],
+        "x": 0.05533314335559203,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          94,
+          95
+        ],
+        "cz_fidelity": 0.9661157072178784,
+        "cz_fidelity_se": 0.002213883134400548,
+        "readout_fidelity": [
+          0.988,
+          0.989
+        ],
+        "x": 0.05688429278212159,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          96,
+          97
+        ],
+        "cz_fidelity": 0.9921856847643457,
+        "cz_fidelity_se": 0.001042489260977832,
+        "readout_fidelity": [
+          0.967,
+          0.946
+        ],
+        "x": 0.09481431523565442,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          99,
+          100
+        ],
+        "cz_fidelity": 0.994420532493838,
+        "cz_fidelity_se": 0.0008721450714620884,
+        "readout_fidelity": [
+          0.991,
+          0.98
+        ],
+        "x": 0.03457946750616203,
+        "cz_figure_is_placeholder_0p5": false
+      },
+      {
+        "pair": [
+          101,
+          102
+        ],
+        "cz_fidelity": 0.9873855688232138,
+        "cz_fidelity_se": 0.0036395371605279954,
+        "readout_fidelity": [
+          0.989,
+          0.97
+        ],
+        "x": 0.053614431176786215,
+        "cz_figure_is_placeholder_0p5": false
+      }
+    ],
+    "placeholder_count_at_submission": {
+      "chip_wide": 30,
+      "chip_pairs": 193,
+      "in_our_set": 3,
+      "our_pairs_hit": [
+        [
+          18,
+          19
+        ],
+        [
+          72,
+          73
+        ],
+        [
+          76,
+          77
+        ]
+      ],
+      "all_with_se_1": true
+    },
+    "calibration_at_submission": {
+      "service_updatedAt": "2026-10-07T16:02:04+00:00",
+      "CZ_fCZ": {
+        "first": "2026-10-07T15:04:37Z",
+        "last": "2026-10-07T15:42:58Z",
+        "n": 193
+      },
+      "MEASURE_fRO": {
+        "first": "2026-10-07T14:18:27Z",
+        "last": "2026-10-07T14:20:56Z",
+        "n": 107
+      }
+    }
+  },
+  "programs": {
+    "order_rule": {
+      "A_perm": [
+        3,
+        0,
+        7,
+        2,
+        4,
+        6,
+        1,
+        5,
+        8
+      ],
+      "B_perm": [
+        6,
+        7,
+        2,
+        3,
+        0,
+        1,
+        8,
+        4,
+        5
+      ],
+      "rule": "rng = default_rng(42); A permutation of the 9 offsets drawn first, then B; tasks alternate A, B, A, B, ..."
+    },
+    "order": [
+      "A-0.50",
+      "B-0.25",
+      "A-1.25",
+      "B+0.00",
+      "A+0.50",
+      "B-1.25",
+      "A-0.75",
+      "B-1.00",
+      "A-0.25",
+      "B-1.75",
+      "A+0.25",
+      "B-1.50",
+      "A-1.00",
+      "B+0.25",
+      "A+0.00",
+      "B-0.75",
+      "A+0.75",
+      "B-0.50"
+    ],
+    "files": [
+      {
+        "position": 1,
+        "family": "A",
+        "offset": -0.5,
+        "task_label": "01-A-0.50",
+        "sha256": "117836f4f27f8b15c420b1f3b0c967a8bb79932457392ec88d799f6ffc13c22d",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/01-A-0.50.qasm"
+      },
+      {
+        "position": 2,
+        "family": "B",
+        "offset": -0.25,
+        "task_label": "02-B-0.25",
+        "sha256": "781a9b764b81007aed25de65cecf6a30acea5cda0d370dd3438cb3eed3e56e83",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/02-B-0.25.qasm"
+      },
+      {
+        "position": 3,
+        "family": "A",
+        "offset": -1.25,
+        "task_label": "03-A-1.25",
+        "sha256": "08c7aeec3c20924a1653655481151ca26a7fca7c351ed153e2374350104fdec5",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/03-A-1.25.qasm"
+      },
+      {
+        "position": 4,
+        "family": "B",
+        "offset": 0.0,
+        "task_label": "04-B+0.00",
+        "sha256": "dc7b50feb8c276c35ee2ce36ebbdd846c9b83f41edb381f7b9c8dd0246303cdd",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/04-B+0.00.qasm"
+      },
+      {
+        "position": 5,
+        "family": "A",
+        "offset": 0.5,
+        "task_label": "05-A+0.50",
+        "sha256": "5b110c9918bbe0ffa8b5a4cec022e7467703a2fd5806f7eb8dfebf37c82e80f9",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/05-A+0.50.qasm"
+      },
+      {
+        "position": 6,
+        "family": "B",
+        "offset": -1.25,
+        "task_label": "06-B-1.25",
+        "sha256": "44d53058ae32d5a196152762fab8d2900a091bfd47d1c934f7d28f1978198905",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/06-B-1.25.qasm"
+      },
+      {
+        "position": 7,
+        "family": "A",
+        "offset": -0.75,
+        "task_label": "07-A-0.75",
+        "sha256": "e8ab7cac425feca1a6b63acef4817d67c2493fa87835a82aee234b6828f4fe36",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/07-A-0.75.qasm"
+      },
+      {
+        "position": 8,
+        "family": "B",
+        "offset": -1.0,
+        "task_label": "08-B-1.00",
+        "sha256": "ae87d0ca1a3e5bf7dd0930c83f96fd15299125b6ca1faec141ce52f4c4124ea4",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/08-B-1.00.qasm"
+      },
+      {
+        "position": 9,
+        "family": "A",
+        "offset": -0.25,
+        "task_label": "09-A-0.25",
+        "sha256": "457ca32183bdba44658c6b105ac0c649dc0cf1f84acb23aea2c8daa8f8f4f28a",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/09-A-0.25.qasm"
+      },
+      {
+        "position": 10,
+        "family": "B",
+        "offset": -1.75,
+        "task_label": "10-B-1.75",
+        "sha256": "7ef31d4f6070146ec465159f542651d85131159659b6da7c9943e52b5ec8cc73",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/10-B-1.75.qasm"
+      },
+      {
+        "position": 11,
+        "family": "A",
+        "offset": 0.25,
+        "task_label": "11-A+0.25",
+        "sha256": "1e21b4928cf8ee704c4d15862f6d9572034dd45143070e09b8d5a2aafa9892e4",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/11-A+0.25.qasm"
+      },
+      {
+        "position": 12,
+        "family": "B",
+        "offset": -1.5,
+        "task_label": "12-B-1.50",
+        "sha256": "293f96b9b3776be94f948d5f3f197dd841a3cbe37c03dea4f0feb1cff67c14a4",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/12-B-1.50.qasm"
+      },
+      {
+        "position": 13,
+        "family": "A",
+        "offset": -1.0,
+        "task_label": "13-A-1.00",
+        "sha256": "1cc40397631ddae2e5e05bd7c8d7196a6908fd9ea717ac663a7a572e180f3bcf",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/13-A-1.00.qasm"
+      },
+      {
+        "position": 14,
+        "family": "B",
+        "offset": 0.25,
+        "task_label": "14-B+0.25",
+        "sha256": "34b74492d7a34ca2fde5396f744fbae2e2394c0d37d2ac7b7fa3ade78d662f39",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/14-B+0.25.qasm"
+      },
+      {
+        "position": 15,
+        "family": "A",
+        "offset": 0.0,
+        "task_label": "15-A+0.00",
+        "sha256": "21ef74c83d17682e6745a87e61fe49c09fd621dd4a6cb9ac2591b28d3179e843",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/15-A+0.00.qasm"
+      },
+      {
+        "position": 16,
+        "family": "B",
+        "offset": -0.75,
+        "task_label": "16-B-0.75",
+        "sha256": "ad6033a07f84f9c69ce83e9263e25c27091309197441d7a8f2b778e9321a2cea",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/16-B-0.75.qasm"
+      },
+      {
+        "position": 17,
+        "family": "A",
+        "offset": 0.75,
+        "task_label": "17-A+0.75",
+        "sha256": "bf3c5eb4410b42a3e13969c78bcafcc64871f921bb6bca111f0317dc30871104",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/17-A+0.75.qasm"
+      },
+      {
+        "position": 18,
+        "family": "B",
+        "offset": -0.5,
+        "task_label": "18-B-0.50",
+        "sha256": "85fd1b028556034b899f3c7bcea6f08e36996da1b45c840912a1750c4a8e1beb",
+        "check": {
+          "cz_per_pair": [
+            3
+          ],
+          "cz_off_map": 0,
+          "gates_outside_pairs": 0,
+          "native_only": true,
+          "rx_angles": [
+            1.570796326795
+          ],
+          "measure_map_ok": true,
+          "max_dev_probs_from_ideal": 0.0,
+          "braket_interpreter_instructions": 1161,
+          "ok": true
+        },
+        "file": "programs/k42/18-B-0.50.qasm"
+      }
+    ],
+    "shared_with_kickoff40": {
+      "A-0.50": {
+        "file": "programs/k40/stage2/02-A-off.qasm",
+        "byte_identical": true,
+        "sha256": "117836f4f27f8b15c420b1f3b0c967a8bb79932457392ec88d799f6ffc13c22d",
+        "kickoff40_sha256": "117836f4f27f8b15c420b1f3b0c967a8bb79932457392ec88d799f6ffc13c22d"
+      },
+      "B+0.00": {
+        "file": "programs/k40/stage2/03-B-no.qasm",
+        "byte_identical": true,
+        "sha256": "dc7b50feb8c276c35ee2ce36ebbdd846c9b83f41edb381f7b9c8dd0246303cdd",
+        "kickoff40_sha256": "dc7b50feb8c276c35ee2ce36ebbdd846c9b83f41edb381f7b9c8dd0246303cdd"
+      },
+      "A+0.50": {
+        "file": "programs/k40/stage2/17-A-wrong.qasm",
+        "byte_identical": true,
+        "sha256": "5b110c9918bbe0ffa8b5a4cec022e7467703a2fd5806f7eb8dfebf37c82e80f9",
+        "kickoff40_sha256": "5b110c9918bbe0ffa8b5a4cec022e7467703a2fd5806f7eb8dfebf37c82e80f9"
+      },
+      "B-1.00": {
+        "file": "programs/k40/stage2/04-B-off.qasm",
+        "byte_identical": true,
+        "sha256": "ae87d0ca1a3e5bf7dd0930c83f96fd15299125b6ca1faec141ce52f4c4124ea4",
+        "kickoff40_sha256": "ae87d0ca1a3e5bf7dd0930c83f96fd15299125b6ca1faec141ce52f4c4124ea4"
+      },
+      "A+0.00": {
+        "file": "programs/k40/stage2/01-A-no.qasm",
+        "byte_identical": true,
+        "sha256": "21ef74c83d17682e6745a87e61fe49c09fd621dd4a6cb9ac2591b28d3179e843",
+        "kickoff40_sha256": "21ef74c83d17682e6745a87e61fe49c09fd621dd4a6cb9ac2591b28d3179e843"
+      }
+    },
+    "shared_all_identical": true,
+    "all_checks_ok": true
+  }
+}

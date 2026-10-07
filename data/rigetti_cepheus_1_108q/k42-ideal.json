@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
+    "provider": "Amazon Braket (Rigetti)",
+    "kickoff": "Kickoff 42",
+    "utc": "2026-10-06T17:20:45Z",
+    "shots_per_circuit": "not applicable",
+    "sources": [
+      {
+        "file": "ideal-42.json",
+        "sha256": "2bb2afbe919d07e0d6c22a8391bccb2ef955109a4ed4ac80f7add697edd11312"
+      }
+    ],
+    "source_archive_sha256": "ef37defad3e172adeb10e59284cb9ea9bd89de2db6286dd4d58bc85063332952",
+    "source_script_sha256": "145764f7729c1b8f7f1287db6524b225949b9e5cd45cfd56ae12f29036bb5557",
+    "versions": {
+      "amazon-braket-sdk": "1.127.3.post0",
+      "amazon-braket-schemas": "1.32.1.post0",
+      "amazon-braket-default-simulator": "1.40.2",
+      "qiskit": "2.5.2",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "python": "3.14.8"
+    },
+    "description": "The exact P(11) of circuits A and B at each scan offset, from the circuits' own unitaries, and the synthesised programs' agreement with them; the kickoff's three-place values (Mantri's) beside them."
+  },
+  "families": {
+    "A": {
+      "c": 0.125,
+      "rows": [
+        {
+          "offset": -1.25,
+          "exact_P11": 0.9204756080294207,
+          "synthesised_P11": 0.9204756080294205,
+          "mantri": 0.92,
+          "exact_minus_mantri": 0.00047560802942070435
+        },
+        {
+          "offset": -1.0,
+          "exact_P11": 0.9634225575311879,
+          "synthesised_P11": 0.9634225575311879,
+          "mantri": 0.963,
+          "exact_minus_mantri": 0.00042255753118791706
+        },
+        {
+          "offset": -0.75,
+          "exact_P11": 0.990636333338475,
+          "synthesised_P11": 0.9906363333384739,
+          "mantri": 0.991,
+          "exact_minus_mantri": -0.00036366666152498617
+        },
+        {
+          "offset": -0.5,
+          "exact_P11": 0.9999999999999998,
+          "synthesised_P11": 0.9999999999999996,
+          "mantri": 1.0,
+          "exact_minus_mantri": -2.220446049250313e-16
+        },
+        {
+          "offset": -0.25,
+          "exact_P11": 0.9904864221578844,
+          "synthesised_P11": 0.9904864221578833,
+          "mantri": 0.99,
+          "exact_minus_mantri": 0.0004864221578844141
+        },
+        {
+          "offset": 0.0,
+          "exact_P11": 0.9622346767618242,
+          "synthesised_P11": 0.9622346767618235,
+          "mantri": 0.962,
+          "exact_minus_mantri": 0.00023467676182420405
+        },
+        {
+          "offset": 0.25,
+          "exact_P11": 0.9165300997175222,
+          "synthesised_P11": 0.916530099717522,
+          "mantri": 0.917,
+          "exact_minus_mantri": -0.000469900282477842
+        },
+        {
+          "offset": 0.5,
+          "exact_P11": 0.8556911556115543,
+          "synthesised_P11": 0.8556911556115533,
+          "mantri": 0.856,
+          "exact_minus_mantri": -0.00030884438844569484
+        },
+        {
+          "offset": 0.75,
+          "exact_P11": 0.7828749600751277,
+          "synthesised_P11": 0.782874960075127,
+          "mantri": 0.783,
+          "exact_minus_mantri": -0.00012503992487233884
+        }
+      ],
+      "peak_on_scan": -0.5
+    },
+    "B": {
+      "c": 0.25,
+      "rows": [
+        {
+          "offset": -1.75,
+          "exact_P11": 0.9262124963346251,
+          "synthesised_P11": 0.9262124963346245,
+          "mantri": 0.926,
+          "exact_minus_mantri": 0.00021249633462505635
+        },
+        {
+          "offset": -1.5,
+          "exact_P11": 0.9657485795427246,
+          "synthesised_P11": 0.9657485795427235,
+          "mantri": 0.966,
+          "exact_minus_mantri": -0.0002514204572753309
+        },
+        {
+          "offset": -1.25,
+          "exact_P11": 0.9911541180004656,
+          "synthesised_P11": 0.9911541180004652,
+          "mantri": 0.991,
+          "exact_minus_mantri": 0.00015411800046560842
+        },
+        {
+          "offset": -1.0,
+          "exact_P11": 1.0,
+          "synthesised_P11": 0.9999999999999998,
+          "mantri": 1.0,
+          "exact_minus_mantri": 0.0
+        },
+        {
+          "offset": -0.75,
+          "exact_P11": 0.9908597831242113,
+          "synthesised_P11": 0.9908597831242113,
+          "mantri": 0.991,
+          "exact_minus_mantri": -0.00014021687578869013
+        },
+        {
+          "offset": -0.5,
+          "exact_P11": 0.9634198343907142,
+          "synthesised_P11": 0.9634198343907144,
+          "mantri": 0.963,
+          "exact_minus_mantri": 0.00041983439071424655
+        },
+        {
+          "offset": -0.25,
+          "exact_P11": 0.9184968825143348,
+          "synthesised_P11": 0.9184968825143325,
+          "mantri": 0.918,
+          "exact_minus_mantri": 0.0004968825143347733
+        },
+        {
+          "offset": 0.0,
+          "exact_P11": 0.8579628514391744,
+          "synthesised_P11": 0.8579628514391734,
+          "mantri": 0.858,
+          "exact_minus_mantri": -3.7148560825595034e-05
+        },
+        {
+          "offset": 0.25,
+          "exact_P11": 0.784585527266595,
+          "synthesised_P11": 0.784585527266595,
+          "mantri": 0.785,
+          "exact_minus_mantri": -0.00041447273340500246
+        }
+      ],
+      "peak_on_scan": -1.0
+    }
+  },
+  "max_abs_synthesised_minus_exact": 2.3314683517128287e-15,
+  "max_abs_rounded_exact_minus_mantri": 0.0
+}

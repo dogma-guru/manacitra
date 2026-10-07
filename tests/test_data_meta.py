@@ -40,5 +40,5 @@ def test_coupling_maps_name_their_snapshot(path):
 @pytest.mark.parametrize("path", [f for f in FILES if not f.endswith("coupling-map.json")])
 def test_run_records_name_a_kickoff_and_a_time(path):
     m = archive.load(path)["meta"]
-    assert m["kickoff"].startswith("Kickoff") and m["utc"][:10] in ("2026-10-05", "2026-10-06")
+    assert m["kickoff"].startswith("Kickoff") and m["utc"][:10] in ("2026-10-05", "2026-10-06", "2026-10-07")
     assert m["shots_per_circuit"] == NA or isinstance(m["shots_per_circuit"], int)

@@ -206,6 +206,27 @@ def clear_caches() -> None:
         k37_recomputed,
         k37,
         k37_after_the_fact,
+        k35_recomputed,
+        k35,
+        k38,
+        k40_stage1,
+        k40_stage2,
+        k40_stage3,
+        k40_placement,
+        k40_map,
+        k40_after_the_fact,
+        k40_payoff,
+        k40_inputs,
+        k41_today,
+        k41_map,
+        k41_payoff,
+        k41_inputs,
+        k41_partB,
+        k42_scan,
+        k42_day1,
+        k42_day2,
+        k42_after_the_fact,
+        k42_inputs,
     ):
         fn.cache_clear()
 
@@ -588,6 +609,673 @@ def k37_after_the_fact():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- Amendment A7
+@cache
+def k35_recomputed():
+    return ar.full_chip_persistence({d: ar.load(f"ibm_fez/k35-day{d}.json") for d in (1, 2, 3)})
+
+
+@cache
+def k35():
+    """Kickoff 35: each day's statistics from its counts, the across-day analysis and both verdicts, Amendment A1's
+    lines and the descriptive checks."""
+    r = k35_recomputed()
+    a, lv = r["analysis"], r["levels"]
+    docs = {f"ibm_fez/k35-day{d}.json": ar.load(f"ibm_fez/k35-day{d}.json") for d in (1, 2, 3)}
+    file = "ibm_fez/k35-persistence.json"
+    docs[file] = ar.load(file)
+    recomputed = {}
+    for d in (1, 2, 3):
+        pd, rec = a["per_day"][str(d)], docs[f"ibm_fez/k35-day{d}.json"]
+        recomputed[f"ibm_fez/k35-day{d}.json"] = {
+            "per_circuit_P11": [p11_from(c, len(rec["rounds"][rn])) for (rn, _), c in zip(rec["order"], rec["counts"])],
+            "archived": {
+                "analysis": {
+                    "edges": [list(e) for e in ar.full_chip_day(rec)["edges"]],
+                    "k": pd["k"],
+                    "k_first": pd["k_first_copies"],
+                    "k_second": pd["k_second_copies"],
+                    **lv[d],
+                    "mean_k": pd["mean_k"],
+                    "sd_k_between_edges": pd["sd_k_between_edges"],
+                    "mean_shot_se": pd["shot_noise_sd"],
+                    "r_split": pd["r_split"],
+                    "reliability_spearman_brown": pd["reliability"],
+                    "r_k_x": pd["r_k_x"],
+                }
+            },
+        }
+    ac = a["across"]
+    pairs = {
+        f"{k[0]}-{k[1]}": {
+            "r_k": ac["raw"][k]["pearson"],
+            "rho_k": ac["raw"][k]["spearman"],
+            "corrected_r_k": ac["corrected"][k],
+            "r_x": ac["x_raw"][k]["pearson"],
+            "rho_x": ac["x_raw"][k]["spearman"],
+        }
+        for k in ac["raw"]
+    }
+    v1 = a["verdict"]["inputs"]
+    rel = {d: a["per_day"][d]["reliability"] for d in a["per_day"]}
+
+    def a1_pair(key):
+        days = v1[f"{key}_pair"]
+        p = f"{days[0]}-{days[1]}"
+        return {"days": days, **{f: pairs[p][f] for f in ("r_k", "rho_k", "corrected_r_k")}}
+
+    recomputed[file] = {
+        "archived": {
+            "across": {
+                "days_present": [int(d) for d in a["per_day"]],
+                "n_common_edges": ac["edges_on_all_days"],
+                "pairs": pairs,
+                "decile_size": ac["decile_size"],
+                "worst_decile_overlap_1_to_3": ac["worst_decile_overlap_13"],
+                "best_decile_overlap_1_to_3": ac["best_decile_overlap_13"],
+                "verdict": a["original_rule"]["verdict"],
+                "map_or_ibm_persists_more": {
+                    f"{k[0]}-{k[1]}": {"published score": "IBM's x", "map": "the map"}[v]
+                    for k, v in ac["map_or_score_persists_more"].items()
+                },
+            },
+            "amendment_A1": {
+                "days_present": [int(d) for d in a["per_day"]],
+                "per_day": {
+                    d: {
+                        "reliability_spearman_brown": rel[d],
+                        "passes_floor": rel[d] >= 0.5,
+                        "rank_based_reliability_descriptive": r["rank_based_reliability"][int(d)],
+                    }
+                    for d in rel
+                },
+                "days_passing": v1["days_passing"],
+                "n_common_edges": ac["edges_on_all_days"],
+                "decile_size": ac["decile_size"],
+                "fades_pair": a1_pair("fades"),
+                "holds_pair": a1_pair("holds"),
+                "worst_decile_overlap_holds_pair": v1["worst_decile_overlap_holds_pair"],
+                "verdict": a["verdict"]["verdict"],
+            },
+            "robustness": r["robustness"],
+        }
+    }
+    leaves = compare("Kickoff 35, ibm_fez", recomputed, docs)
+    arch = docs[file]["archived"]
+    fl = r["robustness"]["without_ibm_flagged_edges"]
+    rows = _rows(
+        lambda: [
+            ("verdict", arch["across"]["verdict"], a["original_rule"]["verdict"]),
+            ("verdict, Amendment A1", arch["amendment_A1"]["verdict"], a["verdict"]["verdict"]),
+            *(
+                (
+                    f"corrected r(k{p[0]}, k{p[2]})",
+                    arch["across"]["pairs"][p]["corrected_r_k"],
+                    pairs[p]["corrected_r_k"],
+                )
+                for p in ("1-2", "2-3", "1-3")
+            ),
+            (
+                "worst-decile overlap, Day 1 to Day 3",
+                arch["across"]["worst_decile_overlap_1_to_3"],
+                ac["worst_decile_overlap_13"],
+            ),
+            (
+                "best-decile overlap, Day 1 to Day 3",
+                arch["across"]["best_decile_overlap_1_to_3"],
+                ac["best_decile_overlap_13"],
+            ),
+            (
+                "without the 4 flagged edges: corrected r(k1, k3)",
+                arch["robustness"]["without_ibm_flagged_edges"]["pairs"]["1-3"]["corrected_r_k"],
+                fl["pairs"]["1-3"]["corrected_r_k"],
+            ),
+        ]
+    )
+    return rows, leaves, r
+
+
+@cache
+def k38():
+    """Kickoff 38: the levels, the measures, the verdict, the run order, the descriptive lines and the P53i builder's
+    checks, from the counts, the task times and the three programs as sent."""
+    R = ar.RIGETTI
+    file = f"{R}/k38-activity.json"
+    doc = ar.load(file)
+    r = ar.footprint_or_activity(doc, ar.load(f"{R}/k37-placement.json"), ar.load(f"{R}/main.json"))
+    texts = {
+        n: ar.resolve(f"{R}/{n}").read_text() for n in ("k37-P27-A-no.qasm", "k37-P53-A-no.qasm", "k38-P53i-A-no.qasm")
+    }
+    checks = ar.p53i_checks(*texts.values(), doc["programs"]["P27"]["pairs"], doc["programs"]["P53"]["pairs"])
+    recomputed = {"per_task_P11": r["per_task_P11"], "p53i_builder": checks, "archived": r}
+    leaves = compare("Kickoff 38, Rigetti Cepheus-1-108Q", {file: recomputed}, {file: doc})
+    a, m = doc["archived"], r["measures"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"]["on_pearson"], r["verdict"]["on_pearson"]),
+            ("Spearman reading", a["verdict"]["spearman_reading_beside"], r["verdict"]["spearman_reading_beside"]),
+            *((name, _pearson(a["measures"][name]), _pearson(m[name])) for name in "cdfa"),
+            ("P53i builder: all five checks", doc["p53i_builder"]["all_five_pass"], checks["all_five_pass"]),
+        ]
+    )
+    return rows, leaves, r
+
+
+def _compiled(kick: str, stage: str) -> dict:
+    d = ar.data_dir() / ar.RIGETTI / "compiled" / kick / stage
+    return {p.stem: p.read_text() for p in sorted(d.glob("*.quil"))}
+
+
+def _rig(name):
+    return f"{ar.RIGETTI}/{name}"
+
+
+@cache
+def k40_stage1():
+    return ar.braket_placement(
+        ar.load(_rig("k40-placement.json")), _compiled("k40", "stage1"), ar.load(_rig("k37-placement.json"))
+    )
+
+
+@cache
+def k40_stage2():
+    figs = ar.load(_rig("k40-figures.json"))["stage2"]
+    return ar.braket_map(
+        ar.load(_rig("k40-map.json")), figs, _compiled("k40", "stage2"), ar.load(_rig("main.json")), k40_stage1()
+    )
+
+
+@cache
+def k40_stage3():
+    figs = ar.load(_rig("k40-figures.json"))["stage3"]
+    ideal = ar.load(_rig("k40-ideal.json"))["R"]
+    return ar.braket_payoff(
+        ar.load(_rig("k40-payoff.json")), figs, k40_stage2()["k_prior_for_stage3"], ideal, _compiled("k40", "stage3")
+    )
+
+
+@cache
+def k40_placement():
+    """Kickoff 40, stage 1: the levels, c and d, the records check on every compiled program, and the reading."""
+    file = _rig("k40-placement.json")
+    doc, r = ar.load(file), k40_stage1()
+    leaves = compare("Kickoff 40, stage 1, placement", {file: {"archived": r}}, {file: doc})
+    a = doc["archived"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["reading"], r["reading"]),
+            ("c = r(X1, X4)", _pearson(a["c"]), _pearson(r["c"])),
+            ("d = r(mean X, Y and Y')", _pearson(a["d"]), _pearson(r["d"])),
+            ("every record matches its names", a["records_match_names"], r["records_match_names"]),
+            (
+                "against Kickoff 37's 27-pair program",
+                _pearson(a["descriptive_outside_reading"]["r_X_vs_k37_27pair_program"]),
+                _pearson(r["descriptive_outside_reading"]["r_X_vs_k37_27pair_program"]),
+            ),
+            (
+                "against Kickoff 37's 53-pair program",
+                _pearson(a["descriptive_outside_reading"]["r_X_vs_k37_53pair_program"]),
+                _pearson(r["descriptive_outside_reading"]["r_X_vs_k37_53pair_program"]),
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k40_map():
+    """Kickoff 40, stage 2: the dead-pair filter, the statistics, the verdict, the sealed leave-one-out, the line
+    against Kickoff 34b and the records check, from the counts and the figures at submission."""
+    file = _rig("k40-map.json")
+    doc, r = ar.load(file), k40_stage2()
+    recomputed = {"archived": {"analysis": r, "records": r["records"]}}
+    leaves = compare("Kickoff 40, stage 2, the map", {file: recomputed}, {file: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], r["verdict"]),
+            ("working pairs", float(a["n_working"]), float(r["n_working"])),
+            ("working pairs with x", float(a["n_working_with_x"]), float(r["n_working_with_x"])),
+            *(
+                (name, _pearson(f(a["verdict_stats"])), _pearson(f(r["verdict_stats"])))
+                for name, f in (
+                    ("r_split(k_A)", lambda s: s["S1"]["r_split_A"]),
+                    ("r_AB", lambda s: s["S2"]["r_AB"]),
+                    ("r_Ax", lambda s: s["S3"]["r_Ax"]),
+                )
+            ),
+            ("r_AB.x", a["verdict_stats"]["S3"]["r_AB_given_x"], r["verdict_stats"]["S3"]["r_AB_given_x"]),
+            ("leave-one-out: r_AB", _pearson(a["leave_one_out"]["r_AB"]), _pearson(r["leave_one_out"]["r_AB"])),
+            (
+                "k_A against Kickoff 34b's, shared working pairs",
+                _pearson(a["descriptive"]["r_kA_vs_34b_kA_shared_working"]),
+                _pearson(r["descriptive"]["r_kA_vs_34b_kA_shared_working"]),
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k40_after_the_fact():
+    """Computed after seeing the data, outside the verdict: stage 2's verdict set without 42-43 and 94-95."""
+    file = _rig("k40-after-the-fact.json")
+    doc = ar.load(file)
+    s = ar.braket_map_without(
+        k40_stage2(), ar.load(_rig("k40-map.json")), ar.load(_rig("k40-figures.json"))["stage2"], [[42, 43], [94, 95]]
+    )
+    mine = {
+        "n": s["n_pairs"],
+        "r_split_A": s["S1"]["r_split_A"],
+        "r_AB": s["S2"]["r_AB"],
+        "p_AB": s["S2"]["p_one_sided"],
+        "r_Ax": s["S3"]["r_Ax"],
+        "r_AB_given_x": s["S3"]["r_AB_given_x"],
+        "rule_applied": s["verdict"]["verdict"],
+        "mean_kA": s["mean_kA"],
+        "sd_kA": s["sd_kA_between_pairs"],
+    }
+    leaves = compare("Kickoff 40, after the fact", {file: mine}, {file: doc})
+    rows = _rows(
+        lambda: [
+            ("rule applied", doc["rule_applied"], mine["rule_applied"]),
+            ("r_AB", _pearson(doc["r_AB"]), _pearson(mine["r_AB"])),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k40_payoff():
+    """Kickoff 40, stage 3: W per pair, the correlations, picks and gains on the pairs with x, and the verdict."""
+    file = _rig("k40-payoff.json")
+    doc, r = ar.load(file), k40_stage3()
+    leaves = compare(
+        "Kickoff 40, stage 3, the payoff", {file: {"archived": {"analysis": r, "records": r["records"]}}}, {file: doc}
+    )
+    a = doc["archived"]["analysis"]
+    c, ca = r["correlations_on_S"]["W"], a["correlations_on_S"]["W"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], r["verdict"]),
+            ("mean W on S", a["mean_W_on_S"], r["mean_W_on_S"]),
+            ("r(W, k_prior)", _pearson(ca["k_prior"]), _pearson(c["k_prior"])),
+            ("partial r(W, k_prior | x)", ca["partial_k_prior_given_x"], c["partial_k_prior_given_x"]),
+            ("r(W, L_prior)", _pearson(ca["L_prior"]), _pearson(c["L_prior"])),
+            ("G, k pick against x pick", a["gains"]["k_prior"]["G"], r["gains"]["k_prior"]["G"]),
+            (
+                "relative error reduction, k pick",
+                a["gains"]["k_prior"]["relative_error_reduction"],
+                r["gains"]["k_prior"]["relative_error_reduction"],
+            ),
+            (
+                "relative error reduction, L pick",
+                a["gains"]["L_prior"]["relative_error_reduction"],
+                r["gains"]["L_prior"]["relative_error_reduction"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def _figures_recomputed(figs: dict) -> dict:
+    c = ar.braket_figures_check(figs)
+    return {
+        "figures_at_submission": c["per_pair"],
+        "placeholder_count_at_submission": {"in_our_set": c["in_our_set"], "our_pairs_hit": c["our_pairs_hit"]},
+    }
+
+
+def _ideal_recomputed(doc: dict) -> dict:
+    """The ideal values from the circuits' exact unitaries, and the random circuits drawn again with seed 33."""
+    from manacitra.circuits import ideal_exact
+    from manacitra.workload import draw_unitaries, ideal_distributions
+
+    sv = {k: ideal_exact(k) for k in doc["A_B"]}
+    U = draw_unitaries(33)
+    return {
+        "A_B": {k: {"statevector_P11": sv[k], "diff": sv[k] - doc["A_B"][k]["kickoff"]} for k in doc["A_B"]},
+        "max_abs_diff_A_B": max(abs(sv[k] - doc["A_B"][k]["kickoff"]) for k in doc["A_B"]),
+        "R": [{"ideal": q.tolist()} for q in ideal_distributions(33)],
+        "unitaries": [[{"re": u.real.tolist(), "im": u.imag.tolist()} for u in us] for us in U],
+    }
+
+
+@cache
+def k40_inputs():
+    """Kickoff 40's figures and ideal values, read back: x from Braket's figures by published_score_braket with the
+    placeholder rule, at discovery and at each stage's submission; the ideal values from the circuits' unitaries; and
+    the random circuits, drawn again (they are Kickoff 33's)."""
+    files = {k: _rig(f"k40-{k}.json") for k in ("pairs", "figures", "ideal")}
+    docs = {f: ar.load(f) for f in files.values()}
+    pairs = docs[files["pairs"]]
+    pc = ar.braket_figures_check(pairs["per_pair"])
+    recomputed = {
+        files["pairs"]: {
+            "per_pair": pc["per_pair"],
+            "n_with_x": pc["n_with_x"],
+            "placeholder_count": {"in_our_set": pc["in_our_set"], "our_pairs_hit": pc["our_pairs_hit"]},
+        },
+        files["figures"]: {s: _figures_recomputed(docs[files["figures"]][s]) for s in ("stage1", "stage2", "stage3")},
+        files["ideal"]: _ideal_recomputed(docs[files["ideal"]]),
+    }
+    leaves = compare("Kickoff 40, figures and ideal values", recomputed, docs)
+    rows = _rows(lambda: [("pairs with x at discovery", float(pairs["n_with_x"]), float(pc["n_with_x"]))])
+    return rows, leaves
+
+
+@cache
+def k41_today():
+    figs = ar.load(_rig("k41-figures.json"))["A"]
+    return ar.braket_map(
+        ar.load(_rig("k41-map.json")), figs, _compiled("k41", "partA"), ar.load(_rig("main.json")), k40_stage1()
+    )
+
+
+@cache
+def k41_map():
+    """Kickoff 41, Part A: today's map by Kickoff 40's analysis, and the persistence measures against Kickoff 40."""
+    file = _rig("k41-map.json")
+    doc, today = ar.load(file), k41_today()
+    f41, f40 = ar.load(_rig("k41-figures.json"))["A"], ar.load(_rig("k40-figures.json"))["stage2"]
+    seed = doc["meta"]["permutation_seed"]
+    pm = ar.pinned_map_persistence(today, k40_stage2(), f41, f40, doc["pairs"], seed)
+    recomputed = {
+        "archived": {
+            "analysis": {**pm, "today": today},
+            "records": today["records"],
+            "records_all_match_names": all(r["matches_names"] for r in today["records"].values()),
+        }
+    }
+    leaves = compare("Kickoff 41, Part A, the map a day later", {file: recomputed}, {file: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], pm["verdict"]),
+            ("today's map", a["today"]["verdict"], today["verdict"]),
+            ("p_k", _pearson(a["p_k"]["r"]), _pearson(pm["p_k"]["r"])),
+            ("p_k'", _pearson(a["p_k_prime"]["r"]), _pearson(pm["p_k_prime"]["r"])),
+            ("p_L", _pearson(a["p_L"]), _pearson(pm["p_L"])),
+            (
+                "today: r_split(k_A)",
+                _pearson(a["today"]["verdict_stats"]["S1"]["r_split_A"]),
+                _pearson(today["verdict_stats"]["S1"]["r_split_A"]),
+            ),
+            (
+                "today: r_AB",
+                _pearson(a["today"]["verdict_stats"]["S2"]["r_AB"]),
+                _pearson(today["verdict_stats"]["S2"]["r_AB"]),
+            ),
+            (
+                "today: r_AB on all 24 working pairs",
+                _pearson(a["today"]["all_working"]["S2"]["r_AB"]),
+                _pearson(today["all_working"]["S2"]["r_AB"]),
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k41_partB():
+    figs = ar.load(_rig("k41-figures.json"))["B"]
+    ideal = ar.load(_rig("k40-ideal.json"))["R"]
+    return ar.day_old_payoff(
+        ar.load(_rig("k41-payoff.json")), figs, k40_stage2(), ideal, k41_today(), _compiled("k41", "partB")
+    )
+
+
+@cache
+def k41_payoff():
+    """Kickoff 41, Part B: W per pair, both day-old scores' lines, and the same-day ceiling beside them."""
+    file = _rig("k41-payoff.json")
+    doc = ar.load(file)
+    r = k41_partB()
+    recomputed = {
+        "archived": {
+            "analysis": r,
+            "records": r["records"],
+            "records_all_match_names": all(x["matches_names"] for x in r["records"].values()),
+        }
+    }
+    leaves = compare("Kickoff 41, Part B, the payoff with the day-old scores", {file: recomputed}, {file: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["level"]["verdict"], r["level"]["verdict"]),
+            ("kept share's verdict", a["kept_share"]["verdict"], r["kept_share"]["verdict"]),
+            ("mean W", a["mean_W"], r["mean_W"]),
+            *(
+                (f"{name}: {k}", a[name][k], r[name][k])
+                for name in ("level", "kept_share")
+                for k in ("partial_r_given_x", "G", "relative_error_reduction")
+            ),
+            ("level: G interval, low", a["level"]["ci90"][0], r["level"]["ci90"][0]),
+            ("level: G interval, high", a["level"]["ci90"][1], r["level"]["ci90"][1]),
+            (
+                "same day: level, relative error reduction",
+                a["same_day"]["level"]["relative_error_reduction"],
+                r["same_day"]["level"]["relative_error_reduction"],
+            ),
+            (
+                "same day: kept share, relative error reduction",
+                a["same_day"]["kept_share"]["relative_error_reduction"],
+                r["same_day"]["kept_share"]["relative_error_reduction"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k41_inputs():
+    """Kickoff 41's figures, read back, and the programs it sent: each file's SHA-256 recomputed from Kickoff 40's
+    programs as archived in programs/k40/."""
+    import hashlib
+
+    file = _rig("k41-figures.json")
+    doc = ar.load(file)
+    root = ar.data_dir() / ar.RIGETTI
+    programs = {
+        p: [{"sha256": hashlib.sha256((root / r["file"]).read_bytes()).hexdigest()} for r in doc["programs"][p]]
+        for p in "AB"
+    }
+    recomputed = {
+        **{p: _figures_recomputed(doc[p]) for p in "AB"},
+        "programs": programs,
+        "programs_all_match_kickoff40": all(
+            m["sha256"] == r["sha256"] for p in "AB" for m, r in zip(programs[p], doc["programs"][p])
+        ),
+    }
+    leaves = compare("Kickoff 41, figures and programs", {file: recomputed}, {file: doc})
+    rows = _rows(
+        lambda: [
+            (
+                "every program matched Kickoff 40's",
+                doc["programs_all_match_kickoff40"],
+                recomputed["programs_all_match_kickoff40"],
+            )
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k42_scan():
+    days = (ar.load(_rig("k42-day1.json")), ar.load(_rig("k42-day2.json")))
+    compiled = {d: _compiled("k42", d) for d in ("day1", "day2")}
+    return ar.offset_scan(*days, ar.load(_rig("k42-figures.json")), k40_stage2(), compiled, k41_partB())
+
+
+def _scan_rows(a, r, names):
+    return [(f"{v}: verdict", a[v]["verdict"], r[v]["verdict"]) for v in names]
+
+
+@cache
+def k42_day1():
+    """Kickoff 42, Day 1: every P(11), the fits and their bootstrap SD, V1 to V3 and the lines beside them."""
+    file = _rig("k42-day1.json")
+    doc, r = ar.load(file), k42_scan()["day1"]
+    recomputed = {
+        "archived": {
+            "analysis": r,
+            "records": r["records"],
+            "records_all_match_names": all(x["matches_names"] for x in r["records"].values()),
+        }
+    }
+    leaves = compare("Kickoff 42, Day 1", {file: recomputed}, {file: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["V1"]["verdict"], r["V1"]["verdict"]),
+            ("working pairs", float(len(a["working"])), float(len(r["working"]))),
+            ("V1: SD of delta_A", a["V1"]["sd_deltaA_across_working"], r["V1"]["sd_deltaA_across_working"]),
+            ("V2: r(delta_A, delta_B)", _pearson(a["V2"]["r"]), _pearson(r["V2"]["r"])),
+            ("V2: mean |delta_A - delta_B|", a["V2"]["mean_abs_dA_minus_dB"], r["V2"]["mean_abs_dA_minus_dB"]),
+            (
+                "V3: r(delta_A, Kickoff 40's k_A)",
+                _pearson(a["V3"]["r_deltaA_vs_k40_kA"]),
+                _pearson(r["V3"]["r_deltaA_vs_k40_kA"]),
+            ),
+            ("shape check", a["beside"]["shape_fraction_rms_le_2_shot"], r["beside"]["shape_fraction_rms_le_2_shot"]),
+            *_scan_rows(a, r, ("V2", "V3")),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k42_day2():
+    """Kickoff 42, Day 2: as Day 1, with V4 under both rules, V5, the switch and the line against Kickoff 41."""
+    file = _rig("k42-day2.json")
+    doc, sc = ar.load(file), k42_scan()
+    r = sc["day2"]
+    recomputed = {
+        "archived": {
+            "analysis": r,
+            "records": r["records"],
+            "records_all_match_names": all(x["matches_names"] for x in r["records"].values()),
+            "V4_amended_governs": sc["V4_amended_governs"],
+            "V4_original_rule": sc["V4_original_rule"],
+            "V4": sc["V4_amended_governs"],
+            "V5": sc["V5"],
+            "beside_k41": sc["beside_k41"],
+        }
+    }
+    leaves = compare("Kickoff 42, Day 2", {file: recomputed}, {file: doc})
+    a = doc["archived"]
+    v4, v4o, v5 = sc["V4_amended_governs"], sc["V4_original_rule"], sc["V5"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["V4_amended_governs"]["verdict"], v4["verdict"]),
+            ("V4, original rule", a["V4_original_rule"]["verdict"], v4o["verdict"]),
+            ("V5", a["V5"]["verdict"], v5["verdict"]),
+            ("the switch", a["V5"]["switch"]["verdict"], v5["switch"]["verdict"]),
+            *((f"V4 amended: r, {f}", _pearson(a["V4_amended_governs"][f]["r"]), _pearson(v4[f]["r"])) for f in "AB"),
+            *((f"V4 original: r, {f}", _pearson(a["V4_original_rule"][f]["r"]), _pearson(v4o[f]["r"])) for f in "AB"),
+            ("V5: pooled r", _pearson(a["V5"]["p_F"]), _pearson(v5["p_F"])),
+            ("V5: median per-pair r", a["V5"]["median_per_pair_r"], v5["median_per_pair_r"]),
+            (
+                "shape check",
+                a["analysis"]["beside"]["shape_fraction_rms_le_2_shot"],
+                r["beside"]["shape_fraction_rms_le_2_shot"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k42_after_the_fact():
+    """Computed after seeing Day 1, outside the verdicts."""
+    file = _rig("k42-after-the-fact.json")
+    doc = ar.load(file)
+    a = ar.scan_after_the_fact(k42_scan()["day1"], k40_stage2())
+    leaves = compare("Kickoff 42, after the fact", {file: a}, {file: doc})
+    rows = _rows(
+        lambda: [("r(delta_A, delta_B) without the edge fits", _pearson(doc["r_dA_dB"]), _pearson(a["r_dA_dB"]))]
+    )
+    return rows, leaves
+
+
+@cache
+def k42_inputs():
+    """Kickoff 42's ideal curve from the circuits' own unitaries, its figures read back, and its programs: the task
+    order drawn again with seed 42, and every file's SHA-256 recomputed from the programs archived in programs/."""
+    import hashlib
+
+    import numpy as np
+
+    files = {k: _rig(f"k42-{k}.json") for k in ("ideal", "figures")}
+    docs = {f: ar.load(f) for f in files.values()}
+    ideal = docs[files["ideal"]]
+    fams = {}
+    worst = 0.0
+    for f, fam in ideal["families"].items():
+        rows = []
+        for row in fam["rows"]:
+            ex = ar.scan_ideal(f, row["offset"])
+            rows.append({"exact_P11": ex, "exact_minus_mantri": ex - row["mantri"]})
+            worst = max(worst, abs(round(ex, 3) - row["mantri"]))
+        fams[f] = {"rows": rows, "peak_on_scan": max(ar.SCAN[f]["offsets"], key=lambda a: ar.scan_ideal(f, a))}
+    figs = docs[files["figures"]]
+    root = ar.data_dir() / ar.RIGETTI
+
+    def sha(path):
+        return hashlib.sha256((root / path).read_bytes()).hexdigest()
+
+    rng = np.random.default_rng(ar.SCAN_SEED)
+    pa, pb = rng.permutation(9), rng.permutation(9)
+    order = []
+    for k in range(9):
+        order += [f"A{ar.SCAN['A']['offsets'][pa[k]]:+.2f}", f"B{ar.SCAN['B']['offsets'][pb[k]]:+.2f}"]
+    by_label = {f"{p['family']}{p['offset']:+.2f}": p for p in figs["programs"]["files"]}
+    shared = {
+        k: {
+            "sha256": sha(by_label[k]["file"]),
+            "kickoff40_sha256": sha(v["file"]),
+            "byte_identical": (root / by_label[k]["file"]).read_bytes() == (root / v["file"]).read_bytes(),
+        }
+        for k, v in figs["programs"]["shared_with_kickoff40"].items()
+    }
+    recomputed = {
+        files["ideal"]: {"families": fams, "max_abs_rounded_exact_minus_mantri": worst},
+        files["figures"]: {
+            **{d: _figures_recomputed(figs[d]) for d in ("day1", "day2")},
+            "programs": {
+                "order_rule": {"A_perm": pa.tolist(), "B_perm": pb.tolist()},
+                "order": order,
+                "files": [{"sha256": sha(p["file"])} for p in figs["programs"]["files"]],
+                "shared_with_kickoff40": shared,
+                "shared_all_identical": all(
+                    v["byte_identical"] and v["sha256"] == v["kickoff40_sha256"] for v in shared.values()
+                ),
+            },
+        },
+    }
+    leaves = compare("Kickoff 42, ideal values, figures and programs", recomputed, docs)
+    rows = _rows(
+        lambda: [
+            *(
+                (f"ideal A at {row['offset']:+.2f}", row["exact_P11"], r["exact_P11"])
+                for row, r in zip(ideal["families"]["A"]["rows"], fams["A"]["rows"])
+            ),
+            (
+                "the five shared programs are Kickoff 40's",
+                figs["programs"]["shared_all_identical"],
+                recomputed[files["figures"]]["programs"]["shared_all_identical"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def p11_from(counts, n_pairs):
+    from manacitra.keptshare import p11_from_bitstrings
+
+    return p11_from_bitstrings(counts, n_pairs).tolist()
+
+
 CASES = {
     "Kickoff 31, ibm_fez": lambda: k31("ibm_fez"),
     "Kickoff 31, ibm_kingston": lambda: k31("ibm_kingston"),
@@ -606,6 +1294,20 @@ CASES = {
     "Kickoff 34b, after the fact: 20 pairs": k34b_after_the_fact,
     "Kickoff 37, Rigetti Cepheus-1-108Q": lambda: k37()[:2],
     "Kickoff 37, after the fact": k37_after_the_fact,
+    "Kickoff 35, ibm_fez": lambda: k35()[:2],
+    "Kickoff 38, Rigetti Cepheus-1-108Q": lambda: k38()[:2],
+    "Kickoff 40, stage 1, placement": k40_placement,
+    "Kickoff 40, stage 2, the map": k40_map,
+    "Kickoff 40, after the fact": k40_after_the_fact,
+    "Kickoff 40, stage 3, the payoff": k40_payoff,
+    "Kickoff 40, figures and ideal values": k40_inputs,
+    "Kickoff 41, Part A, the map a day later": k41_map,
+    "Kickoff 41, Part B, the payoff with the day-old scores": k41_payoff,
+    "Kickoff 41, figures and programs": k41_inputs,
+    "Kickoff 42, Day 1": k42_day1,
+    "Kickoff 42, Day 2": k42_day2,
+    "Kickoff 42, after the fact": k42_after_the_fact,
+    "Kickoff 42, ideal values, figures and programs": k42_inputs,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -618,4 +1320,13 @@ REQUIRED = {
     "Kickoff 36, arm 2": "DIAGNOSTIC",
     "Kickoff 34b, Rigetti Cepheus-1-108Q": "MAP PRESENT",
     "Kickoff 37, Rigetti Cepheus-1-108Q": "PLACEMENT",
+    "Kickoff 35, ibm_fez": "HOLDS",
+    "Kickoff 38, Rigetti Cepheus-1-108Q": "ACTIVITY",
+    "Kickoff 40, stage 1, placement": "PINNED",
+    "Kickoff 40, stage 2, the map": "DIAGNOSTIC",
+    "Kickoff 40, stage 3, the payoff": "NOT SETTLED",
+    "Kickoff 41, Part A, the map a day later": "HOLDS",
+    "Kickoff 41, Part B, the payoff with the day-old scores": "USEFUL",
+    "Kickoff 42, Day 1": "SPREAD",
+    "Kickoff 42, Day 2": "HOLDS",
 }
