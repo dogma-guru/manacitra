@@ -1191,3 +1191,242 @@ the deciding check is the one under the lock.
 
 The full rubric pass runs once, on the commit to be made public, with network access, so that the three CANNOT CHECK
 items can be checked too.
+
+## 17. Amendment A7: Kickoffs 35, 38, 40, 41 and 42 in the dataset (7 October 2026)
+
+**The sources, checked before anything was copied.** Each of the five hand-back archives matches its `.sha256` file and
+the SHA-256 the amendment gives, and every file in each archive matches its inner `SHA256SUMS` (24, 32, 219, 105 and
+106 files). Each run's file records the archive's SHA-256 and each source file's.
+
+**The Amazon patterns came first** (section 7). Before anything was copied from `hardware-40`, `-41` or `-42`,
+`tools/scan_patterns.py` gained six patterns, written with character classes so that the file does not match itself:
+Amazon resource names (their prefix, in any case, at a word boundary); S3 bucket addresses; a twelve-digit number
+standing alone (an account number); the access-key and secret-key field names; and access-key IDs (the four-letter
+prefix and 16 upper-case letters or digits). Region and profile names are not matched. One allowance was needed: a quoted
+key of exactly twelve 0s and 1s, a six-pair counts key (Kickoff 32's groups), is not an account number. Any other
+twelve-digit string is still a finding. `test_scan.py` gained two tests: each kind caught, and regions, counts keys,
+fractions and 11- or 13-digit numbers left alone.
+
+**The scan on the source folders.** All five were scanned with the new patterns before copying. Every finding was in a
+file left out:
+- the Braket discovery records and runner scripts (resource names, an access-key field name);
+- Kickoff 38's provider records, preparations, submission record and run log (UUIDs);
+- IBM's usage `details` (a metric UUID, dropped as for the other IBM files);
+- the scripts, reports and logs (vocabulary-boundary words).
+
+The compiled programs, the programs as sent and every results file scanned clean, and were copied. After copying, the
+tree scan and the `--git` scan are clean.
+
+**What was copied, and what was left out.** As the amendment lists, file by file; `data/README.md` gives the index, the
+two new Formats entries and the copying paragraph.
+- **Kickoff 35** (`ibm_fez/`): `k35-layout.json`, `k35-day1.json` to `k35-day3.json` and `k35-persistence.json`. Left out:
+  the plots, the predictions and report, `compare-k36.json` and its script, the usage records beyond each day's charged
+  seconds, and each day's usage `details`.
+- **Kickoff 38**: `k38-activity.json`, and `k38-P53i-A-no.qasm` as sent. P27 and P53 are byte-identical to
+  `k37-P27-A-no.qasm` and `k37-P53-A-no.qasm`, which `meta` says, with the three hashes. Left out: task IDs, balances,
+  quotes, provider records, processed copies, preparations, the self-test, the plot, the predictions and report.
+- **Kickoff 40**: the seven `k40-*.json` files, `compiled/k40/` (50 programs, by stage) and `programs/k40/` (50, by
+  stage).
+- **Kickoff 41**: the three `k41-*.json` files and `compiled/k41/` (30).
+- **Kickoff 42**: the five `k42-*.json` files, `compiled/k42/` (36, by day) and `programs/k42/` (18).
+
+For the Braket runs, everything from the submission records was left out (each figures file carries the figures,
+placeholder counts and calibration times, copied without ARNs), with the cost records, quotes, discovery records,
+predictions, reports and plots. Each results file records `redactions: []`, so the compiled programs in the archives
+are as Braket returned them. The unredacted copies were never in the archives and were not seen.
+
+**Labels added beside archived blocks; nothing archived was changed.**
+- Kickoff 35's robustness block: "descriptive, outside the verdict; computed after seeing the data".
+- Kickoff 38's direction leans: "leans, outside the verdict".
+- Kickoff 40's stage 1 lines against Kickoff 37: "descriptive, outside the reading".
+- Kickoff 41's same-day lines: "a ceiling a user holding yesterday's map would not have".
+- Kickoff 42's line against Kickoff 41: "beside the verdicts".
+- Each after-the-fact file: "computed after seeing the data".
+- Kickoff 38's file carries the amendment's line on Kickoff 40, and Kickoff 42's day files carry the line on its
+  Amendment A1.
+
+**The recomputes, in `archive.py`.** None is a public verdict or a command.
+- Kickoff 35: `full_chip_day` and `full_chip_persistence`, which call `verdicts.persistence_analysis`, as the amendment
+  says.
+- Kickoff 38: `footprint_or_activity` with its rule `activity_rule`, beside `placement_or_drift`; and `p53i_checks`,
+  which reads the builder's five checks back from the three programs' texts.
+- The Braket route (Kickoffs 40 to 42):
+  - `braket_outcomes`: the `measured_qubits` reading;
+  - `compiled_record`: the records check on a compiled program;
+  - `braket_placement`, `braket_map` (which calls `analyse_map`) and `braket_payoff` (which calls `analyse_payoff`);
+  - `braket_figures_check`.
+- Kickoff 41: `pinned_map_persistence` with `pinned_map_rule`, beside `placement_or_drift`; and `day_old_payoff`.
+- Kickoff 42: `offset_scan`, with `scan_fit`, `scan_day`, `scan_persistence` (V4), `scan_fingerprints` (V5 and the
+  switch) and `scan_after_the_fact`. The ideal curve is `scan_ideal`, from the package's own `circuits.unitary`.
+
+**Reproduction, run by run.** Fourteen new acceptance cases compare 18,410 values; the largest difference is
+3.0·10⁻¹⁵ (a readout-corrected W in Kickoff 40's stage 3). Every value the amendment states is also checked, at the
+precision it states, by `test_k35_as_amendment_a7_states_it` and the four tests beside it.
+
+| case | fields listed | values compared | largest difference | verdict |
+|---|---|---|---|---|
+| Kickoff 35, ibm_fez | 160 | 6,530 | 4.4·10⁻¹⁶ | HOLDS (original rule; A1 beside it, HOLDS) |
+| Kickoff 38 | 162 | 496 | 0 | ACTIVITY |
+| Kickoff 40, stage 1, placement | 79 | 301 | 0 | PINNED |
+| Kickoff 40, stage 2, the map | 340 | 1,355 | 0 | DIAGNOSTIC |
+| Kickoff 40, after the fact | 15 | 15 | 0 | (rule applied: DIAGNOSTIC) |
+| Kickoff 40, stage 3, the payoff | 416 | 2,257 | 3.0·10⁻¹⁵ | NOT SETTLED |
+| Kickoff 40, figures and ideal values | 344 | 1,133 | 1.0·10⁻¹⁵ | |
+| Kickoff 41, Part A | 372 | 1,461 | 0 | HOLDS (today's map DIAGNOSTIC) |
+| Kickoff 41, Part B | 213 | 1,138 | 6.1·10⁻¹⁶ | level USEFUL; kept share NOT SETTLED |
+| Kickoff 41, figures and programs | 139 | 147 | 0 | |
+| Kickoff 42, Day 1 | 417 | 1,483 | 0 | V1 SPREAD, V2 MIXED, V3 DOES NOT |
+| Kickoff 42, Day 2 | 515 | 1,820 | 0 | V4 HOLDS (amended), PARTIAL (original); V5 HOLDS; switch MIXED |
+| Kickoff 42, after the fact | 37 | 45 | 0 | |
+| Kickoff 42, ideal values, figures and programs | 205 | 229 | 0 | |
+
+What each case covers:
+- **Every compiled program was read back** (414 Braket tasks over the three runs): every pair ran on its named qubits.
+- **Kickoff 35's flagged line**, on 172 edges with each day's reliability recomputed on the subset (0.928, 0.972,
+  0.942): corrected r 0.830, 0.428, 0.736, and a worst-decile overlap of 8 of 17. It is now the package's `flagged`
+  block.
+- **Kickoff 35's other descriptive checks** reproduce exactly, including the seeded shot redraw (seed 35, 2,000 draws).
+- **Kickoff 38's five builder checks** are recomputed from the three `.qasm` files in `data/`, and pass.
+- **Kickoff 40's ideal values.** The ideal distributions and the 24 unitaries are identical (difference 0.0) to a fresh
+  draw with `workload.draw_unitaries(33)` and to `workload/k33-workload.json`: they are Kickoff 33's circuits, as the
+  file says.
+- **Kickoff 41's programs.** Each file's SHA-256 is recomputed from `programs/k40/`: all 30 match. The task order of
+  Kickoff 42 is drawn again with seed 42, and its five programs shared with Kickoff 40 are byte-identical to Kickoff
+  40's.
+- **Kickoff 42's ideal curve** from the package agrees with `k42-ideal.json` to 0.0 (the amendment asks for 10⁻⁶).
+
+**Cross-checks against the files already in `data/`, all recomputed, none read from an archived analysis.**
+- **Kickoff 38 against 37.** T2 against the mean of Kickoff 37's four P27 tasks: r = 0.852 on 27 pairs. T3 against
+  the mean of its two P53 tasks: r = 0.880 on 53.
+- **Kickoff 40 against 34b and 37.** Stage 2's k_A against Kickoff 34b's, recomputed by `rigetti_map` from its counts:
+  r = −0.17 on 20 shared working pairs. Stage 1's levels against Kickoff 37's 27-pair program: −0.18; against its
+  53-pair program: 0.24.
+- **Kickoff 41 against 40.** Every persistence measure takes Kickoff 40's map from its recompute. Part B's priors are
+  Kickoff 40's level and k_A, recomputed.
+- **Kickoff 42 against 40 and 41.** V3 takes Kickoff 40's k_A, recomputed. The line beside the verdicts takes Kickoff
+  41's W, recomputed: r = −0.47 on 24 pairs, and −0.26 without the two fits at the grid's edge.
+
+**Findings, and how they were resolved.**
+- **A Kickoff 35 field did not reproduce at first: the best-decile overlap** (amendment: 12 of 18). `persistence_
+  analysis` gave 11 of 18. The cause: on Day 3, three edges tie exactly at k = 1.2710, at ranks 18 to 20, and
+  `_decile_overlap` used numpy's default (unstable) sort, so which tied edge counted was arbitrary. The runner's
+  cross-check said "52 of 52". It ran Kickoff 36's `k35_analysis.py`, not the package's `verdicts.py`, and that file
+  specifies "ties in k broken by edge order". Per the reasoning discipline (no patching around), the work stopped and
+  the author was asked. **The author's ruling (7 October): break ties by edge order.** `_decile_overlap` now uses a
+  stable sort. That changes no Kickoff 36 number: both simulated sets give the same overlaps as before. It makes 12 of
+  18, and `test_decile_ties_are_broken_by_edge_order` plants a tie.
+- **A seed I first got wrong.** Kickoff 41's runner sets one seed, 41, for every permutation and bootstrap
+  (`k40.SEED = 41`, and "Seed 41" in its sealed predictions). I first wrote 40 into the file's `meta`. The p-values
+  then differed by 10⁻⁴ to 5·10⁻³ while everything else matched. With 41, everything matches. The archive was right.
+- **Five places where the README text the amendment gives did not match the data.** **The author's ruling (7
+  October): correct them to the data.** Each is checked by a test in `test_readme_numbers.py`.
+  1. Finding 7 said the four IBM-flagged pairs "carry the most extreme values on the chip". Three do (27-28, 72-73 and
+     32-33 are among the six largest |k| on every day). 71-72 ranks 99th, 170th and 171th of 176. It now says "and
+     three of them carry the most extreme values on the chip; without all four ...". Section 5.1's "three of the four"
+     was already right.
+  2. Finding 8 said "SD of k 1.1, against 0.3 on ibm_fez". Kickoff 31's ibm_fez SD of k_A is 0.20 (ibm_kingston
+     0.25). It now says "against 0.2 on Kickoff 31's ibm_fez pairs".
+  3. Finding 10 said 11-12 and 72-73 "read about 0.3 higher on the same seven programs on both days". 11-12 did (+0.33,
+     +0.35). 72-73 read +0.21, then +0.11, which is why the switch is MIXED. The sentence now says so.
+  4. Finding 8 gave "15:06 to 16:20 UTC". Kickoff 40's tasks ran from 15:17 (first creation) to 15:50 (last end).
+     15:06 is when its runner read its amendment, and its log ends at 15:54. It now says "15:17 to 15:50 UTC".
+  5. Finding 10 gave Day 1 at "17:45 UTC". The first task was created at 17:45:43, which is 17:46 under the
+     nearest-minute convention. It now says 17:46.
+- **A scope word in the amendment, for the record.** For Kickoff 41's Part B it says "mean W 0.945 on 23 pairs". 0.945
+  is the mean over all 25 pairs; over the 23 pairs with x it is 0.952. Nothing in the README states it. The test checks
+  0.945 over 25.
+
+**Readings and choices, logged.**
+- **Rounding.** Kickoff 42's fitted shifts lie on the grid's 0.005 steps, so a two-place figure such as −1.025 rounds
+  half away from zero to the amendment's −1.03. The tests of stated numbers allow exactly half a unit in the last
+  place.
+- **"IBM's figures for them did not move"** (finding 7, the two pairs on qubit 149), kept as the amendment wrote it.
+  Their k went from −1.31 and 0.06 to −4.78 and −4.08, then to 2.83 and 0.64. Their x varied by up to 16% (0.054 to
+  0.069). The test checks the swing in k against a bound of 20% on x.
+- **The "why" sentence for the flagged block.** The amendment gives its sense, not its words ("k is not a kept fraction
+  for a pair whose no-offset level is near 0.2"). The four flagged edges read 0.19 to 0.39 without the offset, against
+  a chip median of 0.89, and the README says that.
+- **`pick --by`.** It already existed, with choices `k` and `x`, undocumented and untested. It now takes `kept-share`
+  (the default) and `level`, as the amendment says, and keeps `x`. `k` stays as a name for `kept-share`, so earlier
+  invocations work. `pick_pairs` is unchanged. The level is each pair's mean P(A no), as `kept_from_order` returns it.
+- **The flagged block** is in `analyse_map` and `persistence_analysis`, empty when nothing is flagged. The vendor's flag
+  is read:
+  - from IBM's published two-qubit errors, in `archive.map_from_record` and in `manacitra verdict` on an archived file;
+  - from the target's figures, in `manacitra map`, written into the counts file's `meta`;
+  - from Braket's figures, in `braket_map`.
+
+  `verdict_lines` prints the block only when a pair is flagged. In a Braket run the placeholder pairs have no x, so
+  they are already outside the verdict set.
+- **Kickoff 42's after-the-fact definitions** (the edge pairs, the shared programs) were not in the runner's script.
+  They are taken from its note and checked against the archive, which they reproduce at 0.0.
+- **The runner's flagged-edge rule** was a CZ error of at least 0.5; the amendment's is exactly 1.0. On all three days
+  they pick the same four edges.
+
+**Tests.** `test_flagged.py` covers:
+- the flag and Braket's score, including Kickoff 40's x for every pair;
+- a planted flag in a map, with the dead-pair filter, and in persistence;
+- Kickoff 35's four edges.
+
+`test_cli.py` tests each `--by` choice against the ranking it should give, that `--by level` changes the pick, and that
+`--by x` stops without a score. Five more mutation tests change one field of each new recompute in memory:
+- the Kickoff 35 verdict;
+- the Kickoff 38 verdict;
+- the Braket map verdict;
+- Kickoff 41's p_k;
+- Kickoff 42's V5.
+
+Each, in four ways, fails the comparison and names the field.
+
+**The inventory.**
+- `tests/expected_fields.json` gains 3,414 fields in the 14 cases (4,620 in all).
+- `tests/excluded_fields.json` gains 260 entries over 21 files (471 in all), each with its reason. The commonest
+  reasons are: inputs (the counts, the tasks with their measured qubits, the pairs, the orders); metadata; notes; the
+  provider's figures as read; the runners' design-time synthesis checks; and the placeholder counts for the whole chip,
+  which need figures not in this release.
+- `test_field_inventory.py` passes.
+
+**The README lines changed:**
+- the opening line of the findings;
+- finding 2's new sentences;
+- finding 6's last sentences;
+- findings 7 to 10, with the five corrections above;
+- the flagged-pairs paragraph;
+- the three "has not shown" bullets;
+- the Limits bullet and the new one;
+- the Open Quantum guidance, in the README, the adapter's docs and `docs/index.md`;
+- the pipeline sentence for `--by level`, and the guidance on choosing the score and the dead-pair filter;
+- the kickoffs table: Kickoff 35's row, and four new rows.
+
+`docs/index.md` gains:
+- the tie rule and the flagged-pairs paragraph in the persistence rule;
+- `--by level`, `published_score_braket` and the dead-pair sentence under choosing pairs;
+- a section on the Braket route and its records (no adapter yet);
+- the reproduction table's new rows;
+- the new dates in section 8.
+
+**The dataset after the addition.**
+- `data/` grows from 43 MB to 127 MB, 231 files in `SHA256SUMS`.
+- Kickoff 35's three day files are 6.1 MB each, Kickoff 40's map and payoff 9.7 and 12.8 MB, Kickoff 41's map 9.7 MB,
+  and Kickoff 42's day files 9.7 MB each.
+- The compiled programs and programs as sent add 4.2 and 2.6 MB.
+- No file is near GitHub's 100 MB limit.
+- **The review archive still carries all of it.** `tools/make_review_archive.sh` zips a fresh single-branch clone, so
+  the data are in it twice over, as files and as git objects (compressed). Run on `4ec6ffa`, the commit before this
+  report, both scans passed (41 reachable commits) and it wrote a zip of 45.4 MB (45,406,720 bytes) that carries
+  Kickoff 35's files.
+
+**Not part of the amendment, and not committed.** At the author's request mid-run, a subagent drew five candidate
+images of how the map works, into an untracked `review-images/` folder. One caption used a word outside the vocabulary
+boundary (W3). It was replaced before the tree scan was run.
+
+**After the amendment:**
+- 465 tests pass (350 before; 115 new);
+- Ruff is clean;
+- the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
+- `data/SHA256SUMS` matches every file.
+
+**Not in this amendment, and not done:**
+- Kickoff 39;
+- an Amazon Braket adapter (Kickoff 02);
+- merging, making the repository public, or turning on signing;
+- any provider submission.
