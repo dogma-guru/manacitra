@@ -1,5 +1,8 @@
 {
   "meta": {
+    "bit_reading": "braket-measured-qubits",
+    "figures_file": "k40-figures.json",
+    "figures_part": "stage2",
     "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
     "provider": "Amazon Braket (Rigetti)",
     "kickoff": "Kickoff 40",

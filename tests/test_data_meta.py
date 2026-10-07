@@ -42,3 +42,18 @@ def test_run_records_name_a_kickoff_and_a_time(path):
     m = archive.load(path)["meta"]
     assert m["kickoff"].startswith("Kickoff") and m["utc"][:10] in ("2026-10-05", "2026-10-06", "2026-10-07")
     assert m["shots_per_circuit"] == NA or isinstance(m["shots_per_circuit"], int)
+
+
+@pytest.mark.parametrize("path", FILES)
+def test_every_counts_record_declares_its_bit_reading(path):
+    """Amendment A8, R1: a record with counts says how to read them, in meta.bit_reading, one of four literals."""
+    rec = archive.load(path)
+    if "counts" in rec:
+        assert rec["meta"].get("bit_reading") in (
+            "qiskit-adjacent",
+            "openquantum-reversed",
+            "braket-measured-qubits",
+            "per-pair",
+        ), path
+    else:
+        assert "bit_reading" not in rec["meta"], path

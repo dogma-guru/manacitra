@@ -1,5 +1,7 @@
 {
   "meta": {
+    "bit_reading": "qiskit-adjacent",
+    "bit_reading_note": "each position measures only its condition's active pairs, in the order of selection.dense_pairs (condition D) or selection.groups (S1, S2); pair i of those is bits 2i and 2i + 1",
     "processor": "ibm_kingston",
     "provider": "IBM Quantum",
     "kickoff": "Kickoff 32 (alone or crowded)",

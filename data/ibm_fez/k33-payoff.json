@@ -1,5 +1,6 @@
 {
   "meta": {
+    "bit_reading": "qiskit-adjacent",
     "processor": "ibm_fez",
     "provider": "IBM Quantum",
     "kickoff": "Kickoff 33 (the payoff)",

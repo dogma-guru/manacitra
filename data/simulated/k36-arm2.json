@@ -1,5 +1,6 @@
 {
   "meta": {
+    "bit_reading": "per-pair",
     "processor": "willow_pink (simulated)",
     "provider": "none: a local simulation of the Cirq Quantum Virtual Machine's published median calibration (2024-08-16); not a measurement of any device",
     "kickoff": "Kickoff 36 (can the method say no?)",

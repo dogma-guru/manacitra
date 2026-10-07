@@ -1,5 +1,6 @@
 {
   "meta": {
+    "bit_reading": "braket-measured-qubits",
     "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
     "provider": "Amazon Braket (Rigetti)",
     "kickoff": "Kickoff 40",

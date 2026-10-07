@@ -1,5 +1,7 @@
 {
   "meta": {
+    "bit_reading": "qiskit-adjacent",
+    "bit_reading_note": "each position measures one round of disjoint pairs (rounds, by order); pair i of that round is bits 2i and 2i + 1",
     "processor": "ibm_fez",
     "provider": "IBM Quantum (Open Plan)",
     "kickoff": "Kickoff 35",

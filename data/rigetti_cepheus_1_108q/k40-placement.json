@@ -1,5 +1,7 @@
 {
   "meta": {
+    "bit_reading": "braket-measured-qubits",
+    "bit_reading_note": "counts are per task, keyed by the task's label; each task measures the pairs task_pairs names for it",
     "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
     "provider": "Amazon Braket (Rigetti)",
     "kickoff": "Kickoff 40",

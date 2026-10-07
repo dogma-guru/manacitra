@@ -1,5 +1,6 @@
 {
   "meta": {
+    "bit_reading": "openquantum-reversed",
     "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
     "provider": "Open Quantum (Rigetti)",
     "kickoff": "Kickoff 34b",

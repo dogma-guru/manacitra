@@ -1,5 +1,7 @@
 {
   "meta": {
+    "bit_reading": "openquantum-reversed",
+    "bit_reading_note": "counts are per task (T1 to T4); n is 54 (P27) or 106 (P53, P53i), by the task's program",
     "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
     "provider": "Open Quantum (Rigetti)",
     "kickoff": "Kickoff 38",
