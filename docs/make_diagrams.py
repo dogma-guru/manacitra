@@ -1,6 +1,6 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the seven README diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the README's and the long documentation's nine diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -12,9 +12,13 @@
 5. payoff.svg       workload fidelity against the prior kept share, with the two picks of 8 marked
 6. sealed-prediction.svg   how to check a sealed prediction: seal, run, reveal, verify
 7. kickoff.svg      how a result was made: brief, sealed predictions, go, run, hand-back, independent check, scorecard
+8. whole-chip-days.svg   Kickoff 35: all of ibm_fez's couplers on three days, shaded by rank, beside the published score
+9. map-explainer.svg     how the map works in one picture, for docs/index.md: circuits, levels, k, the chip, the checks
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
-series colour. The figures carry their own light surface so they read on light and dark pages alike.
+series colour. Diagrams 8 and 9 draw thin lines across the whole chip, so they use the ramp without its lightest step
+(MAP_RAMP), which keeps every shade at 2:1 contrast or more against the surface. The figures carry their own light
+surface so they read on light and dark pages alike.
 """
 
 from __future__ import annotations
@@ -45,6 +49,9 @@ SERIES_1 = "#2a78d6"  # categorical slot 1: blue
 SERIES_2 = "#eb6834"  # categorical slot 2: orange
 RAMP = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 SEQ = LinearSegmentedColormap.from_list("manacitra_blue", RAMP)
+MAP_RAMP = RAMP[2:]
+MAP_SEQ = LinearSegmentedColormap.from_list("manacitra_map", MAP_RAMP)
+HALO = [patheffects.withStroke(linewidth=3, foreground=SURFACE)]
 
 plt.rcParams.update(
     {
@@ -598,6 +605,338 @@ def diagram_kickoff(out: Path):
     save(fig, out, "kickoff")
 
 
+# --------------------------------------------------------------------------- shared by 8 and 9
+def _minus(t: str) -> str:
+    return t.replace("-", "−")
+
+
+def _r2(v: float) -> str:
+    return _minus(f"{v:.2f}")
+
+
+def _when(utc: str) -> str:
+    """A UTC time as the README shows it, to the nearest minute: '5 October 2026, 12:37 UTC'."""
+    t = (np.datetime64(utc.rstrip("Z")) + np.timedelta64(30, "s")).astype("datetime64[m]").item()
+    return f"{t.day} {t:%B %Y}, {t:%H:%M} UTC"
+
+
+def _draw_chip(ax, coords, all_edges, values: dict, grey=(), lw_max=4.2, circled=None):
+    """values: edge -> t in [0, 1] (1 = better: darker and thicker). grey: edges drawn dotted grey."""
+    for a, b in all_edges:
+        (x0, y0), (x1, y1) = coords[a], coords[b]
+        ax.plot([x0, x1], [y0, y1], color=GRID, lw=1.0, zorder=1)
+    for (a, b), t in values.items():
+        (x0, y0), (x1, y1) = coords[a], coords[b]
+        ax.plot([x0, x1], [y0, y1], color=MAP_SEQ(t), lw=lw_max * (0.3 + 0.7 * t), solid_capstyle="round", zorder=2)
+    for a, b in grey:
+        (x0, y0), (x1, y1) = coords[a], coords[b]
+        ax.plot([x0, x1], [y0, y1], color=MUTED, lw=1.4, ls=(0, (1.5, 1.5)), zorder=2)
+    for e in circled or ():
+        (x0, y0), (x1, y1) = coords[e[0]], coords[e[1]]
+        ax.plot((x0 + x1) / 2, (y0 + y1) / 2, "o", ms=9, mfc="none", mec=INK, mew=1.3, zorder=5)
+    ax.scatter([c[0] for c in coords.values()], [c[1] for c in coords.values()], s=3, color=MUTED, zorder=3, lw=0)
+    ax.set_aspect("equal")
+    ax.axis("off")
+
+
+def _rank_t(vals, better_high=True) -> np.ndarray:
+    """Rank within the set, scaled to [0, 1], 1 = best; ties to the earlier coupler."""
+    v = np.asarray(vals, float)
+    r = np.argsort(np.argsort(v if better_high else -v, kind="stable"), kind="stable")
+    return r / (len(v) - 1)
+
+
+# --------------------------------------------------------------------------- 8. the whole chip over three days
+def diagram_whole_chip_days(out: Path):
+    from matplotlib.colors import Normalize
+
+    recs = {dd: archive.load(f"ibm_fez/k35-day{dd}.json") for dd in (1, 2, 3)}
+    res = archive.full_chip_persistence(recs)
+    a = res["analysis"]
+    days = {dd: archive.full_chip_day(r) for dd, r in recs.items()}
+    E = [tuple(e) for e in days[1]["edges"]]
+    flagged = {tuple(e) for e in a["flagged"]["pairs"]}
+    all_edges = [tuple(e) for e in archive.load("ibm_fez/coupling-map.json")["edges"]]
+    coords = heavy_hex_coordinates(all_edges)
+    keep = [i for i, e in enumerate(E) if e not in flagged]
+    rho = {p: v["spearman"] for p, v in a["across"]["raw"].items()}
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10.2))
+    fig.subplots_adjust(wspace=0.08, hspace=0.16, top=0.83, bottom=0.09, left=0.02, right=0.98)
+    panels = [
+        (axs[0, 0], 1, None),
+        (axs[0, 1], 2, f"rank correlation with day 1: ρ = {_r2(rho['12'])}"),
+        (axs[1, 0], 3, f"with day 1: ρ = {_r2(rho['13'])};  with day 2: ρ = {_r2(rho['23'])}"),
+    ]
+    for ax, dd, sub in panels:
+        k = np.array(a["per_day"][str(dd)]["k"])
+        _draw_chip(ax, coords, all_edges, dict(zip([E[i] for i in keep], _rank_t(k[keep]))), grey=flagged)
+        ax.set_title(f"Day {dd}: the map  ·  {_when(recs[dd]['meta']['utc'])}", loc="left", fontsize=11.5, pad=20)
+        if sub:
+            ax.text(0.0, 1.01, sub, transform=ax.transAxes, fontsize=9.5, color=INK_2, va="bottom")
+    ax = axs[1, 1]
+    x1 = np.array(days[1]["x"])
+    _draw_chip(
+        ax, coords, all_edges, dict(zip([E[i] for i in keep], _rank_t(x1[keep], better_high=False))), grey=flagged
+    )
+    ax.set_title("Day 1: the published score x, same couplers", loc="left", fontsize=11.5, pad=20)
+    rkx = a["per_day"]["1"]["r_k_x"]["spearman"]
+    ax.text(
+        0.0,
+        1.01,
+        f"rank correlation with day 1's map: ρ = {_r2(rkx)}, none to speak of",
+        transform=ax.transAxes,
+        fontsize=9.5,
+        color=INK_2,
+        va="bottom",
+    )
+
+    cax = fig.add_axes([0.30, 0.045, 0.40, 0.014])
+    cb = fig.colorbar(plt.cm.ScalarMappable(norm=Normalize(0, 1), cmap=MAP_SEQ), cax=cax, orientation="horizontal")
+    cb.set_ticks(
+        [0, 1], labels=["lowest rank that day\n(kept least / highest x)", "highest rank\n(kept most / lowest x)"]
+    )
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=9, length=0)
+
+    v, vo = a["verdict"], a["original_rule"]
+    fig.text(
+        0.02,
+        0.965,
+        f"The whole chip, three days: ibm_fez, all {len(E)} couplers (Kickoff 35)",
+        fontsize=13.5,
+        weight="bold",
+        color=INK,
+    )
+    fig.text(
+        0.02,
+        0.945,
+        f"Each coupler shaded and sized by its rank within the day (darker and thicker = kept more). "
+        f"{recs[1]['meta']['shots_per_circuit']:,} shots per circuit.\n"
+        f"Persistence verdict: {vo['verdict']} under the original rule (corrected r, day 1 to day 3 = "
+        f"{vo['inputs']['corrected_r_13']:.2f}); {v['verdict']} under Amendment A1.\n"
+        f"Dotted grey: the {len(flagged)} couplers IBM listed with a two-qubit error of 1.0, left unshaded here but "
+        f"counted in every statistic.",
+        fontsize=9.5,
+        color=INK_2,
+        va="top",
+        linespacing=1.4,
+    )
+    save(fig, out, "whole-chip-days")
+
+
+# --------------------------------------------------------------------------- 9. how the map works, in one picture
+def _circuit_strip(ax, x0, y0, title, box):
+    w = 4.4
+    for dy in (0.0, -0.7):
+        ax.plot([x0, x0 + w], [y0 + dy, y0 + dy], color=MUTED, lw=1.2)
+    ax.text(x0 - 0.15, y0, "q₀", ha="right", va="center", color=INK_2, fontsize=9)
+    ax.text(x0 - 0.15, y0 - 0.7, "q₁", ha="right", va="center", color=INK_2, fontsize=9)
+    for xb in (x0 + 0.35, x0 + 1.5, x0 + 2.65, x0 + 3.8):
+        for dy in (0.0, -0.7):
+            ax.add_patch(
+                FancyBboxPatch(
+                    (xb - 0.2, y0 + dy - 0.16),
+                    0.4,
+                    0.32,
+                    boxstyle="round,pad=0.01,rounding_size=0.06",
+                    fc=box,
+                    ec="none",
+                    zorder=3,
+                )
+            )
+    for xc in (x0 + 0.925, x0 + 2.075, x0 + 3.225):
+        ax.plot([xc, xc], [y0, y0 - 0.7], color=INK, lw=1.4, zorder=3)
+        for dy in (0.0, -0.7):
+            ax.plot(xc, y0 + dy, "o", color=INK, ms=4.5, zorder=4)
+    ax.text(x0, y0 + 0.38, title, ha="left", va="bottom", fontsize=10, color=INK)
+
+
+def diagram_map_explainer(out: Path):
+    from matplotlib.colors import Normalize
+
+    from manacitra import verdicts as V
+    from manacitra.stats import format_p
+
+    run = archive.load("ibm_fez/k31-map.json")
+    an = archive.map_from_record(run)
+    P = np.asarray(archive.p11_table(run))
+    order_lbl = run["order"]
+    pno = P[[i for i, lb in enumerate(order_lbl) if lb == "A no"]].mean(axis=0)
+    poff = P[[i for i, lb in enumerate(order_lbl) if lb == "A off"]].mean(axis=0)
+    kA = np.array(an["kA"])
+    assert np.allclose((poff - pno) / GAP["A"], kA, atol=1e-9), "k is the measured gap over the ideal gap"
+    pairs = [tuple(p) for p in run["pairs"]]
+    ideal = CIRCUITS["A"]
+    order = np.argsort(-kA, kind="stable")
+    ex = [order[0], order[len(order) // 2], order[-1]]
+    ex_names = ["kept most", "median", "kept least"]
+    shots_variant = run["meta"]["shots_per_circuit"] * order_lbl.count("A no")
+
+    fig = plt.figure(figsize=(11, 9.2))
+
+    def head(x, y, num, text):
+        fig.text(x, y, f"{num}", fontsize=13, weight="bold", color=SERIES_1, va="baseline")
+        fig.text(x + 0.025, y, text, fontsize=11.5, weight="bold", color=INK, va="baseline")
+
+    head(0.0, 0.93, "1", "Run two near-identical circuits on every pair at once")
+    a1 = fig.add_axes([0.0, 0.56, 0.42, 0.34])
+    a1.set_xlim(-0.6, 5.0)
+    a1.set_ylim(-2.75, 1.1)
+    a1.axis("off")
+    _circuit_strip(a1, 0.2, 0.45, "circuit A, no offset", MUTED)
+    _circuit_strip(a1, 0.2, -1.35, "circuit A, with the small offset", SERIES_1)
+    a1.text(
+        0.2,
+        -2.35,
+        f"Same CZ gates (black); only single-qubit angles differ.\nAn exact model knows the answer: "
+        f"P(11) {ideal.ideal_no:.3f} → {ideal.ideal_off:.3f}.",
+        fontsize=9,
+        color=INK_2,
+        va="top",
+        linespacing=1.35,
+    )
+
+    head(0.52, 0.93, "2", "Each pair moves by some of that gap")
+    a2 = fig.add_axes([0.58, 0.58, 0.40, 0.31])
+    cols = [("ideal", ideal.ideal_no, ideal.ideal_off, None, INK)] + [
+        (f"{pairs[i][0]}-{pairs[i][1]}\n{nm}", pno[i], poff[i], kA[i], SERIES_1) for i, nm in zip(ex, ex_names)
+    ]
+    for j, (_nm, pn, po, k, c) in enumerate(cols):
+        a2.plot([j, j], [pn, po], color=MUTED, lw=2, zorder=1)
+        a2.plot(j, pn, "o", ms=8, mfc=SURFACE, mec=INK_2 if k is not None else INK, mew=1.6, zorder=3)
+        a2.plot(j, po, "o", ms=8, color=c, mec=SURFACE, mew=1.2, zorder=3)
+        lab = f"gap {po - pn:.3f}" if k is None else f"gap {po - pn:.3f}\nk = {k:.2f}"
+        a2.text(j + 0.13, (pn + po) / 2, lab, va="center", ha="left", fontsize=8.8, color=INK, linespacing=1.2)
+    a2.set_xticks(range(len(cols)), [c[0] for c in cols], fontsize=8.8)
+    a2.tick_params(axis="x", length=0)
+    a2.set_xlim(-0.3, len(cols) - 0.15)
+    a2.set_ylim(min(min(c[1], c[2]) for c in cols) - 0.012, ideal.ideal_off + 0.008)
+    a2.set_ylabel("P(11)  (○ no offset, ● offset)", fontsize=9.5)
+    a2.yaxis.grid(True, color=GRID, lw=0.8)
+    a2.set_axisbelow(True)
+
+    head(0.0, 0.47, "3", f"k = measured gap ÷ ideal gap, for all {len(pairs)} pairs")
+    a3 = fig.add_axes([0.03, 0.22, 0.40, 0.19])
+    bins = np.floor(kA / 0.05).astype(int)
+    stack: dict = {}
+    yy = np.zeros(len(kA))
+    for i in np.argsort(kA, kind="stable"):
+        yy[i] = stack.get(bins[i], 0)
+        stack[bins[i]] = yy[i] + 1
+    a3.scatter(kA, yy, s=46, color=SERIES_1, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+    for i in ex:
+        a3.plot(kA[i], yy[i], "o", ms=12, mfc="none", mec=INK, mew=1.3, zorder=4)
+        a3.annotate(
+            f"{pairs[i][0]}-{pairs[i][1]}",
+            (kA[i], yy[i]),
+            xytext=(0, 11),
+            textcoords="offset points",
+            ha="center",
+            fontsize=8.5,
+            color=INK,
+            path_effects=HALO,
+        )
+    a3.axvline(1.0, color=INK_2, lw=1, ls=(0, (4, 3)), zorder=1)
+    a3.text(1.0, max(stack.values()) + 0.6, " k = 1, kept it all", fontsize=8.5, color=INK_2, va="top")
+    a3.set_ylim(-0.8, max(stack.values()) + 0.8)
+    a3.set_yticks([])
+    a3.spines["left"].set_visible(False)
+    a3.set_xlabel("kept share k (circuit A)")
+
+    head(0.52, 0.47, "4", "Put every k back on the chip: the map")
+    a4 = fig.add_axes([0.52, 0.19, 0.46, 0.245])
+    all_edges = [tuple(e) for e in archive.load("ibm_fez/coupling-map.json")["edges"]]
+    coords = heavy_hex_coordinates(all_edges)
+    lo, hi = kA.min(), kA.max()
+    _draw_chip(
+        a4,
+        coords,
+        all_edges,
+        {p: (k - lo) / (hi - lo) for p, k in zip(pairs, kA)},
+        lw_max=5.0,
+        circled=[pairs[i] for i in ex],
+    )
+    cax = fig.add_axes([0.62, 0.175, 0.26, 0.012])
+    cb = fig.colorbar(plt.cm.ScalarMappable(norm=Normalize(lo, hi), cmap=MAP_SEQ), cax=cax, orientation="horizontal")
+    cb.set_ticks([lo, hi], labels=[f"k = {lo:.2f}", f"k = {hi:.2f}"])
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=8.5, length=0)
+    fig.text(
+        0.52,
+        0.45,
+        "grey: couplers not measured in this run; circles: the three pairs in step 2",
+        fontsize=8.5,
+        color=INK_2,
+        va="top",
+    )
+
+    head(0.0, 0.115, "5", "Is the map real, and new? Three checks decide")
+    S1, S2, S3 = an["S1"], an["S2"], an["S3"]
+    p_ab = format_p(S2["p_one_sided"], an["n_permutations"]).split(" (")[0]
+    tiles = [
+        ("repeats", [f"half vs half  r = {_r2(S1['r_split_A']['pearson'])}  (needs ≥ {V.MAP_REPEAT_AT_LEAST:g})"]),
+        (
+            "carries over",
+            [
+                f"circuit A vs B  r = {_r2(S2['r_AB']['pearson'])}  (needs ≥ {V.MAP_TRANSFER_AT_LEAST:g})",
+                f"{p_ab}  (needs p < {V.MAP_P_BELOW:g})",
+            ],
+        ),
+        (
+            "not already in x",
+            [
+                f"k vs x  r = {_r2(S3['r_Ax']['pearson'])}  (needs |r| < {V.MAP_SCORE_EXPLAINS:g})",
+                f"A vs B, x removed  r = {_r2(S3['r_AB_given_x'])}  (needs ≥ {V.MAP_PARTIAL_AT_LEAST:g})",
+            ],
+        ),
+    ]
+    tw = 0.255
+    for j, (name, lines) in enumerate(tiles):
+        xx = j * (tw + 0.015)
+        fig.patches.append(
+            FancyBboxPatch(
+                (xx, -0.01),
+                tw,
+                0.095,
+                boxstyle="round,pad=0.004,rounding_size=0.008",
+                transform=fig.transFigure,
+                fc="#eef4fc",
+                ec=MAP_RAMP[1],
+                lw=1,
+            )
+        )
+        fig.text(xx + 0.012, 0.062, name, fontsize=10.5, weight="bold", color=INK, va="center")
+        for n, line in enumerate(lines):
+            fig.text(xx + 0.012, 0.034 - 0.026 * n, line, fontsize=8.8, color=INK_2, va="center")
+    vx = 3 * (tw + 0.015)
+    fig.text(vx + 0.005, 0.040, "→", fontsize=16, color=INK_2, va="center")
+    fig.text(vx + 0.04, 0.040, an["verdict"]["verdict"], fontsize=13, weight="bold", color=INK, va="center")
+    for (x_a, y_a), (x_b, y_b) in (((0.43, 0.75), (0.51, 0.75)), ((0.44, 0.31), (0.51, 0.31))):
+        fig.patches.append(
+            FancyArrowPatch(
+                (x_a, y_a),
+                (x_b, y_b),
+                transform=fig.transFigure,
+                arrowstyle="-|>",
+                mutation_scale=14,
+                color=MUTED,
+                lw=1.2,
+            )
+        )
+    fig.text(0.0, 1.0, "How the map works, in one picture", fontsize=14.5, weight="bold", color=INK, va="bottom")
+    fig.text(
+        0.0,
+        0.985,
+        f"ibm_fez, Kickoff 31, {_when(run['meta']['utc'])}: {len(pairs)} pairs, "
+        f"{shots_variant:,} shots per variant per pair.",
+        fontsize=9.5,
+        color=INK_2,
+        va="top",
+    )
+    save(fig, out, "map-explainer")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -609,7 +948,9 @@ def main(argv=None):
     diagram_payoff(a.out)
     diagram_seal(a.out)
     diagram_kickoff(a.out)
-    print(f"wrote 7 diagrams (SVG and PNG) to {a.out}")
+    diagram_whole_chip_days(a.out)
+    diagram_map_explainer(a.out)
+    print(f"wrote 9 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

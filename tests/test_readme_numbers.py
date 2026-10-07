@@ -493,3 +493,46 @@ def test_the_three_checks_picture():
     assert "r = 0.82, p below 1 in 10,000, needs at least 0.4 with p below 0.05" in README
     assert "](docs/diagrams/three-checks.svg)" in README and "## The idea in six pictures" in README
     assert (Path(__file__).resolve().parents[1] / "docs" / "diagrams" / "three-checks.png").is_file()
+
+
+def test_the_whole_chip_picture():
+    """Finding 7's picture (after Amendment A7, at the author's request): its alt text and caption."""
+    a = k35_recomputed()["analysis"]
+    rho = {k: r(v["spearman"], 2) for k, v in a["across"]["raw"].items()}
+    assert (rho["12"], rho["13"], rho["23"]) == (0.76, 0.66, 0.70)
+    assert r(a["per_day"]["1"]["r_k_x"]["spearman"], 2) == -0.08
+    assert r(a["original_rule"]["inputs"]["corrected_r_13"], 2) == 0.89 and len(a["flagged"]["pairs"]) == 4
+    assert (
+        "Day 2 with Day 1, 0.76; Day 3 with Day 1, 0.66, and with Day 2, 0.70; "
+        "the published score with Day 1's map, −0.08" in README
+    )
+    assert "(rank correlations 0.76 and 0.66 with Day 1)" in README and "(−0.08 against Day 1's map)" in README
+    assert "](docs/diagrams/whole-chip-days.svg)" in README
+
+
+def test_the_explainer_in_the_long_documentation():
+    """The one-picture explainer at the top of docs/index.md: the numbers its alt text gives."""
+    doc = (Path(__file__).resolve().parents[1] / "docs" / "index.md").read_text()
+    run = archive.load("ibm_fez/k31-map.json")
+    an = archive.map_from_record(run)
+    k = np.array(an["kA"])
+    pairs = [tuple(p) for p in run["pairs"]]
+    order = np.argsort(-k, kind="stable")
+    assert [pairs[i] for i in (order[0], order[13], order[-1])] == [(106, 107), (133, 134), (20, 21)]
+    assert [r(k[i], 2) for i in (order[0], order[13], order[-1])] == [1.06, 0.87, 0.22]
+    P = archive.p11_table(run)
+    gap = [
+        np.mean(P[[j for j, lb in enumerate(run["order"]) if lb == "A off"], i])
+        - np.mean(P[[j for j, lb in enumerate(run["order"]) if lb == "A no"], i])
+        for i in (order[0], order[13], order[-1])
+    ]
+    assert [r(g, 3) for g in gap] == [0.040, 0.033, 0.008]
+    assert run["order"].count("A no") * run["meta"]["shots_per_circuit"] == 32_000
+    assert (
+        "106-107 moved 0.040 (k = 1.06), the median pair 133-134 moved 0.033 (k = 0.87), "
+        "and 20-21 moved 0.008 (k = 0.22)" in doc
+    )
+    assert (
+        "repeats (r = 0.87, needs at least 0.5), carries over (r = 0.82" in doc
+        and "](diagrams/map-explainer.svg)" in doc
+    )

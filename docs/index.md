@@ -4,6 +4,10 @@ This page explains the circuit and why its gap is known, the three rules and the
 safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
 README is the short version.
 
+![How the map works, in five steps, from ibm_fez's Kickoff 31 (27 pairs, 32,000 shots per variant per pair). 1: two near-identical circuits, the same three CZ gates with different single-qubit angles; an exact model puts P(11) at 0.962 without the offset and 1.000 with it. 2: three pairs against that ideal gap of 0.038: 106-107 moved 0.040 (k = 1.06), the median pair 133-134 moved 0.033 (k = 0.87), and 20-21 moved 0.008 (k = 0.22). 3: k for all 27 pairs as a strip of dots, with k = 1 marked. 4: the 27 pairs on the chip, shaded from k = 0.22 to 1.06. 5: the three checks, repeats (r = 0.87, needs at least 0.5), carries over (r = 0.82, needs at least 0.4, with p below 1 in 10,000, needs below 0.05) and not already in x (r = −0.18, needs |r| below 0.5; with x removed, r = 0.82, needs at least 0.3), leading to DIAGNOSTIC.](diagrams/map-explainer.svg)
+
+The whole method in one picture, on ibm_fez's 27 pairs from Kickoff 31; the sections below take each step in turn.
+
 ## 1. The circuit, and why the gap is known
 
 Two qubits have four basis states, 00, 01, 10 and 11. Treat them as the four corners (sites) of a square. The

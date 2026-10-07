@@ -1415,9 +1415,21 @@ Each, in four ways, fails the comparison and names the field.
   report, both scans passed (41 reachable commits) and it wrote a zip of 45.4 MB (45,406,720 bytes) that carries
   Kickoff 35's files.
 
-**Not part of the amendment, and not committed.** At the author's request mid-run, a subagent drew five candidate
-images of how the map works, into an untracked `review-images/` folder. One caption used a word outside the vocabulary
-boundary (W3). It was replaced before the tree scan was run.
+**Pictures, at the author's request (not part of the amendment).** A subagent drew five candidate images of how the
+map works, into an untracked `review-images/` folder. One caption used a word outside the vocabulary boundary (W3),
+which was replaced. The author ranked c2, c4 and c5 best and c3 just below, and asked for all three best ones. Each is
+now drawn from `data/` by `docs/make_diagrams.py`, as SVG with a PNG; the seven earlier diagrams regenerate byte for
+byte. Each has alt text and a caption whose numbers `tests/test_readme_numbers.py` checks.
+- **`three-checks.svg`** (c2) is the README's third picture, after the map. It shows Kickoff 31 on ibm_fez as the map
+  rule's three checks. The draft left out check 2's p < 0.05 condition; the picture shows it ("p < 1/10000").
+- **`whole-chip-days.svg`** (c4) follows the findings list, for finding 7: Kickoff 35's 176 couplers on each day, and
+  the published score. The draft gave the score's rank correlation with Day 1's map as "0.08", with its sign flipped;
+  the picture gives it as measured, −0.08, "none to speak of".
+- **`map-explainer.svg`** (c5) opens `docs/index.md`. It is the whole method in one picture, so it repeats the README's
+  first three pictures. Its "carries over" tile now shows the p condition too.
+
+Diagrams 8 and 9 draw thin lines across the whole chip. They use the house blue ramp without its lightest step, which
+fails 2:1 contrast against the background; the existing chip map keeps the full ramp.
 
 **CI had been failing since Amendment A4, and nobody had noticed.** Since `983bd8c`, CI on this pull request had
 failed in the acceptance tests. Sections 14 to 16 did not report it, and my A6 summary said only that checks were
@@ -1446,7 +1458,7 @@ and `test_field_inventory.py` pass: 120 tests. The mutation tests still fail on 
 a removal, None or NaN is far beyond 10⁻³ or not finite.
 
 **After the amendment:**
-- 466 tests pass (350 before; 116 new);
+- 469 tests pass (350 before; 119 new);
 - Ruff is clean;
 - the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
 - `data/SHA256SUMS` matches every file.
