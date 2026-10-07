@@ -1495,13 +1495,28 @@ README describes it, and the tests carry its output as literals, with a comment 
 - **What the commands now refuse.** A record that is not a map run: the isolation runs (Kickoff 32), the payoffs (Kickoffs 33, 40 and 41), the whole-chip days (Kickoff 35), the placement and activity runs (Kickoffs 37, 38 and 40's stage 1) and the scans (Kickoff 42). Before, some of these were decoded silently, wrongly. A counts file written by `manacitra map` is read as before.
 - **Where a pick ranks.** `pick` ranks within the set the run's verdict uses, so it never ranks a pair the run excluded: every pair for IBM, the working pairs for Open Quantum, the verdict set for Braket. Kickoff 40's level pick on that set is the eight the amendment gives.
 - **71 QASM files, not 70.** The catalogue lists 116 Quil and 71 QASM files: Kickoff 40's 50 programs as sent, Kickoff 42's 18, and the three Open Quantum programs. The review counted 70.
-- **The catalogue names the uses its records name.** `k37-P27-A-no.qasm` is also Kickoff 34b's main-job "A no" program, as `k37-placement.json`'s meta says, but `main.json` does not name its program files, so that use has no line.
-- **"k swung by 3 to 4"** is true of the fall on Day 2 (3.5 and 4.1), which is the sentence's subject. The rise on Day 3 was larger (4.7 and 7.6).
-- **"compared head to head"** is the amendment's wording. On the Rigetti processor, the level and the kept share were each compared with the published score, not with each other.
+- **Three readings, resolved by the author's rulings of 7 October**, after the first push of this amendment:
+  - **Finding 7's moves.** "k swung by 3 to 4" fit only the fall. It now gives the measured moves: "while k fell by 3.5
+    and 4.1 on Day 2 and came back by 4.7 and 7.6 on Day 3, and x changed by at most 16%." `test_finding_7` checks all
+    four numbers and the 16%.
+  - **The two scores.** On the Rigetti processor, the level and the kept share were each scored against the published
+    figures in the same payoff runs, not against each other. The README and `docs/index.md` now say: "On the Rigetti
+    processor both scores were scored against the published figures in the same payoff runs; no run has yet compared
+    the two scores against each other under a rule fixed in advance." This is Kickoff 39's stage 3 design, still
+    pending.
+  - **Kickoff 34b's program.** `main.json`'s meta gains a `programs` entry, inserted as one line with nothing else in
+    the file changed. It names `k37-P27-A-no.qasm` as the main job's position 1 ("A no", the run's `01-A-no.qasm`),
+    with its SHA-256, and says that the other 15 of its 16 programs as sent are not in this release. The catalogue row
+    for that file now lists Kickoff 34b's use beside Kickoff 37's four and Kickoff 38's one.
+    `test_the_p27_program_lists_every_run_that_sent_it` checks it. Kickoff 34b recorded times per wave, so its line
+    gives wave 1's submission and its last completion, and says so.
+
+  The phrases these replace are on the retired list (`RETIRED`).
 - **The figures file is found beside the record.** `map_view` reads `meta.figures_file` from the record's own folder, so a copied map record needs its figures record beside it. The tests copy both.
 
 **After the amendment:**
-- 541 tests pass (469 before; 72 new, most of them one per data record or per diagram);
+- 541 tests pass at the amendment's first push (469 before; 72 new, most of them one per data record or per
+  diagram), and 542 after the rulings of 7 October (one new: the catalogue's Kickoff 34b line);
 - Ruff is clean;
 - under numpy 2.4.6, installed apart from the project's environment, the reproduction, inventory and reading tests pass (134);
 - the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;

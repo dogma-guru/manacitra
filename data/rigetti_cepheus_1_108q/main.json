@@ -1,5 +1,6 @@
 {
   "meta": {
+    "programs": {"in_this_release": [{"position": 1, "label": "A no", "file": "k37-P27-A-no.qasm", "sha256": "81e1e149a7ade969eb70b725c43902f68ff8c469b1591a3e5cb150639f8dff4b"}], "note": "the main job sent 16 programs, one per position; the program of position 1 (A no, the run's 01-A-no.qasm) is in this folder as k37-P27-A-no.qasm, byte for byte, because Kickoff 37 sent it again; the other 15 of the 16 programs as sent are not in this release"},
     "bit_reading": "openquantum-reversed",
     "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
     "provider": "Open Quantum (Rigetti)",

@@ -50,8 +50,24 @@ def uses() -> dict[str, list[dict]]:
             {"run": run, "route": route, "task": task, "created": created, "ended": ended, "shots": shots}
         )
 
-    # Kickoffs 37 and 38, through Open Quantum: the programs are named by their SHA-256 in each record's meta
+    # Kickoffs 34b, 37 and 38, through Open Quantum: the programs are named by their SHA-256 in each record's meta.
+    # Kickoff 34b's main job records its times per wave, not per task: its line gives the wave's submission and the
+    # wave's last completion.
     by_sha = {_sha(p): f"{RIG}/{p.name}" for p in (DATA / RIG).glob("*.qasm")}
+    main = _load("main.json")["meta"]
+    for prog in main["programs"]["in_this_release"]:
+        wave = 1 if prog["position"] <= 8 else 2
+        w = main["utc_main_job"]
+        task = f"main job, position {prog['position']}, {prog['label']} (wave {wave}; per-task times not recorded)"
+        add(
+            by_sha[prog["sha256"]],
+            "Kickoff 34b",
+            ROUTE["openquantum"],
+            task,
+            w[f"wave_{wave}_submitted"],
+            w[f"wave_{wave}_completed"][-1],
+            main["shots_per_circuit"],
+        )
     for record, run in (("k37-placement.json", "Kickoff 37"), ("k38-activity.json", "Kickoff 38")):
         m = _load(record)["meta"]
         for t in m["tasks"]:

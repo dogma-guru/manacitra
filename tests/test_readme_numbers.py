@@ -336,20 +336,25 @@ def test_finding_7():
         top = {edges[i] for i in np.argsort(-k)[:6]}
         assert len(top & {tuple(p) for p in fl["pairs"]}) == 3, d
     assert "and three of them carry the most extreme values on the chip" in README
-    # both pairs on qubit 149 fell on Day 2 and came back on Day 3, k by 3.5 and 4.1 from Day 1 to Day 2, while IBM's
-    # x for them changed by at most 16% (Amendment A8, R4: "barely moved", not "did not move")
+    # both pairs on qubit 149 fell on Day 2 and came back on Day 3: k fell by 3.5 and 4.1 and came back by 4.7 and 7.6,
+    # while IBM's x for them changed by at most 16% (Amendment A8, R4, with the author's wording of 7 October)
     on149 = [i for i, e in enumerate(edges) if 149 in e]
     assert len(on149) == 2
-    falls, changes = [], []
+    falls, rises, changes = [], [], []
     for i in on149:
         k1, k2, k3 = (a["per_day"][d]["k"][i] for d in "123")
         assert k2 < -4 and k1 > k2 + 2 and k3 > k2 + 2
         falls.append(k1 - k2)
+        rises.append(k3 - k2)
         x = [archive.load(f"ibm_fez/k35-day{d}.json")["published_at_submission"][i]["x"] for d in (1, 2, 3)]
         changes.append(max(x) / min(x) - 1)
-    assert sorted(round(f) for f in falls) == [3, 4] and round(max(changes), 2) == 0.16
+    assert sorted(r(f, 1) for f in falls) == [3.5, 4.1] and sorted(r(v, 1) for v in rises) == [4.7, 7.6]
+    assert round(max(changes), 2) == 0.16
     assert "On Day 2 both pairs on one qubit fell sharply and recovered on Day 3" in README
-    assert "while IBM's figures for them barely moved (x changed by at most 16%; k swung by 3 to 4)" in README
+    assert (
+        "while k fell by 3.5 and 4.1 on Day 2 and came back by 4.7 and 7.6 on Day 3, and x changed by at most 16%."
+        in README
+    )
     assert min(r(ac["x_raw"][k]["pearson"], 2) for k in ("12", "23", "13")) == 0.99
     rkx = [r(a["per_day"][d]["r_k_x"]["pearson"], 2) for d in "123"]
     assert (max(rkx), min(rkx)) == (0.06, -0.07) and "(r between 0.07 and −0.07)" in README
@@ -569,7 +574,11 @@ def test_the_scores_compared_on_each_chip():
     assert {n: v for n, _, v in k33("ibm_kingston")[0]}["verdict"] == "NOT SETTLED"
     doc = (Path(__file__).resolve().parents[1] / "docs" / "index.md").read_text()
     for text in (README, " ".join(doc.split())):
-        assert "was not settled on ibm_kingston" in text and "have not been compared head to head on any chip" in text
+        assert "was not settled on ibm_kingston" in text
+        assert (
+            "On the Rigetti processor both scores were scored against the published figures in the same payoff runs; "
+            "no run has yet compared the two scores against each other under a rule fixed in advance." in text
+        )
         assert "third chip" not in text
 
 
@@ -588,6 +597,9 @@ RETIRED = [
     "the two picks otherwise tie",  # A8, R3
     "Neither has been tested on a third chip",  # A8, R4
     "IBM's figures for them did not move",  # A8, R4
+    "k swung by 3 to 4",  # A8, the author's wording of 7 October
+    "IBM's figures for them barely moved",  # A8, the author's wording of 7 October
+    "have not been compared head to head",  # A8, the author's wording of 7 October
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
