@@ -23,6 +23,10 @@ The first version.
   accepted at this time (one opened from a fork is closed with a note); questions go to Issues, through three issue
   forms. `SECURITY.md` gives the private route for a security report. A release is built from its tag (the sdist, the
   wheel and their `SHA256SUMS`), attached to the release and signed with Sigstore.
+- Amendment A11: `manacitra report` prints the run's context and its verdict, as `verdict` does, before its table;
+  `manacitra map` says on its first line whether it is a local simulation or a dry run; the data README documents how
+  to recompute Kickoff 33's payoff from the raw counts, and says why the IBM job IDs stay; `.zenodo.json` gives the
+  release's archive its description, and the title is now "Manacitra: a map of your qubits".
 - Backends: a simulator (Qiskit Aer or numpy, always available) and IBM Quantum (Qiskit Runtime), with the submit-once
   guard, the usage read and the time cap. Experimental: Open Quantum, and a Cirq simulation of a published noise model.
 - The dataset: the counts and analyses of the runs on ibm_fez and ibm_kingston (5 October 2026), of the run on Rigetti

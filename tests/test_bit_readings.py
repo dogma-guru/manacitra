@@ -70,7 +70,7 @@ def _path(name: str) -> str:
 def test_verdict_reads_the_declared_reading(name, verdict, read_as, capsys):
     out = _run(capsys, "verdict", _path(name))
     want = INDEPENDENT[name]
-    assert out.startswith(f"read as {read_as}") and f"verdict: {verdict} " in out
+    assert any(line.startswith(f"read as {read_as}") for line in out.splitlines()) and f"verdict: {verdict} " in out
     assert _stat(out, "r_split_A") == pytest.approx(want["r_split"], abs=5e-5)
     assert _stat(out, "r_AB") == pytest.approx(want["r_AB"], abs=5e-5)
     if "r_Ax" in want:  # x from the figures record that meta.figures_file names
@@ -119,7 +119,7 @@ def test_the_dispatch_matters(tmp_path, capsys):
 def test_the_ibm_reading_is_named(capsys):
     """Kickoff 31's ibm_fez map, the adjacent reading; test_cli.test_pick_by checks its picks."""
     out = _run(capsys, "verdict", str(archive.data_dir() / "ibm_fez" / "k31-map.json"))
-    assert out.startswith("read as qiskit-adjacent; all 27 pairs") and "verdict: DIAGNOSTIC " in out
+    assert "read as qiskit-adjacent; all 27 pairs" in out.splitlines() and "verdict: DIAGNOSTIC " in out
 
 
 @pytest.mark.parametrize("name", ["k42-day1.json", "k40-payoff.json", "k37-placement.json"])

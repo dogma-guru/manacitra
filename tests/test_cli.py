@@ -32,12 +32,53 @@ def test_map_on_the_simulator_then_pick(tmp_path, capsys):
 def test_ibm_is_a_dry_run_without_submit(capsys):
     assert main(["map", "--backend", "ibm", "--processor", "ibm_fez", "--offline", "--pairs", "114-115,70-71"]) == 0
     out = capsys.readouterr().out
-    assert "nothing was sent" in out and "3 CZ per pair" in out
+    assert out.splitlines()[0] == "dry run; nothing sent; add --submit to submit" and "3 CZ per pair" in out
 
 
 def test_report_table(capsys):
     assert main(["report", str(archive.data_dir() / "ibm_fez" / "k31-map.json")]) == 0
-    assert capsys.readouterr().out.startswith("| pair | k_A | k_B | published x |")
+    assert "\n| pair | k_A | k_B | published x |\n" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    "path,processor,reading",
+    [
+        ("ibm_fez/k31-map.json", "  processor: ibm_fez", "read as qiskit-adjacent; all 27 pairs"),
+        (
+            "rigetti_cepheus_1_108q/k40-map.json",
+            "  processor: Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits "
+            "in a verbatim box",
+            "read as braket-measured-qubits; the verdict set, 23 of 27 pairs",
+        ),
+    ],
+)
+def test_report_gives_the_verdict_before_its_table(path, processor, reading, capsys):
+    """Amendment A11, C5: report prints what verdict prints (the run's context, the reading and the pair set, the
+    verdict and its statistics), byte for byte, and then the table."""
+    f = str(archive.data_dir() / path)
+    assert main(["verdict", f]) == 0
+    verdict = capsys.readouterr().out
+    assert main(["report", f]) == 0
+    report = capsys.readouterr().out
+    assert report.startswith(verdict + "\n| pair | k_A |"), "the verdict block, then a blank line, then the table"
+    lines = verdict.splitlines()
+    assert lines[1] == processor and lines[2].startswith("  UTC: 2026-10-0")
+    assert any(line.startswith(reading) for line in lines)
+
+
+def test_the_simulator_says_it_is_local(tmp_path, capsys):
+    """Amendment A11, C2: the simulator runs at once and sends nothing, and says so on its first line."""
+    out = tmp_path / "sim.json"
+    assert main(["map", "--backend", "simulator", "--n-pairs", "4", "--shots", "200", "--out", str(out)]) == 0
+    assert capsys.readouterr().out.splitlines()[0] == "local simulation; nothing sent to a provider"
+
+
+def test_map_help_says_both(capsys):
+    with pytest.raises(SystemExit):
+        main(["map", "--help"])
+    text = " ".join(capsys.readouterr().out.split())
+    assert "A provider backend is a dry run unless --submit is given" in text
+    assert "The simulator runs at once, on your machine, and sends nothing." in text
 
 
 def test_pick_warns_when_the_verdict_is_not_usable(tmp_path, capsys):

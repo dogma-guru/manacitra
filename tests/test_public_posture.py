@@ -36,6 +36,17 @@ def test_the_release_is_built_before_it_is_signed():
     assert "github.event_name != 'release'" in j["sign-files"]
 
 
+def test_a_changed_file_loses_its_old_bundle_before_it_is_signed_again():
+    """Amendment A11: the signing action refuses to overwrite a bundle, so the first re-signing of a changed file
+    (data/README.md, run 37722980126) failed. The old bundles of the files to sign are removed first."""
+    steps = re.split(r"^      - ", jobs("sign.yml")["sign-files"], flags=re.M)
+    names = [re.search(r"name: (.+)", s).group(1) for s in steps if re.search(r"name: (.+)", s)]
+    assert names.index("Remove the old bundles of files signed again") == names.index("Sign") - 1
+    remove = next(s for s in steps if "Remove the old bundles" in s)
+    assert 'for f in $FILES; do rm -f -- "$f.sigstore.json"; done' in remove
+    assert "FILES: ${{ steps.list.outputs.files }}" in remove
+
+
 def test_an_outside_pull_request_is_closed_without_running_its_code():
     text = (GH / "workflows" / "outside-pr.yml").read_text()
     assert re.search(r"^  pull_request_target:\n    types: \[opened\]$", text, re.M)

@@ -178,12 +178,66 @@ def k41_one_pair() -> dict:
     }
 
 
+def outcomes_qiskit_adjacent(counts: dict, n_pairs: int) -> np.ndarray:
+    """Per pair, the counts of s = a + 2 b in IBM's adjacent reading (a is bit 2i, b is bit 2i + 1)."""
+    out = np.zeros((n_pairs, 4))
+    for key, m in counts.items():
+        bits = key[::-1]
+        for i in range(n_pairs):
+            out[i, int(bits[2 * i]) + 2 * int(bits[2 * i + 1])] += m
+    return out
+
+
+def k33_payoff() -> dict:
+    """Kickoff 33 on ibm_fez (Amendment A11, item 3), from the raw counts. The prior map is Kickoff 32's dense
+    condition (k32-isolation.json, every position with all 27 pairs active): per pair, the mean P(11) of its "off"
+    positions minus that of its "no" positions (dividing by the circuit's gap would not change the ranking). Each
+    random circuit R1 to R8 ran at two positions; the two are pooled per pair (16,000 shots) before the fidelity, the
+    squared Hellinger overlap (sum over s of sqrt(p_s q_s))^2 against circuits[j].ideal in workload/k33-workload.json,
+    state order s = q0 + 2 q1, on uncorrected counts. W is a pair's mean over the eight circuits. The map's pick is the
+    8 highest prior k; the published pick the 8 lowest x in published_at_submission. The error is 1 - W."""
+    iso, pay = load(DATA / "ibm_fez" / "k32-isolation.json"), load(DATA / "ibm_fez" / "k33-payoff.json")
+    dense = [tuple(p) for p in iso["selection"]["dense_pairs"]]
+    D = {"no": [], "off": []}
+    for (cond, v), c in zip(iso["plan"], iso["counts"]):
+        if cond == "D":
+            D[v].append(p11_qiskit_adjacent(c, len(dense)))
+    k_dense = dict(zip(dense, np.mean(D["off"], axis=0) - np.mean(D["no"], axis=0)))
+    pairs = [tuple(p) for p in pay["pairs"]]
+    pooled: dict = {}
+    for label, c in zip(pay["order"], pay["counts"]):
+        if label.startswith("R"):
+            pooled[label] = pooled.get(label, 0) + outcomes_qiskit_adjacent(c, len(pairs))
+    ideal = [np.array(c["ideal"]) for c in load(DATA / "workload" / "k33-workload.json")["circuits"]]
+    W = np.mean(
+        [[np.sum(np.sqrt(ideal[j] * pooled[f"R{j + 1}"][i] / pooled[f"R{j + 1}"][i].sum())) ** 2 for j in range(8)]
+         for i in range(len(pairs))],
+        axis=1,
+    )  # fmt: skip
+    x = {tuple(r["pair"]): r["x"] for r in pay["published_at_submission"]}
+    by_map = top8(np.array([k_dense[p] for p in pairs]), pairs)
+    by_x = top8(np.array([x[p] for p in pairs]), pairs, highest=False)
+    err = {
+        name: float(np.mean([1 - W[pairs.index(tuple(p))] for p in pick]))
+        for name, pick in (("map", by_map), ("x", by_x))
+    }
+    return {
+        "pick_by_map": by_map,
+        "pick_by_published": by_x,
+        "shots_per_circuit_pooled": sorted({int(v.sum(axis=1)[0]) for v in pooled.values()}),
+        "error_map_pick": err["map"],
+        "error_published_pick": err["x"],
+        "less_error_percent": 100 * (1 - err["map"] / err["x"]),
+    }
+
+
 def literals() -> dict:
     return {
         "main.json": openquantum_main(),
         "k40-map.json": braket_map("k40-map.json", "k40-figures.json", "stage2"),
         "k41-map.json": braket_map("k41-map.json", "k41-figures.json", "A"),
         "k41-payoff.json": k41_one_pair(),
+        "k33-payoff.json": k33_payoff(),
     }
 
 
