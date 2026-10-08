@@ -57,3 +57,33 @@ def test_no_tracked_file_but_the_build_report_names_the_old_address():
 def test_the_documented_signing_identity_is_the_home():
     identities = re.findall(r"--cert-identity (\S+)", _read("docs/index.md"))
     assert identities and all(i.startswith(HOME + "/.github/workflows/sign.yml@") for i in identities), identities
+
+
+PATREON = "https://www.patreon.com/DogmaGuru"
+
+
+def test_the_three_patreon_references_agree():
+    """Amendment A11: the Sponsor button comes from this repository's own FUNDING.yml, not only the organisation's."""
+    assert (ROOT / ".github" / "FUNDING.yml").read_text() == f"custom: {PATREON}\n"
+    assert tomllib.loads(_read("pyproject.toml"))["project"]["urls"]["Funding"] == PATREON
+    support = _read("README.md").split("\n## Support\n", 1)[1].split("\n## ", 1)[0]
+    assert f"[Patreon]({PATREON})" in support
+
+
+def test_the_zenodo_metadata_matches_the_citation():
+    """Amendment A11: .zenodo.json parses, and its title and creator are CITATION.cff's (the title by the author's
+    ruling of 7 October, which the README's citation line also carries)."""
+    import json
+
+    z = json.loads(_read(".zenodo.json"))
+    cff = _read("CITATION.cff")
+    title = re.search(r'^title: "([^"]+)"$', cff, re.M).group(1)
+    family = re.search(r"^\s+(?:- )?family-names: (.+)$", cff, re.M).group(1)
+    given = re.search(r"^\s+(?:- )?given-names: (.+)$", cff, re.M).group(1)
+    assert z["title"] == title == "Manacitra: a map of your qubits"
+    assert [c["name"] for c in z["creators"]] == [f"{family}, {given}"]
+    assert f"*{title}* (version 0.1.0)" in _read("README.md")
+    assert z["upload_type"] == "software" and z["license"] == "Apache-2.0"
+    topics = re.search(r"^Topics: (.+)$", _read("README.md"), re.M)
+    if topics:  # the README carries no topics line today; if it gains one, the keywords must be among its topics
+        assert set(z["keywords"]) <= {t.strip(" `") for t in topics.group(1).split(",")}

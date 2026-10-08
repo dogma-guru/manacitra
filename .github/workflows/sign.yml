@@ -74,6 +74,14 @@ jobs:
           files="$(python tools/sign_targets.py --before "$BEFORE" --after "$AFTER")"
           echo "files=$files" >> "$GITHUB_OUTPUT"
           echo "to sign: ${files:-nothing}"
+      # A file that changed is signed again; the action refuses to overwrite its old bundle, so it goes first
+      # (Amendment A11: the first re-signing, of data/README.md, failed on exactly that)
+      - name: Remove the old bundles of files signed again
+        if: steps.list.outputs.files != ''
+        env:
+          FILES: ${{ steps.list.outputs.files }}
+        run: |
+          for f in $FILES; do rm -f -- "$f.sigstore.json"; done
       - name: Sign
         if: steps.list.outputs.files != ''
         uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9  # v3.5.0

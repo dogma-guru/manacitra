@@ -1,0 +1,8 @@
+{
+  "upload_type": "software",
+  "title": "Manacitra: a map of your qubits",
+  "creators": [{"name": "Patel, Anish", "affiliation": "Dogma LLC"}],
+  "license": "Apache-2.0",
+  "description": "Manacitra measures, for each qubit pair on a quantum processor, how much of a small known difference between two short circuits the pair keeps, gives a verdict on whether the resulting map is worth using, and ranks pairs from it. This archive is the source at the tagged release, with the archived runs on IBM and Rigetti processors. Code is Apache 2.0; data and documentation are CC BY 4.0 (data/LICENSE, docs/LICENSE).",
+  "keywords": ["quantum-computing", "quantum-hardware", "qubits", "two-qubit-gates", "noise-characterization", "calibration", "open-data", "reproducible-research"]
+}

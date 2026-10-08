@@ -84,8 +84,9 @@ address, in the tree or in reachable git metadata, is a finding.
 - **No secrets in the repository, ever.** Credentials come from each provider's own saved-account mechanism or from
   environment variables. Never print, log, store or commit a token, an account or instance identifier, a client ID or
   secret, or an email address. The scan fails on all of these.
-- **Nothing is sent to a provider by default.** The command line is a dry run unless `--submit` is given, and the
-  submit-once guard in `backends/base.py` refuses a second send of the same job unless `--allow-resubmit` is given.
+- **Nothing is sent to a provider by default.** A provider backend is a dry run unless `--submit` is given (the
+  simulator runs at once, on your machine, and sends nothing), and the submit-once guard in `backends/base.py` refuses
+  a second send of the same job unless `--allow-resubmit` is given.
   The guard's check and its reservation happen under one lock shared by every process, so two commands started
   together cannot both send one job.
 - **Exactly three two-qubit gates per pair.** A transpiled circuit that carries anything else on a pair is refused.

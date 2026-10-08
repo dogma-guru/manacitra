@@ -174,8 +174,8 @@ What would discredit the map's persistence: FADES.
   reported, never assumed; a plain greedy colouring is also available (`method="greedy"`).
 - `layout.pick_pairs`: the n pairs with the highest k (or the lowest x).
 - `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
-  mean P(11) on circuit A without the offset; `--by x` by the published score. On ibm_fez the kept share chose the
-  better pairs on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
+  mean P(11) on circuit A without the offset; `--by x` by the published score. The kept share chose the better pairs
+  on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
   Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. On the Rigetti
   processor both scores were scored against the published figures in the same payoff runs; no run has yet compared the
   two scores against each other under a rule fixed in advance.
@@ -185,6 +185,13 @@ What would discredit the map's persistence: FADES.
   every pair for IBM; on the working pairs, after the run's dead-pair filter, for Open Quantum; on the verdict set, the
   working pairs with a published figure, for Amazon Braket, whose published score comes from the figures file its
   `meta.figures_file` names. A record that is not a map run (a payoff, a scan, an isolation run) is refused.
+- **What `verdict` and `report` print** (Amendment A11). Both begin with the run's context from its `meta`: the
+  kickoff, the processor and the UTC time. Next come the bit reading and the pair set used (all pairs, or the working
+  pairs after the dead-pair filter, with the count), then the verdict with every statistic the rule used. `report`
+  prints that block byte for byte as `verdict` does, and then the table of each pair's k_A, k_B and published x; with
+  `--figure` it also draws the chip map.
+- **What `map` says first** (Amendment A11). On the simulator, its first line is `local simulation; nothing sent to a
+  provider`. On a provider backend without `--submit`, it is `dry run; nothing sent; add --submit to submit`.
 - `layout.published_score_braket`: x on Amazon Braket, (1 − CZ fidelity) + (1 − readout fidelity) of each qubit, from
   Braket's standardized device properties; a CZ fidelity of exactly 0.5 is the platform's placeholder, so x is None and
   the pair leaves the verdict set.
@@ -235,7 +242,8 @@ with a the bit of the pair's first qubit and b its second.
 
 ## 6. The safety guards
 
-- **Dry run by default.** `manacitra map` sends nothing without `--submit`.
+- **Dry run by default.** On a provider backend, `manacitra map` sends nothing without `--submit`. The simulator runs
+  at once, on your machine, and sends nothing.
 - **The estimate first.** Before a send, the estimate is printed: on IBM, 0.3 ms per shot plus 5 s (the observed
   rate was about 0.28 ms); on Open Quantum, the platform's own quote in credits.
 - **Submit once.** `backends/base.py` refuses a second send of the same job hash. `--allow-resubmit` (in Python,
@@ -412,6 +420,11 @@ sigstore verify identity manacitra-0.1.0-py3-none-any.whl \
   --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.1.0 \
   --cert-oidc-issuer https://token.actions.githubusercontent.com
 ```
+
+**The transparency log.** Each bundle records its entry in Sigstore's public log: the field `logIndex`, under
+`verificationMaterial.tlogEntries` in the `.sigstore.json` file. The entry can be read at
+`https://search.sigstore.dev/?logIndex=<n>`, with that number for `<n>`. `sigstore verify` needs no account. Reading
+the signing workflow's job logs on GitHub (the Actions tab) needs a signed-in GitHub account.
 
 For a sealed prediction, verify both: the commit record's signature (`sigstore verify identity
 predictions.md.commit.json ...`), which shows who published the commitment and when, and the commitment itself

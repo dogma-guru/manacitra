@@ -98,6 +98,26 @@ Braket map names its figures record in `meta.figures_file` (and `meta.figures_pa
   score x = two-qubit error + both readout errors, and the dates IBM gave for them, as read at submission.
 - **Order**: `order` lists the circuit at each position. A, B: the two test circuits; `no`, `off`, `wrong`: no offset,
   the offset, the offset with the wrong sign. `R1` to `R8`: the random workload circuits. `CAL ab`: readout calibration.
+- **Job IDs**: the eleven IBM `meta.job_id` values (the "IBM job ID" column above) stay, on purpose. They are
+  provenance, kept since the first release, and they are not credentials or account identifiers. The Open Quantum task
+  IDs and the Amazon Braket task ARNs were left out and stay out.
+
+**Recomputing Kickoff 33's payoff on ibm_fez** (`ibm_fez/k33-payoff.json`; finding 4's 35.6%) from the raw counts
+takes four things the record does not spell out:
+- **The prior map is Kickoff 32's dense condition** (`ibm_fez/k32-isolation.json`, the positions with all 27 pairs
+  active), not `k31-map.json`. Per pair, it is the mean P(11) of the "off" positions minus that of the "no" positions.
+- **The workload's counts are pooled.** Each random circuit, R1 to R8, ran at two positions, and the two are pooled
+  per pair (16,000 shots) before the fidelity.
+- **The fidelity** is the squared Hellinger overlap, (Σ √(p_s q_s))², against `circuits[j].ideal` in
+  `workload/k33-workload.json`. The state order is s = q0 + 2 q1, and the counts are uncorrected. A pair's W is its
+  mean over the eight circuits, and its error is 1 − W.
+- **The published pick** uses the x recorded in `published_at_submission`, lowest first. The map's pick is the eight
+  highest prior values.
+
+`python examples/03_pick_pairs.py` makes both picks. The map's pick is 106-107, 88-89, 151-152, 94-95, 142-143,
+129-130, 13-14, 114-115. The published figures' pick is 22-23, 5-6, 85-86, 70-71, 114-115, 123-124, 142-143,
+106-107. The mean error is 0.00221 for the map's pick and 0.00343 for the published pick, 35.6% less. These values
+come from `tests/_independent_readings.py` (`k33_payoff`), which does not import the package.
 
 ## Checksums and signatures
 

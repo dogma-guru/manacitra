@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 """The command line: manacitra map | pick | verdict | persist | report | seal | reveal | verify.
 
-Dry run by default. Nothing is sent to any provider without --submit, and before anything is sent the estimate and
-the ledger entry are printed. The simulator spends nothing and runs at once. --data PATH (or $MANACITRA_DATA) names
-the archived dataset's folder, for an install that is not from a clone; a file argument not found as given is looked
-up inside it.
+A provider backend is a dry run unless --submit is given: nothing is sent without it, and before anything is sent the
+estimate and the ledger entry are printed. The simulator runs at once, on your machine, and sends nothing. --data PATH
+(or $MANACITRA_DATA) names the archived dataset's folder, for an install that is not from a clone; a file argument not
+found as given is looked up inside it.
 
     manacitra map --backend simulator --pairs 0-1,2-3,... [--planted 0.03]       map pairs on the simulator
     manacitra map --backend ibm --processor ibm_fez --pairs-from-score 27         dry run: transpile, check, estimate
@@ -14,7 +14,7 @@ up inside it.
     manacitra pick data/ibm_fez/k31-map.json --n 8                                rank pairs (verdict not checked)
     manacitra pick data/ibm_fez/k31-map.json --by level                          rank by the plain level instead
     manacitra persist day1.json day2.json day3.json                               the persistence rule
-    manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               a table, and a chip map
+    manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               the verdict, a table, a chip map
     manacitra seal predictions.md                                                 commit to a file before the run
     manacitra reveal predictions.md                                               publish its salt after the run
     manacitra verify predictions.md                                               anyone checks it
@@ -46,7 +46,7 @@ def _load_view(path: str) -> dict:
     d = json.loads(where.read_text())
     if "outcomes" not in d:
         try:
-            return map_view(d, where.parent)
+            return {**map_view(d, where.parent), "meta": d.get("meta", {})}
         except (UndeclaredReading, NotATable, NotAMap) as e:
             raise SystemExit(f"refused: {path}: {e}") from None
     from .backends.base import MapCounts
@@ -70,6 +70,7 @@ def _load_view(path: str) -> dict:
         "shots": mc.shots,
         "halves": None,
         "reading": "outcomes (written by manacitra map)",
+        "meta": meta,
         "set": f"{len(keep)} of {len(mc.pairs)} pairs"
         + (" (the dead-pair filter)" if len(keep) < len(mc.pairs) else ""),
     }
@@ -105,6 +106,10 @@ def cmd_map(a) -> int:
     from .layout import disjoint_pairs_by_score
 
     backend, pairs = make_backend(a)
+    if not backend.spends:
+        print(MAP_FIRST_LINE["local"])
+    elif not a.submit:
+        print(MAP_FIRST_LINE["provider"])
     if pairs is None:
         if a.pairs:
             pairs = _parse_pairs(a.pairs)
@@ -125,7 +130,6 @@ def cmd_map(a) -> int:
                 from .backends.ibm import estimate_seconds
 
                 print(f"estimate: {estimate_seconds(job.total_shots):.1f} s (0.3 ms per shot + 5 s)")
-            print("nothing was sent. Add --submit to send it once.")
             return 0
         ledger = Ledger(a.ledger)
         backend.ledger = ledger  # the quote's early checks, the guard and a later fetch all read this one (A6)
@@ -157,6 +161,25 @@ def cmd_map(a) -> int:
     return 0
 
 
+#: The first line `manacitra map` prints (Amendment A11, C2): a simulator runs locally; a provider backend without
+#: --submit is a dry run
+MAP_FIRST_LINE = {
+    "local": "local simulation; nothing sent to a provider",
+    "provider": "dry run; nothing sent; add --submit to submit",
+}
+
+
+def context_and_verdict(view: dict, an: dict) -> str:
+    """What `verdict` prints and `report` prints before its table (Amendment A11, C5): the run's context from its meta
+    (kickoff, processor, UTC time), the bit reading and the pair set used, and the verdict with every number the rule
+    used."""
+    meta = view.get("meta") or {}
+    lines = [meta["kickoff"]] if meta.get("kickoff") else []
+    lines += [f"  {k}: {meta[f]}" for k, f in (("processor", "processor"), ("UTC", "utc")) if meta.get(f)]
+    lines.append(f"read as {view['reading']}; {view['set']}")
+    return "\n".join(lines + [verdict_lines(an)])
+
+
 def cmd_verdict(a) -> int:
     """The map rule on a map: by default the analysis the run's own acceptance case computes (Amendment A8); with
     --no-score or --perm-seed, the rule run again on the same pairs."""
@@ -175,8 +198,7 @@ def cmd_verdict(a) -> int:
             flagged=v["flags"],
             **kw,
         )
-    print(f"read as {v['reading']}; {v['set']}")
-    print(verdict_lines(an))
+    print(context_and_verdict(v, an))
     if a.json:
         Path(a.json).write_text(json.dumps(an, indent=1))
     return 0
@@ -249,6 +271,8 @@ def cmd_report(a) -> int:
     P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
     kA = kept_from_order(P, order, "A")[0]
     kB = kept_from_order(P, order, "B")[0] if any(lbl.startswith("B") for lbl in order) else None
+    print(context_and_verdict(view, view["analysis"]))
+    print()
     print(map_table(pairs, kA, kB, x))
     if a.figure:
         import matplotlib
@@ -313,7 +337,12 @@ def main(argv=None) -> int:
     )
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    m = sub.add_parser("map", help="map pairs (dry run unless --submit)")
+    m = sub.add_parser(
+        "map",
+        help="map pairs (a provider backend is a dry run unless --submit; the simulator runs at once, locally)",
+        description="Map pairs. A provider backend is a dry run unless --submit is given: nothing is sent without it. "
+        "The simulator runs at once, on your machine, and sends nothing.",
+    )
     m.add_argument("--backend", default="simulator", choices=["simulator", "ibm", "openquantum", "cirq_sim"])
     m.add_argument("--processor", default=None)
     m.add_argument("--pairs", help="comma-separated a-b pairs, e.g. 0-1,4-5")

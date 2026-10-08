@@ -1743,3 +1743,159 @@ the GitHub settings, which are the author's to change, and nothing here touches 
 - Kickoff 39;
 - the Braket adapter (Kickoff 02);
 - any provider submission.
+
+## 21. Amendment A11: fixes from the first public trial (7 October 2026)
+
+**The trial.** Codex, in run mode, worked from the public address alone, at `52fea94`. Its marks were 35 PASS, 14 FAIL
+and 4 CANNOT CHECK.
+
+**What passed:**
+- the installs, the Python block and the three examples;
+- the three independent recomputations: k for 106-107 and 20-21, the payoff at 35.55%, and Kickoff 35 at r 0.8616 and
+  9 of 18;
+- the manifest and the acceptance table;
+- four signatures, the three negative controls and the transparency-log entry;
+- the scan over the whole history.
+
+**Where the fourteen FAILs went.** A11 sorts them as follows, and names the IDs given here. The trial's own report,
+which would list every FAIL by ID, is not in this repository. A per-item list needs it.
+
+| group | count | IDs named in A11 | disposition |
+|---|---|---|---|
+| the trial's own mistakes | 5 | — | corrected in the rubric (r1) |
+| closed by A10 Part 1, or by settings the author made on 7 October | 4 | — | nothing more here |
+| the organisation's and Patreon's pages | 2 | H4a (with R-C) | the author's (A11, "For the author") |
+| this amendment | 3 | C5, C2, G3/D2 | fixes 1, 2 and 3 below; the small fixes of item 4 answer A6, A7 and G3 |
+
+**The rulings, as A11 records them.**
+- **R-A (the job IDs; the trial's Blocker H1b).** The eleven IBM `meta.job_id` values stay. They are provenance, kept
+  on purpose since the first implementation and listed in a column of the data README's table. They are not
+  credentials or account identifiers. The Open Quantum task IDs and the Braket task ARNs were left out and stay out.
+  No history is rewritten. `data/README.md` now says so under Formats ("Job IDs").
+- **R-B (the organisation's contact; Blocker H4c).** The organisation's public contact address is approved. It
+  appears nowhere in this repository, and nothing here changed.
+- **R-C (the Patreon page; H4a).** It is the author's page, out of scope here.
+
+**Two of the author's rulings, made when A11 arrived:**
+- **The merge method.** A11's pull request is merged with a merge commit, not squashed. A11 says the repository is
+  squash-only, but it is not: merge commits, squash and rebase are all allowed. A squash with only the pull request's
+  title as its message would drop every `Signed-off-by` line from `main`.
+- **The title.** `.zenodo.json` carries A11's title, "Manacitra: a map of your qubits". `CITATION.cff` and the
+  README's citation line take the same title, so that all three agree.
+
+**1. `report` says what it reports (C5).**
+- **Before**, `manacitra report ibm_fez/k31-map.json` printed only the table:
+
+  ```
+  | pair | k_A | k_B | published x |
+  |---|---|---|---|
+  | [106, 107] | 1.061 | 1.014 | 0.0160 |
+  ```
+
+- **Now**, it prints what `verdict` prints, byte for byte, then a blank line, then the table:
+
+  ```
+  Kickoff 31 (the map)
+    processor: ibm_fez
+    UTC: 2026-10-05T12:36:54.116023Z
+  read as qiskit-adjacent; all 27 pairs
+  verdict: DIAGNOSTIC  (map rule (Kickoff 31))
+    r_split_A = 0.8677
+    r_AB = 0.8213
+    p_AB: p < 1/10000 (0 of 10000)
+    r_AB_given_x = 0.8162
+    r_Ax = -0.1789
+    [ ] noise: r_split < 0.3
+    [x] r_split >= 0.5
+    [x] r_AB >= 0.4 with p < 0.05
+    [x] r_AB.x >= 0.3
+    [x] |r_Ax| < 0.5
+    [ ] redundant trigger
+
+  | pair | k_A | k_B | published x |
+  ...
+  ```
+
+- **How.** Both commands call one function, `cli.context_and_verdict`: the context from `meta` (kickoff, processor,
+  UTC time), the reading and the pair set, then `verdict_lines`. So `verdict` gained the three context lines too, and
+  A8's tests that began at "read as" now find that line among the output.
+- **Tests.** `test_report_gives_the_verdict_before_its_table` runs on `ibm_fez/k31-map.json` and on
+  `rigetti_cepheus_1_108q/k40-map.json`. It checks that `report`'s output begins with `verdict`'s, followed by the
+  table, and that the header names the processor and the reading. `docs/index.md` section 4 describes the output.
+
+**2. The simulator is not a dry run (C2).**
+- **The first line.** `manacitra map` now prints `local simulation; nothing sent to a provider` first when the backend
+  is local. It prints `dry run; nothing sent; add --submit to submit` first on a provider backend without `--submit`.
+  The old last line of a dry run ("nothing was sent. Add --submit to send it once.") is gone, since it said the same.
+- **`map --help`** and the module docstring carry both sentences.
+- **The README's sentence** (in "Install and try it") now reads: "a provider backend is a dry run unless `--submit`
+  is given; the simulator runs at once, on your machine, and sends nothing". CONTRIBUTING's rule and `docs/index.md`
+  section 6 say the same.
+- **Tests.** `test_the_simulator_says_it_is_local`, `test_ibm_is_a_dry_run_without_submit` (its first line) and
+  `test_map_help_says_both`.
+
+**3. The payoff recompute, documented (G3, D2).**
+- **The data README** now gives the four facts the trial had to infer: the prior map is Kickoff 32's dense condition,
+  not `k31-map.json`; each R1 to R8 ran twice and is pooled per pair (16,000 shots); the fidelity is the squared
+  Hellinger overlap against `circuits[j].ideal`, on uncorrected counts, state order q0 + 2 q1; and the published pick
+  uses the x recorded at submission. It also gives both picks and the two mean errors. Finding 4 in the README says
+  the same in one sentence and names `examples/03_pick_pairs.py`.
+- **Independent check.** The values come from `tests/_independent_readings.py`'s new `k33_payoff`, which does not
+  import the package. It gives the map's pick 106-107, 88-89, 151-152, 94-95, 142-143, 129-130, 13-14, 114-115, and
+  the published pick 22-23, 5-6, 85-86, 70-71, 114-115, 123-124, 142-143, 106-107. Pooled shots are 16,000 per circuit
+  per pair. The mean errors are 0.002213 and 0.003434, which is 35.55% less.
+- **One correction to A11.** These picks are what `examples/03_pick_pairs.py` prints, not "the README's pick": the
+  README does not list them.
+- **Tests.** `tests/test_payoff_recompute.py` checks that the example (through the package) prints those picks and
+  errors, that the record's order implies the pooling, that the archived analysis's picks agree, and that both READMEs
+  say it.
+
+**4. Small documentation fixes (G3, A6, A7).**
+- **Setup.** The clone block creates and activates a virtual environment before `pip install`. `pip install -e
+  ".[dev,aer]"` is named as the install that gives `pytest`, beside the clone block and beside the reproduction
+  sentence.
+- **The Python block** is labelled "paste this into a Python session". That was the runner's choice: the README's
+  three examples are already files.
+- **Sealing.** Under picture 6 there is now a four-command example: `seal`, `reveal`, `verify`, and a one-byte change
+  that gives NO MATCH with exit status 1, all run here before writing. One sentence says what the record shows: the
+  file existed when its hash was posted, and the time comes only from where it was posted, because the record's
+  `sealed_utc` is the sealing machine's clock.
+- **The transparency log.** `docs/index.md` section 9 says where a bundle's `logIndex` is (under
+  `verificationMaterial.tlogEntries`) and gives the search page. It also says that `sigstore verify` needs no account,
+  while the Actions job logs need a signed-in GitHub account.
+- **`CITATION.cff`'s abstract** names the Rigetti Cepheus-1-108Q runs, through Open Quantum and Amazon Braket, beside
+  the IBM and simulated ones.
+- **A fixed version.** The citation paragraph says how to cite a commit until `v0.1.0` is tagged. The release
+  follow-up removes that sentence.
+- **`.github/FUNDING.yml`** gives the Patreon page as `custom:`. `test_the_three_patreon_references_agree` checks it,
+  the README's Support section and `pyproject.toml`.
+- **`.zenodo.json`** is exactly A11's text. `test_the_zenodo_metadata_matches_the_citation` checks that it parses, and
+  that its title and creator are `CITATION.cff`'s. The README has no topics line, so the keyword check is skipped, as
+  A11 allows.
+- **A slip of mine, fixed.** `docs/index.md` section 4 said "the kept share chose the better pairs on ibm_fez"
+  twice in one sentence, a slip from A8. It is fixed.
+
+**5. A bug A10 Part 2's step 5 test found: re-signing a changed file.**
+- **What happened.** The step 5 test merged a change to `data/README.md` (pull request 4, merged as `ba0c558`). The
+  signing run that followed, 37722980126, failed: the Sigstore action refused to overwrite the file's existing bundle
+  ("Refusing to overwrite outputs without --overwrite").
+- **What it meant.** No signed file had changed before, so re-signing had never run. Until a fix lands, the bundles of
+  `data/README.md` and `data/SHA256SUMS` on `main` cover their earlier contents, and checking those two files against
+  their bundles fails.
+- **The ruleset is not the cause.** The rules on `main` block deletion and force-pushes, and the run failed before
+  it pushed anything.
+- **The fix.** `sign.yml`'s `sign-files` job now removes the old bundles of the files it is about to sign, in a step
+  just before Sign. This amendment changes both files again, so its merge re-signs them.
+- **The test.** `test_a_changed_file_loses_its_old_bundle_before_it_is_signed_again` checks the step and its place.
+  With the step removed, it fails.
+
+**After the amendment:**
+- **Tests:** 570 pass (558 before; 12 new);
+- **Ruff:** clean;
+- **The identifier scan:** clean on the full tree, the new files among it. `.zenodo.json` carries "Dogma LLC", which
+  the ownership allowance already covers;
+- **The git identity scan:** clean on every reachable commit;
+- **Data:** only `data/README.md` and its line in `data/SHA256SUMS` changed under `data/`.
+
+**Merge and release.** To be recorded here once done: the merge commit, the tag, the release's address, the three
+signing jobs' run IDs, the verify command and its output, and the DOI.
