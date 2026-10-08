@@ -586,9 +586,9 @@ def test_the_scores_compared_on_each_chip():
     for text in (README, " ".join(doc.split())):
         assert "was not settled on ibm_kingston" in text
         assert (
-            "On the Rigetti processor both scores were scored against the published figures in the same payoff runs; "
-            "no run has yet compared the two scores against each other under a rule fixed in advance." in text
-        )
+            "On every payoff run both scores were scored against the published figures: on IBM the kept share was the "
+            "primary test and the level a reference line; on Rigetti the reverse" in text
+        )  # A14's wording, by the author's ruling of 8 October; build report section 26 notes Kickoff 40's rule
         assert "third chip" not in text
 
 
@@ -615,6 +615,7 @@ RETIRED = [
     "had run its pairs on the named qubits",  # A13
     "ran on other qubits than",  # A13
     "labels, not locations",  # A13
+    "the level was not tested as a chooser",  # A14: it was, for reference, on both IBM chips
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -729,3 +730,26 @@ def test_the_readme_itself_says_how_to_point_at_the_data_and_what_is_sent():
         "The published runs predate this release, so their sealed predictions rest on the author's dated records"
         in front
     )
+
+
+def test_finding_4_reference_lines():
+    """Amendment A14: Kickoff 33's rule scored, for reference beside the verdict, the plain level's pick and the
+    same-day map's pick. Each figure the findings give is read from the archived analysis (which the reproduction
+    suite recomputes at 1e-6) and compared at the text's rounding."""
+    an = {c: archive.load(f"{c}/k33-payoff.json")["archived"]["analysis"] for c in ("ibm_fez", "ibm_kingston")}
+    g = {c: an[c]["gains"] for c in an}
+    assert [r(g[c]["L_prior"]["G"], 4) for c in an] == [0.0004, 0.0001]
+    assert [r(g[c]["k_prior"]["G"], 4) for c in an] == [0.0012, 0.0004]
+    assert r(g["ibm_fez"]["k_now"]["G"], 4) == -0.0003
+    assert [r(v, 4) for v in g["ibm_fez"]["k_now"]["ci90"]] == [-0.001, 0.0003]
+    assert r(g["ibm_kingston"]["k_now"]["G"], 4) == 0.0004
+    assert not an["ibm_fez"]["level_beats_k"] and not an["ibm_kingston"]["level_beats_k"]
+    p = an["ibm_fez"]["predictors"]
+    assert r(float(np.corrcoef(p["k_prior"], p["k_now"])[0, 1]), 2) == 0.80
+    picks = an["ibm_fez"]["picks"]
+    assert set(picks["k_prior"]) != set(picks["k_now"])  # "did not pick the same eight"
+    assert "(G = +0.0004 on ibm_fez and +0.0001 on ibm_kingston, against +0.0012 and +0.0004)" in README
+    assert "(G = −0.0003, 90% interval −0.0010 to +0.0003) and gained +0.0004 on ibm_kingston" in README
+    assert "(r = 0.80 between them) did not pick the same eight" in README
+    front = (ROOT / "README.md").read_text()
+    assert "| USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT SETTLED on ibm_kingston |" in front

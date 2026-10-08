@@ -25,7 +25,7 @@ Ten findings, from runs on 5 to 7 October 2026. Each is given in full, with its 
 | [1](docs/findings.md#finding-1) | Each pair keeps its own share, and the share repeats | ibm_fez, ibm_kingston | 31, 5 Oct | DIAGNOSTIC on both |
 | [2](docs/findings.md#finding-2) | The map exists on a second vendor's chip, within one job | Rigetti Cepheus-1-108Q, through Open Quantum | 34b, 5 Oct | MAP PRESENT |
 | [3](docs/findings.md#finding-3) | The gap between the best and worst pairs persisted when their neighbours were idle | ibm_fez, ibm_kingston | 32, 5 Oct | THE GATE on both (not explained by the tested neighbours) |
-| [4](docs/findings.md#finding-4) | On ibm_fez, choosing pairs by the map gave 35.6% less error on unrelated random circuits than choosing by the published error rates | ibm_fez, ibm_kingston | 33, 5 Oct | USEFUL on ibm_fez; NOT SETTLED on ibm_kingston |
+| [4](docs/findings.md#finding-4) | On ibm_fez, choosing pairs by the map gave 35.6% less error on unrelated random circuits than choosing by the published error rates | ibm_fez, ibm_kingston | 33, 5 Oct | USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT SETTLED on ibm_kingston |
 | [5](docs/findings.md#finding-5) | The rule can say no | a simulation of willow_pink's published noise | 36, 5 Oct | NOISE without a planted map; DIAGNOSTIC with one |
 | [6](docs/findings.md#finding-6) | On the Rigetti processor, a pair's level depends on the program that measures it, not on the hour | Rigetti Cepheus-1-108Q, through Open Quantum | 37, 38, 6 Oct | PLACEMENT; ACTIVITY |
 | [7](docs/findings.md#finding-7) | On ibm_fez, a map of the whole chip held for two days | ibm_fez, all 176 coupled pairs | 35, 5 to 7 Oct | HOLDS over two days |
