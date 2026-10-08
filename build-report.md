@@ -1897,5 +1897,39 @@ which would list every FAIL by ID, is not in this repository. A per-item list ne
 - **The git identity scan:** clean on every reachable commit;
 - **Data:** only `data/README.md` and its line in `data/SHA256SUMS` changed under `data/`.
 
-**Merge and release.** To be recorded here once done: the merge commit, the tag, the release's address, the three
-signing jobs' run IDs, the verify command and its output, and the DOI.
+**Merge and release (8 October 2026).**
+- **The merges.**
+  - Pull request 4, A10's step 5 test, was merged as `ba0c558`.
+  - Pull request 5, this amendment, was merged as `05de88e`, with a merge commit, by the author's ruling. Its checks
+    had passed: `ci` 37723470730, `dco` 37723470966 and `sign` 37723450747.
+  - The signing run on `main` after the merge (37724865784) re-signed `data/README.md` and `data/SHA256SUMS`, with the
+    stale-bundle fix in place. The bot committed them as `d37d0a2`.
+- **Checked before tagging.** All 233 signed files in the tree verified with `sigstore` 4.5.0 against
+  `…/sign.yml@refs/heads/main`, and every file in `data/` has a bundle. The git identity scan was clean on 70 commits.
+- **The tag.** `v0.1.0` is annotated and unsigned, as the author chose. It is on `d37d0a2`, not on the merge commit, by
+  the author's ruling, so that the release and its archive carry bundles that verify. On the merge commit, the two
+  files' bundles were still the stale ones.
+- **The release.** It was published at <https://github.com/dogma-guru/manacitra/releases/tag/v0.1.0>, with the 0.1.0
+  section of `CHANGELOG.md` as its notes.
+- **The release's signing run, 37726252431.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the wheel and `SHA256SUMS`, each with its
+  `.sigstore.json` bundle.
+  - **Not in the plan.** The action also signed and attached GitHub's two source archives (`v0.1.0.tar.gz`, `v0.1.0.zip`).
+- **The asset, verified from a fresh download:**
+
+  ```
+  $ sigstore verify identity manacitra-0.1.0-py3-none-any.whl --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.1.0 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.1.0-py3-none-any.whl
+  ```
+
+  - The sdist and `SHA256SUMS` verify too, and `shasum -a 256 -c SHA256SUMS` passes on both packages.
+  - **The negative control.** Against `…@refs/heads/main`, the wheel fails (exit status 1).
+- **The DOI.** Zenodo archived the release as "Manacitra: a map of your qubits", v0.1.0. The version DOI is
+  `10.5281/zenodo.23228519`, and the concept DOI, for every version, is `10.5281/zenodo.23228518`. The author confirmed
+  both from Zenodo's GitHub page. The follow-up branch `chore/v0.1.0-doi` makes these changes:
+  - the version DOI goes into `CITATION.cff` and the README's citation;
+  - the badge, linking to the concept DOI, goes at the top of the README;
+  - the fixed-commit sentence is removed;
+  - `CITATION.cff`'s `date-released` (2026-10-05 before) and the CHANGELOG heading ("unreleased" before) are set to
+    the release date, 8 October 2026.
+
+  `test_the_release_doi_is_cited_everywhere` checks all of this.
