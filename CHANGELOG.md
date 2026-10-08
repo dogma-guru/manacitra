@@ -6,6 +6,8 @@
   (before the subcommand), that a provider backend sends nothing without `--submit`, and that the published runs
   predate the release's checkable sealing. `docs/index.md` section 9 lists the release steps, the version DOI line
   among them.
+- Amendment A13: finding 6 and the sentences that repeat it now state the Open Quantum placement as a reading of the
+  correlation evidence, not a measurement; the route records no placement.
 
 ## 0.1.1 (8 October 2026)
 

@@ -316,7 +316,11 @@ def test_finding_6_kickoffs_38_and_40():
     assert "(r = 0.99) and not like the 53-pair one (r = −0.15)" in README and "(verdict ACTIVITY)" in README
     d = k40_stage1()["descriptive_outside_reading"]
     rs = (r(d["r_X_vs_k37_27pair_program"]["pearson"], 2), r(d["r_X_vs_k37_53pair_program"]["pearson"], 2))
-    assert rs == (-0.18, 0.24) and "(r = −0.18 and 0.24 against the pinned levels)" in README
+    assert rs == (-0.18, 0.24)
+    # Amendment A13: the mismatch is measured; where the Open Quantum pairs ran is a reading, and the alternative named
+    assert "do not match the pinned levels of the same named pairs (r = −0.18 and 0.24)" in README
+    assert "Open Quantum records no placement, so where its pairs ran is not measured" in README
+    assert "is not excluded by these runs" in README
 
 
 def test_finding_7():
@@ -607,6 +611,10 @@ RETIRED = [
     "k swung by 3 to 4",  # A8, the author's wording of 7 October
     "IBM's figures for them barely moved",  # A8, the author's wording of 7 October
     "have not been compared head to head",  # A8, the author's wording of 7 October
+    # A13: placement on Open Quantum is a reading of the correlation evidence, not a measurement
+    "had run its pairs on the named qubits",  # A13
+    "ran on other qubits than",  # A13
+    "labels, not locations",  # A13
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 

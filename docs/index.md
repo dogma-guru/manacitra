@@ -223,8 +223,9 @@ with a the bit of the pair's first qubit and b its second.
   openquantum-sdk-qiskit 0.3.3; live responses are still untested), and the module stops at import, naming them, if
   the installed SDK lacks the two private methods it calls (`_wait_for_preparation`, `_resolve_organization_id`).
   On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed that the same named pairs,
-  sent through a route that records placement, ran on other qubits than Open Quantum's programs had used. Use a map
-  there only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned,
+  sent through a route that records placement, gave levels that do not match the Open Quantum programs' levels for
+  the same named pairs; the reading is that the Open Quantum compiler placed them elsewhere, and that route records no
+  placement. Use a map there only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned,
   because the platform's preprocessing breaks the provider's verbatim mode. In
   Kickoff 34b, pair levels held within a job (r = 0.93) but not between runs a few hours apart (r between 0.10 and
   0.23 on the shared pairs, computed after seeing the data).
