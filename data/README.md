@@ -102,8 +102,9 @@ Braket map names its figures record in `meta.figures_file` (and `meta.figures_pa
 ## Checksums and signatures
 
 `SHA256SUMS` holds a plain SHA-256 of every file here, for catching corrupted files (`python tools/sha256sums.py
---check`). Once signing is turned on, each file also gets a Sigstore bundle beside it (`FILE.sigstore.json`), which
-shows who published it and when; `docs/index.md` gives the command to verify one.
+--check`). Signing has been on since 7 October 2026: each file has a Sigstore bundle beside it (`FILE.sigstore.json`),
+which shows who published it and when, and a file that changes is signed again when the change lands on `main`.
+`docs/index.md` gives the command to verify one.
 
 ## What was changed when copying
 
