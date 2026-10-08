@@ -3,7 +3,9 @@
 name: ci
 
 on:
+  # once per change: a pull request's commits are tested by the pull_request run, and main by its own push
   push:
+    branches: [main]
   pull_request:
 
 permissions:

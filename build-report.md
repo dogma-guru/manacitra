@@ -1601,8 +1601,14 @@ scan, and A4's ruling stands: no history is rewritten. The git identity scan is 
   is run 37703906284, and on the pull request it is run 37703907727. Each has three jobs, not two: the scan, and the
   tests on Python 3.11 and 3.13. All three passed in both runs, and `dco` (37703907725) and `sign` (37703906278) passed
   too. The organisation's Actions policy blocked nothing: the repository allows all actions and does not require SHA
-  pinning (the workflows pin by SHA anyway), so no setting was changed. Signing stays off: the repository variable
-  `MANACITRA_SIGN` is `false`, and the gate signs only on `true`.
+  pinning, so no setting was changed. Signing stays off: the repository variable `MANACITRA_SIGN` is `false`, and the
+  gate signs only on `true`.
+- **Correction, after the merge.** This section first said "the workflows pin by SHA anyway". Only the Sigstore action
+  in `sign.yml` is pinned by SHA; `actions/checkout@v4` and `actions/setup-python@v5` are pinned by their major-version
+  tag in all three workflows. The sentence is corrected above.
+- **CI runs once per change, after the merge** (the author's ruling of 7 October). `ci` ran twice on every pushed
+  commit of a pull request, once for the push and once for the pull request, and the tests take 14 to 19 minutes a
+  run. It now runs on pull requests and on pushes to `main` only. `dco` and `sign` are unchanged.
 
 **Not in this amendment, and not done:**
 - Kickoff 39;
