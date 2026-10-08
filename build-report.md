@@ -2009,5 +2009,37 @@ exact citation. `test_the_citation_uses_the_concept_doi` checks both.
 
 **The release path is unchanged:** the merge, then signing on `main` (a bundle commit only if a signed file changed),
 the annotated tag, the release with the changelog's 0.1.1 entry as its notes, and `gate`, `build-release` and
-`sign-release`. The release's run and its verification are recorded on the release page and in the next change to
-this report.
+`sign-release`.
+
+**The release (8 October 2026).**
+- **The merge.** Pull request 8 was merged as `0b2ba5a`, with a merge commit, on the author's go-ahead, after its
+  checks passed: `ci` 37779998272, `dco` 37779998282 and `sign` 37779992593.
+- **After the merge.** Signing (37781657492) and CI (37781657441) on `main` passed. No signed file changed, so there
+  was no bundle commit, and the tag is on the merge commit itself.
+- **Checked before tagging.** All 233 signed files in the tree verified against `…/sign.yml@refs/heads/main`. Every
+  file in `data/` has a bundle, and the git identity scan was clean on 78 commits.
+- **The tag and the release.** `v0.1.1` is annotated and unsigned, on `0b2ba5a`. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.1.1>, with the changelog's 0.1.1 entry as its notes.
+- **The release's signing run, 37784027125.** `gate`, `build-release` and `sign-release` passed. The release carries
+  the sdist, the wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Verified from a fresh download, with `sigstore` 4.5.0:**
+
+  ```
+  $ sigstore verify identity manacitra-0.1.1-py3-none-any.whl manacitra-0.1.1.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.1.1 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.1.1-py3-none-any.whl
+  OK: manacitra-0.1.1.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages. The negative control: against `…@refs/tags/v0.1.0`, the
+  wheel fails (exit status 1).
+- **Zenodo.** It archived the release as v0.1.1, with its own DOI, `10.5281/zenodo.23239929`, under the concept DOI
+  `10.5281/zenodo.23228518`. The concept DOI now resolves to the v0.1.1 record, so the citation and the badge point to
+  the latest version with no follow-up.
+
+**The version DOI in the README, by the author's ruling of 8 October.** The citation paragraph's example of a version's
+own DOI was still v0.1.0's beside "version 0.1.1" in the citation line. It now names v0.1.1's DOI. Each release updates
+that one line once Zenodo has minted the DOI, and adds the version to `VERSION_DOIS` in
+`tests/test_repository_home.py`. The test checks that the README names the latest published version's DOI. The author
+preferred this to wording that names no version, which would hide a number a reader might want. The repository has no
+release checklist file. This step is written down here and in the test.

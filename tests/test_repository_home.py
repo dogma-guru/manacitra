@@ -90,7 +90,10 @@ def test_the_zenodo_metadata_matches_the_citation():
         assert set(z["keywords"]) <= {t.strip(" `") for t in topics.group(1).split(",")}
 
 
-V010_DOI, CONCEPT_DOI = "10.5281/zenodo.23228519", "10.5281/zenodo.23228518"
+CONCEPT_DOI = "10.5281/zenodo.23228518"
+#: Each published version's own DOI, as Zenodo minted it after the release; a release's follow-up adds its line
+VERSION_DOIS = {"0.1.0": "10.5281/zenodo.23228519", "0.1.1": "10.5281/zenodo.23239929"}
+V010_DOI = VERSION_DOIS["0.1.0"]
 
 
 def test_the_version_is_the_same_everywhere():
@@ -105,15 +108,19 @@ def test_the_version_is_the_same_everywhere():
 
 
 def test_the_citation_uses_the_concept_doi():
-    """From v0.1.1 the citation uses the concept DOI, which always resolves to the latest version, so a release needs
-    no DOI follow-up (the author's ruling of 8 October); v0.1.0's own DOI is named beside it, for an exact citation."""
+    """From v0.1.1 the citation uses the concept DOI, which always resolves to the latest version (the author's ruling
+    of 8 October). Beside it, the README names the latest published version's own DOI, for an exact citation; each
+    release updates that one line once Zenodo has minted the DOI (the author's ruling of 8 October)."""
     assert re.search(r"^doi: (.+)$", _read("CITATION.cff"), re.M).group(1) == CONCEPT_DOI
     assert re.search(r"^date-released: (.+)$", _read("CITATION.cff"), re.M).group(1) == "2026-10-08"
     readme = _read("README.md")
     citation = next(line for line in readme.splitlines() if line.startswith("> Patel, A. (2026)."))
     assert f"https://doi.org/{CONCEPT_DOI}." in citation
     assert f"(https://doi.org/{CONCEPT_DOI})" in readme.split("\n## What it does", 1)[0], "the badge, at the top"
-    assert f"version 0.1.0: [{V010_DOI}](https://doi.org/{V010_DOI})" in readme
+    latest = max(VERSION_DOIS, key=lambda v: tuple(map(int, v.split("."))))
+    doi = VERSION_DOIS[latest]
+    assert f"(version {latest}: [{doi}](https://doi.org/{doi}))" in readme, "the latest published version's own DOI"
+    assert readme.count("10.5281/zenodo.") == 4, "the badge, the citation, and one version DOI (twice: text and link)"
     changelog = _read("CHANGELOG.md")
     assert f"https://doi.org/{V010_DOI}" in changelog and f"https://doi.org/{CONCEPT_DOI}" in changelog
     assert "Unreleased" not in changelog.split("\n## ", 2)[1].split("\n", 1)[0]
