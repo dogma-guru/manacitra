@@ -116,6 +116,7 @@ W7 = "Dog" + "ma"  # assembled at run time, so this file holds no instance of th
         f"see github.com/{W7.lower()}-guru/other-repo",  # the organisation's address, outside this repository's
         f"the {W7.lower()}-guru organisation",  # the organisation's name on its own
         f"{W7}Guru on Patreon",  # the Patreon name outside its address
+        f"ping @{W7.lower()}guru",  # the account name outside the CODEOWNERS line
         f"{W7.upper()} GURU",  # another case
         f"{W7}_Guru",  # another spacing
         f"the {W7} series",  # the first word on its own
@@ -137,6 +138,7 @@ def test_w7_is_flagged_in_any_other_context(text):
         f"https://github.com/{W7.lower()}guru/manacitra",
         f"https://github.com/{W7.lower()}-guru/manacitra",  # the repository's home since Amendment A9
         f"https://www.patreon.com/{W7}Guru",  # the funding link, by the author's ruling of 7 October
+        f"* @{W7.lower()}guru",  # .github/CODEOWNERS (Amendment A10)
     ],
 )
 def test_w7_allowed_only_in_exact_strings(text):

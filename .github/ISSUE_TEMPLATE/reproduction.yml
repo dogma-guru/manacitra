@@ -1,0 +1,48 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
+name: A number did not reproduce
+description: An archived statistic, recomputed from data/, did not match the value the repository states.
+title: "Reproduction: "
+body:
+  - type: input
+    id: field
+    attributes:
+      label: File and field
+      description: The data file, and the field's path as tests/expected_fields.json lists it.
+      placeholder: ibm_fez/k31-map.json, archived/analysis/S2/r_AB/pearson
+    validations:
+      required: true
+  - type: input
+    id: stated
+    attributes:
+      label: The value the README states
+    validations:
+      required: true
+  - type: input
+    id: got
+    attributes:
+      label: The value you got
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Python and numpy versions
+      placeholder: Python 3.13.1, numpy 2.5.3
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: The commit
+      description: The output of `git rev-parse HEAD`.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: The command
+      description: Exactly what you ran.
+      render: shell
+    validations:
+      required: true

@@ -36,3 +36,6 @@ runs/
 .DS_Store
 .idea/
 .vscode/
+
+# Local drafts
+review-images/

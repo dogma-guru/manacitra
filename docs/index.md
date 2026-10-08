@@ -384,8 +384,10 @@ certificate tied to its own GitHub identity, and writes each signature to Sigsto
 timestamp. There is no key to store, rotate or keep secret.
 
 - **What is signed:** every `*.commit.json` file and every file in `data/` when it lands on the default branch (those
-  with no bundle yet, or changed in that push; `tools/sign_targets.py` lists them), and every release artifact. Each
-  bundle is committed beside the file it covers, as `FILE.sigstore.json`. Release bundles are attached to the release.
+  with no bundle yet, or changed in that push; `tools/sign_targets.py` lists them), and every release artifact: the
+  sdist, the wheel and their `SHA256SUMS`, which the workflow's `build-release` job builds from the release's tag and
+  attaches. Each bundle is committed beside the file it covers, as `FILE.sigstore.json`. Release bundles are attached
+  to the release.
 - **The gate:** a log entry is public and names this repository and workflow, so signing runs only when the
   repository variable `MANACITRA_SIGN` is `true`. It stays unset while the repository is private. The workflow's
   `gate` job runs on every push and states its decision in the log.
@@ -401,10 +403,19 @@ sigstore verify identity data/ibm_fez/k31-map.json \
 
 `sigstore` finds the bundle `data/ibm_fez/k31-map.json.sigstore.json` beside the file. The expected certificate
 identity is this repository's signing workflow on the default branch, and the issuer is GitHub Actions' OIDC issuer.
-For a release artifact, the identity ends in `@refs/tags/<the release tag>`. For a sealed prediction, verify both: the
-commit record's signature (`sigstore verify identity predictions.md.commit.json ...`), which shows who published the
-commitment and when, and the commitment itself (`manacitra verify predictions.md`), which shows the file is the one
-committed to.
+A release's assets are signed under the identity ending `@refs/tags/<the release tag>`, because the workflow runs on
+the release's tag. The data files in the tree stay signed under `@refs/heads/main`. For a release asset (here, the
+wheel of `v0.1.0`, downloaded with its bundle from the release page):
+
+```bash
+sigstore verify identity manacitra-0.1.0-py3-none-any.whl \
+  --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.1.0 \
+  --cert-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+For a sealed prediction, verify both: the commit record's signature (`sigstore verify identity
+predictions.md.commit.json ...`), which shows who published the commitment and when, and the commitment itself
+(`manacitra verify predictions.md`), which shows the file is the one committed to.
 
 **Plain SHA-256 stays** for catching corrupted files: `data/SHA256SUMS` (checked by `python tools/sha256sums.py
 --check` and by the tests) and the `sources` hashes in every data file's `meta` block.

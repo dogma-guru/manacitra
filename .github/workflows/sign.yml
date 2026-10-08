@@ -3,9 +3,10 @@
 # Keyless signing with a public timestamp (Kickoff 01, section 7b).
 #
 # Signs every *.commit.json and every file in data/ when they land on the default branch, and every release
-# artifact, with Sigstore's keyless signing: a short-lived certificate tied to this workflow's own GitHub identity,
-# recorded with a timestamp in Sigstore's public transparency log. Nothing is stored, rotated or kept secret. The
-# .sigstore.json bundles are committed beside the files they cover.
+# artifact (the sdist, the wheel and their SHA256SUMS, which build-release attaches), with Sigstore's keyless
+# signing: a short-lived certificate tied to this workflow's own GitHub identity, recorded with a timestamp in
+# Sigstore's public transparency log. Nothing is stored, rotated or kept secret. The .sigstore.json bundles are
+# committed beside the files they cover, or attached to the release.
 #
 # The gate: a log entry is public and names this repository and workflow, so signing runs only when the repository
 # variable MANACITRA_SIGN is "true". It stays unset while the repository is private. The gate job runs on every push
@@ -92,8 +93,32 @@ jobs:
           git commit -m "chore: Sigstore bundles for ${GITHUB_SHA::7}"
           git push
 
+  # A release made from a tag carries only GitHub's automatic source archives, which `gh release download` does not
+  # fetch, so sign-release would have nothing to sign (Amendment A10). This job builds the package from the tag and
+  # attaches it, with its checksums, before sign-release downloads and signs what is attached.
+  build-release:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # attach the built package to the release
+    steps:
+      - uses: actions/checkout@v4   # on a release, github.ref is the release's tag
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the sdist and the wheel
+        run: |
+          python -m pip install "build>=1.2,<2"
+          python -m build
+          (cd dist && sha256sum -- * > SHA256SUMS && cat SHA256SUMS)
+      - name: Attach them to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY"
+
   sign-release:
-    needs: gate
+    needs: [gate, build-release]
     if: needs.gate.outputs.sign == 'true' && github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
