@@ -1587,6 +1587,12 @@ scan.
 - the identifier scan is clean on the full tree, and the git identity scan is clean on every reachable commit;
 - `data/` is unchanged, and `data/SHA256SUMS` matches every file;
 - `CHANGELOG.md` gains one line under the first version: the repository's home is `github.com/dogma-guru/manacitra`.
+- **The first CI run under the organisation** was on `d1d8250`, this amendment's commit. The `ci` workflow on the push
+  is run 37703906284, and on the pull request it is run 37703907727. Each has three jobs, not two: the scan, and the
+  tests on Python 3.11 and 3.13. All three passed in both runs, and `dco` (37703907725) and `sign` (37703906278) passed
+  too. The organisation's Actions policy blocked nothing: the repository allows all actions and does not require SHA
+  pinning (the workflows pin by SHA anyway), so no setting was changed. Signing stays off: the repository variable
+  `MANACITRA_SIGN` is `false`, and the gate signs only on `true`.
 
 **Not in this amendment, and not done:**
 - Kickoff 39;
