@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.1.2 (8 October 2026)
+
+Corrections from the second public trial and two source reviews. No behaviour, data or archived number changed; finding 4
+gains the reference figures Kickoff 33's rule specified, read from the archive.
 
 - Amendment A12: three sentences are back on the README itself, not only on its linked pages: where `--data` goes
   (before the subcommand), that a provider backend sends nothing without `--submit`, and that the published runs

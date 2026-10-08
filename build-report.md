@@ -2233,3 +2233,22 @@ So the archive does not support "the reverse" for Kickoff 40, and Kickoff 41 nam
 
 **After the amendment:** 582 tests pass (581 before; 1 new); Ruff is clean; both scans are clean; nothing in `data/`
 changed.
+
+## 27. Release v0.1.2 (8 October 2026)
+
+**What it carries.** Amendments A12 to A14:
+- three sentences back on the README, and the release steps in `docs/index.md` section 9 (A12);
+- placement on Open Quantum stated as a reading, not a measurement (A13);
+- Kickoff 33's reference lines in finding 4 (A14).
+
+No behaviour, data or archived number changed. The version is 0.1.2 in `pyproject.toml`, the package, `CITATION.cff`
+and the README's citation, and the changelog has a dated entry.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`, which will
+resolve to v0.1.2 once Zenodo archives it. The README's version-DOI parenthetical names v0.1.1's DOI until Zenodo has
+minted v0.1.2's. That is step 4 of the release steps in `docs/index.md` section 9: one line in the README, and the
+version's line in `VERSION_DOIS`.
+
+**The release path** follows the release steps in `docs/index.md` section 9: the merge on the author's go-ahead, then
+signing on `main`, the annotated tag, the release, and verifying its assets against `@refs/tags/v0.1.2`. The release's
+signing run, the verification and the DOI are recorded with step 4's follow-up.
