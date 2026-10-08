@@ -1911,8 +1911,8 @@ which would list every FAIL by ID, is not in this repository. A per-item list ne
   files' bundles were still the stale ones.
 - **The release.** It was published at <https://github.com/dogma-guru/manacitra/releases/tag/v0.1.0>, with the 0.1.0
   section of `CHANGELOG.md` as its notes.
-- **The release's signing run, 37726252431.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the wheel and `SHA256SUMS`, each with its
-  `.sigstore.json` bundle.
+- **The release's signing run, 37726252431.** `gate`, `build-release` and `sign-release` passed. The release carries
+  the sdist, the wheel and `SHA256SUMS`, each with its `.sigstore.json` bundle.
   - **Not in the plan.** The action also signed and attached GitHub's two source archives (`v0.1.0.tar.gz`, `v0.1.0.zip`).
 - **The asset, verified from a fresh download:**
 
