@@ -93,5 +93,8 @@ def test_cli(tmp_path, monkeypatch, capsys):
 
 def test_the_seals_folder_is_ignored_by_git():
     root = Path(__file__).resolve().parent.parent
+    inside = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=root, capture_output=True, text=True)
+    if inside.returncode != 0 or inside.stdout.strip() != "true":
+        pytest.skip("not inside a git work tree (an unpacked archive, say): git check-ignore cannot run here")
     out = subprocess.run(["git", "check-ignore", ".seals/x.md.salt"], cwd=root, capture_output=True, text=True)
     assert out.returncode == 0

@@ -5,10 +5,6 @@
     "kickoff": "Kickoff 29 (settling run)",
     "utc": "2026-10-05T02:24:27.026364Z",
     "shots_per_circuit": 4000,
-    "n_pairs": 27,
-    "job_id": "db1gkmeegvvc73bhjkd0",
-    "charged_s": 8,
-    "description": "Circuit A only, three variants (no offset, offset, wrong sign), each twice, all 27 pairs at once. No counts were archived for this run, only P(11) per circuit and pair.",
     "sources": [
       {
         "file": "settle-results.json",
@@ -19,6 +15,10 @@
         "sha256": "a3ab8899ce5bb638936b7dabc9e33238c088939c4dee88112d947b99211340a0"
       }
     ],
+    "n_pairs": 27,
+    "job_id": "db1gkmeegvvc73bhjkd0",
+    "charged_s": 8,
+    "description": "Circuit A only, three variants (no offset, offset, wrong sign), each twice, all 27 pairs at once. No counts were archived for this run, only P(11) per circuit and pair.",
     "source_script_sha256": "7ccce2d4a0c11333b44cae0154c46982c11ebdd5b0222a299be6817ac6dd8d61"
   },
   "pairs": [[114,115],[70,71],[142,143],[13,14],[123,124],[22,23],[5,6],[68,69],[25,26],[106,107],[9,10],[85,86],[145,146],[133,134],[94,95],[98,111],[121,122],[104,105],[74,75],[127,137],[129,130],[109,118],[151,152],[88,89],[20,21],[140,141],[47,48]],

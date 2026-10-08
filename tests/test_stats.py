@@ -44,3 +44,12 @@ def test_bootstrap_gain():
     W = np.array([[1.0, 1.0], [1.0, 1.0], [0.9, 0.9], [0.9, 0.9]])
     g, ci, _ = stats.bootstrap_gain_over_circuits(W, [0, 1], [2, 3], seed=33, n=200)
     assert abs(g - 0.1) < 1e-12 and abs(ci[0] - 0.1) < 1e-12 and abs(ci[1] - 0.1) < 1e-12
+
+
+def test_a_permutation_p_of_zero_is_reported_as_a_bound():
+    """Amendment A3, 4.7: zero exceedances is "p < 1/N (0 of N)", never "p = 0"; the value itself is unchanged."""
+    from manacitra.stats import format_p
+
+    assert format_p(0.0) == "p < 1/10000 (0 of 10000)"
+    assert format_p(0.0004) == "p = 0.0004 (4 of 10000)"
+    assert format_p(0.0, 100_000) == "p < 1/100000 (0 of 100000)"

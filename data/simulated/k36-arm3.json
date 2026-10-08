@@ -1,20 +1,21 @@
 {
   "meta": {
+    "bit_reading": "per-pair",
     "processor": "willow_pink (simulated)",
     "provider": "none: a local simulation of the Cirq Quantum Virtual Machine's published median calibration (2024-08-16); not a measurement of any device",
     "kickoff": "Kickoff 36 (can the method say no?)",
     "utc": "2026-10-05T18:34:56Z",
     "shots_per_circuit": 8000,
-    "arm": 3,
-    "description": "the QVM's own noise model for willow_pink",
-    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
-    "permutation_seed": 36,
     "sources": [
       {
         "file": "results-36-arm3.json",
         "sha256": "994078d11c32df206421f6bb61b4943678a62ccb7ce94d0afb590e89b7d07d60"
       }
     ],
+    "arm": 3,
+    "description": "the QVM's own noise model for willow_pink",
+    "bit_order": "per pair, outcome keys 'ab' with a the pair's first qubit",
+    "permutation_seed": 36,
     "source_script_sha256": "abb386e39f28f666774e2faa61e2cf64574bba3b51c0ae00aa22884b0530c241"
   },
   "arm": 3,

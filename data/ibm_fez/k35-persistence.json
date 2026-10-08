@@ -1,0 +1,350 @@
+{
+  "meta": {
+    "processor": "ibm_fez",
+    "provider": "IBM Quantum (Open Plan)",
+    "kickoff": "Kickoff 35",
+    "utc": "2026-10-05T17:02:14Z, 2026-10-06T14:55:52Z and 2026-10-07T14:21:20Z (each day's submission)",
+    "shots_per_circuit": 4000,
+    "sources": [
+      {
+        "file": "across-35.json",
+        "sha256": "d5bfb6554540b225d4e8ef250be2da3400716ee2e0015b4bfa944875a028066e"
+      },
+      {
+        "file": "a1-35.json",
+        "sha256": "01761dbbf492701f4c47dccda5d8e90dfeb48d69393c90493d5dbff4473947fe"
+      },
+      {
+        "file": "robustness-35.json",
+        "sha256": "cf47f38d4d69c74301592165b06bf0af9ae13bc384b32f60981e48bd6381a062"
+      }
+    ],
+    "source_archive_sha256": "ef527aeeb3aa28d23b1f25f622e5f5ca6a64741f5304aa8db135c7aca7a45386",
+    "source_script_sha256": "6b3ccaad5b95a095eb3772e7ba512819c9bede65d8bb9aae148143739e082027",
+    "robustness_script_sha256": "b375ab87be40853407312d4da930e8be8a2b789791c97e0866f0044ab45b3f1d",
+    "days_submitted_utc": {
+      "1": "2026-10-05T17:02:14Z",
+      "2": "2026-10-06T14:55:52Z",
+      "3": "2026-10-07T14:21:20Z"
+    },
+    "amendment_a1": "Amendment A1 to Kickoff 35 was written after Day 1's analysis had been seen, so the original rule governs the verdict and A1's verdict is reported beside it.",
+    "description": "Kickoff 35 across its three days: the day-to-day correlations of the map, corrected by each day's reliability, the decile overlaps and the verdict under the rule fixed before the run (archived/across); Amendment A1's verdict beside it (archived/amendment_A1); and descriptive checks computed after seeing the data, outside the verdict (archived/robustness).",
+    "verdict_rule": "original (governs): FADES if corrected r(k1, k2) < 0.5; HOLDS if corrected r(k1, k3) >= 0.7 and the worst-decile overlap Day 1 to Day 3 >= 50%; PARTIAL otherwise. Amendment A1: a day whose Spearman-Brown reliability is below 0.5 is too noisy and not used; the decile bar is 40%."
+  },
+  "archived": {
+    "across": {
+      "days_present": [
+        1,
+        2,
+        3
+      ],
+      "n_common_edges": 176,
+      "pairs": {
+        "1-2": {
+          "r_k": 0.8559155485033648,
+          "rho_k": 0.7570584221189758,
+          "corrected_r_k": 0.8761077536944866,
+          "r_x": 0.9868641004116465,
+          "rho_x": 0.7879330838652873
+        },
+        "2-3": {
+          "r_k": 0.6718300980239407,
+          "rho_k": 0.6995576008135261,
+          "corrected_r_k": 0.6872803920664798,
+          "r_x": 0.9857636950241584,
+          "rho_x": 0.8226040061633283
+        },
+        "1-3": {
+          "r_k": 0.8615923653865567,
+          "rho_k": 0.6597134286658648,
+          "corrected_r_k": 0.8860261560169602,
+          "r_x": 0.9886261689489022,
+          "rho_x": 0.7660378604446401
+        }
+      },
+      "decile_size": 18,
+      "worst_decile_overlap_1_to_3": 0.5,
+      "best_decile_overlap_1_to_3": 0.6666666666666666,
+      "verdict": "HOLDS",
+      "map_or_ibm_persists_more": {
+        "1-2": "IBM's x",
+        "2-3": "IBM's x",
+        "1-3": "IBM's x"
+      }
+    },
+    "amendment_A1": {
+      "label": "written after Day 1 was seen",
+      "days_present": [
+        1,
+        2,
+        3
+      ],
+      "per_day": {
+        "1": {
+          "reliability_spearman_brown": 0.9718588383199548,
+          "passes_floor": true,
+          "rank_based_reliability_descriptive": 0.7209564736996371
+        },
+        "2": {
+          "reliability_spearman_brown": 0.9820726019297554,
+          "passes_floor": true,
+          "rank_based_reliability_descriptive": 0.8197767809430099
+        },
+        "3": {
+          "reliability_spearman_brown": 0.9729878340011737,
+          "passes_floor": true,
+          "rank_based_reliability_descriptive": 0.825113905459733
+        }
+      },
+      "days_passing": [
+        1,
+        2,
+        3
+      ],
+      "n_common_edges": 176,
+      "decile_size": 18,
+      "fades_pair": {
+        "days": [
+          1,
+          2
+        ],
+        "r_k": 0.8559155485033648,
+        "rho_k": 0.7570584221189758,
+        "corrected_r_k": 0.8761077536944866
+      },
+      "holds_pair": {
+        "days": [
+          1,
+          3
+        ],
+        "r_k": 0.8615923653865567,
+        "rho_k": 0.6597134286658648,
+        "corrected_r_k": 0.8860261560169602
+      },
+      "worst_decile_overlap_holds_pair": 0.5,
+      "verdict": "HOLDS"
+    },
+    "robustness": {
+      "label": "descriptive, outside the verdict; computed after seeing the data",
+      "ibm_cz_error_1_edges_by_day": {
+        "1": [
+          [
+            27,
+            28
+          ],
+          [
+            32,
+            33
+          ],
+          [
+            71,
+            72
+          ],
+          [
+            72,
+            73
+          ]
+        ],
+        "2": [
+          [
+            27,
+            28
+          ],
+          [
+            32,
+            33
+          ],
+          [
+            71,
+            72
+          ],
+          [
+            72,
+            73
+          ]
+        ],
+        "3": [
+          [
+            27,
+            28
+          ],
+          [
+            32,
+            33
+          ],
+          [
+            71,
+            72
+          ],
+          [
+            72,
+            73
+          ]
+        ]
+      },
+      "without_ibm_flagged_edges": {
+        "n_edges": 172,
+        "reliability": {
+          "1": 0.9282745352874119,
+          "2": 0.9720084044918357,
+          "3": 0.9421558425911055
+        },
+        "pairs": {
+          "1-2": {
+            "r_k": 0.7888195942240035,
+            "rho_k": 0.7482961510330319,
+            "corrected_r_k": 0.8304327369655646,
+            "r_x": 0.6613780703735277,
+            "rho_x": 0.7727906269235395
+          },
+          "2-3": {
+            "r_k": 0.4095148928595935,
+            "rho_k": 0.6790556058135024,
+            "corrected_r_k": 0.4279305752477713,
+            "r_x": 0.6536421725822044,
+            "rho_x": 0.8099371968030035
+          },
+          "1-3": {
+            "r_k": 0.6886357495357707,
+            "rho_k": 0.6454742599483465,
+            "corrected_r_k": 0.7363596344254509,
+            "r_x": 0.6578884878810817,
+            "rho_x": 0.749331993783356
+          }
+        },
+        "decile_size": 17,
+        "worst_decile_overlap_1_to_3": 0.47058823529411764
+      },
+      "core_within_1_of_median": {
+        "n_edges": 164,
+        "reliability": {
+          "1": 0.7428554289862587,
+          "2": 0.802399900877359,
+          "3": 0.8023497185190115
+        },
+        "pairs": {
+          "1-2": {
+            "r_k": 0.7478903566036539,
+            "rho_k": 0.7004530057550454,
+            "corrected_r_k": 0.9687023413052558,
+            "r_x": 0.967953674635834,
+            "rho_x": 0.7744072476976861
+          },
+          "2-3": {
+            "r_k": 0.682378996297148,
+            "rho_k": 0.6730785058618917,
+            "corrected_r_k": 0.8504491770965118,
+            "r_x": 0.9636848037974639,
+            "rho_x": 0.8061159250744766
+          },
+          "1-3": {
+            "r_k": 0.6250919543137552,
+            "rho_k": 0.6240060019503013,
+            "corrected_r_k": 0.8096734637361404,
+            "r_x": 0.9668631641627412,
+            "rho_x": 0.7550528477956279
+          }
+        },
+        "decile_size": 16,
+        "worst_decile_overlap_1_to_3": 0.4375
+      },
+      "rank_based_corrected": {
+        "1-2": 0.9847524401794201,
+        "2-3": 0.8505869588195624,
+        "1-3": 0.8553499775474132
+      },
+      "day1_k_at_ranks_17_to_20": [
+        0.45015225738117637,
+        0.4667019727260662,
+        0.4865616311399452,
+        0.4998014034158606
+      ],
+      "day3_k_at_ranks_17_to_20": [
+        0.42036276976036235,
+        0.4700119157950495,
+        0.47332185886402683,
+        0.4766318019330072
+      ],
+      "worst_overlap_shot_redraw": {
+        "draws": 2000,
+        "median": 0.4444444444444444,
+        "p5": 0.3333333333333333,
+        "p95": 0.5555555555555556,
+        "share_at_or_above_0.5": 0.422,
+        "share_at_or_above_0.4": 0.733
+      },
+      "trend_first_look": {
+        "all": {
+          "day2_alone": {
+            "r": 0.6718300980239407,
+            "rho": 0.6995576008135261
+          },
+          "mean_day1_day2": {
+            "r": 0.7920711285656423,
+            "rho": 0.7306090913103718
+          }
+        },
+        "core": {
+          "day2_alone": {
+            "r": 0.682378996297148,
+            "rho": 0.6730785058618917
+          },
+          "mean_day1_day2": {
+            "r": 0.6987701716905858,
+            "rho": 0.7109832094005816
+          }
+        }
+      },
+      "largest_moves_2_to_3": [
+        [
+          [
+            149,
+            150
+          ],
+          -4.782867734674965,
+          2.830001323977226
+        ],
+        [
+          [
+            148,
+            149
+          ],
+          -4.077849860982392,
+          0.6388190123129884
+        ],
+        [
+          [
+            72,
+            73
+          ],
+          -5.236329935125115,
+          -4.2234873560174755
+        ],
+        [
+          [
+            82,
+            83
+          ],
+          -0.04964914603469008,
+          0.8440354825896991
+        ],
+        [
+          [
+            57,
+            67
+          ],
+          -0.6255792400370715,
+          0.1621872103799827
+        ],
+        [
+          [
+            27,
+            28
+          ],
+          4.034820601085661,
+          4.7894876208129205
+        ]
+      ]
+    }
+  }
+}

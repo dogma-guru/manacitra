@@ -1,16 +1,11 @@
 {
   "meta": {
+    "bit_reading": "qiskit-adjacent",
     "processor": "ibm_fez",
     "provider": "IBM Quantum",
     "kickoff": "Kickoff 31 (the map)",
     "utc": "2026-10-05T12:36:54.116023Z",
     "shots_per_circuit": 8000,
-    "n_pairs": 27,
-    "job_id": "db1pjp6egvvc73bi00m0",
-    "charged_s": 40,
-    "description": "Circuits A and B, no offset and offset, in Kickoff 31's 18-circuit order (the wrong-sign variants last), all 27 pairs at once, 8000 shots per circuit.",
-    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
-    "permutation_seed": 31,
     "sources": [
       {
         "file": "results-31-ibm_fez.json",
@@ -25,6 +20,12 @@
         "sha256": "e3d96aada436c591c10d048b687dff3928dc1940287fca37e0618a92c267990f"
       }
     ],
+    "n_pairs": 27,
+    "job_id": "db1pjp6egvvc73bi00m0",
+    "charged_s": 40,
+    "description": "Circuits A and B, no offset and offset, in Kickoff 31's 18-circuit order (the wrong-sign variants last), all 27 pairs at once, 8000 shots per circuit.",
+    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
+    "permutation_seed": 31,
     "source_script_sha256": "caba2eabcebf19a0f9738d1cd0be46da07a33abd348507497baada9117597c4e"
   },
   "pairs": [[114,115],[70,71],[142,143],[13,14],[123,124],[22,23],[5,6],[68,69],[25,26],[106,107],[9,10],[85,86],[145,146],[133,134],[94,95],[98,111],[121,122],[104,105],[74,75],[127,137],[129,130],[109,118],[151,152],[88,89],[20,21],[140,141],[47,48]],

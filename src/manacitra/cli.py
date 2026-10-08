@@ -3,13 +3,16 @@
 """The command line: manacitra map | pick | verdict | persist | report | seal | reveal | verify.
 
 Dry run by default. Nothing is sent to any provider without --submit, and before anything is sent the estimate and
-the ledger entry are printed. The simulator spends nothing and runs at once.
+the ledger entry are printed. The simulator spends nothing and runs at once. --data PATH (or $MANACITRA_DATA) names
+the archived dataset's folder, for an install that is not from a clone; a file argument not found as given is looked
+up inside it.
 
     manacitra map --backend simulator --pairs 0-1,2-3,... [--planted 0.03]       map pairs on the simulator
     manacitra map --backend ibm --processor ibm_fez --pairs-from-score 27         dry run: transpile, check, estimate
     manacitra map --backend ibm --processor ibm_fez --pairs-file p.json --submit  send once (refused if already sent)
     manacitra verdict data/ibm_fez/k31-map.json                                   the map rule on a counts file
-    manacitra pick data/ibm_fez/k31-map.json --n 8                                the pairs to use
+    manacitra pick data/ibm_fez/k31-map.json --n 8                                rank pairs (verdict not checked)
+    manacitra pick data/ibm_fez/k31-map.json --by level                          rank by the plain level instead
     manacitra persist day1.json day2.json day3.json                               the persistence rule
     manacitra report data/ibm_fez/k31-map.json --figure fez-map.svg               a table, and a chip map
     manacitra seal predictions.md                                                 commit to a file before the run
@@ -24,8 +27,6 @@ import json
 import sys
 from pathlib import Path
 
-import numpy as np
-
 from . import __version__
 from .circuits import ORDER_16
 from .report import map_table, verdict_lines
@@ -35,19 +36,43 @@ def _parse_pairs(s: str) -> list[tuple[int, int]]:
     return [tuple(int(q) for q in p.split("-")) for p in s.split(",") if p.strip()]
 
 
-def _load_counts_file(path: str) -> tuple[np.ndarray, list[str], list, list | None, int]:
-    """A MapCounts JSON written by `manacitra map`, or an archived map file from data/."""
-    d = json.loads(Path(path).read_text())
-    if "outcomes" in d:
-        from .backends.base import MapCounts
+def _load_view(path: str) -> dict:
+    """A map, as pick, verdict and report read it (Amendment A8, R1): a counts file written by `manacitra map`, or an
+    archived map run from data/, read by its declared bit reading (archive.map_view). A record that declares no
+    reading, or is not a map run, is refused, naming why; nothing is decoded by default."""
+    from .archive import NotAMap, NotATable, UndeclaredReading, map_view, resolve
 
-        mc = MapCounts.from_json(d)
-        return mc.p11(), mc.order, mc.pairs, d.get("meta", {}).get("x"), d.get("meta", {}).get("seed", 31)
-    from .archive import p11_table
+    where = resolve(path)
+    d = json.loads(where.read_text())
+    if "outcomes" not in d:
+        try:
+            return map_view(d, where.parent)
+        except (UndeclaredReading, NotATable, NotAMap) as e:
+            raise SystemExit(f"refused: {path}: {e}") from None
+    from .backends.base import MapCounts
+    from .verdicts import analyse_map
 
-    x = [r["x"] for r in d["published_at_submission"]] if "published_at_submission" in d else d.get("x")
-    pairs = [p["qubits"] if isinstance(p, dict) else p for p in d["pairs"]]
-    return p11_table(d), d["order"], pairs, x, d["meta"].get("permutation_seed", 31)
+    mc = MapCounts.from_json(d)
+    meta = d.get("meta", {})
+    P, x, seed = mc.p11(), meta.get("x"), meta.get("seed", 31)
+    flags = meta.get("flagged")
+    flags = flags if flags and len(flags) == len(mc.pairs) else None
+    an = analyse_map(P, mc.order, x=x, seed=seed, dead_pair_floor=0.5 if x is None else None, flagged=flags)
+    keep = an.get("pair_index", list(range(len(mc.pairs))))
+    return {
+        "pairs": [tuple(mc.pairs[i]) for i in keep],
+        "P": P[:, keep],
+        "order": mc.order,
+        "x": None if x is None else [x[i] for i in keep],
+        "flags": None if flags is None else [flags[i] for i in keep],
+        "analysis": an,
+        "seed": seed,
+        "shots": mc.shots,
+        "halves": None,
+        "reading": "outcomes (written by manacitra map)",
+        "set": f"{len(keep)} of {len(mc.pairs)} pairs"
+        + (" (the dead-pair filter)" if len(keep) < len(mc.pairs) else ""),
+    }
 
 
 def make_backend(a):
@@ -102,55 +127,103 @@ def cmd_map(a) -> int:
                 print(f"estimate: {estimate_seconds(job.total_shots):.1f} s (0.3 ms per shot + 5 s)")
             print("nothing was sent. Add --submit to send it once.")
             return 0
+        ledger = Ledger(a.ledger)
+        backend.ledger = ledger  # the quote's early checks, the guard and a later fetch all read this one (A6)
         est = backend.estimate(job)
         print(f"estimate: {est.amount:g} {est.unit} ({est.detail})")
-        ledger = Ledger(a.ledger)
         print(f"ledger: {ledger.path}, job hash {job.job_hash(backend.name, backend.processor)[:12]}")
         if a.allow_resubmit:
-            print("--allow-resubmit given: a second send of this job is allowed and is logged")
-        handle = submit_once(backend, job, ledger, allow_resubmit=a.allow_resubmit)
-        print(f"sent: {handle.job_ids}. Fetch it later with the Python API (backend.fetch(handle)).")
+            print(
+                "--allow-resubmit given: a second send of this job is allowed and is logged, with the reason: "
+                f"{a.resubmit_reason or 'none given'}"
+            )
+        handle = submit_once(backend, job, ledger, allow_resubmit=a.allow_resubmit, reason=a.resubmit_reason)
+        print(
+            f"sent: {handle.job_ids}. Fetch it later with the Python API (backend.fetch(handle)), giving the backend "
+            f"this ledger ({ledger.path}), so that the fetch settles the job's reservation."
+        )
         Path(a.out).write_text(json.dumps({"handle": handle.__dict__}, indent=1, default=list))
         return 0
     counts = backend.fetch(backend.submit(job))
-    x = backend.target().x_of(pairs)
-    counts.meta.update({"x": x, "seed": a.seed})
+    target = backend.target()
+    x, flags = target.x_of(pairs), target.flags_of(pairs)
+    counts.meta.update({"x": x, "seed": a.seed, "flagged": flags})
     Path(a.out).write_text(json.dumps(counts.to_json()))
     print(f"wrote {a.out}")
     from .verdicts import analyse_map
 
-    an = analyse_map(counts.p11(), counts.order, x=x, shots=a.shots, seed=a.perm_seed)
+    an = analyse_map(counts.p11(), counts.order, x=x, shots=a.shots, seed=a.perm_seed, flagged=flags)
     print(verdict_lines(an))
     return 0
 
 
 def cmd_verdict(a) -> int:
+    """The map rule on a map: by default the analysis the run's own acceptance case computes (Amendment A8); with
+    --no-score or --perm-seed, the rule run again on the same pairs."""
     from .verdicts import analyse_map
 
-    P, order, pairs, x, seed = _load_counts_file(a.file)
-    an = analyse_map(
-        P,
-        order,
-        x=None if a.no_score else x,
-        seed=a.perm_seed or seed,
-        dead_pair_floor=0.5 if (x is None or a.no_score) else None,
-    )
+    v = _load_view(a.file)
+    an = v["analysis"]
+    if a.no_score or a.perm_seed:
+        kw = {"halves": v["halves"]} if v["halves"] else {}
+        an = analyse_map(
+            v["P"],
+            v["order"],
+            x=None if a.no_score else v["x"],
+            seed=a.perm_seed or v["seed"],
+            shots=v["shots"],
+            flagged=v["flags"],
+            **kw,
+        )
+    print(f"read as {v['reading']}; {v['set']}")
     print(verdict_lines(an))
     if a.json:
         Path(a.json).write_text(json.dumps(an, indent=1))
     return 0
 
 
+USABLE_VERDICTS = ("DIAGNOSTIC", "MAP PRESENT")
+
+
+#: What `pick --by` ranks by: the kept share k_A (highest first), the plain level, each pair's mean P(A no) (highest
+#: first; Amendment A7), or the published score x (lowest first). "k" is the earlier name of kept-share.
+PICK_BY = {
+    "kept-share": "kept share (highest first)",
+    "level": "plain level, mean P(A no) (highest first)",
+    "x": "published score (lowest first)",
+}
+
+
 def cmd_pick(a) -> int:
+    """Rank pairs from a map. It does not condition on the verdict; it warns (on stderr) when the map's verdict is not
+    DIAGNOSTIC or MAP PRESENT. Running the user's own job on the pairs is the user's step, not Manacitra's.
+
+    --by kept-share (the default) ranks by the kept share; --by level by the plain level, which chose better pairs on
+    the Rigetti processor where the kept share did not (Kickoffs 40 and 41); --by x by the published score."""
     from .keptshare import kept_from_order
     from .layout import pick_pairs
 
-    P, order, pairs, x, _ = _load_counts_file(a.file)
-    k = kept_from_order(P, order, "A")[0]
-    idx = pick_pairs(k, a.n) if a.by == "k" else pick_pairs(x, a.n, highest=False)
-    print(f"the {a.n} pairs by {'kept share (highest first)' if a.by == 'k' else 'published score (lowest first)'}:")
+    view = _load_view(a.file)
+    P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
+    v = view["analysis"]["verdict"]["verdict"]
+    if v not in USABLE_VERDICTS:
+        print(
+            f"warning: this map's verdict is {v}, not DIAGNOSTIC or MAP PRESENT; the ranking below may not be "
+            "worth using. pick ranks pairs and does not check the verdict.",
+            file=sys.stderr,
+        )
+    k, _, level = kept_from_order(P, order, "A")
+    by = "kept-share" if a.by == "k" else a.by
+    if by == "x" and x is None:
+        raise SystemExit("this map has no published score; use --by kept-share or --by level")
+    idx = {"kept-share": lambda: pick_pairs(k, a.n), "level": lambda: pick_pairs(level, a.n)}.get(
+        by, lambda: pick_pairs(x, a.n, highest=False)
+    )()
+    print(f"the {a.n} pairs by {PICK_BY[by]}, of {view['set']}:")
     for i in idx:
-        print(f"  {list(pairs[i])}  k_A {k[i]:.3f}" + (f"  x {x[i]:.4f}" if x is not None else ""))
+        print(
+            f"  {list(pairs[i])}  k_A {k[i]:.3f}  level {level[i]:.4f}" + (f"  x {x[i]:.4f}" if x is not None else "")
+        )
     return 0
 
 
@@ -172,7 +245,8 @@ def cmd_persist(a) -> int:
 def cmd_report(a) -> int:
     from .keptshare import kept_from_order
 
-    P, order, pairs, x, _ = _load_counts_file(a.file)
+    view = _load_view(a.file)
+    P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
     kA = kept_from_order(P, order, "A")[0]
     kB = kept_from_order(P, order, "B")[0] if any(lbl.startswith("B") for lbl in order) else None
     print(map_table(pairs, kA, kB, x))
@@ -231,6 +305,12 @@ def cmd_verify_seal(a) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="manacitra", description="A map of a quantum processor's qubit pairs.")
     ap.add_argument("--version", action="version", version=f"manacitra {__version__}")
+    ap.add_argument(
+        "--data",
+        metavar="PATH",
+        help="the archived dataset's folder (data/ in a clone); default: $MANACITRA_DATA, else data/ beside the "
+        "source when installed from a clone. File arguments not found as given are looked up inside it.",
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     m = sub.add_parser("map", help="map pairs (dry run unless --submit)")
@@ -251,6 +331,7 @@ def main(argv=None) -> int:
     m.add_argument("--offline", action="store_true", help="ibm: dry run on the offline snapshot, no account")
     m.add_argument("--submit", action="store_true", help="actually send the job (spends time or credits)")
     m.add_argument("--allow-resubmit", action="store_true", help="allow a second send of the same job (logged)")
+    m.add_argument("--resubmit-reason", default=None, help="why the job is sent again, logged with --allow-resubmit")
     m.add_argument("--ledger", default=None)
     m.add_argument("--out", default="map-counts.json")
     m.set_defaults(func=cmd_map)
@@ -262,10 +343,15 @@ def main(argv=None) -> int:
     v.add_argument("--json")
     v.set_defaults(func=cmd_verdict)
 
-    p = sub.add_parser("pick", help="choose pairs from a map")
+    p = sub.add_parser("pick", help="rank pairs from a map; warns when the verdict is not DIAGNOSTIC or MAP PRESENT")
     p.add_argument("file")
     p.add_argument("--n", type=int, default=8)
-    p.add_argument("--by", choices=["k", "x"], default="k")
+    p.add_argument(
+        "--by",
+        choices=[*PICK_BY, "k"],
+        default="kept-share",
+        help="kept-share (default), level (each pair's mean P(A no)) or x (the published score); k is kept-share",
+    )
     p.set_defaults(func=cmd_pick)
 
     s = sub.add_parser("persist", help="the persistence rule over two or three days")
@@ -294,7 +380,18 @@ def main(argv=None) -> int:
     vf.set_defaults(func=cmd_verify_seal)
 
     a = ap.parse_args(argv)
-    return a.func(a)
+    from . import archive
+
+    if a.data:
+        archive.set_data_dir(a.data)
+    try:
+        return a.func(a)
+    except archive.DataNotFound as e:
+        print(f"manacitra: {e}", file=sys.stderr)
+        return 2
+    finally:
+        if a.data:
+            archive.set_data_dir(None)
 
 
 if __name__ == "__main__":

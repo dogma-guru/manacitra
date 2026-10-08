@@ -3,12 +3,13 @@
 """The IBM backend and the submit-once guard against a fake runtime: no network, no account."""
 
 import json
-from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
 pytest.importorskip("qiskit_ibm_runtime")
+
+from _fakes import FakeIBMService, FakeRuntimeJob  # noqa: E402
 
 from manacitra.backends.base import Ledger, MapJob, ResubmitRefused, submit_once  # noqa: E402
 from manacitra.backends.ibm import CapExceeded, IBMBackend, SnapshotService, UsageUnavailable, safe_usage  # noqa: E402
@@ -16,55 +17,7 @@ from manacitra.backends.ibm import CapExceeded, IBMBackend, SnapshotService, Usa
 PAIRS = [(114, 115), (70, 71), (142, 143)]
 
 
-class FakeService:
-    def __init__(self, used=310.0, fail_usage=False):
-        from qiskit_ibm_runtime.fake_provider import FakeFez
-
-        self._b = FakeFez()
-        self.used = used
-        self.fail_usage = fail_usage
-        self.jobs = {}
-
-    def backend(self, name):
-        return self._b
-
-    def usage(self):
-        if self.fail_usage:
-            raise RuntimeError("no usage")
-        return {
-            "usage_consumed_seconds": self.used,
-            "usage_limit_seconds": 600,
-            "usage_remaining_seconds": 600 - self.used,
-            "instance_" + "crn": "placeholder-not-a-real-value",
-            "plan_" + "id": "placeholder",
-            "by_instance": {"x": 1},
-            "usage_period": {"start_time": "2026-09-07", "end_time": "2026-10-05"},
-        }
-
-    def job(self, job_id):
-        return self.jobs[job_id]
-
-
-class FakeRuntimeJob:
-    def __init__(self, job_id, n_circuits, n_pairs):
-        self._id = job_id
-        ones = "11" * n_pairs
-        mixed = "01" + "11" * (n_pairs - 1)
-        self._counts = [{ones: 7000, mixed: 1000} for _ in range(n_circuits)]
-
-    def job_id(self):
-        return self._id
-
-    def status(self):
-        return "DONE"
-
-    def result(self):
-        return [
-            SimpleNamespace(data=SimpleNamespace(c=SimpleNamespace(get_counts=lambda c=c: c))) for c in self._counts
-        ]
-
-    def metrics(self):
-        return {"timestamps": {"running": "2026-10-05T12:00:00Z"}, "usage": {"qpu_charge_time_seconds": 30}}
+FakeService = FakeIBMService
 
 
 class Sampler:
@@ -95,7 +48,7 @@ def setup(tmp_path):
     Sampler.calls = []
     svc = FakeService()
     ledger = Ledger(tmp_path / "ledger.jsonl")
-    be = IBMBackend("ibm_fez", service=svc, sampler_factory=Sampler(svc, ledger.path))
+    be = IBMBackend("ibm_fez", service=svc, sampler_factory=Sampler(svc, ledger.path), ledger=ledger)
     return be, svc, ledger
 
 
@@ -135,11 +88,16 @@ def test_cap_refuses_before_anything_is_sent(setup):
     with pytest.raises(CapExceeded):
         submit_once(be, MapJob(PAIRS, shots=8000), ledger)
     assert Sampler.calls == []
-    assert [e["event"] for e in ledger.entries()] == ["sending", "failed"]
-    # a failed attempt still counts: a second try needs the explicit permission
+    # Amendment A4: the cap is checked before anything is reserved, so a cap refusal is "refused", not a send
+    (rec,) = ledger.entries()
+    assert (
+        rec["event"] == "refused"
+        and "used 530 s + open reservations 0.0 s + estimate 43.4 s > cap 540 s" in rec["reason"]
+    )
+    # nothing was sent, so once the usage allows it the job goes without the override
     svc.used = 0.0
-    with pytest.raises(ResubmitRefused):
-        submit_once(be, MapJob(PAIRS, shots=8000), ledger)
+    submit_once(be, MapJob(PAIRS, shots=8000), ledger, log=lambda m: None)
+    assert len(Sampler.calls) == 1
 
 
 def test_no_usage_no_submission(setup):
@@ -175,3 +133,101 @@ def test_snapshot_service_never_submits():
     be = IBMBackend("ibm_fez", service=SnapshotService("ibm_fez"))
     with pytest.raises(UsageUnavailable):
         be.submit(MapJob(PAIRS))
+
+
+def test_the_public_submit_is_the_guard(setup):
+    """Amendment A3, 1a: backend.submit() twice refuses the second call before anything is sent."""
+    be, _, ledger = setup
+    be.ledger = ledger
+    job = MapJob(PAIRS, shots=1000)
+    be.submit(job, log=lambda m: None)
+    assert len(Sampler.calls) == 1
+    with pytest.raises(ResubmitRefused):
+        be.submit(job)
+    assert len(Sampler.calls) == 1
+    msgs = []
+    be.submit(job, allow_resubmit=True, log=msgs.append)
+    assert len(Sampler.calls) == 2 and msgs
+    assert [e["allow_resubmit"] for e in ledger.entries() if e["event"] == "sending"] == [False, True]
+
+
+# --------------------------------------------------------------------------- Amendment A4: IBM reservations
+def test_open_reservations_count_against_the_cap(setup):
+    """The provider's usage lags a submission: an open reservation's estimate counts until a fetch settles it."""
+    be, svc, ledger = setup
+    be.cap_s = 310.0 + 10.0  # room for one job of 9.8 s (2 circuits x 8000 shots), not two
+    j1, j2 = MapJob(PAIRS, positions=[1, 2]), MapJob(PAIRS, positions=[3, 4])
+    h1 = be.submit(j1, log=lambda m: None)
+    (res,) = ledger.reservations("ibm")
+    assert res["seconds"] == pytest.approx(9.8) and not res["settled"]
+    with pytest.raises(CapExceeded, match=r"open reservations 9\.8 s \+ estimate 9\.8 s > cap 320 s"):
+        be.submit(j2)
+    assert len(Sampler.calls) == 1
+    # a fetch that reports the charged time settles it: from then on the job is the provider's usage figure to carry
+    be.fetch(h1)
+    assert ledger.reservations("ibm")[0]["settled"] and ledger.entries()[-1]["charged_s"] == 30
+    assert ledger.open_seconds("ibm") == 0
+    be.submit(j2, log=lambda m: None)  # 310 s used + nothing open + 9.8 s <= 320 s
+    assert len(Sampler.calls) == 2
+
+
+def test_a_fetch_without_the_charged_time_settles_nothing(setup):
+    be, svc, ledger = setup
+    h = be.submit(MapJob(PAIRS, positions=[1]), log=lambda m: None)
+    svc.jobs[h.job_ids[0]].charged_s = None
+    be.fetch(h)
+    assert not ledger.reservations("ibm")[0]["settled"]
+
+
+def test_a_failed_send_keeps_its_ibm_reservation(setup):
+    be, svc, ledger = setup
+
+    class Broken:
+        def __init__(self, mode):
+            pass
+
+        def run(self, pubs):
+            raise ConnectionError("the runtime did not answer")
+
+    be._sampler_factory = Broken
+    job = MapJob(PAIRS, positions=[1, 2])
+    with pytest.raises(ConnectionError):
+        be.submit(job)
+    assert [e["event"] for e in ledger.entries()] == ["reserved", "sending", "failed"]
+    assert ledger.open_seconds("ibm") == pytest.approx(9.8)
+    with pytest.raises(ResubmitRefused, match="its reservation from .* \\(9.8 s in scope ibm\\) is open"):
+        be.submit(job)
+
+
+def test_a_resubmission_logs_the_reason(setup):
+    be, _, ledger = setup
+    job = MapJob(PAIRS, positions=[1])
+    be.submit(job, log=lambda m: None)
+    msgs = []
+    be.submit(job, allow_resubmit=True, reason="the first job was cancelled on the platform", log=msgs.append)
+    last = [e for e in ledger.entries() if e["event"] == "sending"][-1]
+    assert last["allow_resubmit"] and last["resubmit_reason"] == "the first job was cancelled on the platform"
+    assert "the first job was cancelled" in msgs[0]
+
+
+def test_a_reservation_settled_after_the_usage_read_still_counts(setup):
+    """Amendment A6: a job reserved, charged and settled between this send's usage read and its lock is not in the
+    usage read, so it still counts against the cap."""
+    be, svc, ledger = setup
+    be.cap_s = 310.0 + 10.0
+    read = be._preflight
+
+    def late(job, led, **kw):
+        pre = read(job, led, **kw)
+        for e in (
+            {"event": "reserved", "scope": "ibm", "seconds": 9.8},
+            {"event": "sent", "handle": {"job_ids": ["other"]}},
+            {"event": "settled", "job_ids": ["other"], "charged_s": 9.8},
+        ):
+            led.append({"job_hash": "d" * 64, "utc": "t", **e})
+        return pre
+
+    be._preflight = late
+    with pytest.raises(CapExceeded, match=r"open reservations 9\.8 s \+ estimate 9\.8 s > cap 320 s"):
+        be.submit(MapJob(PAIRS, positions=[1, 2]))
+    assert Sampler.calls == [] and ledger.open_seconds("ibm") == 0

@@ -13,6 +13,12 @@ Two caveats carried from that run:
 * **No calibration snapshot is returned.** The provider publishes no per-edge or readout figures, so there is no
   published score x: the map rule is capped at MAP PRESENT (Kickoff 34, Amendment A1), and the dead-pair filter applies.
 
+On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed that the same named pairs,
+sent through a route that records placement, ran on other qubits than Open Quantum's programs had used. Use a map there
+only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned, because
+the platform's preprocessing breaks the provider's verbatim mode; in Kickoff 34b,
+pair levels held within a job (r = 0.93) but not between runs a few hours apart.
+
 Credentials come only from the SDK's saved account (OpenQuantumService.from_saved_account); the client ID, the
 client secret, the organization ID and any token are never printed, logged or stored. Programs are written on physical
 qubits with no verbatim box (the platform's preprocessing closed a box with "};", which the provider rejected), every
@@ -23,21 +29,56 @@ the classical-index reading fixed in Kickoff 34b.
 
 from __future__ import annotations
 
+import hashlib
 import math
 import re
+import time
 
 import numpy as np
 
 from ..circuits import CIRCUITS, offset_of, parse_label, unitary
-from .base import Estimate, JobHandle, MapCounts, MapJob, Target
+from .base import Estimate, GuardedSubmit, JobHandle, Ledger, MapCounts, MapJob, SpendRefused, Target
 
 PROCESSOR = "rigetti:cepheus-1-108q"
 CREDITS_PER_TASK = 3
 BALANCE_FLOOR = 10
+QUOTE_VALID_S = 600  # local policy: a quote older than this is quoted again before sending
 
 
-class QuoteRefused(RuntimeError):
+class QuoteRefused(SpendRefused):
     pass
+
+
+# --------------------------------------------------------------------------- the SDK's private methods
+#: Private SchedulerClient methods the adapter calls; checked against openquantum-sdk 0.4.3 (offline, no account)
+PRIVATE_SDK_METHODS = ("_wait_for_preparation", "_resolve_organization_id")
+SDK_CHECKED = "openquantum-sdk 0.4.3"
+
+
+class SDKIncompatible(ImportError):
+    """The installed Open Quantum SDK lacks a private method this adapter calls."""
+
+
+def check_sdk(clients=None) -> bool:
+    """Stop (SDKIncompatible) if the SDK's SchedulerClient lacks either private method the adapter calls. Returns
+    False, checking nothing, when the SDK is not installed; the check then runs when the service is first used."""
+    if clients is None:
+        try:
+            from openquantum_sdk import clients
+        except ImportError:
+            return False
+    scheduler = getattr(clients, "SchedulerClient", None)
+    missing = [m for m in PRIVATE_SDK_METHODS if not callable(getattr(scheduler, m, None))]
+    if missing:
+        raise SDKIncompatible(
+            f"the installed Open Quantum SDK's SchedulerClient lacks {' and '.join(missing)}. The adapter calls two "
+            f"private SDK methods, {PRIVATE_SDK_METHODS[0]} and {PRIVATE_SDK_METHODS[1]}, checked against "
+            f"{SDK_CHECKED}; install a version that has them: pip install 'manacitra[openquantum]'."
+        )
+    return True
+
+
+check_sdk()  # at import: stop now, not mid-submission, if the installed SDK lacks them
 
 
 # --------------------------------------------------------------------------- programs
@@ -242,8 +283,31 @@ def pair_covariance(outcomes) -> np.ndarray:
 
 
 # --------------------------------------------------------------------------- the backend
-class OpenQuantumBackend:
-    """Experimental. service: an OpenQuantumService (created from the saved account when not given)."""
+class OpenQuantumBackend(GuardedSubmit):
+    """Experimental. service: an OpenQuantumService (created from the saved account when not given).
+
+    submit() is the submit-once guard (GuardedSubmit). Immediately before sending, _preflight re-reads the balance and
+    every task's preparation, and checks that the quote passed its own tests and is younger than quote_valid_s, and
+    that every task is still prepared, on the Public plan, at the expected price. Then, under the ledger's interprocess
+    lock, _reserve makes the two checks on shared quantities, each against the ledger as read under the lock:
+
+    * the budget: the credits committed in this budget scope (settled charges plus open reservations) plus this job
+      stay within budget_credits;
+    * the balance floor (Amendment A6): the balance read in _preflight, less the credits of every open reservation on
+      the same account, less this job's quote, stays at or above balance_floor. An open reservation whose charge may
+      already show in that balance is still counted until a fetch settles it: that can only refuse too much, never too
+      little. So between two waves, fetch the first before sending the second, or its credits count twice.
+
+    Any failure refuses the send and names every failed check; a floor refusal names the open reservations it counted.
+    A passing job's credits are reserved in the ledger, still under the lock, before it is sent, and the reservation is
+    kept after a failed send (which may have created tasks) until a fetch settles it.
+
+    The budget scope is provider:processor:job_name, so the waves of one run share one budget. A new run with the same
+    job name and ledger shares it too: give the run its own job name. The account is the saved account's name (in the
+    ledger, a hash of it: account_scope). Reach one organization through one saved account name, because two names for
+    one organization are counted as two accounts. Reservations from before A6, which name no account, are counted
+    against every account. Runs on one account should share one ledger: a reservation in another ledger is not seen.
+    """
 
     name = "openquantum"
     spends = True
@@ -257,8 +321,12 @@ class OpenQuantumBackend:
         credits_per_task: int = CREDITS_PER_TASK,
         budget_credits: float | None = None,
         balance_floor: float = BALANCE_FLOOR,
+        quote_valid_s: float = QUOTE_VALID_S,
+        ledger: Ledger | None = None,
     ):
         self.processor = processor
+        self.quote_valid_s = quote_valid_s
+        self.ledger = ledger
         self.account = account
         self._service = service
         self.job_name = job_name
@@ -271,6 +339,7 @@ class OpenQuantumBackend:
     @property
     def service(self):
         if self._service is None:
+            check_sdk()
             from openquantum_sdk_qiskit import OpenQuantumService
 
             self._service = OpenQuantumService.from_saved_account(name=self.account)
@@ -331,11 +400,63 @@ class OpenQuantumBackend:
             out.append((pos, label, text))
         return out
 
-    def quote(self, job: MapJob, committed_credits: float = 0.0) -> dict:
-        """Prepare every task (no charge) and read the Public plan's standard-queue price, then test it."""
+    @property
+    def budget_scope(self) -> str:
+        return f"{self.name}:{self.processor}:{self.job_name}"
+
+    @property
+    def account_scope(self) -> str:
+        """The account whose balance the floor protects, as written in the ledger: a hash of the saved account's local
+        name, so that the ledger holds neither the name nor any provider identifier."""
+        return f"{self.name}:account-{hashlib.sha256(self.account.encode()).hexdigest()[:12]}"
+
+    def open_on_account(self, entries: list[dict] | None = None, mark: int | None = None) -> list[dict]:
+        """Every open reservation drawing on this account's balance: those naming it, and any Open Quantum reservation
+        from before A6, which names no account. With mark (the ledger's length when the balance was read), a
+        reservation settled after that read is still open: the balance read may not show its charge."""
+        prefix = f"{self.name}:"
+        led = self._ledger()
+        rs = led.all_reservations(entries) if mark is None else led.unsettled_at(mark, entries)
+        return [
+            r
+            for r in rs
+            if (mark is not None or not r["settled"])
+            and "credits" in r
+            and (
+                r.get("account") == self.account_scope or ("account" not in r and r.get("scope", "").startswith(prefix))
+            )
+        ]
+
+    def _floor(self, balance: float, q: float, held: list[dict]) -> str | None:
+        """The balance-floor failure, or None: the balance, less every open reservation on the account, less q."""
+        held_credits = float(sum(r["credits"] for r in held))
+        after = balance - held_credits - q
+        if after >= self.balance_floor:
+            return None
+        named = ", ".join(f"{r['job_hash'][:12]} ({r['credits']:g} credits, reserved {r['utc']})" for r in held)
+        return (
+            f"balance floor: balance {balance:g} - open reservations {held_credits:g} - {q:g} for this job = "
+            f"{after:g} < floor {self.balance_floor:g}; open reservations on the saved account {self.account!r}: "
+            f"{named or 'none'}"
+        )
+
+    def _price(self, res) -> tuple[str, float]:
+        """A preparation's Public plan and its standard-queue price."""
         from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
+
+        plan = next(p for p in res.quote if p.execution_plan_id == ExecutionPlanType.PUBLIC.value)
+        prio = next(q for q in plan.queue_priorities if q.queue_priority_id == QueuePriorityType.STANDARD.value)
+        return plan.name, plan.price + prio.price_increase
+
+    def quote(self, job: MapJob, committed_credits: float | None = None) -> dict:
+        """Prepare every task (no charge) and read the Public plan's standard-queue price, then test it.
+
+        committed_credits: credits already committed in this budget; by default, those reserved in the ledger."""
         from openquantum_sdk.models import JobPreparationCreate
 
+        if committed_credits is None:
+            committed_credits = self._ledger().reserved_credits(self.budget_scope)
+        held = self.open_on_account()
         sch = self.service.scheduler
         bal = self.balance()
         org = self._org()
@@ -356,8 +477,7 @@ class OpenQuantumBackend:
                 )
             )
             res = sch._wait_for_preparation(preparation_id=pr.id, timeout=300, interval=2.0)
-            plan = next(p for p in res.quote if p.execution_plan_id == ExecutionPlanType.PUBLIC.value)
-            prio = next(q for q in plan.queue_priorities if q.queue_priority_id == QueuePriorityType.STANDARD.value)
+            plan, price = self._price(res)
             preps.append(
                 {
                     "position": pos,
@@ -365,8 +485,8 @@ class OpenQuantumBackend:
                     "preparation": pr.id,
                     "status": res.status,
                     "shots_echoed": res.shots,
-                    "plan": plan.name,
-                    "credits": plan.price + prio.price_increase,
+                    "plan": plan,
+                    "credits": price,
                 }
             )
         q = sum(p["credits"] for p in preps)
@@ -374,12 +494,15 @@ class OpenQuantumBackend:
         tests = {
             "exact_credits_every_task": all(p["credits"] == self.credits_per_task for p in preps),
             "within_budget": self.budget_credits is None or committed_credits + q <= self.budget_credits,
-            "balance_after_at_least_floor": total - q >= self.balance_floor,
+            "balance_after_at_least_floor": self._floor(total, q, held) is None,
             "public_plan_every_task": all(p["plan"] == "Public Plan" for p in preps),
             "every_preparation_completed": all(p["status"] == "Completed" for p in preps),
             "shots_echoed": all(p["shots_echoed"] == job.shots for p in preps),
         }
         rec = {
+            "quoted_at": time.time(),
+            "committed_credits": committed_credits,
+            "open_on_account_credits": float(sum(r["credits"] for r in held)),
             "balance_before": bal,
             "quote_credits": q,
             "tests": tests,
@@ -393,30 +516,85 @@ class OpenQuantumBackend:
         rec = self.quote(job)
         return Estimate(rec["quote_credits"], "credits", f"{len(rec['preparations'])} tasks; tests {rec['tests']}")
 
-    def submit(self, job: MapJob, after: JobHandle | None = None) -> JobHandle:
-        """Create the tasks of a passing quote, once each, never retried. `after`: an earlier wave that must have
-        completed first."""
-        from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
-        from openquantum_sdk.models import JobCreate
-
+    def _preflight(self, job: MapJob, ledger: Ledger, after: JobHandle | None = None) -> dict:
+        """Every provider check, run again immediately before sending, before the ledger's lock. Returns the failed
+        checks (the guard adds the budget's and the floor's, from _reserve, and refuses, naming each) and what _reserve
+        needs: the quote and the balance read now. The floor is not decided here (Amendment A6): another process may
+        reserve credits on the account between this read and the send."""
         rec = self._quotes.get(job.job_hash(self.name, self.processor))
-        if not rec or not rec["all_pass"]:
-            raise QuoteRefused("refused: no passing quote for this job; run estimate() first and read its tests")
+        if not rec:
+            raise QuoteRefused("refused: no quote for this job; run estimate() first and read its tests")
+        failed = [f"quote test failed: {k}" for k, ok in rec["tests"].items() if not ok]
+        age = time.time() - rec["quoted_at"]
+        if age > self.quote_valid_s:
+            failed.append(f"quote expired: {age:.0f} s old, valid for {self.quote_valid_s:.0f} s")
         sch = self.service.scheduler
+        for p in rec["preparations"]:
+            res = sch._wait_for_preparation(preparation_id=p["preparation"], timeout=60, interval=2.0)
+            plan, price = self._price(res)
+            if res.status != "Completed":
+                failed.append(f"position {p['position']}: preparation is {res.status}")
+            if plan != "Public Plan" or price != self.credits_per_task:
+                failed.append(f"position {p['position']}: {plan} at {price} credits, expected {self.credits_per_task}")
+        q = rec["quote_credits"]
+        mark = len(ledger.entries())  # before the balance read: see Ledger.unsettled_at
+        bal = self.balance()
+        total = bal["spark_credits"] + bal["full_credits"]
         if after is not None:
             st = [sch.get_job(j).status for j in after.job_ids]
             if any(s != "Completed" for s in st):
-                raise RuntimeError(f"refused: the earlier wave has not completed ({st})")
-        ids = []
-        for p in rec["preparations"]:
-            j = sch.create_job(
-                JobCreate(
-                    job_preparation_id=p["preparation"],
-                    execution_plan_id=ExecutionPlanType.PUBLIC.value,
-                    queue_priority_id=QueuePriorityType.STANDARD.value,
+                failed.append(f"the earlier wave has not completed ({st})")
+        return {"failed": failed, "credits": q, "balance": total, "ledger_mark": mark}
+
+    def _reserve(self, job: MapJob, pre: dict, entries: list[dict]) -> tuple[list[str], dict]:
+        """Under the ledger's lock, against the ledger as read under it: the credits committed in this budget scope
+        (settled and open reservations) plus this job, against the budget; and the balance read in _preflight, less
+        every open reservation on the account, less this job, against the floor (Amendment A6)."""
+        q, balance = pre["credits"], pre["balance"]
+        failed = []
+        committed = self._ledger().reserved_credits(self.budget_scope, entries)
+        if self.budget_credits is not None and committed + q > self.budget_credits:
+            failed.append(f"budget: {committed:g} reserved + {q:g} for this job > {self.budget_credits:g}")
+        held = self.open_on_account(entries, pre["ledger_mark"])
+        floor = self._floor(balance, q, held)
+        if floor:
+            failed.append(floor)
+        if failed:
+            return failed, {}
+        return [], {
+            "scope": self.budget_scope,
+            "account": self.account_scope,
+            "credits": q,
+            "balance_at_send": balance,
+            "open_on_account_credits": float(sum(r["credits"] for r in held)),
+        }
+
+    def _refusal(self, failed: list[str]) -> SpendRefused:
+        cls = QuoteRefused if any(f.startswith(("quote", "position")) for f in failed) else SpendRefused
+        return cls("refused before sending: " + "; ".join(failed))
+
+    def _send(self, job: MapJob, after: JobHandle | None = None) -> JobHandle:
+        """The raw send, reached only through submit() after _preflight: create each prepared task once, never
+        retried. If a creation fails, the exception carries the IDs of the tasks already created."""
+        from openquantum_sdk.enums import ExecutionPlanType, QueuePriorityType
+        from openquantum_sdk.models import JobCreate
+
+        rec = self._quotes[job.job_hash(self.name, self.processor)]
+        sch = self.service.scheduler
+        ids: list[str] = []
+        try:
+            for p in rec["preparations"]:
+                j = sch.create_job(
+                    JobCreate(
+                        job_preparation_id=p["preparation"],
+                        execution_plan_id=ExecutionPlanType.PUBLIC.value,
+                        queue_priority_id=QueuePriorityType.STANDARD.value,
+                    )
                 )
-            )
-            ids.append(j.id)
+                ids.append(j.id)
+        except Exception as e:
+            e.job_ids_created = list(ids)
+            raise
         return JobHandle.for_job(self.name, self.processor, ids, job)
 
     def fetch(self, handle: JobHandle) -> MapCounts:
@@ -427,6 +605,15 @@ class OpenQuantumBackend:
             if r.status != "Completed":
                 raise RuntimeError(f"task at position {handle.job_ids.index(jid) + 1} is {r.status}; nothing fetched")
             outcomes.append(outcomes_from_output(counts_of(sch.download_job_output(r)), handle.pairs))
+        self._ledger().append(
+            {
+                "event": "settled",
+                "job_hash": handle.job_hash,
+                "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "tasks_completed": len(handle.job_ids),
+                "job_ids": list(handle.job_ids),
+            }
+        )
         return MapCounts(
             handle.pairs,
             handle.order,

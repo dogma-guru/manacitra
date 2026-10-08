@@ -18,3 +18,11 @@ software, each under its own licence:
   NumPy                                    BSD 3-Clause License
   SciPy                                    BSD 3-Clause License
   Matplotlib                               Matplotlib License (PSF-based)
+  requests                                 Apache License 2.0
+  PLY (ply)                                BSD 3-Clause License
+
+Used only to build, lint and test it, and not needed to use it:
+
+  setuptools, wheel                        MIT License
+  pytest                                   MIT License
+  ruff                                     MIT License

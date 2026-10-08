@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
+    "provider": "Open Quantum (Rigetti)",
+    "kickoff": "Kickoff 34b",
+    "utc": "2026-10-05T17:26:39Z to 2026-10-05T18:54:32Z",
+    "shots_per_circuit": 8000,
+    "sources": [
+      {
+        "file": "screen-34b.json",
+        "sha256": "4a5533e36e9481060620bd07df0ef00d16d5e3b282b0bf430ca923b2fa91467b"
+      },
+      {
+        "file": "pairs-34b.json",
+        "sha256": "ec96db2515a3b7ffa4462c2eba3929ae0068b4dd0e43fe58e8bb358b78502650"
+      },
+      {
+        "file": "submit-34b.json",
+        "sha256": "e34a2f658b694e43001ffd3d752e29c0f7e8467b5dd15b02bf2382270b7bda94"
+      },
+      {
+        "file": "run.log",
+        "sha256": "99f1769e32ad1a7c7dbda7812ca4487e383a2e182d111dd33398e7cffdf458db"
+      }
+    ],
+    "utc_screen": {
+      "submitted": "2026-10-05T17:26:39Z",
+      "completed_by": "2026-10-05T18:54:32Z",
+      "note": "completion as seen by the runner's status poller (run.log)"
+    },
+    "utc_main_job": {
+      "wave_1_submitted": "2026-10-05T19:00:34Z",
+      "wave_1_completed": [
+        "2026-10-05T22:14:42Z",
+        "2026-10-05T22:19:48Z"
+      ],
+      "wave_2_submitted": "2026-10-05T22:20:37Z",
+      "wave_2_completed": [
+        "2026-10-05T22:21:45Z",
+        "2026-10-05T22:28:51Z"
+      ],
+      "note": "16 tasks in two waves of 8; completion times at the status poller's one-minute resolution (run.log). Both waves completed between 22:15 and 22:29 UTC, to the nearest minute."
+    },
+    "description": "The screen: circuit A without the offset on all 53 disjoint candidate pairs at once (106 qubits), one task, 8000 shots. L_s is each candidate's P(11). The pair rule then took the 27 highest L_s at or above 0.5. The screen's counts are not copied here.",
+    "source_archive_sha256": "9357a5f74a27a1eca0b5fd9ca35c40058d4a4721dd91c41297c88f100df97b28",
+    "source_script_sha256": "5678d9dd40d0c80fe4663f2cb2eaeea5f48ee5976b09494fc6f3ec14917e2af4",
+    "n_candidates": 53,
+    "bit_order": "classical-index reading: pair i measured into c[i] and c[105 - i]; c[k] is the character at position 105 - k of the 106-character key"
+  },
+  "L_s_definition": "P(11) of circuit A without the offset, in the screen's one task",
+  "bit_order_check": {"mean_pair_covariance":0.02250449528301887,"passes":true},
+  "calibration_snapshot": false,
+  "pair_rule": {"rule":"floor L_s >= 0.5; the 27 highest; ties to the lower edge index; fewer than 20 passing stops","candidates":[{"edge_index":0,"pair":[0,1],"L_s":0.745375,"passes_floor":true,"taken":true},{"edge_index":4,"pair":[2,3],"L_s":0.7175,"passes_floor":true,"taken":false},{"edge_index":8,"pair":[4,5],"L_s":0.702,"passes_floor":true,"taken":false},{"edge_index":12,"pair":[6,7],"L_s":0.199875,"passes_floor":false,"taken":false},{"edge_index":15,"pair":[9,10],"L_s":0.771375,"passes_floor":true,"taken":true},{"edge_index":19,"pair":[11,12],"L_s":0.7905,"passes_floor":true,"taken":true},{"edge_index":23,"pair":[13,14],"L_s":0.788125,"passes_floor":true,"taken":true},{"edge_index":27,"pair":[15,16],"L_s":0.600625,"passes_floor":true,"taken":false},{"edge_index":31,"pair":[17,26],"L_s":0.352625,"passes_floor":false,"taken":false},{"edge_index":32,"pair":[18,19],"L_s":0.762125,"passes_floor":true,"taken":true},{"edge_index":36,"pair":[20,21],"L_s":0.792125,"passes_floor":true,"taken":true},{"edge_index":40,"pair":[22,23],"L_s":0.76725,"passes_floor":true,"taken":true},{"edge_index":44,"pair":[24,25],"L_s":0.808625,"passes_floor":true,"taken":true},{"edge_index":49,"pair":[27,28],"L_s":0.718,"passes_floor":true,"taken":true},{"edge_index":53,"pair":[29,30],"L_s":0.72975,"passes_floor":true,"taken":true},{"edge_index":57,"pair":[31,32],"L_s":0.60675,"passes_floor":true,"taken":false},{"edge_index":61,"pair":[33,34],"L_s":0.60925,"passes_floor":true,"taken":false},{"edge_index":65,"pair":[35,44],"L_s":0.544125,"passes_floor":true,"taken":false},{"edge_index":66,"pair":[36,37],"L_s":0.693875,"passes_floor":true,"taken":false},{"edge_index":70,"pair":[38,39],"L_s":0.273625,"passes_floor":false,"taken":false},{"edge_index":74,"pair":[40,41],"L_s":0.696875,"passes_floor":true,"taken":false},{"edge_index":78,"pair":[42,43],"L_s":0.78525,"passes_floor":true,"taken":true},{"edge_index":83,"pair":[45,46],"L_s":0.3875,"passes_floor":false,"taken":false},{"edge_index":87,"pair":[47,48],"L_s":0.686875,"passes_floor":true,"taken":false},{"edge_index":91,"pair":[49,50],"L_s":0.348,"passes_floor":false,"taken":false},{"edge_index":95,"pair":[51,52],"L_s":0.69725,"passes_floor":true,"taken":false},{"edge_index":99,"pair":[53,62],"L_s":0.537625,"passes_floor":true,"taken":false},{"edge_index":100,"pair":[54,55],"L_s":0.73625,"passes_floor":true,"taken":true},{"edge_index":104,"pair":[56,57],"L_s":0.73125,"passes_floor":true,"taken":true},{"edge_index":108,"pair":[58,59],"L_s":0.593,"passes_floor":true,"taken":false},{"edge_index":112,"pair":[60,61],"L_s":0.724625,"passes_floor":true,"taken":true},{"edge_index":117,"pair":[63,64],"L_s":0.730375,"passes_floor":true,"taken":true},{"edge_index":121,"pair":[65,66],"L_s":0.766,"passes_floor":true,"taken":true},{"edge_index":125,"pair":[67,68],"L_s":0.74875,"passes_floor":true,"taken":true},{"edge_index":129,"pair":[69,70],"L_s":0.351125,"passes_floor":false,"taken":false},{"edge_index":133,"pair":[71,80],"L_s":0.63025,"passes_floor":true,"taken":false},{"edge_index":134,"pair":[72,73],"L_s":0.729625,"passes_floor":true,"taken":true},{"edge_index":138,"pair":[74,75],"L_s":0.300375,"passes_floor":false,"taken":false},{"edge_index":142,"pair":[76,77],"L_s":0.75525,"passes_floor":true,"taken":true},{"edge_index":146,"pair":[78,79],"L_s":0.789625,"passes_floor":true,"taken":true},{"edge_index":151,"pair":[81,82],"L_s":0.7905,"passes_floor":true,"taken":true},{"edge_index":155,"pair":[83,84],"L_s":0.64975,"passes_floor":true,"taken":false},{"edge_index":159,"pair":[85,86],"L_s":0.6175,"passes_floor":true,"taken":false},{"edge_index":163,"pair":[87,88],"L_s":0.7745,"passes_floor":true,"taken":true},{"edge_index":167,"pair":[89,98],"L_s":0.791,"passes_floor":true,"taken":true},{"edge_index":168,"pair":[90,91],"L_s":0.50225,"passes_floor":true,"taken":false},{"edge_index":172,"pair":[92,93],"L_s":0.681125,"passes_floor":true,"taken":false},{"edge_index":176,"pair":[94,95],"L_s":0.767625,"passes_floor":true,"taken":true},{"edge_index":180,"pair":[96,97],"L_s":0.737875,"passes_floor":true,"taken":true},{"edge_index":185,"pair":[99,100],"L_s":0.83375,"passes_floor":true,"taken":true},{"edge_index":187,"pair":[101,102],"L_s":0.849,"passes_floor":true,"taken":true},{"edge_index":189,"pair":[103,104],"L_s":0.523625,"passes_floor":true,"taken":false},{"edge_index":191,"pair":[105,106],"L_s":0.69175,"passes_floor":true,"taken":false}],"n_passing":46,"n_taken":27,"enough":true,"taken_pairs":[[0,1],[9,10],[11,12],[13,14],[18,19],[20,21],[22,23],[24,25],[27,28],[29,30],[42,43],[54,55],[56,57],[60,61],[63,64],[65,66],[67,68],[72,73],[76,77],[78,79],[81,82],[87,88],[89,98],[94,95],[96,97],[99,100],[101,102]]}
+}

@@ -40,6 +40,14 @@ def permutation_p(a, b, seed: int, one_sided: bool = True, n: int = N_PERMUTATIO
     return float(np.mean(rs >= r0)) if one_sided else float(np.mean(np.abs(rs) >= abs(r0)))
 
 
+def format_p(p: float, n: int = N_PERMUTATIONS) -> str:
+    """A permutation p as a count of exceedances: "p < 1/N (0 of N)" when no shuffle reached the observed value,
+    since a finite permutation test cannot show a p of exactly zero; "p = 0.0004 (4 of 10000)" otherwise. The value
+    itself is kept as computed (and archived values as archived); only its report changes."""
+    k = round(p * n)
+    return f"p < 1/{n} (0 of {n})" if k == 0 else f"p = {p:.4g} ({k} of {n})"
+
+
 def residuals(y, x):
     """y minus its straight-line fit on x."""
     y, x = np.asarray(y, float), np.asarray(x, float)

@@ -311,6 +311,8 @@ class SimulatorBackend:
         )
 
     def submit(self, job: MapJob) -> JobHandle:
+        """Direct, with no ledger: a local simulation sends nothing to a provider and spends nothing, so there is
+        nothing for the submit-once guard to protect."""
         handle_id = f"sim-{job.job_hash(self.name, self.processor)[:12]}-{len(self._results)}"
         self._results[handle_id] = self.run(job)
         return JobHandle.for_job(self.name, self.processor, [handle_id], job)

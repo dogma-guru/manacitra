@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Amazon Braket (us-west-1), pinned: named physical qubits in a verbatim box",
+    "provider": "Amazon Braket (Rigetti)",
+    "kickoff": "Kickoff 42",
+    "utc": "2026-10-06T17:45:43Z to 2026-10-06T17:46:49Z (creation of the first task to end of the last)",
+    "shots_per_circuit": 8000,
+    "sources": [
+      {
+        "file": "after-the-fact-42-day1.json",
+        "sha256": "602ff20c17585df825f61c4b64ed4b449ce162a5a1ad5100cb649ad1752317f1"
+      }
+    ],
+    "source_archive_sha256": "ef37defad3e172adeb10e59284cb9ea9bd89de2db6286dd4d58bc85063332952",
+    "source_script_sha256": "145764f7729c1b8f7f1287db6524b225949b9e5cd45cfd56ae12f29036bb5557",
+    "description": "Computed after seeing Day 1's data, not pre-registered, outside the verdicts: Day 1's statistics without the working pairs whose fit ran to the grid's edge, and Day 1's programs shared with Kickoff 40 against Kickoff 40's levels."
+  },
+  "label": "computed after seeing the data, outside the verdicts",
+  "note": "after the fact, not pre-registered, outside the verdicts: Day 1 statistics without the working pairs whose fit ran to the grid edge (|delta| = 1.5 on A or B)",
+  "edge_pairs": [
+    [
+      11,
+      12
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      54,
+      55
+    ],
+    [
+      72,
+      73
+    ]
+  ],
+  "n": 22,
+  "sd_deltaA": 0.32506917345769276,
+  "median_boot_sd_deltaA": 0.03497860867191943,
+  "mean_deltaA": -0.47340909090909095,
+  "mean_deltaB": -0.2570454545454545,
+  "median_deltaA": -0.3125,
+  "median_deltaB": -0.16499999999999998,
+  "r_dA_dB": {
+    "pearson": 0.5628502693091515,
+    "spearman": 0.8163841807909606,
+    "n": 22
+  },
+  "p_dA_dB": 0.0085,
+  "mean_abs_dA_minus_dB": 0.2740909090909091,
+  "r_dA_k40kA": {
+    "pearson": -0.2314189811843513,
+    "spearman": -0.4439424068585211,
+    "n": 22
+  },
+  "p_dA_k40kA_negative": 0.1395,
+  "rms_over_shot_median_A": 3.8170995900548017,
+  "shared_programs": {
+    "r_Day1_vs_K40_A_off": {
+      "pearson": 0.8692100704980583,
+      "spearman": 0.9035409035409036,
+      "n": 27
+    },
+    "r_Day1_vs_K40_A_no": {
+      "pearson": 0.8447328412741467,
+      "spearman": 0.918192918192918,
+      "n": 27
+    },
+    "r_Day1_vs_K40_A_wrong": {
+      "pearson": 0.720815419501146,
+      "spearman": 0.8125763125763125,
+      "n": 27
+    },
+    "r_Day1_vs_K40_B_off": {
+      "pearson": 0.8776067016421119,
+      "spearman": 0.9218559218559219,
+      "n": 27
+    },
+    "r_Day1_vs_K40_B_no": {
+      "pearson": 0.7984928250029797,
+      "spearman": 0.8998778998778999,
+      "n": 27
+    },
+    "r_kA_from_shared_programs_Day1_vs_K40_kA": {
+      "pearson": 0.8759019622125267,
+      "spearman": 0.8200000000000001,
+      "n": 25
+    },
+    "kA_Day1_9495_4243": [
+      -1.9627962399046734,
+      -0.0959883490003969
+    ]
+  }
+}

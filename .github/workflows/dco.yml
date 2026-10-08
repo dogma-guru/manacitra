@@ -1,3 +1,5 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
 # Every commit in a pull request carries a Developer Certificate of Origin sign-off (CONTRIBUTING.md).
 # The signing workflow's bot commits are exempt (tools/check_dco.py).
 name: dco

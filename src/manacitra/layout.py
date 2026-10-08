@@ -10,6 +10,8 @@
   three neighbours and no odd cycle, so three rounds suffice (Konig's edge-colouring theorem); the round count is
   reported, never assumed.
 * pick_pairs: the n pairs with the highest kept share (or lowest published score).
+* published_score_braket: x on Amazon Braket, from its standardized device properties, with the placeholder rule.
+* vendor_flag: whether the vendor has marked a pair as not measured or not working (Amendment A7).
 """
 
 from __future__ import annotations
@@ -24,6 +26,35 @@ Edge = tuple[int, int]
 def published_score(two_qubit_error: float, readout_a: float, readout_b: float) -> float:
     """x = two-qubit error + readout error of each qubit (the score the published pair choice used)."""
     return two_qubit_error + readout_a + readout_b
+
+
+#: Braket's placeholder: a CZ fidelity of exactly 0.5 means no published figure (Kickoff 40, Amendment A1.2)
+BRAKET_CZ_PLACEHOLDER = 0.5
+#: IBM lists a two-qubit error of exactly 1.0 for a gate it reports as not working
+IBM_FLAGGED_ERROR = 1.0
+FLAG_SOURCES = {
+    "ibm": "an IBM two-qubit error of exactly 1.0",
+    "braket": "a Braket CZ fidelity of exactly 0.5 (the platform's placeholder for no published figure)",
+}
+
+
+def published_score_braket(cz_fidelity: float | None, readout_fidelity_a: float, readout_fidelity_b: float):
+    """x on Amazon Braket: (1 - CZ fidelity) + (1 - readout fidelity) of each qubit, from Braket's standardized device
+    properties at submission (the CZ fidelity by interleaved randomized benchmarking). A CZ fidelity of exactly 0.5 is
+    the platform's placeholder and means no published figure: x is None, and the pair leaves the verdict set."""
+    if cz_fidelity is None or cz_fidelity == BRAKET_CZ_PLACEHOLDER:
+        return None
+    return (1 - cz_fidelity) + (1 - readout_fidelity_a) + (1 - readout_fidelity_b)
+
+
+def vendor_flag(two_qubit_error: float | None = None, cz_fidelity: float | None = None) -> str | None:
+    """The source of the vendor's flag on a pair, or None: IBM's two-qubit error of exactly 1.0, or Braket's CZ
+    fidelity of exactly 0.5. Every analysis reports its headline statistics with and without flagged pairs."""
+    if two_qubit_error is not None and two_qubit_error == IBM_FLAGGED_ERROR:
+        return FLAG_SOURCES["ibm"]
+    if cz_fidelity is not None and cz_fidelity == BRAKET_CZ_PLACEHOLDER:
+        return FLAG_SOURCES["braket"]
+    return None
 
 
 def undirected(edges: Iterable[Sequence[int]]) -> list[Edge]:

@@ -32,8 +32,16 @@ PATTERNS = [
         "i",
     ),
     ("private-key", r"-----BEGIN [A-Z ]*PRIVATE KEY-----", ""),
+    # Amazon Web Services (Amendment A7, before any Amazon Braket file is copied): resource names, bucket addresses,
+    # account numbers and access keys. Profile and region names (us-west-1) are not identifiers and are allowed.
+    ("aws-arn", r"\b[a]rn:", "i"),
+    ("aws-s3-uri", r"s[3]://", "i"),
+    ("aws-account-number", r"(?<![0-9A-Za-z_.+-])[0-9]{12}(?![0-9A-Za-z_])", ""),
+    ("aws-access-key-field", r"aws_[a]ccess_key", "i"),
+    ("aws-access-key-id", r"\bA[K]IA[A-Z0-9]{16}\b", ""),
+    ("aws-secret-field", r"aws_[s]ecret", "i"),
     # People and machines
-    ("email-address", r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", ""),
+    ("email-address", r"[A-Za-z0-9._%+\[\]-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", ""),
     ("home-path-mac", r"/Users/[A-Za-z0-9._-]+", ""),
     ("home-path-linux", r"/home/[A-Za-z0-9._-]+", ""),
     ("home-path-windows", r"[A-Za-z]:\\\\?Users\\\\?[A-Za-z0-9._-]+", ""),
@@ -53,13 +61,23 @@ PATTERNS = [
 ALLOW = [
     # IBM job IDs may stay (kickoff, section 5)
     ("ibm-job-id", r"\b[a-z0-9]{20}\b", ""),
-    # The repository's own address, which carries the hosting organisation's name (kept by the author's ruling)
+    # The repository's own address, which carries the hosting organisation's name (kept by the author's ruling). Its
+    # home since Amendment A9 is the organisation's address; the earlier one stays allowed for the build report alone,
+    # which records it as it was (tests/test_repository_home.py keeps it out of every other file)
+    ("repository-home", r"github\.com/d[o]gma-guru/manacitra", "i"),
     ("repository-url", r"github\.com/d[o]gmaguru/manacitra", "i"),
     # Amendment A1: the ownership and publisher lines, exactly as written (case-sensitive)
     ("owner", r"D[o]gma LLC", ""),
     ("owner-and-trade-name", r"D[o]gma LLC \(doing business as D[o]gma Guru\)", ""),
     ("owner-short", r"D[o]gma LLC \(D[o]gma Guru\)", ""),
     ("publisher", r"published by D[o]gma Guru", ""),
+    # Amendment A3: GitHub's public automation identity for workflow commits (the Sigstore bundle commits, and the
+    # DCO check's exemption for them). It is a published noreply address, not a person's and not a secret. Exactly
+    # this string; any other address, including another bot's, is still a finding.
+    ("github-actions-bot", r"41898282\+github-actions\[bot\]@users\.noreply\.github\.com", ""),
+    # Amendment A7: a counts key of exactly twelve 0s and 1s (a six-pair measurement) is not an AWS account number.
+    # Only a quoted string of 0s and 1s; a twelve-digit number with any other digit is still a finding.
+    ("bitstring-key", r"\"[01]{12}\"", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]
@@ -69,3 +87,15 @@ SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", ".ruff_cac
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".ico", ".zip", ".gz", ".whl", ".pyc"}
 # Sigstore bundles: public signatures (base64 certificates and log entries), written by the signing workflow
 SKIP_NAME_ENDINGS = (".sigstore.json",)
+
+# Amendment A4 (R2), the author's ruling of 6 October: the identities allowed in the repository's reachable git
+# metadata, each in its roles only (scan_secrets.py --git). Written as regular expressions, escaped, so that this file
+# carries no address the tree scan would match. Any other address, in any role, is a finding.
+GIT_IDENTITIES = [
+    # the author's public authorship identity: author, committer and sign-off
+    (r"anish@d[o]gma\.guru", {"author", "committer", "Signed-off-by"}),
+    # the coding assistant's co-author line
+    (r"noreply@anthropic\.com", {"Co-Authored-By"}),
+    # GitHub, as committer of commits made through its web interface
+    (r"noreply@github\.com", {"committer"}),
+]

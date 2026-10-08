@@ -108,7 +108,7 @@ Q 480.384 89.2512 480.384 95.904
 L 480.384 154.116 
 Q 480.384 160.7688 487.08 160.7688 
 z
-" clip-path="url(#p68e0df7a01)" style="fill: #eef4fc; stroke: #3987e5; stroke-width: 1.2; stroke-linejoin: miter"/>
+" clip-path="url(#p68e0df7a01)" style="fill: #fcfcfb; stroke-dasharray: 4.8,3.6; stroke-dashoffset: 0; stroke: #3987e5; stroke-width: 1.2; stroke-linejoin: miter"/>
    </g>
    <g id="patch_9">
     <path d="M 21.15 54.324 
@@ -137,15 +137,16 @@ z
     <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(41.452133 146.856044)">a known gap it kept</text>
    </g>
    <g id="text_3">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(36.055836 173.450314)">in: 16 short circuits on</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(44.635961 183.412583)">every pair at once</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(25.440266 173.450314)">in: 16 short circuits on non-</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(29.561734 183.412583)">overlapping pairs at once</text>
    </g>
    <g id="text_4">
     <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b0b0b" x="235.98" y="111.674925" transform="rotate(-0 235.98 111.674925)">Verdict</text>
    </g>
    <g id="text_5">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(180.416688 136.894423)">out: NOISE / REDUNDANT /</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(177.270469 146.856044)">DIAGNOSTIC / NOT SETTLED</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(180.416688 126.932802)">out: NOISE / REDUNDANT /</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(176.734211 136.894423)">DIAGNOSTIC / MAP PRESENT</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(204.653984 146.856044)">/ NOT SETTLED</text>
    </g>
    <g id="text_6">
     <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(189.680914 173.450314)">in: k from two circuits,</text>
@@ -155,30 +156,29 @@ z
     <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b0b0b" x="389.43" y="111.674925" transform="rotate(-0 389.43 111.674925)">Pick</text>
    </g>
    <g id="text_8">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(347.893687 136.893775)">out: the n pairs that</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(360.540813 146.856044)">kept the most</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(329.374961 136.893775)">out: the n pairs that kept the</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(335.378195 146.856044)">most; verdict not checked</text>
    </g>
    <g id="text_9">
     <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(346.490469 173.450314)">in: the map (and, for</text>
     <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(358.485266 183.412583)">comparison, x)</text>
    </g>
    <g id="text_10">
-    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b0b0b" x="542.88" y="111.673987" transform="rotate(-0 542.88 111.673987)">Run</text>
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b0b0b" x="542.88" y="111.673987" transform="rotate(-0 542.88 111.673987)">Run (yours)</text>
    </g>
    <g id="text_11">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(485.343492 136.893775)">out: results on pairs chosen</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(504.374484 146.856044)">by what they keep</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #52514e" x="542.88" y="147.686855" transform="rotate(-0 542.88 147.686855)">out: not run by Manacitra</text>
    </g>
    <g id="text_12">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(502.964133 173.450314)">in: your job, placed</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(503.231938 183.412583)">on the picked pairs</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(493.506672 173.450314)">in: your own job, run by</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(494.287391 183.412583)">you on the picked pairs</text>
    </g>
    <g id="text_13">
-    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(27.846 34.210745)">In the author's use: the rules and a set of predictions are written down, hashed and sealed</text>
-    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(27.846 44.533096)">before the map job is sent; the verdict is read off rules fixed in advance.</text>
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(27.846 34.210745)">In the author's use, by the author's dated records (not part of this release): the rules and a set of</text>
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(27.846 44.533096)">predictions were written down, hashed and sealed before each map job was sent.</text>
    </g>
    <g id="text_14">
-    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #8a8985" x="21.15" y="217.872" transform="rotate(-0 21.15 217.872)">Persistence (how long a map lasts) is a fifth step, open until Kickoff 35's verdict is in.</text>
+    <text style="font-size: 8.6px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #8a8985" x="21.15" y="217.872" transform="rotate(-0 21.15 217.872)">Persistence (how long a map lasts) is a fifth step: on ibm_fez a whole-chip map held for two days (finding 7); beyond that is open.</text>
    </g>
   </g>
  </g>

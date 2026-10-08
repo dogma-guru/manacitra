@@ -127,3 +127,16 @@ def test_payoff_analysis_on_a_planted_payoff():
     assert out["verdict"]["verdict"] == "USEFUL"
     W0 = 0.995 + 0.0005 * rng.normal(size=(27, 8))
     assert v.analyse_payoff(W0, k, x, n_boot=500, n_permutations=500)["verdict"]["verdict"] != "USEFUL"
+
+
+def test_decile_ties_are_broken_by_edge_order():
+    """Amendment A7: a tie at the decile's edge goes to the earlier edge, as Kickoff 36's specification of the analysis
+    says (Kickoff 35's Day 3 had three edges tied at ranks 18 to 20). Before, numpy's default sort left it to chance."""
+    from manacitra.verdicts import _decile_overlap
+
+    ka = [0.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]  # ten edges: a decile of one; edges 1 and 2 tie for best
+    kb = [0.0, 0.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]  # edge 2 is best
+    assert _decile_overlap(ka, kb, worst=False) == (0.0, 1)  # edge 1, the earlier, is a's best
+    assert _decile_overlap(ka[::-1], kb[::-1], worst=False) == (1.0, 1)  # reversed, edge 2 comes first
+    for _ in range(20):  # and the answer does not change from call to call
+        assert _decile_overlap(ka, kb, worst=False) == (0.0, 1)

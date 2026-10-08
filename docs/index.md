@@ -1,7 +1,12 @@
 # Manacitra, the long version
 
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
-safety guards, how to reproduce every number in the README from `data/`, and how sealing and signing work. The README is the short version.
+safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
+README is the short version.
+
+![How the map works, in five steps, from ibm_fez's Kickoff 31 (27 pairs, 32,000 shots per variant per pair). 1: two near-identical circuits, the same three CZ gates with different single-qubit angles; an exact model puts P(11) at 0.962 without the offset and 1.000 with it. 2: three pairs against that ideal gap of 0.038: 106-107 moved 0.040 (k = 1.06), the median pair 133-134 moved 0.033 (k = 0.87), and 20-21 moved 0.008 (k = 0.22). 3: k for all 27 pairs as a strip of dots, with k = 1 marked. 4: the 27 pairs on the chip, shaded from k = 0.22 to 1.06. 5: the three checks, repeats (r = 0.87, needs at least 0.5), carries over (r = 0.82, needs at least 0.4, with p below 1 in 10,000, needs below 0.05) and not already in x (r = −0.18, needs |r| below 0.5; with x removed, r = 0.82, needs at least 0.3), leading to DIAGNOSTIC.](diagrams/map-explainer.svg)
+
+The whole method in one picture, on ibm_fez's 27 pairs from Kickoff 31; the sections below take each step in turn.
 
 ## 1. The circuit, and why the gap is known
 
@@ -34,6 +39,13 @@ a pair does to the gap is therefore about how its gates carry a small, known dif
 transpiled circuit in which a pair carries anything other than three two-qubit gates, or in which any two-qubit gate
 lies outside the pairs (`circuits.require_three_per_pair`).
 
+**Why the circuits are pinned.** Qiskit's three-CZ synthesis is numerical, and its single-qubit layers differ from
+one platform's linear algebra to another's; the unitary is the same, but an error after each CZ lands differently on
+different layers, so the package ships every circuit it runs as an exact gate list (`pinned_circuits.json`, checked
+by `tools/pin_circuits.py --check`). The pinned circuits come from the same code, Qiskit version and machine as the
+published runs, but they cannot be shown gate-for-gate identical to the circuits sent in Kickoffs 31 to 33, whose
+records keep transpile checks rather than the circuits themselves.
+
 ## 2. The kept share
 
 For one pair,
@@ -62,7 +74,7 @@ against a spread between pairs of 0.205.
 ## 3. The three rules
 
 Each rule is a pure function in `manacitra.verdicts` that returns the verdict, the rule's name, every input it used,
-and each condition as tested. The thresholds were fixed before the data they were first applied to.
+and each condition as tested. The thresholds were fixed before the data they were first applied to, according to the author's dated records, which are not part of this release.
 
 ### The map rule (Kickoff 31)
 
@@ -118,7 +130,9 @@ The map is measured on several days. Per day: k per pair; r_split between the fi
 the second (7 to 12); the day's reliability by the Spearman-Brown formula, rel = 2·r_split/(1 + r_split). Across
 days: r(k_a, k_b), and the **corrected r** = r / √(rel_a · rel_b), which removes the part of the day-to-day drop that
 is only noise; and the **worst-decile overlap**, the share of the first day's worst tenth of pairs still in the last
-day's worst tenth (round(0.1·n) pairs).
+day's worst tenth (round(0.1·n) pairs). A tie in k at the decile's edge goes to the earlier pair in the day's order,
+as Kickoff 36's specification of the analysis says (Amendment A7: numpy's default sort left it to chance, and Kickoff
+35's Day 3 had three pairs tied at ranks 18 to 20).
 
 **Under Amendment A1** (the verdict Manacitra returns):
 
@@ -136,6 +150,16 @@ its corrected r is undefined; here a condition on an undefined value is not met.
 that gap, after Kickoff 36's simulation found that a day's split-half r can fall below zero by chance at Kickoff 35's
 shot count. In both forms FADES is tested before HOLDS, and a result meeting both is flagged.
 
+**Pairs the vendor flags** (Amendment A7). The verdicts count every pair that runs, as the kickoffs fixed them. Beside
+them, `persistence_analysis` returns a `flagged` block: the pairs the vendor flagged on any day as not measured or not
+working (an IBM two-qubit error of exactly 1.0; a Braket CZ fidelity of exactly 0.5, `layout.vendor_flag`), the flag's
+source, and, without those pairs, each day's reliability recomputed on the subset, the correlations and corrected
+correlations of each pair of days, and the decile overlaps. `analyse_map` returns the same block with the verdict's
+statistics (r_split, r_AB and its p, r_Ax, r_AB.x) without the flagged pairs. On ibm_fez (Kickoff 35) four edges carried
+IBM's 1.0 on every day; three of them carried the most extreme k on the chip, at no-offset levels of 0.19 to 0.39
+against a chip median of 0.89, where k is not a kept fraction. Without them the corrected r from Day 1 to Day 3 falls
+from 0.89 to 0.74.
+
 What would discredit the map's persistence: FADES.
 
 ## 4. Choosing pairs
@@ -149,6 +173,23 @@ What would discredit the map's persistence: FADES.
   rounds suffice; on ibm_fez's 176 couplers the rounds hold 60, 59 and 57 pairs. The round count is computed and
   reported, never assumed; a plain greedy colouring is also available (`method="greedy"`).
 - `layout.pick_pairs`: the n pairs with the highest k (or the lowest x).
+- `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
+  mean P(11) on circuit A without the offset; `--by x` by the published score. On ibm_fez the kept share chose the
+  better pairs on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
+  Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. On the Rigetti
+  processor both scores were scored against the published figures in the same payoff runs; no run has yet compared the
+  two scores against each other under a rule fixed in advance.
+- **Reading an archived file** (Amendment A8). `manacitra pick`, `verdict` and `report` read an archived map's counts
+  by the bit reading its `meta.bit_reading` declares (`archive.p11_table`, one reader per reading) and refuse a file
+  that declares none, or an unknown one, naming the field. They give that run's own analysis (`archive.map_view`): on
+  every pair for IBM; on the working pairs, after the run's dead-pair filter, for Open Quantum; on the verdict set, the
+  working pairs with a published figure, for Amazon Braket, whose published score comes from the figures file its
+  `meta.figures_file` names. A record that is not a map run (a payoff, a scan, an isolation run) is refused.
+- `layout.published_score_braket`: x on Amazon Braket, (1 − CZ fidelity) + (1 − readout fidelity) of each qubit, from
+  Braket's standardized device properties; a CZ fidelity of exactly 0.5 is the platform's placeholder, so x is None and
+  the pair leaves the verdict set.
+- The dead-pair filter uses the run's own levels (mean P(A no) below 0.5), never a list from an earlier day: on the
+  Rigetti processor, dead pairs came and went between consecutive days (18-19 came back; 72-73 and 76-77 went).
 
 ## 5. The backends
 
@@ -170,6 +211,23 @@ with a the bit of the pair's first qubit and b its second.
   sequence and differ only in rz angles. Two caveats: the platform's recompilation and qubit placement cannot be
   inspected on the Public plan, so the three-CZ check applies to the program as sent, not as run; and no calibration
   snapshot is returned, so there is no x and the map rule is capped. Tested only against recorded-shape responses.
+  The extra is limited to the SDK versions every adapter call was checked against offline (openquantum-sdk 0.4.3,
+  openquantum-sdk-qiskit 0.3.3; live responses are still untested), and the module stops at import, naming them, if
+  the installed SDK lacks the two private methods it calls (`_wait_for_preparation`, `_resolve_organization_id`).
+  On Open Quantum, a pair named in a program is not the physical pair: Kickoff 40 showed that the same named pairs,
+  sent through a route that records placement, ran on other qubits than Open Quantum's programs had used. Use a map
+  there only with the exact program that measured it, and read its pair names as labels. Placement cannot be pinned,
+  because the platform's preprocessing breaks the provider's verbatim mode. In
+  Kickoff 34b, pair levels held within a job (r = 0.93) but not between runs a few hours apart (r between 0.10 and
+  0.23 on the shared pairs, computed after seeing the data).
+- **Amazon Braket** (no adapter yet; Kickoff 02's work). Kickoffs 40 to 42 reached the same Rigetti processor
+  through Amazon Braket, by their own runners; nothing in the package submits to Braket. What pins placement there:
+  each program names its physical qubits (`$n`) inside one verbatim box. The device does not support Braket's rewiring
+  flag, so placement came from the named qubits, and every compiled program Braket returned carries `PRAGMA
+  INITIAL_REWIRING "NAIVE"` with a preserved block and each pair's gates on its named qubits. Those compiled programs
+  are the placement records, archived in `data/rigetti_cepheus_1_108q/compiled/`, and `archive.compiled_record`
+  reads one back: CZ per named pair, any gate or measurement off the names, the measured qubits. Each result carries
+  `measured_qubits`, and character j of a counts key belongs to `measured_qubits[j]` (`archive.braket_outcomes`).
 - **cirq_sim** (`[cirq]`, experimental): **a simulator only, not hardware access.** It loads the median calibration
   that Cirq ships for a Quantum Virtual Machine processor (willow_pink by default) and simulates each pair under
   either Kickoff 36's Pauli model built from those published figures or the QVM's own noise model. Under the same
@@ -180,15 +238,45 @@ with a the bit of the pair's first qubit and b its second.
 - **Dry run by default.** `manacitra map` sends nothing without `--submit`.
 - **The estimate first.** Before a send, the estimate is printed: on IBM, 0.3 ms per shot plus 5 s (the observed
   rate was about 0.28 ms); on Open Quantum, the platform's own quote in credits.
-- **Submit once.** `backends/base.py` writes a ledger record (job hash, provider, processor, UTC time) *before*
-  anything is sent, adds the handle when it exists, and refuses a second send of the same job hash. `--allow-resubmit`
-  overrides that and is itself recorded. A send that failed still counts: a second attempt needs the override. The
-  ledger lives in `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and holds no credentials.
+- **Submit once.** `backends/base.py` refuses a second send of the same job hash. `--allow-resubmit` (in Python,
+  `allow_resubmit=True`) overrides that and is itself recorded, with the reason given (`--resubmit-reason`). The check
+  and the reservation are one step: under an exclusive lock on a file beside the ledger (`fcntl.flock` on POSIX,
+  `msvcrt.locking` on Windows, so it holds between processes as well as threads), the guard reads the ledger again,
+  refuses a job already sent or reserved, does the budget accounting against every reservation, and writes and fsyncs
+  the reservation and a "sending" record (job hash, provider, processor, UTC time). Only then is the lock released and
+  the job sent, so two commands started together cannot both send one job, or both spend the last of one budget. A
+  caller that cannot take the lock within 30 seconds is refused and sends nothing. A refusal before sending (a cap, a
+  quote, a budget) is recorded as "refused", which is not a send. A reservation from a send that failed, or whose
+  outcome is unknown, stays until a fetch settles it, and a second attempt needs the override. This holds for the
+  library as well as the command line: a spending backend's public `submit()` is the guard, and its raw send is the
+  private `_send()`. The simulators, which send nothing to a provider, keep a direct `submit()`. The ledger lives in
+  `./.manacitra/ledger.jsonl` (or `$MANACITRA_LEDGER`) and holds no credentials.
+- **The rule for every spending check** (Amendment A6). A check that depends on a shared quantity (an account
+  balance, a run budget, a usage cap) is decided under the ledger's lock, against every open reservation in the ledger
+  that draws on the same quantity. A check made before the lock, in a quote or in the provider reads just before
+  sending, is only an early refusal; it is never the deciding one, because another process may reserve between it and
+  the send. A reservation stays open until a fetch settles it, even when its charge may already show in a figure the
+  provider reports: that can only refuse too much, never too little. A "settled" record settles only a reservation
+  written before it, and the one whose send created the tasks it fetched, so a job sent again with the override is
+  not taken as settled by the fetch of its earlier send. The rule holds between callers that share one ledger: runs
+  that spend from one account or one usage window should use one ledger.
 - **The IBM cap.** The usage is read from the runtime client before every submission (numbers and dates only; every
-  identifier field is dropped), and a job is refused if used + estimate exceeds the cap, 540 s of the Open plan's
-  600 s window by default. No usage read, no submission.
+  identifier field is dropped). The provider's figure lags a submission, so a job is refused if the usage, plus the
+  estimates of every open IBM reservation in the ledger, plus this job's estimate, exceeds the cap: 540 s of the Open
+  plan's 600 s window by default. The estimate is reserved before sending, and a fetch that reports the job's charged
+  time settles it. No usage read, no submission.
 - **The Open Quantum tests.** Every task must be quoted at the expected credits, on the Public plan, within the
-  budget, leaving the balance above the floor; a second wave is refused until the first has completed.
+  budget, leaving the balance above the floor; a second wave is refused until the first has completed. The checks run
+  again immediately before sending: the balance is read again; the quote must be younger than 10 minutes and every
+  task still prepared at the expected price. Then, under the ledger's lock: the credits already committed in the ledger
+  for the run (its budget scope, provider:processor:job name; settled charges and open reservations) plus this job
+  must stay within the budget; and the balance read just before, less the credits of every open reservation on the
+  same saved account (any run, any job name), less this job, must stay at or above the floor (Amendment A6). Any
+  failure refuses the send and names the check; a floor refusal names the open reservations it counted. Between two
+  waves, fetch the first before sending the second, or its credits count against the floor twice. A job's credits are
+  reserved in the ledger before it is sent; after a failed send, which may have created tasks, the reservation stays
+  until a fetch settles it. The ledger records the account as a hash of the saved account's local name, never the
+  name or a provider identifier; reach one organization through one saved account name.
 - **Three CZ per pair.** Every transpiled circuit is checked: exactly three two-qubit gates per pair, none outside the
   pairs, no swaps, the layout kept.
 - **Credentials.** Only from each provider's own saved-account mechanism or environment variables. Nothing in this
@@ -197,17 +285,31 @@ with a the bit of the pair's first qubit and b its second.
 - **The identifier scan.** `tools/scan_secrets.py` fails on credentials, identifiers, email addresses and home paths
   anywhere in the tree. It runs in CI and, once `git config core.hooksPath .githooks` is set, on every commit.
 
-## 7. Reproducing every number
+## 7. Reproducing the README's numbers
+
+The dataset ships with the repository, not with the package. From a clone installed with `pip install -e .` it is
+found by itself; with a plain install, point at a clone's `data/` with `MANACITRA_DATA` (or `manacitra --data`).
+Without it, Manacitra stops and says how to get it, and the tests that need it are skipped with that reason.
 
 ```bash
 pip install -e ".[dev]"
-pytest tests/test_reproduction.py     # every archived statistic, from the counts, to 1e-6
-pytest tests/test_readme_numbers.py   # every number the README states
+pytest tests/test_reproduction.py     # every field in tests/expected_fields.json, from the counts, to 1e-6 (*)
+pytest tests/test_field_inventory.py  # every field of data/ listed once: compared, or excluded with a reason
+pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the five diagrams, from data/
+python docs/make_diagrams.py          # the seven diagrams, from data/
 ```
+
+(*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
+random streams the same across versions, and a multinomial draw can turn on the last bit of a probability, which
+differs between platforms. So the intervals that also resample shots are compared at 10⁻³ (the largest difference seen
+between platforms is 3.2·10⁻⁴), and Kickoff 42's bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, the runs'
+version, and named as not compared under an older numpy. Every other field is compared at 10⁻⁶ everywhere.
+
+Every measured statistic in the README is checked by a test; times, ranges and counts are taken from the data files
+and listed in `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
 
 Where each README number comes from:
 
@@ -221,6 +323,15 @@ Where each README number comes from:
 | 35.6% less error; G +0.0012 (+0.0004, +0.0021); USEFUL | `ibm_fez/k33-payoff.json` (prior map from `k32-isolation.json`) | `archive.payoff_from_record` |
 | 16% less; G +0.0004 (+0.0001, +0.0008); partial 0.29, p 0.073; NOT SETTLED | `ibm_kingston/k33-payoff.json` | the same |
 | NOISE without a planted map, DIAGNOSTIC with one | `simulated/k36-arm1.json`, `k36-arm2.json` | `archive.map_from_record` |
+| Rigetti: 22 working pairs of 27; r_split 0.985, r_AB 0.971; MAP PRESENT; without 101-102, MAP PRESENT | `rigetti_cepheus_1_108q/main.json` | `archive.rigetti_map` |
+| Rigetti, after the fact: 20 pairs, r_split 0.84, r_AB 0.79, MAP PRESENT | `rigetti_cepheus_1_108q/after-the-fact.json` | `archive.rigetti_map` |
+| Rigetti: r = 0.93 between the waves; 0.10 to 0.23 across runs | `rigetti_cepheus_1_108q/main.json`, `screen.json` | `archive.rigetti_map` |
+| Rigetti, Kickoff 37: r = 0.997 to 0.998 minutes apart, 0.97 and 0.76 across about 9 hours, 0.07 and −0.25 between the programs; PLACEMENT; 0.99 and 0.98 against Kickoff 34b; the five excluded pairs at 0.70 to 0.84 under the screen program | `rigetti_cepheus_1_108q/k37-placement.json` (with `main.json` and `screen.json` for the lines against Kickoff 34b) | `archive.placement_or_drift` |
+| ibm_fez, Kickoff 35: r = 0.86 (corrected 0.89) Day 1 to Day 3; 9 of 18 worst; HOLDS under both rules; 0.74 without the four flagged edges; r = 0.99 for the published score, −0.07 to 0.07 against the map | `ibm_fez/k35-day1.json` to `k35-day3.json`, `k35-persistence.json` | `archive.full_chip_persistence` (`verdicts.persistence_analysis`) |
+| Rigetti, Kickoff 38: r = 0.99 and −0.15; ACTIVITY | `rigetti_cepheus_1_108q/k38-activity.json` | `archive.footprint_or_activity` |
+| Rigetti, Kickoff 40: d = 0.99, PINNED; r_split 0.97, r_AB 0.81, r_Ax 0.20, DIAGNOSTIC; the level's 31% less error; SD of k 1.1; r = −0.17 against Kickoff 34b; r = −0.18 and 0.24 against Kickoff 37 | `rigetti_cepheus_1_108q/k40-*.json` | `archive.braket_placement`, `braket_map`, `braket_payoff` |
+| Rigetti, Kickoff 41: r = 0.85 (0.61 without the extremes), 0.80 for the level, HOLDS; 27% less error, G +0.0122 (+0.0077, +0.0168), USEFUL | `rigetti_cepheus_1_108q/k41-*.json` (with `k40-*.json`) | `archive.pinned_map_persistence`, `day_old_payoff` |
+| Rigetti, Kickoff 42: the shape check; r = +0.24; pooled r 0.85, median 0.98; 0.72 and 0.90, HOLDS; the switch | `rigetti_cepheus_1_108q/k42-*.json` | `archive.offset_scan` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -229,14 +340,17 @@ in Kickoff 36's own report.
 
 ## 8. What kind of claim each part is
 
-- **Lived facts**: the counts in `data/`, as two IBM processors returned them on 5 October 2026, and the simulation
-  outputs, as run on the author's computer that day.
+- **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor (through two routes) returned
+  them on 5 to 7 October 2026, and the simulation outputs, as run on the author's computer on 5 October.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it
   picks better pairs for other work, and that it lasts long enough to plan by. Each part names what would discredit it
   (section 3). On two IBM processors on one day, the first held on both, the second held on one and was not settled
-  on the other, and the third is open.
+  on the other, and the third is open. Through Open Quantum, a per-pair map was present within one job, with no
+  published figures to test it against. Through Amazon Braket, with placement pinned and figures published, the first
+  held (DIAGNOSTIC), the second was not settled twice while the plain level chose better pairs, and the map held for a
+  day; on ibm_fez's whole chip, it held for two days.
 
 ## 9. Sealing and signing
 
@@ -281,7 +395,7 @@ timestamp. There is no key to store, rotate or keep secret.
 ```bash
 pip install sigstore
 sigstore verify identity data/ibm_fez/k31-map.json \
-  --cert-identity https://github.com/dogmaguru/manacitra/.github/workflows/sign.yml@refs/heads/main \
+  --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/heads/main \
   --cert-oidc-issuer https://token.actions.githubusercontent.com
 ```
 

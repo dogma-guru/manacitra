@@ -1,3 +1,5 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
 # Keyless signing with a public timestamp (Kickoff 01, section 7b).
 #
 # Signs every *.commit.json and every file in data/ when they land on the default branch, and every release

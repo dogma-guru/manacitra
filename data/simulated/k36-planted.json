@@ -4,13 +4,14 @@
     "provider": "none: a local simulation of the Cirq Quantum Virtual Machine's published median calibration (2024-08-16); not a measurement of any device",
     "kickoff": "Kickoff 36 (can the method say no?)",
     "utc": "2026-10-05T18:34:48Z",
-    "description": "The planted map of arm 2: a per-pair Z over-rotation after each CZ, its size and every angle.",
+    "shots_per_circuit": "not applicable",
     "sources": [
       {
         "file": "planted-36.json",
         "sha256": "d5909071bcdc1ad6409767fb96161ce6d26f0360a1d8af5e12befd54ea150a7b"
       }
     ],
+    "description": "The planted map of arm 2: a per-pair Z over-rotation after each CZ, its size and every angle.",
     "source_script_sha256": "abb386e39f28f666774e2faa61e2cf64574bba3b51c0ae00aa22884b0530c241"
   },
   "form": "zrot",

@@ -1,15 +1,12 @@
 {
   "meta": {
+    "bit_reading": "qiskit-adjacent",
+    "bit_reading_note": "each position measures only its condition's active pairs, in the order of selection.dense_pairs (condition D) or selection.groups (S1, S2); pair i of those is bits 2i and 2i + 1",
     "processor": "ibm_kingston",
     "provider": "IBM Quantum",
     "kickoff": "Kickoff 32 (alone or crowded)",
     "utc": "2026-10-05T13:23:02.021769Z",
     "shots_per_circuit": 8000,
-    "job_id": "db1q7deegvvc73bi0rpg",
-    "charged_s": 52,
-    "description": "Circuit A only. Condition D: all 27 Kickoff 31 pairs at once. Conditions S1, S2: only the 12 test pairs (6 that kept least, 6 that kept most), split into groups with no two active pairs coupled. Each position's counts cover that condition's active pairs, in the order of selection.dense_pairs (D) or selection.groups (S1, S2).",
-    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
-    "bootstrap_seed": 32,
     "sources": [
       {
         "file": "results-32-ibm_kingston.json",
@@ -20,6 +17,11 @@
         "sha256": "1c54024e4e4a50b4817c76b07153b4bf171bf860872eaacbc1b95bf4387bf51a"
       }
     ],
+    "job_id": "db1q7deegvvc73bi0rpg",
+    "charged_s": 52,
+    "description": "Circuit A only. Condition D: all 27 Kickoff 31 pairs at once. Conditions S1, S2: only the 12 test pairs (6 that kept least, 6 that kept most), split into groups with no two active pairs coupled. Each position's counts cover that condition's active pairs, in the order of selection.dense_pairs (D) or selection.groups (S1, S2).",
+    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0; pair i is measured into classical bits 2i (its first qubit) and 2i + 1 (its second)",
+    "bootstrap_seed": 32,
     "source_script_sha256": "262f53638e229a25189de6cb13d3974eb8077019bc4c5241c17be5f3cdf53ec1"
   },
   "selection": {"worst6":[{"pair":[16,23],"kA_31":-0.21018138488018118,"kB_31":-0.07502446545618341},{"pair":[5,6],"kA_31":0.6421289553819672,"kB_31":0.8686116997683695},{"pair":[151,152],"kA_31":0.6495763272871707,"kB_31":0.9264751438005603},{"pair":[44,45],"kA_31":0.6504038130544136,"kB_31":0.8890729176200568},{"pair":[91,98],"kA_31":0.7472196478220534,"kB_31":0.9214148426114313},{"pair":[42,43],"kA_31":0.7554945054945057,"kB_31":0.9233949604680477}],"best6":[{"pair":[123,136],"kA_31":1.2312988216602672,"kB_31":1.0305413378204265},{"pair":[140,141],"kA_31":1.0616642393750837,"kB_31":0.9816984306905939},{"pair":[21,36],"kA_31":1.0418045809612106,"kB_31":0.9176746199933818},{"pair":[109,110],"kA_31":1.0219449225473318,"kB_31":0.9478164140329625},{"pair":[3,4],"kA_31":1.02028995101284,"kB_31":0.9856586664038253},{"pair":[81,82],"kA_31":0.9855355487885629,"kB_31":0.977298168787007}],"groups":[[[16,23],[5,6],[44,45],[123,136],[140,141],[21,36]],[[151,152],[91,98],[42,43],[109,110],[3,4],[81,82]]],"group_balance":[{"worst":3,"best":3},{"worst":3,"best":3}],"distance_checks":[{"group":1,"p":[16,23],"q":[5,6],"distance_at_least":2,"ok":true},{"group":1,"p":[16,23],"q":[44,45],"distance_at_least":2,"ok":true},{"group":1,"p":[16,23],"q":[123,136],"distance_at_least":2,"ok":true},{"group":1,"p":[16,23],"q":[140,141],"distance_at_least":2,"ok":true},{"group":1,"p":[16,23],"q":[21,36],"distance_at_least":2,"ok":true},{"group":1,"p":[5,6],"q":[44,45],"distance_at_least":2,"ok":true},{"group":1,"p":[5,6],"q":[123,136],"distance_at_least":2,"ok":true},{"group":1,"p":[5,6],"q":[140,141],"distance_at_least":2,"ok":true},{"group":1,"p":[5,6],"q":[21,36],"distance_at_least":2,"ok":true},{"group":1,"p":[44,45],"q":[123,136],"distance_at_least":2,"ok":true},{"group":1,"p":[44,45],"q":[140,141],"distance_at_least":2,"ok":true},{"group":1,"p":[44,45],"q":[21,36],"distance_at_least":2,"ok":true},{"group":1,"p":[123,136],"q":[140,141],"distance_at_least":2,"ok":true},{"group":1,"p":[123,136],"q":[21,36],"distance_at_least":2,"ok":true},{"group":1,"p":[140,141],"q":[21,36],"distance_at_least":2,"ok":true},{"group":2,"p":[151,152],"q":[91,98],"distance_at_least":2,"ok":true},{"group":2,"p":[151,152],"q":[42,43],"distance_at_least":2,"ok":true},{"group":2,"p":[151,152],"q":[109,110],"distance_at_least":2,"ok":true},{"group":2,"p":[151,152],"q":[3,4],"distance_at_least":2,"ok":true},{"group":2,"p":[151,152],"q":[81,82],"distance_at_least":2,"ok":true},{"group":2,"p":[91,98],"q":[42,43],"distance_at_least":2,"ok":true},{"group":2,"p":[91,98],"q":[109,110],"distance_at_least":2,"ok":true},{"group":2,"p":[91,98],"q":[3,4],"distance_at_least":2,"ok":true},{"group":2,"p":[91,98],"q":[81,82],"distance_at_least":2,"ok":true},{"group":2,"p":[42,43],"q":[109,110],"distance_at_least":2,"ok":true},{"group":2,"p":[42,43],"q":[3,4],"distance_at_least":2,"ok":true},{"group":2,"p":[42,43],"q":[81,82],"distance_at_least":2,"ok":true},{"group":2,"p":[109,110],"q":[3,4],"distance_at_least":2,"ok":true},{"group":2,"p":[109,110],"q":[81,82],"distance_at_least":2,"ok":true},{"group":2,"p":[3,4],"q":[81,82],"distance_at_least":2,"ok":true}],"all_distance_checks_ok":true,"replacements":[],"dense_pairs":[[105,117],[109,110],[44,45],[89,90],[147,148],[47,48],[25,37],[91,98],[151,152],[143,144],[154,155],[79,93],[42,43],[63,64],[49,50],[21,36],[118,129],[140,141],[9,10],[123,136],[149,150],[5,6],[3,4],[39,53],[81,82],[133,134],[16,23]]},

@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "processor": "Rigetti Cepheus-1-108Q, through Open Quantum, Public plan",
+    "provider": "Open Quantum (Rigetti)",
+    "kickoff": "Kickoff 37",
+    "utc": "2026-10-06T00:44:55Z to 2026-10-06T11:34:40Z (creation of the first task to completion of the last)",
+    "shots_per_circuit": 8000,
+    "sources": [
+      {
+        "file": "after-the-fact-37.json",
+        "sha256": "c3c8bc0379ac0816147fbaf5f842d0b5399b6296ea4a0ec53c7b4eeb70f91180"
+      }
+    ],
+    "tasks": [
+      {
+        "label": "wave1-T1",
+        "wave": 1,
+        "task": "T1",
+        "program": "P27",
+        "created_utc": "2026-10-06T00:44:55Z",
+        "completed_utc": "2026-10-06T01:24:16Z"
+      },
+      {
+        "label": "wave1-T2",
+        "wave": 1,
+        "task": "T2",
+        "program": "P53",
+        "created_utc": "2026-10-06T00:44:55Z",
+        "completed_utc": "2026-10-06T02:22:29Z"
+      },
+      {
+        "label": "wave1-T3",
+        "wave": 1,
+        "task": "T3",
+        "program": "P27",
+        "created_utc": "2026-10-06T00:44:56Z",
+        "completed_utc": "2026-10-06T01:34:19Z"
+      },
+      {
+        "label": "wave2-T1",
+        "wave": 2,
+        "task": "T1",
+        "program": "P27",
+        "created_utc": "2026-10-06T11:30:33Z",
+        "completed_utc": "2026-10-06T11:32:39Z"
+      },
+      {
+        "label": "wave2-T2",
+        "wave": 2,
+        "task": "T2",
+        "program": "P53",
+        "created_utc": "2026-10-06T11:30:33Z",
+        "completed_utc": "2026-10-06T11:34:40Z"
+      },
+      {
+        "label": "wave2-T3",
+        "wave": 2,
+        "task": "T3",
+        "program": "P27",
+        "created_utc": "2026-10-06T11:30:33Z",
+        "completed_utc": "2026-10-06T11:31:39Z"
+      }
+    ],
+    "shots_per_task": 8000,
+    "times_note": "creation as the platform recorded it; completion as seen by the runner's status poller, at its 60-second resolution",
+    "second_wave": "The second wave was planned about two hours after the first and ran about nine hours after it; the two-hour question was not tested.",
+    "description": "Checks on Kickoff 37 computed after seeing the data: the program half and t27 without the five pairs Kickoff 34b excluded, those five pairs' levels, t53 split by pair set, and the largest P53 changes between the waves. Not pre-registered.",
+    "source_archive_sha256": "f4d3e6d7351fb9d8586aba8565a0fa4bf3dcfdc8a6ed894dfaad4612bb17ee50",
+    "source_script_sha256": "82e36d2808d6d6e47987268988ea47572832420b42bb82db9766c68e65fc0c70",
+    "source_label": "after the fact: computed after seeing the data; not pre-registered; outside the verdict"
+  },
+  "label": "computed after seeing the data, outside the verdict",
+  "without_34b_five_low_pairs": {
+    "pairs_dropped": [
+      [
+        0,
+        1
+      ],
+      [
+        99,
+        100
+      ],
+      [
+        56,
+        57
+      ],
+      [
+        63,
+        64
+      ],
+      [
+        87,
+        88
+      ]
+    ],
+    "n": 22,
+    "d_1_pearson_T1_vs_T2": {
+      "pearson": -0.13934970214649994,
+      "spearman": -0.101072840203275,
+      "n": 22
+    },
+    "d_2_pearson_T1_vs_T2": {
+      "pearson": -0.3266845964340695,
+      "spearman": -0.22642574816487862,
+      "n": 22
+    },
+    "t27": {
+      "pearson": 0.8709243200471595,
+      "spearman": 0.8147939017504237,
+      "n": 22
+    }
+  },
+  "the_five_low_pairs": {
+    "0-1": {
+      "T1_w1": 0.161,
+      "T3_w1": 0.170625,
+      "T2_w1": 0.7255,
+      "T1_w2": 0.195125,
+      "T3_w2": 0.197875,
+      "T2_w2": 0.758
+    },
+    "99-100": {
+      "T1_w1": 0.212625,
+      "T3_w1": 0.239125,
+      "T2_w1": 0.836375,
+      "T1_w2": 0.180125,
+      "T3_w2": 0.17175,
+      "T2_w2": 0.83325
+    },
+    "56-57": {
+      "T1_w1": 0.259375,
+      "T3_w1": 0.264625,
+      "T2_w1": 0.746375,
+      "T1_w2": 0.24975,
+      "T3_w2": 0.25875,
+      "T2_w2": 0.780125
+    },
+    "63-64": {
+      "T1_w1": 0.369625,
+      "T3_w1": 0.38625,
+      "T2_w1": 0.6995,
+      "T1_w2": 0.300375,
+      "T3_w2": 0.30775,
+      "T2_w2": 0.71075
+    },
+    "87-88": {
+      "T1_w1": 0.353625,
+      "T3_w1": 0.3655,
+      "T2_w1": 0.756,
+      "T1_w2": 0.420875,
+      "T3_w2": 0.42075,
+      "T2_w2": 0.764875
+    }
+  },
+  "t53_split": {
+    "on_the_27_P27_pairs": {
+      "pearson": 0.8113515923205032,
+      "spearman": 0.7875457875457876,
+      "n": 27
+    },
+    "on_the_26_other_pairs": {
+      "pearson": 0.5918994108112277,
+      "spearman": 0.604102564102564,
+      "n": 26
+    }
+  },
+  "largest_P53_changes_wave1_to_wave2": [
+    {
+      "pair": [
+        47,
+        48
+      ],
+      "w1": 0.7115,
+      "w2": 0.169
+    },
+    {
+      "pair": [
+        74,
+        75
+      ],
+      "w1": 0.364125,
+      "w2": 0.849625
+    },
+    {
+      "pair": [
+        45,
+        46
+      ],
+      "w1": 0.393,
+      "w2": 0.55125
+    },
+    {
+      "pair": [
+        83,
+        84
+      ],
+      "w1": 0.659625,
+      "w2": 0.76725
+    },
+    {
+      "pair": [
+        90,
+        91
+      ],
+      "w1": 0.498125,
+      "w2": 0.60425
+    },
+    {
+      "pair": [
+        51,
+        52
+      ],
+      "w1": 0.669125,
+      "w2": 0.7405
+    }
+  ],
+  "selection_note": "the 27 P27 pairs are the 27 highest on 34b's P53 screen, so T2 on them is high and narrow (SD 0.039 and 0.042) by construction; the crowding lean's upward mean is expected from this selection whatever the mechanism"
+}

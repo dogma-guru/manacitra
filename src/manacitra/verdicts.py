@@ -133,6 +133,7 @@ def analyse_map(
     halves=None,
     dead_pair_floor: float | None = None,
     n_permutations: int = stats.N_PERMUTATIONS,
+    flagged: Sequence[str | None] | None = None,
 ) -> dict:
     """Kickoff 31's analysis and verdict from a per-circuit, per-pair P(11) table.
 
@@ -142,8 +143,14 @@ def analyse_map(
     seed: the permutation seed (each published run used its kickoff number: 31, 34, 36).
     prev_k: an earlier run's k_A for the same pairs; adds S4 (persistence, not in the verdict).
     dead_pair_floor: if given, pairs whose mean P(A no) is below it are excluded first (Kickoff 34 A1), and logged.
+    flagged: per pair, the source of the vendor's flag (layout.vendor_flag) or None. The verdict counts every pair that
+    runs, as the kickoffs fixed it; the "flagged" block beside it gives the verdict's statistics without the flagged
+    pairs (Amendment A7).
     """
     P = np.asarray(P, float)
+    flagged = [None] * P.shape[1] if flagged is None else list(flagged)
+    if len(flagged) != P.shape[1]:
+        raise ValueError("flagged needs one entry per pair")
     halves = halves or HALVES
     out: dict = {}
     keep = np.arange(P.shape[1])
@@ -160,6 +167,7 @@ def analyse_map(
         cz_error = None if cz_error is None else np.asarray(cz_error, float)[keep]
         readout_error = None if readout_error is None else np.asarray(readout_error, float)[keep]
         prev_k = None if prev_k is None else np.asarray(prev_k, float)[keep]
+        flagged = [flagged[i] for i in keep]
         if len(keep) < 20:
             out["verdict"] = Verdict(
                 "NOT SETTLED",
@@ -188,6 +196,7 @@ def analyse_map(
     }
     out.update(
         {
+            "n_permutations": n_permutations,
             "n_pairs": n,
             "pair_index": keep.tolist(),
             "mean_P": mean_P,
@@ -239,7 +248,40 @@ def analyse_map(
         s3["r_Ax"]["pearson"] if s3 else None,
     )
     out["verdict"] = v.as_dict()
+    out["flagged"] = _map_flagged_block(P, order, x, shots, seed, halves, n_permutations, flagged, keep)
     return out
+
+
+def _map_flagged_block(P, order, x, shots, seed, halves, n_permutations, flagged, keep) -> dict:
+    """Beside the verdict, not in it: the pairs the vendor flagged, why, and the verdict's statistics without them."""
+    idx = [j for j, f in enumerate(flagged) if f]
+    block: dict = {
+        "pairs": [int(keep[j]) for j in idx],
+        "sources": sorted({flagged[j] for j in idx}),
+        "note": "outside the verdict: the verdict counts every pair that runs",
+    }
+    if not idx:
+        block["without"] = None
+        return block
+    rest = [j for j in range(P.shape[1]) if j not in set(idx)]
+    sub = analyse_map(
+        P[:, rest],
+        order,
+        x=None if x is None else np.asarray(x, float)[rest],
+        shots=shots,
+        seed=seed,
+        halves=halves,
+        n_permutations=n_permutations,
+    )
+    block["without"] = {
+        "n_pairs": sub["n_pairs"],
+        "S1": sub["S1"],
+        "S2": sub["S2"],
+        "S3": sub["S3"],
+        "mean_kA": sub["mean_kA"],
+        "sd_kA_between_pairs": sub["sd_kA_between_pairs"],
+    }
+    return block
 
 
 def leave_one_out(P, order: Sequence[str] = ORDER_16, x=None, seed: int = 31, prev_k=None, **kw) -> dict:
@@ -411,15 +453,21 @@ ORDER_PERSIST = [
 ]
 
 
-def day_from_rounds(rounds: dict[str, list], P_by_position, x_by_edge: dict, shots: int = 4000) -> dict:
+def day_from_rounds(
+    rounds: dict[str, list], P_by_position, x_by_edge: dict, shots: int = 4000, flags_by_edge: dict | None = None
+) -> dict:
     """One day's input for persistence_analysis from Kickoff 35's layout: rounds {"R1": [edge, ...], ...} and the
-    per-position P(11) of each round's edges in ORDER_PERSIST."""
+    per-position P(11) of each round's edges in ORDER_PERSIST. flags_by_edge: the vendor's flag on each edge
+    (layout.vendor_flag), if any."""
     obs: dict = {}
     for pos, ((rname, variant), P) in enumerate(zip(ORDER_PERSIST, P_by_position), start=1):
         for e, p in zip(rounds[rname], P):
             obs.setdefault(tuple(e), []).append({"position": pos, "variant": variant, "n11": p * shots, "shots": shots})
     edges = [tuple(e) for r in rounds.values() for e in r]
-    return {"edges": edges, "x": [x_by_edge[e] for e in edges], "obs": [obs[e] for e in edges]}
+    day = {"edges": edges, "x": [x_by_edge[e] for e in edges], "obs": [obs[e] for e in edges]}
+    if flags_by_edge is not None:
+        day["flags"] = [flags_by_edge.get(e) for e in edges]
+    return day
 
 
 def _k_obs(obs, positions=None):
@@ -458,13 +506,14 @@ def persistence_day(day: dict) -> dict:
 
 
 def _decile_overlap(ka, kb, worst: bool = True) -> tuple[float, int]:
-    """The share of day a's worst (or best) decile still in day b's; the decile is round(0.1 n) edges, at least 1."""
+    """The share of day a's worst (or best) decile still in day b's; the decile is round(0.1 n) edges, at least 1.
+
+    Ties in k are broken by edge order, the earlier edge first, as Kickoff 36's specification of this analysis says
+    (Amendment A7: numpy's default sort, which this used before, left a tie at the decile's edge to chance)."""
     ka, kb = np.asarray(ka, float), np.asarray(kb, float)
     m = max(1, int(round(0.1 * len(ka))))
-    if worst:
-        a, b = set(np.argsort(ka)[:m]), set(np.argsort(kb)[:m])
-    else:
-        a, b = set(np.argsort(-ka)[:m]), set(np.argsort(-kb)[:m])
+    sign = 1 if worst else -1
+    a, b = set(np.argsort(sign * ka, kind="stable")[:m]), set(np.argsort(sign * kb, kind="stable")[:m])
     return len(a & b) / m, m
 
 
@@ -556,7 +605,12 @@ def persistence_analysis(days: dict) -> dict:
     """Kickoff 35's analysis across days, with the verdict under Amendment A1 and the original rule beside it.
 
     days: {day number: {"edges": [...], "x": [published score per edge], "obs": [[{"position", "variant",
-    "n11", "shots"}, ...] per edge]}}; positions 1 to 12 in ORDER_PERSIST. See day_from_rounds for Kickoff 35's layout.
+    "n11", "shots"}, ...] per edge], and optionally "flags": [the vendor's flag per edge, or None]}}; positions 1 to 12
+    in ORDER_PERSIST. See day_from_rounds for Kickoff 35's layout.
+
+    The verdicts count every edge that runs, as Kickoff 35 fixed them. Beside them, the "flagged" block (Amendment A7)
+    names the edges the vendor flagged on any day and gives, without them, each day's reliability recomputed on the
+    subset, the correlations and corrected correlations of each pair of days, and the decile overlaps.
     """
     days = {int(d): v for d, v in days.items()}
     present = sorted(days)
@@ -617,4 +671,38 @@ def persistence_analysis(days: dict) -> dict:
         "across": across,
         "verdict": a1.as_dict(),
         "original_rule": original.as_dict(),
+        "flagged": _persistence_flagged_block(days),
     }
+
+
+def _persistence_flagged_block(days: dict) -> dict:
+    """Beside the verdicts, not in them: the edges flagged by the vendor on any day, and the statistics without them."""
+
+    def key(e):
+        return tuple(e) if isinstance(e, list) else e
+
+    sources: dict = {}
+    for d in sorted(days):
+        for e, f in zip(days[d]["edges"], days[d].get("flags") or []):
+            if f:
+                sources.setdefault(key(e), f)
+    block: dict = {
+        "pairs": [list(e) if isinstance(e, tuple) else e for e in sources],
+        "sources": sorted(set(sources.values())),
+        "note": "outside the verdicts: the verdicts count every edge that runs",
+    }
+    if not sources:
+        block["without"] = None
+        return block
+    sub = {}
+    for d, day in days.items():
+        keep = [i for i, e in enumerate(day["edges"]) if key(e) not in sources]
+        sub[d] = {k: [day[k][i] for i in keep] for k in ("edges", "x", "obs")}
+    a = persistence_analysis(sub)
+    across = a["across"]
+    block["without"] = {
+        "n_edges": across["edges_on_all_days"],
+        "reliability": {d: v["reliability"] for d, v in a["per_day"].items()},
+        **{k: v for k, v in across.items() if k not in ("edges_on_all_days", "map_or_score_persists_more")},
+    }
+    return block
