@@ -694,3 +694,16 @@ def test_the_findings_table_matches_the_findings():
             table_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
         words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
         assert words and all(w in table_rows for w in words), (n, words)
+
+
+def test_the_front_page():
+    """The README itself, not its pages, shows the chip map under "What it does" (the picture that explains the project
+    at a glance) and the pipeline, and says that pick can rank by the plain level, which its table's rows 8 and 9 rely
+    on (the author's review of 8 October)."""
+    front = (ROOT / "README.md").read_text()
+    what = front.split("\n## What it does\n", 1)[1].split("\n## ", 1)[0]
+    assert "](docs/diagrams/chip-map.svg)" in what and "](docs/diagrams/pipeline.svg)" in front
+    assert (
+        "highest kept share first, or, with `--by level`, by the plain level, which chose better pairs on the Rigetti "
+        "processor where the kept share did not." in what
+    )

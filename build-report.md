@@ -1962,9 +1962,11 @@ README" became "in the README and on this page"; two bold labels became headings
 the findings; the "long version" pointer moved into the documentation list; and the plain-package paragraph was split
 under a heading. Image and file paths were rewritten for the `docs/` folder.
 
-**The README now** has 121 lines and about 1,700 words. It carries:
+**The README now** has 125 lines and about 1,900 words. It carries:
 - the name, the DOI badge and a one-line contents list;
-- "What it does";
+- "What it does", with the chip map (picture 2, with its explanation) under it, and `pick --by level` named beside
+  the kept share (both from the author's review of the first draft: the chip map is what explains the project at a
+  glance, and the table's rows 8 and 9 rely on the plain level);
 - a table of the ten findings: the number links to the full finding, then the finding's own bold headline word for
   word, the processor, the kickoff and date, and the verdict as the kickoffs table gives it;
 - what would discredit the map, and the Limits, unchanged;
@@ -1989,5 +1991,6 @@ NOT; the per-program pattern HOLDS a day later".
   makes it fail.
 - `docs/index.md` points to the new pages, and says the README's checks cover them.
 
-**After the change:** 577 tests pass (571 before; 6 new: the table check and a link check per page); Ruff is clean;
+**After the change:** 578 tests pass (571 before; 7 new: the table check, a link check per page, and the front page's
+pictures and `--by level` sentence); Ruff is clean;
 both scans are clean. Nothing in `data/` or `src/` changed, and no number changed.
