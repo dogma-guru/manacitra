@@ -707,3 +707,17 @@ def test_the_front_page():
         "highest kept share first, or, with `--by level`, by the plain level, which chose better pairs on the Rigetti "
         "processor where the kept share did not." in what
     )
+
+
+def test_the_readme_itself_says_how_to_point_at_the_data_and_what_is_sent():
+    """Amendment A12: three sentences the restructure had left only on linked pages are on the README itself: where
+    --data goes, that a provider backend sends nothing without --submit, and that the published runs predate this
+    release's checkable sealing."""
+    front = " ".join((ROOT / "README.md").read_text().split())
+    assert "`manacitra --data /path/to/manacitra/data verdict ibm_fez/k31-map.json`" in front
+    assert "`--data` goes before the subcommand." in front
+    assert "A provider backend sends nothing unless `--submit` is given" in front
+    assert (
+        "The published runs predate this release, so their sealed predictions rest on the author's dated records"
+        in front
+    )
