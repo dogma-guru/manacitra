@@ -18,9 +18,12 @@ file.
 ```bash
 ruff check src tests tools examples docs
 ruff format --check src tests tools examples docs
-pytest -q
+pytest -q -n auto --dist loadfile
 python tools/scan_secrets.py
 ```
+
+The tests run in parallel with `pytest-xdist` (in the `dev` extra), one test file per worker, as CI runs them; plain
+`pytest -q` runs the same tests in one process.
 
 Every statistic listed in `tests/expected_fields.json` is recomputed from the archived inputs: the raw counts where the
 release includes them; for the Kickoff 29 settling runs and some Rigetti comparisons, the archived probability or level

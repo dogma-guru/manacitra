@@ -25,4 +25,5 @@ Used only to build, lint and test it, and not needed to use it:
 
   setuptools, wheel                        MIT License
   pytest                                   MIT License
+  pytest-xdist                             MIT License
   ruff                                     MIT License

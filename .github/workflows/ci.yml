@@ -43,7 +43,8 @@ jobs:
       - name: Format
         run: ruff format --check src tests tools examples docs
       - name: Tests (including the reproduction of every archived number)
-        run: pytest -q
+        # in parallel, one test file per worker, so a file's shared fixtures are computed once
+        run: pytest -q -n auto --dist loadfile
       - name: Diagrams build
         run: python docs/make_diagrams.py --out "$RUNNER_TEMP/diagrams"
       - name: Examples run

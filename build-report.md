@@ -1609,6 +1609,11 @@ scan, and A4's ruling stands: no history is rewritten. The git identity scan is 
 - **CI runs once per change, after the merge** (the author's ruling of 7 October). `ci` ran twice on every pushed
   commit of a pull request, once for the push and once for the pull request, and the tests take 14 to 19 minutes a
   run. It now runs on pull requests and on pushes to `main` only. `dco` and `sign` are unchanged.
+- **The tests run in parallel, after the merge** (the author's ruling of 7 October). CI runs
+  `pytest -q -n auto --dist loadfile` (`pytest-xdist`, added to the `dev` extra; CONTRIBUTING gives the same command).
+  `loadfile` keeps each test file on one worker, so a file's shared fixtures, such as the one that recomputes all 31
+  acceptance cases, are computed once, not once per worker. Locally (10 cores, 4 workers), all 549 tests pass in 142 s,
+  against 300 to 380 s in one process, and 180 s with tests spread across workers one by one.
 
 **Not in this amendment, and not done:**
 - Kickoff 39;
