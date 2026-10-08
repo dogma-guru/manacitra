@@ -1581,6 +1581,16 @@ address with another repository, are still findings. `tests/test_scan.py` checks
 of those as flagged. The amendment's text did not name this change; without it, the replacements would fail the
 scan.
 
+**Before going public: the scan over the whole history, and a ruling.** Going public publishes every commit, not only
+the tree, so the tree scan was also run on every file version reachable from the repository's refs on GitHub (its
+branches and the pull requests' refs: 7 refs, 522 file versions). Personal paths and the local user name are not found
+anywhere. It found one thing: two versions of `tests/test_scan.py` from 5 October (commits `a917519` and `a2beea3`,
+on `main` through pull request 1) hold W7's two words as a test sample, at line 33. When they were written, W7's
+pattern needed both words, so splitting the string kept the line clean. Amendment A1 then widened the pattern to the
+first word on its own, which these versions now match. The current file splits the word itself. **The author's ruling
+of 7 October:** accept it and go public with the history as it is. It is the organisation's own name, in a test of the
+scan, and A4's ruling stands: no history is rewritten. The git identity scan is clean on every reachable commit.
+
 **After the amendment:**
 - 549 tests pass (543 before; 6 new: the three above and three scan cases);
 - Ruff is clean;
