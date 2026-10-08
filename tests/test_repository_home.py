@@ -92,7 +92,11 @@ def test_the_zenodo_metadata_matches_the_citation():
 
 CONCEPT_DOI = "10.5281/zenodo.23228518"
 #: Each published version's own DOI, as Zenodo minted it after the release; a release's follow-up adds its line
-VERSION_DOIS = {"0.1.0": "10.5281/zenodo.23228519", "0.1.1": "10.5281/zenodo.23239929"}
+VERSION_DOIS = {
+    "0.1.0": "10.5281/zenodo.23228519",
+    "0.1.1": "10.5281/zenodo.23239929",
+    "0.1.2": "10.5281/zenodo.23248147",
+}
 V010_DOI = VERSION_DOIS["0.1.0"]
 
 
