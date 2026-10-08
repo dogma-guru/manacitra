@@ -20,7 +20,7 @@ from .keptshare import kept_from_order, kept_share, shot_noise_sd, split_halves
 from .layout import disjoint_pairs_by_score, edge_rounds, pick_pairs
 from .verdicts import analyse_map, analyse_payoff, map_verdict, payoff_verdict, persistence_analysis
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "CIRCUITS",
