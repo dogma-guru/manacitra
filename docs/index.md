@@ -432,5 +432,20 @@ For a sealed prediction, verify both: the commit record's signature (`sigstore v
 predictions.md.commit.json ...`), which shows who published the commitment and when, and the commitment itself
 (`manacitra verify predictions.md`), which shows the file is the one committed to.
 
+**Releasing.** The steps v0.1.0 and v0.1.1 took, in order:
+
+1. **A release pull request.** It sets the version in `pyproject.toml`, the package (`__version__`), `CITATION.cff`
+   (`version` and `date-released`) and the README's citation line, and adds a dated `CHANGELOG.md` entry.
+   `test_the_version_is_the_same_everywhere` checks that they agree. `CITATION.cff` keeps the concept DOI,
+   `10.5281/zenodo.23228518`, which always resolves to the latest version.
+2. **The merge, then signing on `main`.** If a signed file changed, the bot commits new bundles. Tag that commit, so the
+   release carries bundles that verify; otherwise tag the merge commit. The tag is annotated:
+   `git tag -a vX.Y.Z -m "Manacitra X.Y.Z"`.
+3. **The release.** Publish it with the changelog entry as its notes. Watch `gate`, `build-release` and
+   `sign-release`, then verify one asset from a fresh download with the `@refs/tags/vX.Y.Z` identity.
+4. **The version DOI, once Zenodo has minted it.** The README's citation paragraph names the new version's own DOI
+   (its parenthetical, "version X.Y.Z: <DOI>"), and `VERSION_DOIS` in `tests/test_repository_home.py` gains the
+   version's line. This is the one line each release updates after the fact.
+
 **Plain SHA-256 stays** for catching corrupted files: `data/SHA256SUMS` (checked by `python tools/sha256sums.py
 --check` and by the tests) and the `sources` hashes in every data file's `meta` block.

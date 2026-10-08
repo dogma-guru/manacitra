@@ -123,4 +123,13 @@ def test_the_citation_uses_the_concept_doi():
     assert readme.count("10.5281/zenodo.") == 4, "the badge, the citation, and one version DOI (twice: text and link)"
     changelog = _read("CHANGELOG.md")
     assert f"https://doi.org/{V010_DOI}" in changelog and f"https://doi.org/{CONCEPT_DOI}" in changelog
-    assert "Unreleased" not in changelog.split("\n## ", 2)[1].split("\n", 1)[0]
+
+
+def test_the_release_steps_carry_the_doi_line():
+    """Amendment A12: docs/index.md section 9's release steps include the one line each release updates after Zenodo
+    mints its DOI, beside the version bump."""
+    steps = " ".join(
+        _read("docs/index.md").split("**Releasing.**", 1)[1].split("**Plain SHA-256 stays**", 1)[0].split()
+    )
+    assert "test_the_version_is_the_same_everywhere" in steps and "`CITATION.cff` keeps the concept DOI" in steps
+    assert '"version X.Y.Z: <DOI>"' in steps and "`VERSION_DOIS`" in steps

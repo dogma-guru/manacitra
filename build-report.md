@@ -2043,3 +2043,61 @@ that one line once Zenodo has minted the DOI, and adds the version to `VERSION_D
 `tests/test_repository_home.py`. The test checks that the README names the latest published version's DOI. The author
 preferred this to wording that names no version, which would hide a number a reader might want. The repository has no
 release checklist file. This step is written down here and in the test.
+
+## 24. Amendment A12: three sentences back on the README (8 October 2026)
+
+**The second trial.** Codex, in run mode, worked from the public address alone, at `0b2ba5a` (v0.1.1). Its marks were
+41 PASS, 7 FAIL and 4 CANNOT CHECK, with no Blocker. Everything that runs, reproduces or verifies passed again:
+- both installs, the Python block and the three examples;
+- `report`, now byte-identical to `verdict` before its table;
+- the three independent recomputations, the manifest and the acceptance table;
+- four signatures, three negative controls and the transparency log entry;
+- the release assets, and the scan over the whole history (78 commits, 839 blobs, nothing unapproved).
+
+**Where the seven FAILs went**, as A12 sorts them:
+
+| group | count | disposition |
+|---|---|---|
+| the organisation's and Patreon's pages | 2 | the author's; A11's text stands |
+| the repository's topics, empty in the About box | 1 | the author's |
+| a rubric mismatch | 1 | corrected in the rubric (r3) |
+| this amendment | 3 | C2, F and B2, below |
+
+**1. Three sentences back on the README (C2, F, B2).** The restructure of 8 October left each of them only on a
+linked page. Each is now on the README itself, and the full text stays on the docs pages:
+- **Under "Install and try it", beside the plain-package paragraph**, how to point an install at a clone's data:
+  "Point an install at a clone's data with `manacitra --data /path/to/manacitra/data verdict ibm_fez/k31-map.json` or
+  `MANACITRA_DATA`; `--data` goes before the subcommand."
+- **In the same section:** "A provider backend sends nothing unless `--submit` is given; the simulator runs at once,
+  on your machine, and sends nothing."
+- **Under "The idea", after the sentence naming `docs/method.md`:** "The published runs predate this release, so their
+  sealed predictions rest on the author's dated records; from the first public release on, new commitments can be
+  checked by anyone with `manacitra seal` and the signing log."
+
+`test_the_readme_itself_says_how_to_point_at_the_data_and_what_is_sent` checks all three on the README alone, not on
+the joined pages.
+
+**2. The release steps carry the DOI line.**
+- **Where the steps live now.** A12 says to add the line "to the release steps in `docs/index.md` section 9 (or
+  wherever the release steps live)". No release steps were written down anywhere, so section 9 gains a short
+  "Releasing" list: the four steps v0.1.0 and v0.1.1 took.
+  1. a release pull request that sets the version everywhere, with `CITATION.cff` keeping the concept DOI;
+  2. the merge and signing on `main`, then the annotated tag, on the bot's bundle commit if a signed file changed;
+  3. the release and its verification against `@refs/tags/vX.Y.Z`;
+  4. once Zenodo has minted it, the version's own DOI in the README's citation parenthetical and in `VERSION_DOIS`.
+- **The test.** `test_the_release_steps_carry_the_doi_line` keeps step 4 there.
+
+**After the amendment:**
+- **Tests:** 581 pass (579 before; 2 new);
+- **Ruff:** clean;
+- **The identifier scan:** clean on the full tree;
+- **The git identity scan:** clean on every reachable commit;
+- **Data:** nothing in `data/` changed.
+
+**The merge method.** A12 says "squash on merge". The author's ruling of 8 October is a normal merge commit, as for
+every pull request since pull request 3, so that every commit keeps its `Signed-off-by` line on `main`.
+
+**One test assertion removed.** `test_the_citation_uses_the_concept_doi` also required that the changelog's top entry
+not be "Unreleased", which held for the v0.1.1 release pull request. This amendment rightly adds an "Unreleased" entry,
+so the assertion goes. What it protected, a dated entry for the current version, is still checked by
+`test_the_version_is_the_same_everywhere`.

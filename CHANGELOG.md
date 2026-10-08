@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Amendment A12: three sentences are back on the README itself, not only on its linked pages: where `--data` goes
+  (before the subcommand), that a provider backend sends nothing without `--submit`, and that the published runs
+  predate the release's checkable sealing. `docs/index.md` section 9 lists the release steps, the version DOI line
+  among them.
+
 ## 0.1.1 (8 October 2026)
 
 The documentation release. No behaviour, data or published number changed. Archived on Zenodo under the concept DOI

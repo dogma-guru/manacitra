@@ -47,7 +47,7 @@ What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT 
 
 ![Four boxes in a row joined by arrows: Map (in: 16 short circuits on a set of non-overlapping qubit pairs at once (27 in the published runs); every coupler on a chip can be covered in a few rounds; out: k per pair), Verdict (in: k from two circuits, split halves, published x; out: NOISE, REDUNDANT, DIAGNOSTIC, MAP PRESENT or NOT SETTLED), Pick (in: the map; out: the n pairs that kept the most, ranked without checking the verdict), Run, drawn dashed (your own job, run by you on the picked pairs, not by Manacitra). A dashed note above the Map box says that, according to the author's dated records, which are not part of this release, the rules and predictions were sealed before each map job was sent.](docs/diagrams/pipeline.svg)
 
-Map, then verdict, then pick, then run. The verdict says whether the map is worth using at all: a map that does not repeat is NOISE, and a map the published figures already explain is REDUNDANT. Manacitra computes the map and the verdict; `manacitra pick` ranks pairs from the map, and you run your own job. The method, in six pictures (the kept share, the map, the three checks, the pipeline, the payoff, and how to check a sealed prediction), is in [`docs/method.md`](docs/method.md).
+Map, then verdict, then pick, then run. The verdict says whether the map is worth using at all: a map that does not repeat is NOISE, and a map the published figures already explain is REDUNDANT. Manacitra computes the map and the verdict; `manacitra pick` ranks pairs from the map, and you run your own job. The method, in six pictures (the kept share, the map, the three checks, the pipeline, the payoff, and how to check a sealed prediction), is in [`docs/method.md`](docs/method.md). The published runs predate this release, so their sealed predictions rest on the author's dated records; from the first public release on, new commitments can be checked by anyone with `manacitra seal` and the signing log.
 
 ## Install and try it
 
@@ -67,6 +67,8 @@ pip install -e ".[aer]"
 To run the tests, and with them the reproductions, install `pip install -e ".[dev,aer]"` instead, which adds `pytest`.
 
 **As a plain package**, installed with `pip install ".[aer]"` from a clone or with `pip install "git+https://github.com/dogma-guru/manacitra"`, Manacitra comes without the dataset. [`docs/install.md`](docs/install.md) says how to point it at a clone's `data/`, and covers the extras, the provider backends and the checks made before anything is sent.
+
+Point an install at a clone's data with `manacitra --data /path/to/manacitra/data verdict ibm_fez/k31-map.json` or `MANACITRA_DATA`; `--data` goes before the subcommand. A provider backend sends nothing unless `--submit` is given; the simulator runs at once, on your machine, and sends nothing.
 
 Then, on the simulator, with no account (paste this into a Python session):
 
