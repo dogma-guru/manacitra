@@ -2252,3 +2252,29 @@ version's line in `VERSION_DOIS`.
 **The release path** follows the release steps in `docs/index.md` section 9: the merge on the author's go-ahead, then
 signing on `main`, the annotated tag, the release, and verifying its assets against `@refs/tags/v0.1.2`. The release's
 signing run, the verification and the DOI are recorded with step 4's follow-up.
+
+**The release (8 October 2026).**
+- **The merge.** Pull request 13 was merged as `8b5e2ff`, with a merge commit, on the author's go-ahead, after its
+  checks passed.
+- **After the merge.** Signing and CI on `main` passed. No signed file changed, so there was no bundle commit, and the
+  tag is on the merge commit.
+- **Checked before tagging.** All 233 signed files in the tree verified against `…/sign.yml@refs/heads/main`, and the
+  git identity scan was clean on 88 commits.
+- **The tag and the release.** `v0.1.2` is annotated and unsigned, on `8b5e2ff`. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.1.2>, with the changelog's 0.1.2 entry as its notes.
+- **The release's signing run, 37840172347.** `gate`, `build-release` and `sign-release` passed. The release carries
+  the sdist, the wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Verified from a fresh download, with `sigstore` 4.5.0:**
+
+  ```
+  $ sigstore verify identity manacitra-0.1.2-py3-none-any.whl manacitra-0.1.2.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.1.2 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.1.2-py3-none-any.whl
+  OK: manacitra-0.1.2.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages. The negative control: against `…@refs/tags/v0.1.1`, the
+  wheel fails (exit status 1).
+- **Zenodo.** It archived v0.1.2 with its own DOI, `10.5281/zenodo.23248147`, under the concept DOI
+  `10.5281/zenodo.23228518`, which now resolves to it.
+- **Step 4.** The README's version-DOI parenthetical names v0.1.2's DOI, and `VERSION_DOIS` gains its line.
