@@ -1933,3 +1933,61 @@ which would list every FAIL by ID, is not in this repository. A per-item list ne
     the release date, 8 October 2026.
 
   `test_the_release_doi_is_cited_everywhere` checks all of this.
+
+## 22. The README restructured (8 October 2026)
+
+**Why.** The author asked for a README that is easy to follow, with links within it and with sections broken out
+where that is the standard way. A survey of thirteen research projects and guides found them all under about 1,150 words:
+- quantum and physics research software: Mitiq, qiskit-experiments, qiskit-device-benchmarking, Cirq, ReCirq,
+  PennyLane and QuTiP;
+- reproducible-research guidance: Papers with Code's research-code guide, rOpenSci, the Turing Way, the AEA
+  replication template, Standard Readme and Make a README;
+- two scientific Python libraries: scikit-learn and astropy.
+
+Manacitra's README had 6,100 words. The common order is what it is, install, a minimal example, links to the
+documentation, citation, and the licence last. Papers with Code's guide keeps a table of results in the README, each tied
+to a command. A subagent made the survey, from the projects' own pages; its counts are approximate, and the author did
+not take it as a ruling.
+
+**What moved, unchanged.** The text was cut from the README at exact line ranges, into four pages in `docs/`:
+- `docs/findings.md`: the reproduction note, the ten findings (each with an anchor, `#finding-1` to `#finding-10`), the
+  whole-chip picture, the flagged-pairs note, and what has not been shown;
+- `docs/method.md`: the six pictures and the sealing example;
+- `docs/kickoffs.md`: how the results were made, with the kickoffs table;
+- `docs/install.md`: the plain-package install, the extras and the provider backends, and the checks made before
+  anything is sent.
+
+Every line of the old README is on one of the five pages word for word, except six lines, all deliberate: "in the
+README" became "in the README and on this page"; two bold labels became headings; "Every result above" became a link to
+the findings; the "long version" pointer moved into the documentation list; and the plain-package paragraph was split
+under a heading. Image and file paths were rewritten for the `docs/` folder.
+
+**The README now** has 121 lines and about 1,700 words. It carries:
+- the name, the DOI badge and a one-line contents list;
+- "What it does";
+- a table of the ten findings: the number links to the full finding, then the finding's own bold headline word for
+  word, the processor, the kickoff and date, and the verdict as the kickoffs table gives it;
+- what would discredit the map, and the Limits, unchanged;
+- one picture, the pipeline, with a link to the method;
+- install and a quickstart;
+- three commands to reproduce the numbers;
+- a documentation index;
+- citation, support and licence, the licence last.
+
+**One correction while building the table.** Finding 10's verdict cell first showed only "the per-program pattern HOLDS
+a day later", which left out the kickoff's other verdicts. It now reads as the kickoffs table does: "SPREAD, MIXED, DOES
+NOT; the per-program pattern HOLDS a day later".
+
+**The tests.**
+- `tests/test_readme_numbers.py` reads the README and its four pages together as one text, so every number it checked
+  is still checked wherever it now sits, and a retired phrase cannot come back on any of them. Three checks of image
+  paths now read the page and path each image moved to.
+- New: `test_the_findings_table_matches_the_findings` checks that each row's headline is the finding's own sentence,
+  that its kickoffs are the ones the finding names, and that every capitalised verdict word is in that kickoff's row of
+  the kickoffs table. Changing one headline word makes it fail.
+- New: `test_every_link_resolves` checks every relative link and in-page anchor on all five pages. A broken anchor
+  makes it fail.
+- `docs/index.md` points to the new pages, and says the README's checks cover them.
+
+**After the change:** 577 tests pass (571 before; 6 new: the table check and a link check per page); Ruff is clean;
+both scans are clean. Nothing in `data/` or `src/` changed, and no number changed.

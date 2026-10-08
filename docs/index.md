@@ -2,7 +2,8 @@
 
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
 safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
-README is the short version.
+README is the short version; the findings in full are in [`findings.md`](findings.md), the method in six pictures in
+[`method.md`](method.md), and how each run was made in [`kickoffs.md`](kickoffs.md).
 
 ![How the map works, in five steps, from ibm_fez's Kickoff 31 (27 pairs, 32,000 shots per variant per pair). 1: two near-identical circuits, the same three CZ gates with different single-qubit angles; an exact model puts P(11) at 0.962 without the offset and 1.000 with it. 2: three pairs against that ideal gap of 0.038: 106-107 moved 0.040 (k = 1.06), the median pair 133-134 moved 0.033 (k = 0.87), and 20-21 moved 0.008 (k = 0.22). 3: k for all 27 pairs as a strip of dots, with k = 1 marked. 4: the 27 pairs on the chip, shaded from k = 0.22 to 1.06. 5: the three checks, repeats (r = 0.87, needs at least 0.5), carries over (r = 0.82, needs at least 0.4, with p below 1 in 10,000, needs below 0.05) and not already in x (r = −0.18, needs |r| below 0.5; with x removed, r = 0.82, needs at least 0.3), leading to DIAGNOSTIC.](diagrams/map-explainer.svg)
 
@@ -303,7 +304,7 @@ Without it, Manacitra stops and says how to get it, and the tests that need it a
 pip install -e ".[dev]"
 pytest tests/test_reproduction.py     # every field in tests/expected_fields.json, from the counts, to 1e-6 (*)
 pytest tests/test_field_inventory.py  # every field of data/ listed once: compared, or excluded with a reason
-pytest tests/test_readme_numbers.py   # the README's statistics, times, ranges and counts
+pytest tests/test_readme_numbers.py   # the statistics, times, ranges and counts of the README and its pages
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
@@ -316,8 +317,9 @@ differs between platforms. So the intervals that also resample shots are compare
 between platforms is 3.2·10⁻⁴), and Kickoff 42's bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, the runs'
 version, and named as not compared under an older numpy. Every other field is compared at 10⁻⁶ everywhere.
 
-Every measured statistic in the README is checked by a test; times, ranges and counts are taken from the data files
-and listed in `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
+Every measured statistic in the README and the pages it links to (`findings.md`, `method.md`, `kickoffs.md`,
+`install.md`) is checked by a test; times, ranges and counts are taken from the data files and listed in
+`tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
 
 Where each README number comes from:
 

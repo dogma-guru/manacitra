@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- The README is shorter and links out: a table of the ten findings, the limits, one picture, install and how to
+  reproduce; the findings in full, the method in six pictures, the kickoffs and the install details moved, unchanged, to
+  `docs/findings.md`, `docs/method.md`, `docs/kickoffs.md` and `docs/install.md`. A test checks every link, and that
+  each row of the table matches its finding.
+
 ## 0.1.0 (8 October 2026)
 
 Tagged `v0.1.0`; archived on Zenodo, DOI [10.5281/zenodo.23228519](https://doi.org/10.5281/zenodo.23228519).
