@@ -1652,3 +1652,94 @@ scan, and A4's ruling stands: no history is rewritten. The git identity scan is 
 - merging, making the repository public, or turning on signing;
 - any provider submission;
 - the organisation's `.github` repository (its profile README and `FUNDING.yml`), which the author handles.
+
+## 20. Amendment A10: the public posture, Part 1 (7 October 2026)
+
+**The posture, as the author ruled it.** One committer. Anyone may fork, read, cite, run and reuse the code and the
+data under their licences. Pull requests from outside the repository are not accepted at this time, and questions and
+problems go to Issues. Part 1 is the files, on the branch `feat/public-posture` from `main` at `52fea94`. Part 2 is
+the GitHub settings, which are the author's to change, and nothing here touches them. Nothing in `data/` changed.
+
+**Files added:**
+- `.github/workflows/outside-pr.yml`: closes a pull request from a fork, with one comment;
+- `.github/PULL_REQUEST_TEMPLATE.md`: three lines (the third blank);
+- `.github/ISSUE_TEMPLATE/`: `reproduction.yml`, `new-processor.yml`, `other.yml` and `config.yml` (blank issues on,
+  no external links);
+- `SECURITY.md`: the private route for a security report;
+- `.github/CODEOWNERS`: one line naming the author's account as owner of every path, by the author's ruling of 7
+  October, until a team exists;
+- `tests/test_public_posture.py`: four tests (below).
+
+**Files changed:**
+- `CONTRIBUTING.md`: a new first section, "What is accepted", and "Before a pull request" became "Before a change";
+- `README.md`: the posture sentence, beside the Patreon line;
+- `.github/workflows/sign.yml`: the `build-release` job, and its header;
+- `docs/index.md` section 9: the release identity and its verify command;
+- `tools/scan_patterns.py` and `tests/test_scan.py`: the `CODEOWNERS` line;
+- `.gitignore`: `review-images/`;
+- `CHANGELOG.md`.
+
+**Why `pull_request_target` is safe in `outside-pr.yml`.**
+- **The risk.** This trigger runs in the repository's own context, with a token that can write to pull requests. That
+  is dangerous only when the workflow checks out or runs the fork's code.
+- **What this workflow does.** Its one job runs only when the head repository is not this one. Its one step calls
+  `gh pr close --comment` with fixed text.
+- **What it reads from the event.** Only the pull request's number and the head repository's name. Never the fork's
+  title, body, branch or files.
+- **What it holds.** No checkout and no `uses:` at all, and the permission `pull-requests: write` only.
+- **What it leaves alone.** Pull requests from branches inside the repository (the author's, and Dependabot's, which
+  GitHub opens from inside it) are not closed.
+- **The test.** `test_an_outside_pull_request_is_closed_without_running_its_code` checks every one of these points,
+  including the exact set of event fields read. With a checkout step added, it fails.
+
+**The release path, which had never run.**
+- **The problem.** Before this amendment, `sign.yml`'s `sign-release` job (lines 95 to 115 at `52fea94`) downloaded
+  the release's assets into `dist/` (line 107) and signed `./dist/*` (line 111). A release made from a tag carries only
+  GitHub's automatic source archives. `gh release download` does not fetch those, so the job had nothing to sign, and
+  the step could fail on an empty glob.
+- **The new job.** `build-release` (lines 99 to 118) runs only on the `release` event. It checks out the tag, installs
+  `build`, runs `python -m build` (line 112), writes `dist/SHA256SUMS`, and runs `gh release upload "$TAG" dist/*`
+  (line 118).
+- **Signing.** `sign-release` (line 120) now `needs: [gate, build-release]` (line 121). It downloads the three assets
+  (line 132), signs them (line 136) and attaches the bundles (line 140). It still verifies against the identity
+  `sign.yml@${{ github.ref }}`, which on a release is `refs/tags/<tag>`.
+- **Documentation.** `docs/index.md` section 9 now says that a release's assets are signed under that identity, while
+  the data files stay signed under `@refs/heads/main`, and gives the verify command for the `v0.1.0` wheel.
+- **Checked here, not on GitHub.** The build was run from a clean export of this branch in a fresh environment.
+  `python -m build` made `manacitra-0.1.0.tar.gz` (184 KB) and `manacitra-0.1.0-py3-none-any.whl` (121 KB), which do not
+  carry `data/`, and the identifier scan is clean on their 82 files.
+- **The test.** `test_the_release_is_built_before_it_is_signed` reads `sign.yml` job by job. It checks the order, that
+  `build-release` runs only on `release`, the `needs`, and the identity. With `needs` set back to `gate`, it fails.
+- **Not done.** The tag and the release are the author's (Part 2, step 8). No tag was made.
+
+**Readings, logged.**
+- **Where the README sentence goes.** The amendment says "in the last section, beside the Patreon line". The Patreon
+  line is in "Support", the section before "Licence", so the sentence sits beside it there.
+- **CONTRIBUTING's licence section is kept,** as the amendment says. It still describes contributions "accepted under
+  the Apache License 2.0": the terms of any contribution, which today means the author's own branches.
+- **The scan.** The new files tripped the scan once: the `CODEOWNERS` line carries W7 as one word. The scan now allows
+  that exact line (`codeowners`), and `test_scan.py` checks the line as allowed and the account name elsewhere as
+  flagged. `tools/scan_secrets.py` itself is unchanged.
+- **No new access token was needed.** Pushes go over SSH, and the pull request is opened with the existing token.
+
+**Hygiene.**
+- **The drafts folder.** `review-images/` is ignored.
+- **No stray drafts.** No section drafts sit outside `build/`.
+- **The latest bot commit is clean.** `17ecfaf`, the first bundle commit, adds 233 files, and every one is a
+  `.sigstore.json` bundle.
+
+**After Part 1:**
+- 558 tests pass (552 before; 6 new: the four above and two scan cases);
+- Ruff is clean;
+- the identifier scan is clean on the full tree, the new files among it, and the git identity scan is clean on every
+  reachable commit;
+- **CI on the branch** (`6090196`, pull request 3): `ci` run 37718304005 passed. Its jobs were the scan, and the tests
+  on Python 3.11 and 3.13, which took 734 s and 509 s. `dco` (37718303983) and `sign` (37718284750) passed too. `ci` ran
+  once, on the pull request only, as the trigger set after the merge intends.
+
+**Not in Part 1, and not done:**
+- any GitHub setting;
+- tagging or releasing;
+- Kickoff 39;
+- the Braket adapter (Kickoff 02);
+- any provider submission.

@@ -1,0 +1,11 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
+name: Anything else
+description: A question or a problem that is not a failed reproduction or another processor.
+body:
+  - type: textarea
+    id: text
+    attributes:
+      label: What would you like to raise?
+    validations:
+      required: true

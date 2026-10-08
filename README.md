@@ -183,7 +183,7 @@ Please cite the software and, if you use them, the data, using [`CITATION.cff`](
 
 ## Support
 
-Manacitra is free to use under its licences. If it is useful to you, you can support its work on [Patreon](https://www.patreon.com/DogmaGuru).
+Manacitra is free to use under its licences. If it is useful to you, you can support its work on [Patreon](https://www.patreon.com/DogmaGuru). Forks are welcome; pull requests are not accepted at this time, and questions go to Issues ([`CONTRIBUTING.md`](CONTRIBUTING.md)).
 
 ## Licence
 

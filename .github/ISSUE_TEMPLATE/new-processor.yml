@@ -1,0 +1,35 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
+name: Running it on another processor
+description: A question about mapping a processor or a route this repository has not run.
+title: "Processor: "
+body:
+  - type: input
+    id: vendor
+    attributes:
+      label: Vendor and route
+      description: The processor, and how you reach it (the vendor's own service, or a cloud provider).
+    validations:
+      required: true
+  - type: dropdown
+    id: pinned
+    attributes:
+      label: Can placement be pinned?
+      description: Can you choose the physical qubits a pair runs on, and see where it ran?
+      options:
+        - "Yes"
+        - "No"
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: figures
+    attributes:
+      label: What the published figures are called there
+      description: The vendor's name for its per-pair or per-qubit calibration figures, if it publishes any.
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you tried
+    validations:
+      required: true

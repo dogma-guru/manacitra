@@ -68,6 +68,8 @@ ALLOW = [
     ("repository-url", r"github\.com/d[o]gmaguru/manacitra", "i"),
     # The Patreon page, by the author's ruling of 7 October: the funding link in pyproject.toml and the README
     ("patreon", r"patreon\.com/D[o]gmaGuru\b", "i"),
+    # Amendment A10, the author's ruling of 7 October: .github/CODEOWNERS names the author's account, the one exact line
+    ("codeowners", r"(?m)^\* @d[o]gmaguru$", ""),
     # Amendment A1: the ownership and publisher lines, exactly as written (case-sensitive)
     ("owner", r"D[o]gma LLC", ""),
     ("owner-and-trade-name", r"D[o]gma LLC \(doing business as D[o]gma Guru\)", ""),

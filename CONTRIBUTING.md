@@ -2,6 +2,19 @@
 
 Thank you for looking. Manacitra is small on purpose: it maps qubit pairs, gives three verdicts, and chooses pairs.
 
+## What is accepted
+
+- **Forks are welcome.** Anyone may fork, read, cite, run and reuse the code and the data under their licences.
+- **Pull requests from outside this repository are not accepted at this time.** One opened from a fork is closed
+  automatically, with a note pointing here. The repository has one committer.
+- **Issues are the door.** A bug in an archived number, a reproduction that fails, or a question about running the tool
+  on another processor goes to [Issues](https://github.com/dogma-guru/manacitra/issues), where a form asks for what
+  is needed.
+- **A change that would move a published number** is not a fix: it is a different method, and it needs an issue first.
+
+A security problem (a credential, a personal path or an identifier in the repository, or a signature that does not
+verify) is reported privately, as [`SECURITY.md`](SECURITY.md) says, not in an issue.
+
 ## Set up
 
 ```bash
@@ -13,7 +26,7 @@ git config core.hooksPath .githooks
 The last line turns on the pre-commit hook, which runs the identifier scan (`tools/scan_secrets.py`) on every staged
 file.
 
-## Before a pull request
+## Before a change
 
 ```bash
 ruff check src tests tools examples docs

@@ -1,0 +1,33 @@
+# Copyright 2026 Dogma LLC
+# SPDX-License-Identifier: Apache-2.0
+# Pull requests from outside this repository are not accepted at this time (Amendment A10). When one is opened, this
+# workflow posts one comment pointing to CONTRIBUTING.md and closes it. Pull requests from branches inside the
+# repository (the author's, and Dependabot's) are left alone.
+#
+# Why pull_request_target is safe here: it runs in this repository's context, with a token that can write to pull
+# requests, which is dangerous only when the workflow checks out or runs the fork's code. This one checks out nothing
+# and executes nothing from the fork. Its one step calls GitHub's API with fixed text, and the only values it reads from
+# the event are the pull request's number and the head repository's name, never the fork's title, body, branch or files.
+name: outside-pr
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  close:
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          guide="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/main/CONTRIBUTING.md"
+          note="Forks are welcome; pull requests are not accepted at this time, and questions go to Issues"
+          note="$note ([\`CONTRIBUTING.md\`]($guide))."
+          gh pr close "$PR" --repo "$GITHUB_REPOSITORY" --comment "$note"
