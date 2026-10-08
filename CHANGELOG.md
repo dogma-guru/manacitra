@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (8 October 2026)
+
+Tagged `v0.1.0`; archived on Zenodo, DOI [10.5281/zenodo.23228519](https://doi.org/10.5281/zenodo.23228519).
 
 The first version.
 

@@ -1,5 +1,7 @@
 # Manacitra
 
+[![DOI](https://zenodo.org/badge/1406355471.svg)](https://doi.org/10.5281/zenodo.23228518)
+
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
 ## What it does
@@ -193,9 +195,9 @@ Extras: `[ibm]` for IBM Quantum, `[aer]` for Qiskit Aer, `[docs]` for the diagra
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.1.0) [Software and data]. https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.1.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228519. Source: https://github.com/dogma-guru/manacitra
 
-Until version 0.1.0 is tagged, cite a fixed commit: give the output of `git rev-parse HEAD` in your clone, and install that commit with `pip install "git+https://github.com/dogma-guru/manacitra@<commit>"`.
+That DOI is this version's. To cite every version at once, use the concept DOI, [10.5281/zenodo.23228518](https://doi.org/10.5281/zenodo.23228518), which the badge at the top points to.
 
 ## Support
 

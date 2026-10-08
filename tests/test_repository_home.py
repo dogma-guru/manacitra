@@ -87,3 +87,19 @@ def test_the_zenodo_metadata_matches_the_citation():
     topics = re.search(r"^Topics: (.+)$", _read("README.md"), re.M)
     if topics:  # the README carries no topics line today; if it gains one, the keywords must be among its topics
         assert set(z["keywords"]) <= {t.strip(" `") for t in topics.group(1).split(",")}
+
+
+VERSION_DOI, CONCEPT_DOI = "10.5281/zenodo.23228519", "10.5281/zenodo.23228518"
+
+
+def test_the_release_doi_is_cited_everywhere():
+    """v0.1.0's DOIs (Zenodo, 8 October 2026): the version DOI in CITATION.cff, the README's citation and the
+    changelog; the concept DOI, for every version, in the README's badge and beside the citation."""
+    assert re.search(r"^doi: (.+)$", _read("CITATION.cff"), re.M).group(1) == VERSION_DOI
+    assert re.search(r"^date-released: (.+)$", _read("CITATION.cff"), re.M).group(1) == "2026-10-08"
+    readme = _read("README.md")
+    citation = next(line for line in readme.splitlines() if line.startswith("> Patel, A. (2026)."))
+    assert f"https://doi.org/{VERSION_DOI}." in citation
+    assert f"(https://doi.org/{CONCEPT_DOI})" in readme.split("\n## What it does", 1)[0], "the badge, at the top"
+    assert "Until version 0.1.0 is tagged" not in readme
+    assert f"https://doi.org/{VERSION_DOI}" in _read("CHANGELOG.md") and "(unreleased)" not in _read("CHANGELOG.md")
