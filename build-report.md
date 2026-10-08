@@ -2101,3 +2101,62 @@ every pull request since pull request 3, so that every commit keeps its `Signed-
 not be "Unreleased", which held for the v0.1.1 release pull request. This amendment rightly adds an "Unreleased" entry,
 so the assertion goes. What it protected, a dated entry for the current version, is still checked by
 `test_the_version_is_the_same_everywhere`.
+
+## 25. Amendment A13: placement on Open Quantum is a reading, not a measurement (8 October 2026)
+
+**The reviewer's point.** A source review of the public repository on 8 October named one crossover:
+- **The finding.** Finding 6 said Kickoff 40 "found that neither of Kickoff 37's programs had run its pairs on the
+  named qubits".
+- **The data README.** It says Open Quantum's placement was not recorded.
+- **What was measured.** The Open Quantum programs' levels do not match the pinned levels of the same named pairs
+  (r = −0.18 and 0.24).
+- **What was inferred.** That the compiler placed the pairs elsewhere. It is the reading that fits, and the Kickoff 38
+  scorecard called it a reading; between the scorecard and the README it became a finding.
+
+The claim keeps its weight, and its kind changes: from a measurement to an inference stated as one, with the
+alternative named. No number changed, and nothing in `data/` changed.
+
+**The sentences, before and after:**
+- **`docs/findings.md`, finding 6.**
+  - *Before:* "Kickoff 40 then ran named pairs on the same processor through Amazon Braket, where the compiled program
+    returned with each task shows where each pair ran, and found that neither of Kickoff 37's programs had run its pairs
+    on the named qubits (r = −0.18 and 0.24 against the pinned levels). The levels depended on the program because the
+    program's gates decided where the pairs went."
+  - *After:* A13's text exactly. The levels of the two programs do not match the pinned levels (r = −0.18 and 0.24).
+    Open Quantum records no placement, so where its pairs ran is not measured. The reading that fits is that the
+    compiler placed them by the program's gate graph, as Kickoff 38's result also points to. The alternative is named:
+    the same physical pairs may respond differently to differently compiled programs. The next sentence becomes "The
+    levels depended on the program; on the reading above, because the program's gates decided where the pairs went."
+- **`docs/findings.md`, finding 2.** "The pair names in this job are labels, not locations" becomes "The pair names in
+  this job cannot be read as locations, since the route records none and the pinned run's levels do not match them".
+- **`docs/index.md` (line 226) and `docs/install.md` (line 21).** "ran on other qubits than Open Quantum's programs had
+  used" becomes "gave levels that do not match the Open Quantum programs' levels for the same named pairs; the reading
+  is that the Open Quantum compiler placed them elsewhere, and that route records no placement".
+- **`src/manacitra/backends/openquantum.py`, the module docstring.** It carried the same sentence, and A13 does not
+  list it. It is public text in the package, not data, so it takes the same change.
+- **Unchanged.** `docs/kickoffs.md`'s Kickoff 40 row and the README's findings table, rows 6 and 8, carry verdict words
+  only: PLACEMENT, ACTIVITY, PINNED, DIAGNOSTIC and NOT SETTLED. They need no change, as A13 expected.
+
+**The tests.**
+- **The retired-phrase list** gains "had run its pairs on the named qubits", "ran on other qubits than" and "labels,
+  not locations". It is checked against the README, its four pages, `docs/index.md` and every diagram.
+- **`test_finding_6_kickoffs_38_and_40`** checked the old sentence around r = −0.18 and 0.24. It now checks the new one:
+  the mismatch with the pinned levels, that placement on Open Quantum is not measured, and that the alternative is not
+  excluded. The two correlations are recomputed as before.
+
+**Two places, not changed:**
+- **The data.** `data/rigetti_cepheus_1_108q/k38-activity.json` carries, in `meta`, the note "Kickoff 40 then showed
+  directly that programs sent through this route did not run their pairs on the named qubits". It is the same overclaim,
+  in an archived record. A13 says nothing in `data/` changes, so it stands, and it is reported here.
+- **A clause before the reworded one.** The sentence in `docs/index.md`, `docs/install.md` and the module docstring
+  still opens "On Open Quantum, a pair named in a program is not the physical pair:". A13 rewords only the clause after
+  it. That opening still states as fact what A13 makes a reading. It awaits the author's ruling; one wording would follow
+  finding 2's: "cannot be read as the physical pair".
+
+**A ruling recorded here, made at A12's merge.** By the author's ruling of 8 October, a build report section for an
+ordinary pull request no longer records its CI run ID. The ID exists only after a push. Recording it takes a commit
+and a CI round, and then describes the commit before the one that merges. The pull request already links its checks,
+and GitHub deletes Actions logs after a retention period. Run IDs are kept for releases: the signing runs and the
+verification of release assets, which are tied to a tag that never changes.
+
+**After the amendment:** 581 tests pass; Ruff is clean; both scans are clean; nothing in `data/` changed.
