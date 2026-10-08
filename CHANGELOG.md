@@ -1,9 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 (8 October 2026)
 
-- The README is shorter and links out: a table of the ten findings, the limits, one picture, install and how to
-  reproduce; the findings in full, the method in six pictures, the kickoffs and the install details moved, unchanged, to
+The documentation release. No behaviour, data or published number changed. Archived on Zenodo under the concept DOI
+[10.5281/zenodo.23228518](https://doi.org/10.5281/zenodo.23228518), which the citation now uses.
+
+- The README is shorter and links out: a table of the ten findings, the limits, two pictures (the chip map and the
+  pipeline), install and how to reproduce; the findings in full, the method in six pictures, the kickoffs and the install details moved, unchanged, to
   `docs/findings.md`, `docs/method.md`, `docs/kickoffs.md` and `docs/install.md`. A test checks every link, and that
   each row of the table matches its finding.
 

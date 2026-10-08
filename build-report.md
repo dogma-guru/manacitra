@@ -1994,3 +1994,20 @@ NOT; the per-program pattern HOLDS a day later".
 **After the change:** 578 tests pass (571 before; 7 new: the table check, a link check per page, and the front page's
 pictures and `--by level` sentence); Ruff is clean;
 both scans are clean. Nothing in `data/` or `src/` changed, and no number changed.
+
+## 23. Release v0.1.1 (8 October 2026)
+
+**What it carries.** The README restructured (section 22). No behaviour, data or published number changed since
+`v0.1.0`. The version is 0.1.1 in `pyproject.toml`, the package, `CITATION.cff` and the README's citation, and
+`test_the_version_is_the_same_everywhere` keeps them together, with a dated changelog entry.
+
+**The citation's DOI, by the author's ruling of 8 October.** Zenodo mints a version's DOI only after the release, but
+it archives the repository as tagged. So from this version on, the citation uses the concept DOI,
+`10.5281/zenodo.23228518`, which always resolves to the latest version. The archived snapshot is then correct as
+tagged, and a release needs no DOI follow-up. The README names v0.1.0's own DOI, `10.5281/zenodo.23228519`, for an
+exact citation. `test_the_citation_uses_the_concept_doi` checks both.
+
+**The release path is unchanged:** the merge, then signing on `main` (a bundle commit only if a signed file changed),
+the annotated tag, the release with the changelog's 0.1.1 entry as its notes, and `gate`, `build-release` and
+`sign-release`. The release's run and its verification are recorded on the release page and in the next change to
+this report.
