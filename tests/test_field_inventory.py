@@ -21,7 +21,7 @@ from manacitra import archive as ar
 
 def _data_files():
     root = ar.data_dir()
-    return {str(p.relative_to(root)): p for p in sorted(root.rglob("*.json"))}
+    return {str(p.relative_to(root)): p for p in ar.records(root)}
 
 
 def _pattern(path: str) -> re.Pattern:

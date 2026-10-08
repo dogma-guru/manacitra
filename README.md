@@ -181,6 +181,10 @@ Please cite the software and, if you use them, the data, using [`CITATION.cff`](
 
 > Patel, A. (2026). *Manacitra: a map of a quantum processor's qubit pairs* (version 0.1.0) [Software and data]. https://github.com/dogma-guru/manacitra
 
+## Support
+
+Manacitra is free to use under its licences. If it is useful to you, you can support its work on [Patreon](https://www.patreon.com/DogmaGuru).
+
 ## Licence
 
 The code is licensed under the Apache License 2.0 ([`LICENSE`](LICENSE), [`NOTICE`](NOTICE)). The data in `data/` and the documentation in `docs/` are licensed under Creative Commons Attribution 4.0 ([`data/LICENSE`](data/LICENSE), [`docs/LICENSE`](docs/LICENSE)). The copyright holder is Dogma LLC (Dogma Guru).

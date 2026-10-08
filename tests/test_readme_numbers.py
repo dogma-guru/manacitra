@@ -214,9 +214,7 @@ def _utc(s):
 
 def test_the_findings_dates():
     assert "The findings come from runs on 5 to 7 October 2026." in README
-    runs = [
-        p for p in archive.data_dir().rglob("*.json") if p.parent.name != "simulated" and "k33-workload" not in p.name
-    ]
+    runs = [p for p in archive.records() if p.parent.name != "simulated" and "k33-workload" not in p.name]
     days = {archive.load(p)["meta"]["utc"][:10] for p in runs if not p.name.endswith("coupling-map.json")}
     assert days == {"2026-10-05", "2026-10-06", "2026-10-07"}
     assert "- **Three processors, three days.**" in README and "all on 5 to 7 October 2026." in README

@@ -11,7 +11,7 @@ from manacitra import archive
 NA = "not applicable"
 STANDARD = ("processor", "provider", "kickoff", "utc", "shots_per_circuit", "sources")
 try:
-    FILES = sorted(p.relative_to(archive.data_dir()).as_posix() for p in archive.data_dir().rglob("*.json"))
+    FILES = sorted(p.relative_to(archive.data_dir()).as_posix() for p in archive.records())
 except archive.DataNotFound as e:
     pytest.skip(f"needs the dataset: {e}", allow_module_level=True)
 
@@ -57,3 +57,10 @@ def test_every_counts_record_declares_its_bit_reading(path):
         ), path
     else:
         assert "bit_reading" not in rec["meta"], path
+
+
+def test_the_signing_bundles_are_not_records():
+    """The signing workflow writes FILE.sigstore.json beside each signed file; those are signatures, not run records."""
+    assert archive.is_bundle("ibm_fez/k31-map.json.sigstore.json") and not archive.is_bundle("ibm_fez/k31-map.json")
+    assert not any(archive.is_bundle(p) for p in archive.records())
+    assert "k31-map.json.sigstore" not in archive.fez_or_kingston("ibm_fez")

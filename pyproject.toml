@@ -43,6 +43,7 @@ manacitra = "manacitra.cli:main"
 
 [project.urls]
 Repository = "https://github.com/dogma-guru/manacitra"
+Funding = "https://www.patreon.com/DogmaGuru"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1614,6 +1614,37 @@ scan, and A4's ruling stands: no history is rewritten. The git identity scan is 
   `loadfile` keeps each test file on one worker, so a file's shared fixtures, such as the one that recomputes all 31
   acceptance cases, are computed once, not once per worker. Locally (10 cores, 4 workers), all 549 tests pass in 142 s,
   against 300 to 380 s in one process, and 180 s with tests spread across workers one by one.
+  On GitHub's runners the gain was smaller. In the first parallel run (on `559bfb9`), the tests took 732 s on Python
+  3.11 and 787 s on 3.13, against 1,147 s and 866 s in one process (on `d1d8250`).
+
+**After going public (7 October).**
+- **Public.** The author made the repository public after the merge (`5a826cd`) and the follow-up on `main`
+  (`00de44c`). The git identity scan was then clean on every reachable commit (59).
+- **Signing on.** The author set `MANACITRA_SIGN` to `true`. The signing run for `559bfb9` (run 37710677835) was run
+  again, with the gate now open. It signed the 233 targets `tools/sign_targets.py` lists, and verified each against the
+  workflow's identity. The bot committed the bundles to `main` as `17ecfaf`.
+- **What the first bundle commit broke, and the fix.** These checks had run only without bundles in the tree:
+  - The data tests read every `.json` file under `data/` as a run record, so each bundle failed three of them. With the
+    index, the field inventory and the README's run dates, that was 704 failures.
+  - `archive.fez_or_kingston` in the package read the bundles beside the IBM records too.
+  - `tools/sha256sums.py` and the tree scan already skipped bundles.
+
+  The fix:
+  - `archive.is_bundle` and `archive.records()` (every run record, without bundles) are now used by those tests and
+    by `fez_or_kingston`. `test_the_signing_bundles_are_not_records` checks it.
+  - **The bot's identity.** The git identity scan flagged the bundle commit's author and committer, GitHub Actions'
+    bot. Amendment A3 approved that exact address for the bundle commits, and the DCO check exempts them. But A4's list
+    of identities in git metadata did not name it. It is now approved as author and committer only.
+- **Funding.** The author asked for all three links:
+  - `FUNDING.yml` (Patreon) in the organisation's `.github` repository, which GitHub uses for every organisation
+    repository without its own. A Sponsor button also needs Sponsorships ticked in each repository's settings.
+  - `Funding` under `[project.urls]` in `pyproject.toml`.
+  - A "Support" section in the README.
+
+  The Patreon address carries W7 as one word, so the scan allows that exact address (`patreon`), by the author's
+  ruling of 7 October. The name on its own is still a finding. `tests/test_scan.py` checks the address as allowed and
+  the name elsewhere as flagged.
+- 552 tests pass, and both scans are clean.
 
 **Not in this amendment, and not done:**
 - Kickoff 39;

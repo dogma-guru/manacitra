@@ -2159,7 +2159,19 @@ def workload_ideal(path="workload/k33-workload.json") -> list:
     return [c["ideal"] for c in load(path)["circuits"]]
 
 
+def is_bundle(path) -> bool:
+    """A Sigstore bundle (FILE.sigstore.json), which the signing workflow writes beside a signed file: a signature, not
+    a run record."""
+    return Path(path).name.endswith(".sigstore.json")
+
+
+def records(root=None) -> list[Path]:
+    """Every JSON run record under data/ (or under root), without the signing workflow's bundles."""
+    root = Path(root) if root is not None else data_dir()
+    return sorted(p for p in root.rglob("*.json") if not is_bundle(p))
+
+
 def fez_or_kingston(processor: str) -> dict:
     """Every archived IBM file for one processor, keyed by run."""
     d = data_dir() / processor
-    return {p.stem: json.loads(p.read_text()) for p in sorted(d.glob("*.json"))}
+    return {p.stem: json.loads(p.read_text()) for p in sorted(d.glob("*.json")) if not is_bundle(p)}

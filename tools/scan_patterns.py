@@ -66,6 +66,8 @@ ALLOW = [
     # which records it as it was (tests/test_repository_home.py keeps it out of every other file)
     ("repository-home", r"github\.com/d[o]gma-guru/manacitra", "i"),
     ("repository-url", r"github\.com/d[o]gmaguru/manacitra", "i"),
+    # The Patreon page, by the author's ruling of 7 October: the funding link in pyproject.toml and the README
+    ("patreon", r"patreon\.com/D[o]gmaGuru\b", "i"),
     # Amendment A1: the ownership and publisher lines, exactly as written (case-sensitive)
     ("owner", r"D[o]gma LLC", ""),
     ("owner-and-trade-name", r"D[o]gma LLC \(doing business as D[o]gma Guru\)", ""),
@@ -98,4 +100,7 @@ GIT_IDENTITIES = [
     (r"noreply@anthropic\.com", {"Co-Authored-By"}),
     # GitHub, as committer of commits made through its web interface
     (r"noreply@github\.com", {"committer"}),
+    # GitHub Actions' bot, as author and committer of the signing workflow's bundle commits: the address Amendment A3
+    # approved for them (ALLOW's github-actions-bot), added here when signing was turned on (7 October)
+    (r"41898282\+github-actions\[bot\]@users\.noreply\.github\.com", {"author", "committer"}),
 ]
