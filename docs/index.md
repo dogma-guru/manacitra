@@ -177,9 +177,10 @@ What would discredit the map's persistence: FADES.
 - `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
   mean P(11) on circuit A without the offset; `--by x` by the published score. The kept share chose the better pairs
   on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
-  Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. On the Rigetti
-  processor both scores were scored against the published figures in the same payoff runs; no run has yet compared the
-  two scores against each other under a rule fixed in advance.
+  Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. On every payoff
+  run both scores were scored against the published figures: on IBM the kept share was the primary test and the level
+  a reference line; on Rigetti the reverse; no run has yet compared the two scores against each other under a rule
+  fixed in advance.
 - **Reading an archived file** (Amendment A8). `manacitra pick`, `verdict` and `report` read an archived map's counts
   by the bit reading its `meta.bit_reading` declares (`archive.p11_table`, one reader per reading) and refuse a file
   that declares none, or an unknown one, naming the field. They give that run's own analysis (`archive.map_view`): on

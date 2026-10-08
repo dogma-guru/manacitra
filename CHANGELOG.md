@@ -8,6 +8,8 @@
   among them.
 - Amendment A13: finding 6 and the sentences that repeat it now state the Open Quantum placement as a reading of the
   correlation evidence, not a measurement; the route records no placement.
+- Amendment A14: finding 4 reports the reference lines Kickoff 33's rule specified: the plain level's pick on both IBM
+  chips, and the same-day map's pick; the table carries the absolute gain beside the percentage.
 
 ## 0.1.1 (8 October 2026)
 

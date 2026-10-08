@@ -2160,3 +2160,76 @@ and GitHub deletes Actions logs after a retention period. Run IDs are kept for r
 verification of release assets, which are tied to a tag that never changes.
 
 **After the amendment:** 581 tests pass; Ruff is clean; both scans are clean; nothing in `data/` changed.
+
+## 26. Amendment A14: what Kickoff 33 also scored (8 October 2026)
+
+**The reviewer's two points.** A second source review, made on 8 October with the numbers recomputed from the raw
+counts, raised two points about finding 4:
+1. `docs/findings.md` said that on ibm_fez "the level was not tested as a chooser". It was.
+2. The same job measured a same-day map, `k_now`, whose pick did no better than the published figures on ibm_fez. The
+   documentation did not mention it.
+
+The reviewer assumed both figures were computed after the fact. A14 says they were not: both were reference lines in
+section 4 of Kickoff 33's brief, fixed before the run, beside the verdict. **The brief is not in this repository, so
+it is not quoted here.** By A14's account, the rule scored the top 8 by `L_prior` and by `k_now` "for reference only",
+and says "the test of a harness is the prior map, the way a user would use it". The sealed verdict is about the prior
+map, so USEFUL stands.
+
+**The archive fields**, from `archived.analysis` of each chip's `k33-payoff.json`. The field inventory already lists
+all of them, so the strict comparison recomputes them at 10⁻⁶:
+
+| field | ibm_fez | ibm_kingston |
+|---|---|---|
+| `gains/k_prior/G` (the verdict's) | +0.00122 | +0.00045 |
+| `gains/L_prior/G` (reference) | +0.00041 | +0.00011 |
+| `gains/k_now/G` (reference, the same-day map) | −0.00029 | +0.00039 |
+| `gains/k_now/ci90` | −0.00095 to +0.00030 | +0.00010 to +0.00067 |
+| `level_beats_k` | false | false |
+| r between `k_prior` and `k_now` | 0.80 | 0.66 |
+| pairs the `k_prior` and `k_now` picks share | 4 of 8 | 5 of 8 |
+
+**Every figure in A14's new sentence was recomputed from these fields, and all of them match:**
+- +0.0004 and +0.0001, against +0.0012 and +0.0004;
+- −0.0003, with the interval −0.00095 to +0.00030, which rounds to "−0.0010 to +0.0003";
+- +0.0004 on ibm_kingston;
+- r = 0.80, and "did not pick the same eight": the picks share 4.
+
+Nothing needed replacing.
+
+**The sentences, before and after:**
+- **`docs/findings.md`, finding 4.** A14's sentence on the reference lines follows the ibm_kingston sentence, word for
+  word.
+- **`docs/findings.md`, "What it has not shown", third bullet.**
+  - *Before:* "On ibm_fez the kept share did and the level was not tested as a chooser."
+  - *After:* "On both IBM chips the level was scored as a chooser for reference and gained less than the kept share
+    did; no run has yet compared the two scores against each other under a rule naming either as the primary test."
+- **The README, findings table, row 4.** The verdict cell is now "USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT
+  SETTLED on ibm_kingston", so the percentage does not stand alone. The table test compares capitalised verdict words
+  only, so it needed no change.
+- **`docs/method.md`, "Which to rank by".**
+  - *Before:* "On the Rigetti processor both scores were scored against the published figures in the same payoff
+    runs".
+  - *After:* "On every payoff run both scores were scored against the published figures: on IBM the kept share was the
+    primary test and the level a reference line; on Rigetti the reverse".
+  - `docs/index.md` section 4 carried the same sentence across a line break, so it takes the same change. A8's test
+    requires the two pages to agree.
+
+**What the archive says about Rigetti, beside A14's sentence.** The author ruled on 8 October to keep A14's wording,
+"on Rigetti the reverse", word for word, with the archive's record here:
+- **Kickoff 40.** Its `meta.verdict_rule` is the kept share's: "USEFUL if the partial r(W, k_prior | x) >= 0.3 with p <
+  0.05 …". The level was the reference beside it (`level_beats_k` is true there). So on Kickoff 40 the kept share was
+  the primary test, as on IBM.
+- **Kickoff 41.** Its rule scores "each prior score in turn (the level L_prior and the kept share k_prior)", each with
+  its own verdict: the level USEFUL, the kept share NOT SETTLED.
+
+So the archive does not support "the reverse" for Kickoff 40, and Kickoff 41 named neither score as primary.
+
+**The tests:**
+- **`test_finding_4_reference_lines`** reads each figure from the archive and compares it at the text's rounding: the
+  four gains, the same-day map's interval, `level_beats_k`, r = 0.80, and that the two picks differ. It also checks
+  that the findings and the table carry them.
+- **`test_the_scores_compared_on_each_chip`** checks the new "every payoff run" sentence on both pages.
+- **The retired-phrase list** gains "the level was not tested as a chooser".
+
+**After the amendment:** 582 tests pass (581 before; 1 new); Ruff is clean; both scans are clean; nothing in `data/`
+changed.
