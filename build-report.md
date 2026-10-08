@@ -1732,7 +1732,10 @@ the GitHub settings, which are the author's to change, and nothing here touches 
 - 558 tests pass (552 before; 6 new: the four above and two scan cases);
 - Ruff is clean;
 - the identifier scan is clean on the full tree, the new files among it, and the git identity scan is clean on every
-  reachable commit.
+  reachable commit;
+- **CI on the branch** (`6090196`, pull request 3): `ci` run 37718304005 passed. Its jobs were the scan, and the tests
+  on Python 3.11 and 3.13, which took 734 s and 509 s. `dco` (37718303983) and `sign` (37718284750) passed too. `ci` ran
+  once, on the pull request only, as the trigger set after the merge intends.
 
 **Not in Part 1, and not done:**
 - any GitHub setting;
