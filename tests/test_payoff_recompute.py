@@ -57,7 +57,7 @@ def test_the_data_readme_and_the_readme_document_it():
     assert f"The published figures' pick is {_pairs(INDEPENDENT['pick_by_published'])}." in data
     assert "The mean error is 0.00221 for the map's pick and 0.00343 for the published pick, 35.6% less." in data
     assert "Kickoff 32's dense condition" in data and "(16,000 shots)" in data
-    readme = (ROOT / "README.md").read_text()
+    readme = (ROOT / "docs" / "findings.md").read_text()  # finding 4 in full, which the README's table links to
     assert "the prior map is Kickoff 32's dense condition" in readme
     assert "`python examples/03_pick_pairs.py` makes both picks" in readme
 

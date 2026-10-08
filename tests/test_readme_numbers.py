@@ -1,7 +1,11 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
 """The README's measured statistics, and the times, ranges and counts it shows, recomputed from data/ and compared at
-the README's own rounding (times: to the nearest minute)."""
+the README's own rounding (times: to the nearest minute).
+
+The README links to four pages in docs/ that carry most of its text: the findings in full, the method in six pictures,
+the kickoffs, and the install details. Every check here reads the README and those pages together, as one text: a
+number moved between them is still checked, and a retired phrase cannot come back on any of them."""
 
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -27,7 +31,10 @@ from _reproduce import (
 
 from manacitra import archive
 
-README = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+ROOT = Path(__file__).resolve().parents[1]
+#: The README and the pages it links to for its findings, method, kickoffs and install details
+README_PAGES = ("README.md", "docs/findings.md", "docs/method.md", "docs/kickoffs.md", "docs/install.md")
+README = "\n\n".join((ROOT / p).read_text() for p in README_PAGES)
 
 
 def r(x, nd):
@@ -201,7 +208,7 @@ def test_the_chip_map_table_matches_the_data():
     for _, pair, kv, xv, _ in rows:
         p = tuple(int(q) for q in pair.split("-"))
         assert (kv, xv.rstrip(" |")) == (f"{k[p]:.3f}", f"{x[p]:.4f}")
-    assert "docs/diagrams/chip-map-table.md" in README
+    assert "](diagrams/chip-map-table.md)" in (ROOT / "docs" / "method.md").read_text()
 
 
 # --------------------------------------------------------------------------- Amendment A5: Kickoff 37
@@ -499,7 +506,8 @@ def test_the_three_checks_picture():
     assert "each half of the runs, 16,000 shots per variant per pair, gives nearly the same k (r = 0.87)" in README
     assert "k barely follows x (r = −0.18), and the carry-over survives with x taken out (r = 0.82)" in README
     assert "r = 0.82, p below 1 in 10,000, needs at least 0.4 with p below 0.05" in README
-    assert "](docs/diagrams/three-checks.svg)" in README and "## The idea in six pictures" in README
+    method = (ROOT / "docs" / "method.md").read_text()
+    assert "](diagrams/three-checks.svg)" in method and method.startswith("# The idea in six pictures")
     assert (Path(__file__).resolve().parents[1] / "docs" / "diagrams" / "three-checks.png").is_file()
 
 
@@ -515,7 +523,7 @@ def test_the_whole_chip_picture():
         "the published score with Day 1's map, −0.08" in README
     )
     assert "(rank correlations 0.76 and 0.66 with Day 1)" in README and "(−0.08 against Day 1's map)" in README
-    assert "](docs/diagrams/whole-chip-days.svg)" in README
+    assert "](diagrams/whole-chip-days.svg)" in (ROOT / "docs" / "findings.md").read_text()
 
 
 def test_the_explainer_in_the_long_documentation():
@@ -632,4 +640,70 @@ def test_no_diagram_carries_a_retired_phrase(svg):
 def test_the_pipeline_diagram_says_kickoff_35_ran():
     assert "on ibm_fez a whole-chip map held for two days (finding 7); beyond that is open." in svg_text(
         DIAGRAMS / "pipeline.svg"
+    )
+
+
+@pytest.mark.parametrize("page", README_PAGES)
+def test_every_link_resolves(page):
+    """Every relative link on the README and its pages names a file that exists, and every in-page anchor names a
+    heading (or an explicit anchor) that exists on the page it points to."""
+    import re
+
+    def anchors(path: Path) -> set:
+        text = path.read_text()
+        slugs = {
+            re.sub(r"[^\w\- ]", "", h.strip().lower()).replace(" ", "-") for h in re.findall(r"^#+ (.+)$", text, re.M)
+        }
+        return slugs | set(re.findall(r'<a id="([^"]+)"></a>', text))
+
+    here = (ROOT / page).parent
+    bad = []
+    for target in re.findall(r"\]\(([^)\s]+)\)", (ROOT / page).read_text()):
+        if re.match(r"[a-z]+:", target):
+            continue
+        file, _, anchor = target.partition("#")
+        path = (here / file).resolve() if file else ROOT / page
+        if not path.exists():
+            bad.append(target)
+        elif anchor and path.suffix == ".md" and anchor not in anchors(path):
+            bad.append(target)
+    assert bad == [], f"{page}: {bad}"
+
+
+def test_the_findings_table_matches_the_findings():
+    """The README's table of findings: each row's headline is that finding's own bold sentence in docs/findings.md,
+    word for word; its kickoffs are the ones the finding names; and every verdict word in the row (the capitalised
+    words) is in that kickoff's row of the kickoffs table, so the summary carries nothing the full text does not."""
+    import re
+
+    readme = (ROOT / "README.md").read_text()
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    kickoffs = (ROOT / "docs" / "kickoffs.md").read_text()
+    full = dict(re.findall(r'^(\d+)\. <a id="finding-\d+"></a>\*\*(.+?)\*\*', findings, re.M))
+    rows = re.findall(
+        r"^\| \[(\d+)\]\(docs/findings\.md#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", readme, re.M
+    )
+    rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 11)]
+    for n, head, kicks, verdict in rows:
+        assert head == full[n], n
+        item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
+        table_rows = ""
+        for k in kicks.split(", "):
+            assert f"Kickoff {k}" in item, (n, k)
+            table_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
+        words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
+        assert words and all(w in table_rows for w in words), (n, words)
+
+
+def test_the_front_page():
+    """The README itself, not its pages, shows the chip map under "What it does" (the picture that explains the project
+    at a glance) and the pipeline, and says that pick can rank by the plain level, which its table's rows 8 and 9 rely
+    on (the author's review of 8 October)."""
+    front = (ROOT / "README.md").read_text()
+    what = front.split("\n## What it does\n", 1)[1].split("\n## ", 1)[0]
+    assert "](docs/diagrams/chip-map.svg)" in what and "](docs/diagrams/pipeline.svg)" in front
+    assert (
+        "highest kept share first, or, with `--by level`, by the plain level, which chose better pairs on the Rigetti "
+        "processor where the kept share did not." in what
     )
