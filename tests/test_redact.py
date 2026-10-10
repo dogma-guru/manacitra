@@ -338,6 +338,157 @@ def test_the_wait_examples_dry_run_leaks_nothing(monkeypatch, capfd):
     assert leaks(shown(e.value)) == [] and leaks(out + err) == []
 
 
+def _example():
+    spec = importlib.util.spec_from_file_location("wait_example", ROOT / "examples" / "04_wait_test.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class EstimateJob:
+    """A sent job whose usage estimate is the given value, or raises it."""
+
+    def __init__(self, jid, estimate):
+        self._id, self.estimate = jid, estimate
+
+    def job_id(self):
+        return self._id
+
+    @property
+    def usage_estimation(self):
+        if isinstance(self.estimate, Exception):
+            raise self.estimate
+        return self.estimate
+
+
+def _estimate():
+    """The documented number, beside a made-up CRN, a made-up instance name and a field the client does not document."""
+    return {"quantum_seconds": 12.5, "crn": CRN, "instance": FREE_NAME, "unexpected": {"note": TOKEN, "n": 7}}
+
+
+@needs_ibm
+@pytest.mark.parametrize(
+    "estimate, line",
+    [
+        (_estimate(), "IBM's estimate: 12.5 s of quantum time"),
+        ({"crn": CRN, "instance": FREE_NAME}, None),  # no documented number
+        ({"quantum_seconds": float("nan"), "instance": FREE_NAME}, None),  # not finite
+        ({"quantum_seconds": True}, None),  # not a number
+        (f"quantum_seconds 12 for {CRN}", None),  # not the documented shape
+        (RuntimeError(MESSAGE), None),  # reading it fails
+    ],
+)
+def test_ibms_estimate_prints_only_its_documented_number(estimate, line):
+    """Review 2, finding 6: only the estimate's documented number is printed, never the object, its repr or an
+    exception's text; otherwise one fixed line."""
+    mod = _example()
+    got = mod.estimate_line(EstimateJob("j", estimate))
+    assert got == (line or mod.ESTIMATE_UNREADABLE) and leaks(got) == []
+    assert mod.estimate_line(None) == mod.ESTIMATE_UNREADABLE
+
+
+class EstimateSampler:
+    def __init__(self, service, estimate):
+        self.service, self.estimate = service, estimate
+
+    def __call__(self, mode):
+        outer = self
+
+        class _S:
+            options = SimpleNamespace(
+                dynamical_decoupling=SimpleNamespace(enable=True),
+                twirling=SimpleNamespace(enable_gates=True, enable_measure=True),
+            )
+
+            def run(self, pubs):
+                jid = "fakejob" + "0" * 13
+                outer.service.jobs[jid] = EstimateJob(jid, outer.estimate)
+                return outer.service.jobs[jid]
+
+        return _S()
+
+
+@needs_ibm
+@pytest.mark.parametrize("case", ["estimate", "no estimate", "job lookup fails"])
+def test_a_submission_prints_only_the_estimates_number(monkeypatch, capfd, tmp_path, case):
+    """examples/04_wait_test.py sent through fakes: after the send, stdout carries the estimate's number, or the fixed
+    line when it cannot be read, and nothing of the estimate's other fields or of an exception."""
+    from _fakes import FakeIBMService
+
+    from manacitra.backends import ibm
+
+    class Service(FakeIBMService):
+        def job(self, job_id):
+            if case == "job lookup fails":
+                raise RuntimeError(MESSAGE)
+            return super().job(job_id)
+
+    svc = Service()
+    estimate = _estimate() if case == "estimate" else RuntimeError(MESSAGE)
+    mod = _example()
+    monkeypatch.setattr(
+        mod,
+        "IBMCircuitsBackend",
+        lambda p, service=None: ibm.IBMCircuitsBackend(
+            p, service=svc, sampler_factory=EstimateSampler(svc, estimate), ledger=Ledger(tmp_path / "ledger.jsonl")
+        ),
+    )
+    args = [
+        "--chain",
+        "144-143-142",
+        "--copies",
+        "1",
+        "--shots-wait",
+        "1",
+        "--shots-b",
+        "1",
+        "--submit",
+        "--cap-s",
+        "600",
+    ]
+    assert mod.main(args + ["--handle-out", str(tmp_path / "handle.json")]) == 0
+    out, err = capfd.readouterr()
+    last = out.strip().splitlines()[-1]
+    assert last == ("IBM's estimate: 12.5 s of quantum time" if case == "estimate" else mod.ESTIMATE_UNREADABLE)
+    assert leaks(out + err) == [] and "unexpected" not in out and "note" not in out
+
+
+# --------------------------------------------------------------------------- the scope of the log cleanup (ruling R2)
+def _one_record(name: str, *args) -> str:
+    stream, h = _handler(name)
+    try:
+        logging.getLogger(name).warning("request for %s failed", *args)
+    finally:
+        logging.getLogger(name).removeHandler(h)
+    return stream.getvalue()
+
+
+def test_an_unrelated_loggers_record_passes_untouched():
+    """A program's own logger, with a made-up CRN in its record: once the cleanup is installed, the record reaches
+    its handler exactly as it was made."""
+    redact.guard_client_logging()
+    assert _one_record("myapp.service", CRN) == f"myapp.service WARNING request for {CRN} failed\n"
+
+
+@pytest.mark.parametrize("client", redact.CLIENT_LOGGERS)
+def test_a_named_clients_child_logger_is_cleaned(client):
+    """The same made-up CRN on a child logger of each named client is cleaned: the choice is by the record's name,
+    so a child is covered without a filter on it."""
+    redact.guard_client_logging()
+    name = f"{client}.something"
+    assert _one_record(name, CRN) == f"{name} WARNING request for [redacted] failed\n"
+
+
+def test_installing_twice_does_not_wrap_twice():
+    redact.guard_client_logging()
+    factory, report = logging.getLogRecordFactory(), logging.Handler.handleError
+    redact.guard_client_logging()
+    redact.guard_client_logging()
+    assert logging.getLogRecordFactory() is factory and logging.Handler.handleError is report
+    assert factory._manacitra_redact and not getattr(factory._previous, "_manacitra_redact", False)
+    assert report._manacitra_redact and not getattr(report._previous, "_manacitra_redact", False)
+
+
 # --------------------------------------------------------------------------- Open Quantum
 def test_an_open_quantum_fetch_that_fails_leaks_nothing(tmp_path):
     """Open Quantum's calls into its client go through the same boundary: a failing scheduler's text is cleaned."""

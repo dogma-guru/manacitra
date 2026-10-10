@@ -8,8 +8,9 @@ provider text before the ledger stores it, and at the boundary between Manacitra
 
 - `scrubbed` makes a copy of an exception with its text cleaned, and `provider_call` re-raises a provider call's
   exception as that copy, without the original chained to it, so a printed traceback carries only the cleaned text;
-- `guard_client_logging` cleans every log record that the providers' clients make, at the moment it is made, so no
-  handler, wherever it is attached, receives the original text.
+- `guard_client_logging` cleans every log record of the providers' clients, their libraries, and requests and
+  urllib3 (CLIENT_LOGGERS), at the moment it is made, so no handler, wherever it is attached, receives the original
+  text; every other record passes untouched.
 
 Exact values known at run time (the active account's instance and token, read from the client object, never from a
 file) are added with `register` and replaced first. Nothing here keeps the original text.
@@ -164,7 +165,11 @@ def provider_call(fn):
     return inner
 
 
-#: The loggers of the providers' clients and of the HTTP libraries under them
+#: The loggers whose records are cleaned, with their children (chosen by record.name, so a child logger is covered;
+#: confirmed by A18, ruling R2): the IBM client and the IBM libraries it uses for its accounts and requests; the Open
+#: Quantum client's packages, which log nothing themselves in the versions the adapter supports (openquantum-sdk
+#: 0.4.3, openquantum-sdk-qiskit 0.3.3) and send their HTTP through requests; and requests and urllib3, which can log
+#: URLs that carry identifiers. Every other record passes untouched.
 CLIENT_LOGGERS = (
     "qiskit_ibm_runtime",
     "qiskit_ibm_provider",
@@ -201,8 +206,9 @@ def clean_record(record: logging.LogRecord) -> logging.LogRecord:
 
 
 def guard_client_logging() -> None:
-    """Clean every record the providers' clients log (CLIENT_LOGGERS and their children), as it is made: the record
-    factory is wrapped once, so every handler, on any logger, receives only cleaned text.
+    """Clean every record of the loggers in CLIENT_LOGGERS and their children, as it is made: the record factory is
+    wrapped once, so every handler, on any logger, receives only cleaned text. A record of any other logger is passed
+    through untouched. Installing again does nothing: the factory is never wrapped twice.
 
     And when a handler fails to emit such a record, logging prints an error report to stderr, with the exception in
     flight and every exception chained to it, which can be the client's own, uncleaned. For a client's record that
@@ -216,6 +222,8 @@ def guard_client_logging() -> None:
         record = previous(*args, **kwargs)
         return clean_record(record) if _is_client(record.name) else record
 
+    factory._manacitra_redact = True
+    factory._previous = previous
     logging.setLogRecordFactory(factory)
     report = logging.Handler.handleError
 
@@ -229,5 +237,7 @@ def guard_client_logging() -> None:
             except Exception:
                 pass
 
+    handle_error._manacitra_redact = True
+    handle_error._previous = report
     logging.Handler.handleError = handle_error
     _guarded = True

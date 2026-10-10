@@ -47,6 +47,8 @@ python examples/04_wait_test.py --fetch wait-test-handle.json
 
 This writes the counts to `wait-test-counts.json` and analyses them. A saved counts file is analysed again, offline, with `--analyse wait-test-counts.json`.
 
+Once a backend is created, Manacitra cleans account and instance identifiers, tokens and email addresses from the log records of the IBM and Open Quantum clients (with the IBM client's own libraries) and of `urllib3` and `requests`, and from a provider's error messages before they are stored or shown. If your own program uses those libraries for other services, their records are cleaned too. To keep identifiers out, an ordinary word that follows "instance", "account" or a similar word in a provider's error message may be replaced, and the original message is not kept.
+
 ## How the rule was tested offline
 
 As Kickoff 36 tested the map's rule on a simulation with planted answers, `tests/test_wait.py` tests the wait rule on Qiskit Aer with an offset planted by a noise pass written here: every delay on M becomes the delay and an RZ of 2π f t. The circuits are built for a synthetic three-qubit target whose durations are round numbers; no vendor noise model and no device data enter. Fixed before the tests were run:

@@ -2747,3 +2747,17 @@ author took them all, with four items of Mantri's.
 - **A known item, not changed here.** qiskit-ibm-runtime 0.50.0 deprecates `SamplerV2`, which `IBMBackend` and
   `IBMCircuitsBackend` use. Its successor is `qiskit_ibm_runtime.executor_sampler.Sampler`, and the old class stays at
   least three months after that release. This pull request does not migrate.
+
+**Ruling R2 (10 October 2026), with its addendum: the log cleanup's scope confirmed, the second review's new item,
+then the merge.** The cleanup was already scoped at `7a5d6fb`: it changes only the records of the loggers in one list
+in `backends/redact.py` (`CLIENT_LOGGERS`: the IBM client and the IBM libraries it uses, the Open Quantum SDK's two
+packages, `requests` and `urllib3`) and their children, chosen by the record's name, and passes every other record
+untouched. R2's addendum corrected R2's reading of "process-wide" as "every logger"; the list is unchanged. Tests
+added: an unrelated logger's record passes unchanged; a child of each listed logger is cleaned; installing twice does
+not wrap twice. `docs/reproduce.md` says what the cleanup covers and that an ordinary word may be replaced. From the
+addendum (a second independent review, of `ec1ae18`):
+- **IBM's usage estimate.** `examples/04_wait_test.py` printed `usage_estimation` whole after a submission, and hid a
+  failure to read it. It now prints only the number the client documents (`quantum_seconds`), checked to be finite,
+  through `redact.scrub`, and on any failure one fixed line.
+- **Two more controls.** The archive comparison must fail, and does, on a changed measurement target in a second-copy
+  circuit and on two circuits swapped in order; `wait_loss_kind` refuses an interval of three bounds as well as one.

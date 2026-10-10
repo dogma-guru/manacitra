@@ -22,12 +22,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
 from manacitra import wait
+from manacitra.backends import redact
 from manacitra.backends.base import JobHandle
 from manacitra.backends.ibm import CircuitJob, IBMCircuitsBackend, SnapshotService, estimate_seconds
+
+#: The numbers Qiskit Runtime documents in a job's usage_estimation, and how each is printed
+ESTIMATE_FIELDS = {"quantum_seconds": "s of quantum time"}
+ESTIMATE_UNREADABLE = "IBM's estimate could not be read; see the job in IBM's own console"
 
 
 def chain_of(text: str) -> list[int]:
@@ -54,6 +60,24 @@ def report(result: dict) -> None:
             r, e = row["r"], row["e"]
             kind = row["kind_of_loss"]
             print(f"  qubit {q}: Ramsey loss {r:.3f} {row['r_ci90']}, echo loss {e:.3f} {row['e_ci90']}: {kind}")
+
+
+def estimate_line(job) -> str:
+    """IBM's estimate for a job, as one line: only the numbers the client documents (ESTIMATE_FIELDS), each checked to
+    be a finite number, the line passed through redact.scrub. The estimate object itself, its repr and any exception's
+    text are never printed; if no documented number can be read, one fixed line (A18, ruling R2)."""
+    try:
+        est = job.usage_estimation
+        parts = []
+        for key, unit in ESTIMATE_FIELDS.items():
+            v = est.get(key) if isinstance(est, dict) else None
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v):
+                parts.append(f"{float(v):.1f} {unit}")
+        if parts:
+            return redact.scrub("IBM's estimate: " + ", ".join(parts))
+    except Exception:
+        pass
+    return ESTIMATE_UNREADABLE
 
 
 def main(argv=None) -> int:
@@ -140,10 +164,10 @@ def main(argv=None) -> int:
     )
     print(f"sent: job {handle.job_ids[0]}; handle written to {a.handle_out}")
     try:
-        est = be.service.job(handle.job_ids[0]).usage_estimation
-        print(f"IBM's estimate: {est}")
+        sent = be.service.job(handle.job_ids[0])
     except Exception:
-        pass
+        sent = None
+    print(estimate_line(sent))
     return 0
 
 

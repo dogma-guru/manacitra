@@ -229,11 +229,13 @@ def _delay_plus_two(circuit):
         "no circuits",
         "an extra X, first copy",
         "a changed delay, first copy",
+        "a changed measurement target, second copy",
+        "two circuits swapped",
     ],
 )
 def test_the_part_b_comparison_fails_on_a_changed_circuit(fez, mutation):
-    """Controls that must fail (the review of pull request 21): one changed circuit of either copy, one missing, or
-    none at all."""
+    """Controls that must fail (the reviews of pull request 21): one changed circuit of either copy, its measurement
+    target included, one missing, two swapped in order, or none at all."""
     built = wait.part_b(wait.KICKOFF_47_GROUPS, wait.KICKOFF_47_WAITS_DT)
     copy = 2 if "second" in mutation else 1
     waited = [e for e in built if e["label"]["copy"] == copy and e["label"]["tau_dt"] > 0]
@@ -241,14 +243,23 @@ def test_the_part_b_comparison_fails_on_a_changed_circuit(fez, mutation):
         built = []
     elif mutation == "a missing circuit":
         del built[31]
+    elif mutation == "two circuits swapped":
+        built[3], built[4] = built[4], built[3]
     elif "extra X" in mutation:
         waited[0]["circuit"].x(0)
+    elif "measurement target" in mutation:
+        c = waited[2]["circuit"]
+        k = next(k for k, inst in enumerate(c.data) if inst.operation.name == "measure")
+        c.data[k] = c.data[k].replace(clbits=(c.clbits[1],))  # qubit 0 now written to classical bit 1
     else:
         _delay_plus_two(waited[5]["circuit"])
     found = part_b_mismatches(built, fez)
     assert found, mutation
+    if mutation == "two circuits swapped":  # each circuit still matches its label; only the order is wrong
+        assert found == ["the circuits are not those of the run, in the run's order"]
     if "copy" in mutation:  # the mismatches name the changed circuit, and no other
-        lab = (waited[0] if "extra X" in mutation else waited[5])["label"]
+        at = 0 if "extra X" in mutation else 2 if "measurement" in mutation else 5
+        lab = waited[at]["label"]
         us = {dt: us for us, dt in archive.load(K47)["tau_dt"].items()}[lab["tau_dt"]]
         name = f"g{lab['group']}|{us}|{lab['variant']}, copy {copy}: "
         assert name + "its instructions differ from the reconstruction" in found and all(
@@ -339,6 +350,7 @@ def test_the_rule_at_its_boundaries(intervals, floor, kind):
         (([0.1, 0.2], [0.3, 0.1], [-1, 1]), 0.1),
         (([0.1, 0.2], [-1, 1], [-1, math.inf]), 0.1),
         (([0.1], [-1, 1], [-1, 1]), 0.1),  # one bound
+        (([0.1, 0.2], [-1, 0, 1], [-1, 1]), 0.1),  # three bounds
         (([0.1, 0.2], [-1, 1], [-1, 1]), math.nan),  # the floor
         (([0.1, 0.2], [-1, 1], [-1, 1]), math.inf),
     ],

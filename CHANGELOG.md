@@ -10,9 +10,9 @@
   `k47-wait-part-b-reconstruction.json`, holds a dated reconstruction of Part B's circuits with the builder's text;
   `k47-wait.json` is unchanged. No finding changed.
 - Amendment A18, ruling R1: on every backend, a provider's error text is cleaned before the ledger stores it or the
-  console shows it, with nothing of the original chained to it, and the providers' clients' log records are cleaned as
-  they are made; instance names, CRNs, account and hub/group/project identifiers, tokens and email addresses become
-  `[redacted]`. Open Quantum's balance-floor refusal names the account by its ledger scope, not by the saved account's
+  console shows it, with nothing of the original chained to it, and the log records of the IBM and Open Quantum clients,
+  the IBM client's libraries, `requests` and `urllib3` are cleaned as they are made, no other logger's (ruling R2); instance names, CRNs,
+  account and hub/group/project identifiers, tokens and email addresses become `[redacted]`. Open Quantum's balance-floor refusal names the account by its ledger scope, not by the saved account's
   name. `wait_loss_kind` refuses intervals that are not two finite, ordered bounds; a translation in `manacitra.wait`
   that routes a circuit is refused.
 
