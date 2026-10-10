@@ -1,6 +1,6 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the README's and the long documentation's nine diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the README's and the long documentation's ten diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -14,6 +14,8 @@
 7. kickoff.svg      how a result was made: brief, sealed predictions, go, run, hand-back, independent check, scorecard
 8. whole-chip-days.svg   Kickoff 35: all of ibm_fez's couplers on three days, shaded by rank, beside the published score
 9. map-explainer.svg     how the map works in one picture, for docs/index.md: circuits, levels, k, the chip, the checks
+10. reuse-wait.svg       Kickoff 47 (finding 13): XOR_5's reuse circuit without and with refocusing; qubit 143's Ramsey
+                         and echo curves, with the fit of one steady offset drawn as a fit
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. Diagrams 8 and 9 draw thin lines across the whole chip, so they use the ramp without its lightest step
@@ -938,6 +940,117 @@ def diagram_map_explainer(out: Path):
     save(fig, out, "map-explainer")
 
 
+# --------------------------------------------------------------------------- 10. the wait (finding 13)
+def _xor5_F(rec: dict, xor5: dict, cell: str) -> float:
+    """F for one Part A cell of Kickoff 47: the squared Hellinger overlap of its pooled counts with XOR_5's exact
+    ideal, on the classical bits XOR_5 measures (the last listed first), uncorrected."""
+    clb, ideal = xor5["measured_clbits"], xor5["ideal"]
+    tot, got = 0, {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        if lab["part"] == "A" and lab["cell"] == cell:
+            for key, n in cts.items():
+                bits = key.replace(" ", "")[::-1]
+                k = "".join(bits[c] for c in reversed(clb))
+                got[k] = got.get(k, 0) + n
+                tot += n
+    return float(sum(np.sqrt(got.get(k, 0) / tot * p) for k, p in ideal.items()) ** 2)
+
+
+def _p1(rec: dict, qubit: int, variant: str) -> list[float]:
+    """P(1) of one Part B qubit of Kickoff 47 at each wait, pooled over the two copies."""
+    group = next(g for g, qs in rec["groups"].items() if qubit in qs)
+    i = rec["groups"][group].index(qubit)
+    out = []
+    for tau in rec["taus_us"]:
+        ones = tot = 0
+        for lab, cts in zip(rec["labels"], rec["counts"]):
+            if lab["part"] == "B" and lab["group"] == int(group) and lab["tau_us"] == tau and lab["variant"] == variant:
+                ones += sum(n for k, n in cts.items() if k.replace(" ", "")[::-1][i] == "1")
+                tot += sum(cts.values())
+        out.append(ones / tot)
+    return out
+
+
+def diagram_reuse_wait(out: Path):
+    """Finding 13 in two panels: F of XOR_5's reuse circuit on chain A (144-143-142) without and with XY4 refocusing,
+    beside the healthy chain C; and qubit 143's Ramsey and echo P(1) against the wait, with the fitted curve of one
+    steady offset drawn as a fit. Points are computed here from the counts; the 90% intervals and the fit are the
+    run's, as archived, which tests/test_reproduction.py recomputes."""
+    rec = archive.load("ibm_fez/k47-wait.json")
+    xor5 = archive.load("ibm_fez/k43-reuse.json")["circuits"]["XOR_5"]
+    an = rec["archived"]["analysis"]
+    cells = an["part_A"]["cells"]
+    q143 = an["part_B"]["qubits"]["143"]
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.4, 4.6), gridspec_kw={"width_ratios": [1, 1.25], "wspace": 0.32})
+    groups = [("A", "chain A, 144-143-142\n143 waits in the middle"), ("C", "chain C, 132-131-138\nthe healthy chain")]
+    w = 0.34
+    for j, (chain, _label) in enumerate(groups):
+        for d, (suffix, colour, name) in enumerate(
+            (("0", "#c3c2b7", "no refocusing"), ("1", SERIES_1, "XY4 refocusing"))
+        ):
+            cell = chain + suffix
+            F = _xor5_F(rec, xor5, cell)
+            lo, hi = cells[cell]["ci90"]
+            x = j + (d - 0.5) * (w + 0.04)
+            ax1.bar(x, F, width=w, color=colour, label=name if j == 0 else None, zorder=2)
+            ax1.errorbar(x, F, yerr=[[F - lo], [hi - F]], color=INK, lw=1, capsize=3, zorder=3)
+            ax1.text(x, F + 0.025, f"{F:.3f}", ha="center", va="bottom", fontsize=9, color=INK)
+    ax1.set_xticks([0, 1])
+    ax1.set_xticklabels([g[1] for g in groups], fontsize=9)
+    ax1.set_ylim(0, 1.05)
+    ax1.set_ylabel("F, overlap with the exact ideal output")
+    ax1.yaxis.grid(True, color=GRID, lw=0.8)
+    ax1.set_axisbelow(True)
+    ax1.legend(loc="upper right", frameon=False, fontsize=9)
+    ax1.set_title("XOR_5 with reuse, without and with refocusing", loc="left", fontsize=10.5, color=INK)
+
+    taus = rec["taus_us"]
+    ram, ech = _p1(rec, 143, "R"), _p1(rec, 143, "E")
+    for ys, key, colour, name, marker in (
+        (ram, "ramsey_ci90", SERIES_1, "Ramsey: H, wait, H", "o"),
+        (ech, "echo_ci90", SERIES_2, "echo: one refocusing pulse halfway", "s"),
+    ):
+        ci = [q143[key][str(t)] for t in taus]
+        err = [[y - c[0] for y, c in zip(ys, ci)], [c[1] - y for y, c in zip(ys, ci)]]
+        ax2.errorbar(
+            taus, ys, yerr=err, fmt=marker, ms=6, color=colour, ecolor=colour, capsize=3, lw=1, label=name, zorder=3
+        )
+    fit = q143["ramsey_fit"]
+    t = np.linspace(0, 8, 200)
+    curve = ram[0] + fit["a"] * (1 - np.exp(-t / fit["T_us"]) * np.cos(2 * np.pi * fit["f_MHz"] * t))
+    ax2.plot(
+        t,
+        curve,
+        color=INK_2,
+        lw=1.2,
+        ls=(0, (4, 3)),
+        zorder=2,
+        label=f"a fit: one steady offset, {1000 * fit['f_MHz']:.1f} ± {1000 * fit['f_err']:.1f} kHz",
+    )
+    ax2.axvline(3.356, color=MUTED, lw=1, ls=(0, (1, 2)), zorder=1)
+    ax2.text(
+        4.3, 0.12, "143's waits in chain A:\nthree windows of 3.34 to 3.37 µs", fontsize=8.5, color=INK_2, va="bottom"
+    )
+    ax2.set_xlim(-0.3, 8.4)
+    ax2.set_ylim(-0.02, 0.92)
+    ax2.set_xlabel("wait in superposition (µs)")
+    ax2.set_ylabel("P(1) on qubit 143 (ideal 0)")
+    ax2.yaxis.grid(True, color=GRID, lw=0.8)
+    ax2.set_axisbelow(True)
+    ax2.legend(loc="upper left", frameon=False, fontsize=8.5)
+    ax2.set_title("Qubit 143: the loss during a wait, and its echo", loc="left", fontsize=10.5, color=INK)
+    fig.text(
+        0.125,
+        1.0,
+        "ibm_fez, Kickoff 47, 10 October 2026, 10:54 to 10:57 UTC. Bars and points from the counts; "
+        "whiskers, 90% bootstrap intervals.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "reuse-wait")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -951,7 +1064,8 @@ def main(argv=None):
     diagram_kickoff(a.out)
     diagram_whole_chip_days(a.out)
     diagram_map_explainer(a.out)
-    print(f"wrote 9 diagrams (SVG and PNG) to {a.out}")
+    diagram_reuse_wait(a.out)
+    print(f"wrote 10 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

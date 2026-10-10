@@ -143,6 +143,9 @@ MUTATED = {
         "archived/analysis/p_k/r/pearson",
     ),
     "Kickoff 42, Day 2": ("rigetti_cepheus_1_108q/k42-day2.json", "archived/V5/verdict"),
+    # Amendment A17: the verdict quantity of Kickoff 43 and the verdict of Kickoff 47
+    "Kickoff 43, Job 2, the run": ("ibm_fez/k43-reuse.json", "archived/analysis/G_reuse/point"),
+    "Kickoff 47, the wait": ("ibm_fez/k47-wait.json", "archived/analysis/part_A/H_phase"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 
@@ -260,7 +263,8 @@ def test_the_resampling_rule():
 
 def test_the_marked_fields_are_exactly_the_intended_ones():
     """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
-    on their names. Nine intervals that also resample shots, and Kickoff 42's nineteen bootstrap SDs."""
+    on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, and (Amendment A17)
+    the 330 interval fields of Kickoffs 43 to 47, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -287,4 +291,60 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot and (len(shots), len(boot)) == (9, 19)
+    assert marked == shots | boot | REUSE_MARKED and (len(shots), len(boot), len(REUSE_MARKED)) == (9, 19, 330)
+
+
+def _reuse_marked() -> set:
+    """Amendment A17: Kickoffs 43 to 47's 90% bootstrap intervals, which also resample shots, and what is computed
+    from their widths, each compared at 10⁻³ as Kickoff 33's intervals are; listed one by one."""
+    rs = "resampled-shots"
+    out = set()
+    f = "ibm_fez/k43-reuse.json"
+    summary = ("ci90", "width", "shot_only_boot_ci90", "shot_only_boot_width")
+    for g in ("G_reuse", "G_no_reuse", "Delta"):
+        ratios = ("ratio_width_to_shot_only_formula", "ratio_width_to_shot_only_boot")
+        out |= {(f, f"archived/analysis/{g}/{x}", rs) for x in summary + ratios}
+        out |= {(f, f"archived/analysis/per_circuit/{c}/{g}/{x}", rs) for c in REUSE_CIRCUITS for x in summary}
+    out |= {
+        (f, f"archived/analysis/cells/{c}|{m}|{p}/F_boot_ci90", rs)
+        for c in REUSE_CIRCUITS
+        for m in ("no_reuse", "reuse")
+        for p in ("map", "calibration")
+    }
+    f = "ibm_fez/k44-reset.json"
+    out |= {
+        (f, f"archived/analysis/D/{q}/{x}", rs)
+        for q in ("c", "e_m", "eps")
+        for x in ("ci90", "width", "shot_only_ci90", "shot_only_width", "ratio_width_to_shot_only")
+    }
+    f = "ibm_fez/k45-collapse.json"
+    out |= {(f, f"archived/analysis/part_A/cells/{c}/ci90", rs) for c in "ABCDEF"}
+    out |= {
+        (f, f"archived/analysis/part_B/verdicts/{h}/{x}", rs)
+        for h in ("H_idle", "H_repeat")
+        for x in ("ci90", "shot_only_ci90", "width_ratio")
+    }
+    out.add((f, "archived/analysis/part_B/anomaly_141/ci90", rs))
+    out |= {
+        (f, f"archived/analysis/part_B/table/{q}/{x}_ci90", rs)
+        for q in (117, 123, 124, 125, 131, 132, 138, 141, 142, 143, 144, 151)
+        for x in ("x_I1", "x_I2", "r_1", "r_2", "r_3", "first_mid_err")
+    }
+    f = "ibm_fez/k46-middle.json"
+    out |= {(f, f"archived/analysis/part_A/cells/{c}/ci90", rs) for c in "AGHJKC"}
+    out.add((f, "archived/analysis/part_B/H_spectator/ci90", rs))
+    pairs = ("124;123", "124;125", "131;130", "131;132", "131;138", "142;141", "142;143", "143;136", "143;142")
+    pairs += ("143;144", "144;143", "144;145")
+    out |= {(f, f"archived/analysis/part_B/table/{p}/{x}_ci90", rs) for p in pairs for x in ("d", "i", "c_mid_err")}
+    f = "ibm_fez/k47-wait.json"
+    out |= {(f, f"archived/analysis/part_A/cells/{c}{v}/ci90", rs) for c in "AJC" for v in "01"}
+    out |= {(f, f"archived/analysis/part_A/gains_beside/{c}/ci90", rs) for c in "AJC"}
+    for q in (143, 131, 124, 142, 144, 125):
+        b = f"archived/analysis/part_B/qubits/{q}"
+        out |= {(f, f"{b}/{v}_ci90/{t}", rs) for v in ("ramsey", "echo") for t in ("0", "1", "2", "3.4", "4", "8")}
+        out |= {(f, f"{b}/{x}", rs) for x in ("r_ci90", "e_ci90", "r_minus_3e_ci90", "three_e_minus_2r_ci90")}
+    return out
+
+
+REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")
+REUSE_MARKED = _reuse_marked()

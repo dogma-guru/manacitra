@@ -5005,6 +5005,1903 @@
      "programs/shared_all_identical": {}
     }
    }
+  ],
+  "Kickoff 43, Job 1, the map": [
+   {
+    "file": "ibm_fez/k43-map.json",
+    "fields": {
+     "per_circuit_P11": {},
+     "archived/analysis/edges": {},
+     "archived/analysis/k": {},
+     "archived/analysis/k_first": {},
+     "archived/analysis/k_second": {},
+     "archived/analysis/P_no": {},
+     "archived/analysis/P_off": {},
+     "archived/analysis/shot_se_per_edge": {},
+     "archived/analysis/mean_k": {},
+     "archived/analysis/sd_k_between_edges": {},
+     "archived/analysis/mean_shot_se": {},
+     "archived/analysis/r_split": {},
+     "archived/analysis/reliability_spearman_brown": {},
+     "archived/analysis/r_k_x": {},
+     "archived/analysis/x": {},
+     "archived/analysis/plain_level": {},
+     "archived/analysis/dead_pair_floor": {},
+     "archived/analysis/dead_pairs": {},
+     "archived/analysis/n_working_pairs": {},
+     "archived/analysis/after_dead_pair_filter": {},
+     "archived/analysis/map_verdict_all_edges": {},
+     "archived/analysis/map_verdict_after_filter": {},
+     "archived/analysis/usable_couplers_k_above_1p2": {}
+    }
+   }
+  ],
+  "Kickoff 43, Job 2, the run": [
+   {
+    "file": "ibm_fez/k43-reuse.json",
+    "fields": {
+     "placements/XOR_5|no_reuse/map/rule": {},
+     "placements/XOR_5|no_reuse/map/chain": {},
+     "placements/XOR_5|no_reuse/map/score": {},
+     "placements/XOR_5|no_reuse/map/sum_x": {},
+     "placements/XOR_5|no_reuse/map/n_orientations_scored": {},
+     "placements/XOR_5|no_reuse/map/n_chains_excluded": {},
+     "placements/XOR_5|no_reuse/map/x_sum": {},
+     "placements/XOR_5|no_reuse/map/map_scores": {},
+     "placements/XOR_5|no_reuse/map/k_on_couplers": {},
+     "placements/XOR_5|no_reuse/map/plain_level_on_couplers": {},
+     "placements/XOR_5|no_reuse/calibration/x_sum": {},
+     "placements/XOR_5|no_reuse/calibration/map_scores": {},
+     "placements/XOR_5|no_reuse/calibration/k_on_couplers": {},
+     "placements/XOR_5|no_reuse/calibration/plain_level_on_couplers": {},
+     "placements/XOR_5|no_reuse/beside_not_run": {},
+     "placements/XOR_5|no_reuse/same_chain": {},
+     "placements/XOR_5|no_reuse/same_qubit_set": {},
+     "placements/XOR_5|reuse/map/rule": {},
+     "placements/XOR_5|reuse/map/chain": {},
+     "placements/XOR_5|reuse/map/score": {},
+     "placements/XOR_5|reuse/map/sum_x": {},
+     "placements/XOR_5|reuse/map/n_orientations_scored": {},
+     "placements/XOR_5|reuse/map/n_chains_excluded": {},
+     "placements/XOR_5|reuse/map/x_sum": {},
+     "placements/XOR_5|reuse/map/map_scores": {},
+     "placements/XOR_5|reuse/map/k_on_couplers": {},
+     "placements/XOR_5|reuse/map/plain_level_on_couplers": {},
+     "placements/XOR_5|reuse/map/resets_on_physical_qubit": {},
+     "placements/XOR_5|reuse/calibration/x_sum": {},
+     "placements/XOR_5|reuse/calibration/map_scores": {},
+     "placements/XOR_5|reuse/calibration/k_on_couplers": {},
+     "placements/XOR_5|reuse/calibration/plain_level_on_couplers": {},
+     "placements/XOR_5|reuse/calibration/resets_on_physical_qubit": {},
+     "placements/XOR_5|reuse/beside_not_run": {},
+     "placements/XOR_5|reuse/same_chain": {},
+     "placements/XOR_5|reuse/same_qubit_set": {},
+     "placements/BV_10|no_reuse/map/rule": {},
+     "placements/BV_10|no_reuse/map/chain": {},
+     "placements/BV_10|no_reuse/map/score": {},
+     "placements/BV_10|no_reuse/map/sum_x": {},
+     "placements/BV_10|no_reuse/map/n_orientations_scored": {},
+     "placements/BV_10|no_reuse/map/n_chains_excluded": {},
+     "placements/BV_10|no_reuse/map/x_sum": {},
+     "placements/BV_10|no_reuse/map/map_scores": {},
+     "placements/BV_10|no_reuse/map/k_on_couplers": {},
+     "placements/BV_10|no_reuse/map/plain_level_on_couplers": {},
+     "placements/BV_10|no_reuse/calibration/x_sum": {},
+     "placements/BV_10|no_reuse/calibration/map_scores": {},
+     "placements/BV_10|no_reuse/calibration/k_on_couplers": {},
+     "placements/BV_10|no_reuse/calibration/plain_level_on_couplers": {},
+     "placements/BV_10|no_reuse/beside_not_run": {},
+     "placements/BV_10|no_reuse/same_chain": {},
+     "placements/BV_10|no_reuse/same_qubit_set": {},
+     "placements/BV_10|reuse/map/rule": {},
+     "placements/BV_10|reuse/map/chain": {},
+     "placements/BV_10|reuse/map/score": {},
+     "placements/BV_10|reuse/map/sum_x": {},
+     "placements/BV_10|reuse/map/n_orientations_scored": {},
+     "placements/BV_10|reuse/map/n_chains_excluded": {},
+     "placements/BV_10|reuse/map/x_sum": {},
+     "placements/BV_10|reuse/map/map_scores": {},
+     "placements/BV_10|reuse/map/k_on_couplers": {},
+     "placements/BV_10|reuse/map/plain_level_on_couplers": {},
+     "placements/BV_10|reuse/map/resets_on_physical_qubit": {},
+     "placements/BV_10|reuse/calibration/x_sum": {},
+     "placements/BV_10|reuse/calibration/map_scores": {},
+     "placements/BV_10|reuse/calibration/k_on_couplers": {},
+     "placements/BV_10|reuse/calibration/plain_level_on_couplers": {},
+     "placements/BV_10|reuse/calibration/resets_on_physical_qubit": {},
+     "placements/BV_10|reuse/beside_not_run": {},
+     "placements/BV_10|reuse/same_chain": {},
+     "placements/BV_10|reuse/same_qubit_set": {},
+     "placements/Mul_13|no_reuse/map/rule": {},
+     "placements/Mul_13|no_reuse/map/chain": {},
+     "placements/Mul_13|no_reuse/map/score": {},
+     "placements/Mul_13|no_reuse/map/sum_x": {},
+     "placements/Mul_13|no_reuse/map/n_orientations_scored": {},
+     "placements/Mul_13|no_reuse/map/n_chains_excluded": {},
+     "placements/Mul_13|no_reuse/map/x_sum": {},
+     "placements/Mul_13|no_reuse/map/map_scores": {},
+     "placements/Mul_13|no_reuse/map/k_on_couplers": {},
+     "placements/Mul_13|no_reuse/map/plain_level_on_couplers": {},
+     "placements/Mul_13|no_reuse/calibration/x_sum": {},
+     "placements/Mul_13|no_reuse/calibration/map_scores": {},
+     "placements/Mul_13|no_reuse/calibration/k_on_couplers": {},
+     "placements/Mul_13|no_reuse/calibration/plain_level_on_couplers": {},
+     "placements/Mul_13|no_reuse/beside_not_run": {},
+     "placements/Mul_13|no_reuse/same_chain": {},
+     "placements/Mul_13|no_reuse/same_qubit_set": {},
+     "placements/Mul_13|reuse/map/rule": {},
+     "placements/Mul_13|reuse/map/chain": {},
+     "placements/Mul_13|reuse/map/score": {},
+     "placements/Mul_13|reuse/map/sum_x": {},
+     "placements/Mul_13|reuse/map/n_orientations_scored": {},
+     "placements/Mul_13|reuse/map/n_chains_excluded": {},
+     "placements/Mul_13|reuse/map/x_sum": {},
+     "placements/Mul_13|reuse/map/map_scores": {},
+     "placements/Mul_13|reuse/map/k_on_couplers": {},
+     "placements/Mul_13|reuse/map/plain_level_on_couplers": {},
+     "placements/Mul_13|reuse/map/resets_on_physical_qubit": {},
+     "placements/Mul_13|reuse/calibration/x_sum": {},
+     "placements/Mul_13|reuse/calibration/map_scores": {},
+     "placements/Mul_13|reuse/calibration/k_on_couplers": {},
+     "placements/Mul_13|reuse/calibration/plain_level_on_couplers": {},
+     "placements/Mul_13|reuse/calibration/resets_on_physical_qubit": {},
+     "placements/Mul_13|reuse/beside_not_run": {},
+     "placements/Mul_13|reuse/same_chain": {},
+     "placements/Mul_13|reuse/same_qubit_set": {},
+     "placements/Sym_9|no_reuse/map/rule": {},
+     "placements/Sym_9|no_reuse/map/chain": {},
+     "placements/Sym_9|no_reuse/map/score": {},
+     "placements/Sym_9|no_reuse/map/sum_x": {},
+     "placements/Sym_9|no_reuse/map/n_orientations_scored": {},
+     "placements/Sym_9|no_reuse/map/n_chains_excluded": {},
+     "placements/Sym_9|no_reuse/map/x_sum": {},
+     "placements/Sym_9|no_reuse/map/map_scores": {},
+     "placements/Sym_9|no_reuse/map/k_on_couplers": {},
+     "placements/Sym_9|no_reuse/map/plain_level_on_couplers": {},
+     "placements/Sym_9|no_reuse/calibration/x_sum": {},
+     "placements/Sym_9|no_reuse/calibration/map_scores": {},
+     "placements/Sym_9|no_reuse/calibration/k_on_couplers": {},
+     "placements/Sym_9|no_reuse/calibration/plain_level_on_couplers": {},
+     "placements/Sym_9|no_reuse/beside_not_run": {},
+     "placements/Sym_9|no_reuse/same_chain": {},
+     "placements/Sym_9|no_reuse/same_qubit_set": {},
+     "placements/Sym_9|reuse/map/rule": {},
+     "placements/Sym_9|reuse/map/chain": {},
+     "placements/Sym_9|reuse/map/score": {},
+     "placements/Sym_9|reuse/map/sum_x": {},
+     "placements/Sym_9|reuse/map/n_orientations_scored": {},
+     "placements/Sym_9|reuse/map/n_chains_excluded": {},
+     "placements/Sym_9|reuse/map/x_sum": {},
+     "placements/Sym_9|reuse/map/map_scores": {},
+     "placements/Sym_9|reuse/map/k_on_couplers": {},
+     "placements/Sym_9|reuse/map/plain_level_on_couplers": {},
+     "placements/Sym_9|reuse/map/resets_on_physical_qubit": {},
+     "placements/Sym_9|reuse/calibration/x_sum": {},
+     "placements/Sym_9|reuse/calibration/map_scores": {},
+     "placements/Sym_9|reuse/calibration/k_on_couplers": {},
+     "placements/Sym_9|reuse/calibration/plain_level_on_couplers": {},
+     "placements/Sym_9|reuse/calibration/resets_on_physical_qubit": {},
+     "placements/Sym_9|reuse/beside_not_run": {},
+     "placements/Sym_9|reuse/same_chain": {},
+     "placements/Sym_9|reuse/same_qubit_set": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/F": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/BV_10|no_reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/chain": {},
+     "archived/analysis/cells/BV_10|no_reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/F": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/F_per_copy": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/BV_10|no_reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/chain": {},
+     "archived/analysis/cells/BV_10|no_reuse|map/shots_pooled": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/F": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/BV_10|reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/chain": {},
+     "archived/analysis/cells/BV_10|reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/BV_10|reuse|map/F": {},
+     "archived/analysis/cells/BV_10|reuse|map/F_per_copy": {},
+     "archived/analysis/cells/BV_10|reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/BV_10|reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/BV_10|reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/BV_10|reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/BV_10|reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/BV_10|reuse|map/chain": {},
+     "archived/analysis/cells/BV_10|reuse|map/shots_pooled": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/F": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/chain": {},
+     "archived/analysis/cells/Mul_13|no_reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/F": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/F_per_copy": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Mul_13|no_reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/chain": {},
+     "archived/analysis/cells/Mul_13|no_reuse|map/shots_pooled": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/F": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Mul_13|reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/chain": {},
+     "archived/analysis/cells/Mul_13|reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/Mul_13|reuse|map/F": {},
+     "archived/analysis/cells/Mul_13|reuse|map/F_per_copy": {},
+     "archived/analysis/cells/Mul_13|reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/Mul_13|reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Mul_13|reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Mul_13|reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Mul_13|reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/Mul_13|reuse|map/chain": {},
+     "archived/analysis/cells/Mul_13|reuse|map/shots_pooled": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/F": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/chain": {},
+     "archived/analysis/cells/Sym_9|no_reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/F": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/F_per_copy": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Sym_9|no_reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/chain": {},
+     "archived/analysis/cells/Sym_9|no_reuse|map/shots_pooled": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/F": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Sym_9|reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/chain": {},
+     "archived/analysis/cells/Sym_9|reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/Sym_9|reuse|map/F": {},
+     "archived/analysis/cells/Sym_9|reuse|map/F_per_copy": {},
+     "archived/analysis/cells/Sym_9|reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/Sym_9|reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/Sym_9|reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/Sym_9|reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/Sym_9|reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/Sym_9|reuse|map/chain": {},
+     "archived/analysis/cells/Sym_9|reuse|map/shots_pooled": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/F": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/chain": {},
+     "archived/analysis/cells/XOR_5|no_reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/F": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/F_per_copy": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/XOR_5|no_reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/chain": {},
+     "archived/analysis/cells/XOR_5|no_reuse|map/shots_pooled": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/F": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/F_per_copy": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/copy_to_copy_var": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/shot_only_var_per_copy": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/XOR_5|reuse|calibration/F_readout_adjusted": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/chain": {},
+     "archived/analysis/cells/XOR_5|reuse|calibration/shots_pooled": {},
+     "archived/analysis/cells/XOR_5|reuse|map/F": {},
+     "archived/analysis/cells/XOR_5|reuse|map/F_per_copy": {},
+     "archived/analysis/cells/XOR_5|reuse|map/copy_to_copy_var": {},
+     "archived/analysis/cells/XOR_5|reuse|map/shot_only_var_per_copy": {},
+     "archived/analysis/cells/XOR_5|reuse|map/copy_var_ratio_to_shot": {},
+     "archived/analysis/cells/XOR_5|reuse|map/F_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/XOR_5|reuse|map/F_readout_adjusted": {},
+     "archived/analysis/cells/XOR_5|reuse|map/chain": {},
+     "archived/analysis/cells/XOR_5|reuse|map/shots_pooled": {},
+     "archived/analysis/G_reuse/point": {},
+     "archived/analysis/G_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_reuse/shot_only_formula_width": {},
+     "archived/analysis/G_reuse/ratio_width_to_shot_only_formula": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_reuse/ratio_width_to_shot_only_boot": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/point": {},
+     "archived/analysis/G_no_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/shot_only_formula_width": {},
+     "archived/analysis/G_no_reuse/ratio_width_to_shot_only_formula": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/G_no_reuse/ratio_width_to_shot_only_boot": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/point": {},
+     "archived/analysis/Delta/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/shot_only_formula_width": {},
+     "archived/analysis/Delta/ratio_width_to_shot_only_formula": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/Delta/ratio_width_to_shot_only_boot": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/verdict": {},
+     "archived/analysis/verdict_conditions/G_reuse_ci90_entirely_below_delta": {},
+     "archived/analysis/verdict_conditions/G_reuse_ci90_entirely_above_0": {},
+     "archived/analysis/per_circuit/XOR_5/G_reuse/point": {},
+     "archived/analysis/per_circuit/XOR_5/G_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_no_reuse/point": {},
+     "archived/analysis/per_circuit/XOR_5/G_no_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_no_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_no_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/G_no_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/Delta/point": {},
+     "archived/analysis/per_circuit/XOR_5/Delta/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/Delta/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/Delta/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/XOR_5/Delta/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_reuse/point": {},
+     "archived/analysis/per_circuit/BV_10/G_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_no_reuse/point": {},
+     "archived/analysis/per_circuit/BV_10/G_no_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_no_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_no_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/G_no_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/Delta/point": {},
+     "archived/analysis/per_circuit/BV_10/Delta/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/Delta/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/Delta/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/BV_10/Delta/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_reuse/point": {},
+     "archived/analysis/per_circuit/Mul_13/G_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_no_reuse/point": {},
+     "archived/analysis/per_circuit/Mul_13/G_no_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_no_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_no_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/G_no_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/Delta/point": {},
+     "archived/analysis/per_circuit/Mul_13/Delta/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/Delta/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/Delta/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Mul_13/Delta/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_reuse/point": {},
+     "archived/analysis/per_circuit/Sym_9/G_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_no_reuse/point": {},
+     "archived/analysis/per_circuit/Sym_9/G_no_reuse/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_no_reuse/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_no_reuse/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/G_no_reuse/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/Delta/point": {},
+     "archived/analysis/per_circuit/Sym_9/Delta/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/Delta/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/Delta/shot_only_boot_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_circuit/Sym_9/Delta/shot_only_boot_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/n_circuits_Delta_positive": {},
+     "archived/analysis/same_chain": {},
+     "archived/analysis/readout_adjusted_G/G_reuse": {},
+     "archived/analysis/readout_adjusted_G/G_no_reuse": {},
+     "archived/analysis/readout_adjusted_G/Delta": {}
+    }
+   }
+  ],
+  "Kickoff 44, the reuse-cost probe": [
+   {
+    "file": "ibm_fez/k44-reset.json",
+    "fields": {
+     "archived/analysis/verdict": {},
+     "archived/analysis/verdict_conditions/D_ci90_entirely_below_delta_c": {},
+     "archived/analysis/verdict_conditions/D_ci90_entirely_above_0": {},
+     "archived/analysis/D/c/point": {},
+     "archived/analysis/D/c/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/c/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/c/shot_only_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/c/shot_only_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/c/ratio_width_to_shot_only": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/e_m/point": {},
+     "archived/analysis/D/e_m/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/e_m/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/e_m/shot_only_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/e_m/shot_only_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/e_m/ratio_width_to_shot_only": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/eps/point": {},
+     "archived/analysis/D/eps/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/eps/width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/eps/shot_only_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/eps/shot_only_width": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/D/eps/ratio_width_to_shot_only": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/T": {},
+     "archived/analysis/C": {},
+     "archived/analysis/T_C_table": {},
+     "archived/analysis/q142_in_worst_quarter_of_c": {},
+     "archived/analysis/q117_in_worst_quarter_of_c": {},
+     "archived/analysis/worst_quarter_size": {},
+     "archived/analysis/n_tested_qubits": {},
+     "archived/analysis/probe_verdict": {},
+     "archived/analysis/copy_to_copy_ratio_to_shot": {},
+     "archived/analysis/chip_summary": {},
+     "archived/analysis/per_qubit_sorted_by_c": {},
+     "archived/analysis/per_instance": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/tau_s": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/mean_decay_prob": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/median_eps_raw": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/median_eps_T1_adjusted": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/r_eps_with_minus_decay_prob": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/D_c_with_T1_adjusted_eps": {},
+     "archived/analysis/beside_after_data/t1_decay_in_R0/per_qubit_T_C": {},
+     "archived/analysis/beside_after_data/e_m_over_published_readout": {}
+    }
+   }
+  ],
+  "Kickoff 45, the collapse taken apart": [
+   {
+    "file": "ibm_fez/k45-collapse.json",
+    "fields": {
+     "archived/analysis/part_A/cells/A/F": {},
+     "archived/analysis/part_A/cells/A/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/A/F_per_copy": {},
+     "archived/analysis/part_A/cells/A/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/A/class": {},
+     "archived/analysis/part_A/cells/A/shots": {},
+     "archived/analysis/part_A/cells/B/F": {},
+     "archived/analysis/part_A/cells/B/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/B/F_per_copy": {},
+     "archived/analysis/part_A/cells/B/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/B/class": {},
+     "archived/analysis/part_A/cells/B/shots": {},
+     "archived/analysis/part_A/cells/C/F": {},
+     "archived/analysis/part_A/cells/C/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/C/F_per_copy": {},
+     "archived/analysis/part_A/cells/C/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/C/class": {},
+     "archived/analysis/part_A/cells/C/shots": {},
+     "archived/analysis/part_A/cells/D/F": {},
+     "archived/analysis/part_A/cells/D/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/D/F_per_copy": {},
+     "archived/analysis/part_A/cells/D/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/D/class": {},
+     "archived/analysis/part_A/cells/D/shots": {},
+     "archived/analysis/part_A/cells/E/F": {},
+     "archived/analysis/part_A/cells/E/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/E/F_per_copy": {},
+     "archived/analysis/part_A/cells/E/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/E/class": {},
+     "archived/analysis/part_A/cells/E/shots": {},
+     "archived/analysis/part_A/cells/F/F": {},
+     "archived/analysis/part_A/cells/F/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/F/F_per_copy": {},
+     "archived/analysis/part_A/cells/F/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/F/class": {},
+     "archived/analysis/part_A/cells/F/shots": {},
+     "archived/analysis/part_A/collapse": {},
+     "archived/analysis/part_A/classes": {},
+     "archived/analysis/part_A/patterns": {},
+     "archived/analysis/part_B/verdicts/H_idle/quantity": {},
+     "archived/analysis/part_B/verdicts/H_idle/D": {},
+     "archived/analysis/part_B/verdicts/H_idle/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_idle/shot_only_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_idle/width_ratio": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_idle/verdict": {},
+     "archived/analysis/part_B/verdicts/H_idle/conditions": {},
+     "archived/analysis/part_B/verdicts/H_repeat/quantity": {},
+     "archived/analysis/part_B/verdicts/H_repeat/D": {},
+     "archived/analysis/part_B/verdicts/H_repeat/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_repeat/shot_only_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_repeat/width_ratio": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdicts/H_repeat/verdict": {},
+     "archived/analysis/part_B/verdicts/H_repeat/conditions": {},
+     "archived/analysis/part_B/anomaly_141/x_I1": {},
+     "archived/analysis/part_B/anomaly_141/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/anomaly_141/repeats": {},
+     "archived/analysis/part_B/q142_first_mid_err": {},
+     "archived/analysis/part_B/q142_readout": {},
+     "archived/analysis/part_B/q142_ratio": {},
+     "archived/analysis/part_B/q142_above_5x": {},
+     "archived/analysis/part_B/table/117/set": {},
+     "archived/analysis/part_B/table/117/P0": {},
+     "archived/analysis/part_B/table/117/P1": {},
+     "archived/analysis/part_B/table/117/I1": {},
+     "archived/analysis/part_B/table/117/I2": {},
+     "archived/analysis/part_B/table/117/x_I1": {},
+     "archived/analysis/part_B/table/117/x_I2": {},
+     "archived/analysis/part_B/table/117/r_1": {},
+     "archived/analysis/part_B/table/117/r_2": {},
+     "archived/analysis/part_B/table/117/r_3": {},
+     "archived/analysis/part_B/table/117/first_mid_err": {},
+     "archived/analysis/part_B/table/117/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/117/K3_mid_err": {},
+     "archived/analysis/part_B/table/117/T1": {},
+     "archived/analysis/part_B/table/117/T2": {},
+     "archived/analysis/part_B/table/117/readout_error": {},
+     "archived/analysis/part_B/table/117/init_error": {},
+     "archived/analysis/part_B/table/123/set": {},
+     "archived/analysis/part_B/table/123/P0": {},
+     "archived/analysis/part_B/table/123/P1": {},
+     "archived/analysis/part_B/table/123/I1": {},
+     "archived/analysis/part_B/table/123/I2": {},
+     "archived/analysis/part_B/table/123/x_I1": {},
+     "archived/analysis/part_B/table/123/x_I2": {},
+     "archived/analysis/part_B/table/123/r_1": {},
+     "archived/analysis/part_B/table/123/r_2": {},
+     "archived/analysis/part_B/table/123/r_3": {},
+     "archived/analysis/part_B/table/123/first_mid_err": {},
+     "archived/analysis/part_B/table/123/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/123/K3_mid_err": {},
+     "archived/analysis/part_B/table/123/T1": {},
+     "archived/analysis/part_B/table/123/T2": {},
+     "archived/analysis/part_B/table/123/readout_error": {},
+     "archived/analysis/part_B/table/123/init_error": {},
+     "archived/analysis/part_B/table/124/set": {},
+     "archived/analysis/part_B/table/124/P0": {},
+     "archived/analysis/part_B/table/124/P1": {},
+     "archived/analysis/part_B/table/124/I1": {},
+     "archived/analysis/part_B/table/124/I2": {},
+     "archived/analysis/part_B/table/124/x_I1": {},
+     "archived/analysis/part_B/table/124/x_I2": {},
+     "archived/analysis/part_B/table/124/r_1": {},
+     "archived/analysis/part_B/table/124/r_2": {},
+     "archived/analysis/part_B/table/124/r_3": {},
+     "archived/analysis/part_B/table/124/first_mid_err": {},
+     "archived/analysis/part_B/table/124/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124/K3_mid_err": {},
+     "archived/analysis/part_B/table/124/T1": {},
+     "archived/analysis/part_B/table/124/T2": {},
+     "archived/analysis/part_B/table/124/readout_error": {},
+     "archived/analysis/part_B/table/124/init_error": {},
+     "archived/analysis/part_B/table/125/set": {},
+     "archived/analysis/part_B/table/125/P0": {},
+     "archived/analysis/part_B/table/125/P1": {},
+     "archived/analysis/part_B/table/125/I1": {},
+     "archived/analysis/part_B/table/125/I2": {},
+     "archived/analysis/part_B/table/125/x_I1": {},
+     "archived/analysis/part_B/table/125/x_I2": {},
+     "archived/analysis/part_B/table/125/r_1": {},
+     "archived/analysis/part_B/table/125/r_2": {},
+     "archived/analysis/part_B/table/125/r_3": {},
+     "archived/analysis/part_B/table/125/first_mid_err": {},
+     "archived/analysis/part_B/table/125/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/125/K3_mid_err": {},
+     "archived/analysis/part_B/table/125/T1": {},
+     "archived/analysis/part_B/table/125/T2": {},
+     "archived/analysis/part_B/table/125/readout_error": {},
+     "archived/analysis/part_B/table/125/init_error": {},
+     "archived/analysis/part_B/table/131/set": {},
+     "archived/analysis/part_B/table/131/P0": {},
+     "archived/analysis/part_B/table/131/P1": {},
+     "archived/analysis/part_B/table/131/I1": {},
+     "archived/analysis/part_B/table/131/I2": {},
+     "archived/analysis/part_B/table/131/x_I1": {},
+     "archived/analysis/part_B/table/131/x_I2": {},
+     "archived/analysis/part_B/table/131/r_1": {},
+     "archived/analysis/part_B/table/131/r_2": {},
+     "archived/analysis/part_B/table/131/r_3": {},
+     "archived/analysis/part_B/table/131/first_mid_err": {},
+     "archived/analysis/part_B/table/131/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131/K3_mid_err": {},
+     "archived/analysis/part_B/table/131/T1": {},
+     "archived/analysis/part_B/table/131/T2": {},
+     "archived/analysis/part_B/table/131/readout_error": {},
+     "archived/analysis/part_B/table/131/init_error": {},
+     "archived/analysis/part_B/table/132/set": {},
+     "archived/analysis/part_B/table/132/P0": {},
+     "archived/analysis/part_B/table/132/P1": {},
+     "archived/analysis/part_B/table/132/I1": {},
+     "archived/analysis/part_B/table/132/I2": {},
+     "archived/analysis/part_B/table/132/x_I1": {},
+     "archived/analysis/part_B/table/132/x_I2": {},
+     "archived/analysis/part_B/table/132/r_1": {},
+     "archived/analysis/part_B/table/132/r_2": {},
+     "archived/analysis/part_B/table/132/r_3": {},
+     "archived/analysis/part_B/table/132/first_mid_err": {},
+     "archived/analysis/part_B/table/132/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/132/K3_mid_err": {},
+     "archived/analysis/part_B/table/132/T1": {},
+     "archived/analysis/part_B/table/132/T2": {},
+     "archived/analysis/part_B/table/132/readout_error": {},
+     "archived/analysis/part_B/table/132/init_error": {},
+     "archived/analysis/part_B/table/138/set": {},
+     "archived/analysis/part_B/table/138/P0": {},
+     "archived/analysis/part_B/table/138/P1": {},
+     "archived/analysis/part_B/table/138/I1": {},
+     "archived/analysis/part_B/table/138/I2": {},
+     "archived/analysis/part_B/table/138/x_I1": {},
+     "archived/analysis/part_B/table/138/x_I2": {},
+     "archived/analysis/part_B/table/138/r_1": {},
+     "archived/analysis/part_B/table/138/r_2": {},
+     "archived/analysis/part_B/table/138/r_3": {},
+     "archived/analysis/part_B/table/138/first_mid_err": {},
+     "archived/analysis/part_B/table/138/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/138/K3_mid_err": {},
+     "archived/analysis/part_B/table/138/T1": {},
+     "archived/analysis/part_B/table/138/T2": {},
+     "archived/analysis/part_B/table/138/readout_error": {},
+     "archived/analysis/part_B/table/138/init_error": {},
+     "archived/analysis/part_B/table/141/set": {},
+     "archived/analysis/part_B/table/141/P0": {},
+     "archived/analysis/part_B/table/141/P1": {},
+     "archived/analysis/part_B/table/141/I1": {},
+     "archived/analysis/part_B/table/141/I2": {},
+     "archived/analysis/part_B/table/141/x_I1": {},
+     "archived/analysis/part_B/table/141/x_I2": {},
+     "archived/analysis/part_B/table/141/r_1": {},
+     "archived/analysis/part_B/table/141/r_2": {},
+     "archived/analysis/part_B/table/141/r_3": {},
+     "archived/analysis/part_B/table/141/first_mid_err": {},
+     "archived/analysis/part_B/table/141/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/141/K3_mid_err": {},
+     "archived/analysis/part_B/table/141/T1": {},
+     "archived/analysis/part_B/table/141/T2": {},
+     "archived/analysis/part_B/table/141/readout_error": {},
+     "archived/analysis/part_B/table/141/init_error": {},
+     "archived/analysis/part_B/table/142/set": {},
+     "archived/analysis/part_B/table/142/P0": {},
+     "archived/analysis/part_B/table/142/P1": {},
+     "archived/analysis/part_B/table/142/I1": {},
+     "archived/analysis/part_B/table/142/I2": {},
+     "archived/analysis/part_B/table/142/x_I1": {},
+     "archived/analysis/part_B/table/142/x_I2": {},
+     "archived/analysis/part_B/table/142/r_1": {},
+     "archived/analysis/part_B/table/142/r_2": {},
+     "archived/analysis/part_B/table/142/r_3": {},
+     "archived/analysis/part_B/table/142/first_mid_err": {},
+     "archived/analysis/part_B/table/142/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142/K3_mid_err": {},
+     "archived/analysis/part_B/table/142/T1": {},
+     "archived/analysis/part_B/table/142/T2": {},
+     "archived/analysis/part_B/table/142/readout_error": {},
+     "archived/analysis/part_B/table/142/init_error": {},
+     "archived/analysis/part_B/table/143/set": {},
+     "archived/analysis/part_B/table/143/P0": {},
+     "archived/analysis/part_B/table/143/P1": {},
+     "archived/analysis/part_B/table/143/I1": {},
+     "archived/analysis/part_B/table/143/I2": {},
+     "archived/analysis/part_B/table/143/x_I1": {},
+     "archived/analysis/part_B/table/143/x_I2": {},
+     "archived/analysis/part_B/table/143/r_1": {},
+     "archived/analysis/part_B/table/143/r_2": {},
+     "archived/analysis/part_B/table/143/r_3": {},
+     "archived/analysis/part_B/table/143/first_mid_err": {},
+     "archived/analysis/part_B/table/143/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143/K3_mid_err": {},
+     "archived/analysis/part_B/table/143/T1": {},
+     "archived/analysis/part_B/table/143/T2": {},
+     "archived/analysis/part_B/table/143/readout_error": {},
+     "archived/analysis/part_B/table/143/init_error": {},
+     "archived/analysis/part_B/table/144/set": {},
+     "archived/analysis/part_B/table/144/P0": {},
+     "archived/analysis/part_B/table/144/P1": {},
+     "archived/analysis/part_B/table/144/I1": {},
+     "archived/analysis/part_B/table/144/I2": {},
+     "archived/analysis/part_B/table/144/x_I1": {},
+     "archived/analysis/part_B/table/144/x_I2": {},
+     "archived/analysis/part_B/table/144/r_1": {},
+     "archived/analysis/part_B/table/144/r_2": {},
+     "archived/analysis/part_B/table/144/r_3": {},
+     "archived/analysis/part_B/table/144/first_mid_err": {},
+     "archived/analysis/part_B/table/144/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144/K3_mid_err": {},
+     "archived/analysis/part_B/table/144/T1": {},
+     "archived/analysis/part_B/table/144/T2": {},
+     "archived/analysis/part_B/table/144/readout_error": {},
+     "archived/analysis/part_B/table/144/init_error": {},
+     "archived/analysis/part_B/table/151/set": {},
+     "archived/analysis/part_B/table/151/P0": {},
+     "archived/analysis/part_B/table/151/P1": {},
+     "archived/analysis/part_B/table/151/I1": {},
+     "archived/analysis/part_B/table/151/I2": {},
+     "archived/analysis/part_B/table/151/x_I1": {},
+     "archived/analysis/part_B/table/151/x_I2": {},
+     "archived/analysis/part_B/table/151/r_1": {},
+     "archived/analysis/part_B/table/151/r_2": {},
+     "archived/analysis/part_B/table/151/r_3": {},
+     "archived/analysis/part_B/table/151/first_mid_err": {},
+     "archived/analysis/part_B/table/151/x_I1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/x_I2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/r_1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/r_2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/r_3_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/first_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/151/K3_mid_err": {},
+     "archived/analysis/part_B/table/151/T1": {},
+     "archived/analysis/part_B/table/151/T2": {},
+     "archived/analysis/part_B/table/151/readout_error": {},
+     "archived/analysis/part_B/table/151/init_error": {},
+     "archived/analysis/part_B/rank_worst_first": {},
+     "archived/analysis/part_B/split_half_r_whole_chip": {},
+     "archived/analysis/part_B/chip_sorted_by_x_I2": {},
+     "archived/analysis/part_B/chip_sorted_by_r_3": {},
+     "archived/analysis/part_B/chip_summary": {},
+     "archived/analysis/beside_after_data/D_x_I2_without_141": {},
+     "archived/analysis/beside_after_data/x_I2_138_in_C": {},
+     "archived/analysis/beside_after_data/x_I2_141": {},
+     "archived/analysis/beside_after_data/couplers_by_cell": {},
+     "archived/analysis/beside_after_data/q142_P1": {},
+     "archived/analysis/beside_after_data/q142_published_prob_meas0_prep1": {},
+     "archived/analysis/beside_after_data/q142_first_mid_err_k45": {}
+    }
+   }
+  ],
+  "Kickoff 46, the middle line": [
+   {
+    "file": "ibm_fez/k46-middle.json",
+    "fields": {
+     "archived/analysis/part_A/cells/A/F": {},
+     "archived/analysis/part_A/cells/A/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/A/F_per_copy": {},
+     "archived/analysis/part_A/cells/A/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/A/class": {},
+     "archived/analysis/part_A/cells/A/shots": {},
+     "archived/analysis/part_A/cells/G/F": {},
+     "archived/analysis/part_A/cells/G/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/G/F_per_copy": {},
+     "archived/analysis/part_A/cells/G/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/G/class": {},
+     "archived/analysis/part_A/cells/G/shots": {},
+     "archived/analysis/part_A/cells/H/F": {},
+     "archived/analysis/part_A/cells/H/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/H/F_per_copy": {},
+     "archived/analysis/part_A/cells/H/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/H/class": {},
+     "archived/analysis/part_A/cells/H/shots": {},
+     "archived/analysis/part_A/cells/J/F": {},
+     "archived/analysis/part_A/cells/J/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/J/F_per_copy": {},
+     "archived/analysis/part_A/cells/J/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/J/class": {},
+     "archived/analysis/part_A/cells/J/shots": {},
+     "archived/analysis/part_A/cells/K/F": {},
+     "archived/analysis/part_A/cells/K/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/K/F_per_copy": {},
+     "archived/analysis/part_A/cells/K/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/K/class": {},
+     "archived/analysis/part_A/cells/K/shots": {},
+     "archived/analysis/part_A/cells/C/F": {},
+     "archived/analysis/part_A/cells/C/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/C/F_per_copy": {},
+     "archived/analysis/part_A/cells/C/copy_to_copy_var": {},
+     "archived/analysis/part_A/cells/C/class": {},
+     "archived/analysis/part_A/cells/C/shots": {},
+     "archived/analysis/part_A/classes": {},
+     "archived/analysis/part_A/gate": {},
+     "archived/analysis/part_A/patterns": {},
+     "archived/analysis/part_B/H_spectator/D": {},
+     "archived/analysis/part_B/H_spectator/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/H_spectator/verdict": {},
+     "archived/analysis/part_B/H_spectator/margin": {},
+     "archived/analysis/part_B/H_spectator/conditions": {},
+     "archived/analysis/part_B/table/124;123/s": {},
+     "archived/analysis/part_B/table/124;123/c": {},
+     "archived/analysis/part_B/table/124;123/set": {},
+     "archived/analysis/part_B/table/124;123/P0_S": {},
+     "archived/analysis/part_B/table/124;123/P0_S1": {},
+     "archived/analysis/part_B/table/124;123/P0_S0": {},
+     "archived/analysis/part_B/table/124;123/d": {},
+     "archived/analysis/part_B/table/124;123/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;123/i": {},
+     "archived/analysis/part_B/table/124;123/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;123/c_mid_err": {},
+     "archived/analysis/part_B/table/124;123/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;123/d_copy1": {},
+     "archived/analysis/part_B/table/124;123/d_copy2": {},
+     "archived/analysis/part_B/table/124;125/s": {},
+     "archived/analysis/part_B/table/124;125/c": {},
+     "archived/analysis/part_B/table/124;125/set": {},
+     "archived/analysis/part_B/table/124;125/P0_S": {},
+     "archived/analysis/part_B/table/124;125/P0_S1": {},
+     "archived/analysis/part_B/table/124;125/P0_S0": {},
+     "archived/analysis/part_B/table/124;125/d": {},
+     "archived/analysis/part_B/table/124;125/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;125/i": {},
+     "archived/analysis/part_B/table/124;125/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;125/c_mid_err": {},
+     "archived/analysis/part_B/table/124;125/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/124;125/d_copy1": {},
+     "archived/analysis/part_B/table/124;125/d_copy2": {},
+     "archived/analysis/part_B/table/131;130/s": {},
+     "archived/analysis/part_B/table/131;130/c": {},
+     "archived/analysis/part_B/table/131;130/set": {},
+     "archived/analysis/part_B/table/131;130/P0_S": {},
+     "archived/analysis/part_B/table/131;130/P0_S1": {},
+     "archived/analysis/part_B/table/131;130/P0_S0": {},
+     "archived/analysis/part_B/table/131;130/d": {},
+     "archived/analysis/part_B/table/131;130/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;130/i": {},
+     "archived/analysis/part_B/table/131;130/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;130/c_mid_err": {},
+     "archived/analysis/part_B/table/131;130/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;130/d_copy1": {},
+     "archived/analysis/part_B/table/131;130/d_copy2": {},
+     "archived/analysis/part_B/table/131;132/s": {},
+     "archived/analysis/part_B/table/131;132/c": {},
+     "archived/analysis/part_B/table/131;132/set": {},
+     "archived/analysis/part_B/table/131;132/P0_S": {},
+     "archived/analysis/part_B/table/131;132/P0_S1": {},
+     "archived/analysis/part_B/table/131;132/P0_S0": {},
+     "archived/analysis/part_B/table/131;132/d": {},
+     "archived/analysis/part_B/table/131;132/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;132/i": {},
+     "archived/analysis/part_B/table/131;132/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;132/c_mid_err": {},
+     "archived/analysis/part_B/table/131;132/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;132/d_copy1": {},
+     "archived/analysis/part_B/table/131;132/d_copy2": {},
+     "archived/analysis/part_B/table/131;138/s": {},
+     "archived/analysis/part_B/table/131;138/c": {},
+     "archived/analysis/part_B/table/131;138/set": {},
+     "archived/analysis/part_B/table/131;138/P0_S": {},
+     "archived/analysis/part_B/table/131;138/P0_S1": {},
+     "archived/analysis/part_B/table/131;138/P0_S0": {},
+     "archived/analysis/part_B/table/131;138/d": {},
+     "archived/analysis/part_B/table/131;138/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;138/i": {},
+     "archived/analysis/part_B/table/131;138/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;138/c_mid_err": {},
+     "archived/analysis/part_B/table/131;138/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/131;138/d_copy1": {},
+     "archived/analysis/part_B/table/131;138/d_copy2": {},
+     "archived/analysis/part_B/table/142;141/s": {},
+     "archived/analysis/part_B/table/142;141/c": {},
+     "archived/analysis/part_B/table/142;141/set": {},
+     "archived/analysis/part_B/table/142;141/P0_S": {},
+     "archived/analysis/part_B/table/142;141/P0_S1": {},
+     "archived/analysis/part_B/table/142;141/P0_S0": {},
+     "archived/analysis/part_B/table/142;141/d": {},
+     "archived/analysis/part_B/table/142;141/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;141/i": {},
+     "archived/analysis/part_B/table/142;141/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;141/c_mid_err": {},
+     "archived/analysis/part_B/table/142;141/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;141/d_copy1": {},
+     "archived/analysis/part_B/table/142;141/d_copy2": {},
+     "archived/analysis/part_B/table/142;143/s": {},
+     "archived/analysis/part_B/table/142;143/c": {},
+     "archived/analysis/part_B/table/142;143/set": {},
+     "archived/analysis/part_B/table/142;143/P0_S": {},
+     "archived/analysis/part_B/table/142;143/P0_S1": {},
+     "archived/analysis/part_B/table/142;143/P0_S0": {},
+     "archived/analysis/part_B/table/142;143/d": {},
+     "archived/analysis/part_B/table/142;143/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;143/i": {},
+     "archived/analysis/part_B/table/142;143/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;143/c_mid_err": {},
+     "archived/analysis/part_B/table/142;143/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/142;143/d_copy1": {},
+     "archived/analysis/part_B/table/142;143/d_copy2": {},
+     "archived/analysis/part_B/table/143;136/s": {},
+     "archived/analysis/part_B/table/143;136/c": {},
+     "archived/analysis/part_B/table/143;136/set": {},
+     "archived/analysis/part_B/table/143;136/P0_S": {},
+     "archived/analysis/part_B/table/143;136/P0_S1": {},
+     "archived/analysis/part_B/table/143;136/P0_S0": {},
+     "archived/analysis/part_B/table/143;136/d": {},
+     "archived/analysis/part_B/table/143;136/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;136/i": {},
+     "archived/analysis/part_B/table/143;136/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;136/c_mid_err": {},
+     "archived/analysis/part_B/table/143;136/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;136/d_copy1": {},
+     "archived/analysis/part_B/table/143;136/d_copy2": {},
+     "archived/analysis/part_B/table/143;142/s": {},
+     "archived/analysis/part_B/table/143;142/c": {},
+     "archived/analysis/part_B/table/143;142/set": {},
+     "archived/analysis/part_B/table/143;142/P0_S": {},
+     "archived/analysis/part_B/table/143;142/P0_S1": {},
+     "archived/analysis/part_B/table/143;142/P0_S0": {},
+     "archived/analysis/part_B/table/143;142/d": {},
+     "archived/analysis/part_B/table/143;142/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;142/i": {},
+     "archived/analysis/part_B/table/143;142/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;142/c_mid_err": {},
+     "archived/analysis/part_B/table/143;142/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;142/d_copy1": {},
+     "archived/analysis/part_B/table/143;142/d_copy2": {},
+     "archived/analysis/part_B/table/143;144/s": {},
+     "archived/analysis/part_B/table/143;144/c": {},
+     "archived/analysis/part_B/table/143;144/set": {},
+     "archived/analysis/part_B/table/143;144/P0_S": {},
+     "archived/analysis/part_B/table/143;144/P0_S1": {},
+     "archived/analysis/part_B/table/143;144/P0_S0": {},
+     "archived/analysis/part_B/table/143;144/d": {},
+     "archived/analysis/part_B/table/143;144/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;144/i": {},
+     "archived/analysis/part_B/table/143;144/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;144/c_mid_err": {},
+     "archived/analysis/part_B/table/143;144/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/143;144/d_copy1": {},
+     "archived/analysis/part_B/table/143;144/d_copy2": {},
+     "archived/analysis/part_B/table/144;143/s": {},
+     "archived/analysis/part_B/table/144;143/c": {},
+     "archived/analysis/part_B/table/144;143/set": {},
+     "archived/analysis/part_B/table/144;143/P0_S": {},
+     "archived/analysis/part_B/table/144;143/P0_S1": {},
+     "archived/analysis/part_B/table/144;143/P0_S0": {},
+     "archived/analysis/part_B/table/144;143/d": {},
+     "archived/analysis/part_B/table/144;143/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;143/i": {},
+     "archived/analysis/part_B/table/144;143/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;143/c_mid_err": {},
+     "archived/analysis/part_B/table/144;143/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;143/d_copy1": {},
+     "archived/analysis/part_B/table/144;143/d_copy2": {},
+     "archived/analysis/part_B/table/144;145/s": {},
+     "archived/analysis/part_B/table/144;145/c": {},
+     "archived/analysis/part_B/table/144;145/set": {},
+     "archived/analysis/part_B/table/144;145/P0_S": {},
+     "archived/analysis/part_B/table/144;145/P0_S1": {},
+     "archived/analysis/part_B/table/144;145/P0_S0": {},
+     "archived/analysis/part_B/table/144;145/d": {},
+     "archived/analysis/part_B/table/144;145/d_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;145/i": {},
+     "archived/analysis/part_B/table/144;145/i_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;145/c_mid_err": {},
+     "archived/analysis/part_B/table/144;145/c_mid_err_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/table/144;145/d_copy1": {},
+     "archived/analysis/part_B/table/144;145/d_copy2": {},
+     "archived/analysis/part_B/d_143_136_vs_targets": {},
+     "archived/analysis/part_B/c_mid_err_142": {},
+     "archived/analysis/part_B/q142_mid_err_over_readout": {},
+     "archived/analysis/part_B/q142_above_5x": {},
+     "archived/analysis/beside_after_data/spectator_P1_in_S0_vs_T2": {},
+     "archived/analysis/beside_after_data/tau_s0_s": {},
+     "archived/analysis/beside_after_data/q142_mid_err_k46": {}
+    }
+   }
+  ],
+  "Kickoff 47, the wait": [
+   {
+    "file": "ibm_fez/k47-wait.json",
+    "fields": {
+     "archived/analysis/part_A/cells/A0/F": {},
+     "archived/analysis/part_A/cells/A0/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/A0/F_per_copy": {},
+     "archived/analysis/part_A/cells/A0/class": {},
+     "archived/analysis/part_A/cells/A1/F": {},
+     "archived/analysis/part_A/cells/A1/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/A1/F_per_copy": {},
+     "archived/analysis/part_A/cells/A1/class": {},
+     "archived/analysis/part_A/cells/J0/F": {},
+     "archived/analysis/part_A/cells/J0/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/J0/F_per_copy": {},
+     "archived/analysis/part_A/cells/J0/class": {},
+     "archived/analysis/part_A/cells/J1/F": {},
+     "archived/analysis/part_A/cells/J1/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/J1/F_per_copy": {},
+     "archived/analysis/part_A/cells/J1/class": {},
+     "archived/analysis/part_A/cells/C0/F": {},
+     "archived/analysis/part_A/cells/C0/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/C0/F_per_copy": {},
+     "archived/analysis/part_A/cells/C0/class": {},
+     "archived/analysis/part_A/cells/C1/F": {},
+     "archived/analysis/part_A/cells/C1/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/cells/C1/F_per_copy": {},
+     "archived/analysis/part_A/cells/C1/class": {},
+     "archived/analysis/part_A/classes": {},
+     "archived/analysis/part_A/gate": {},
+     "archived/analysis/part_A/H_phase": {},
+     "archived/analysis/part_A/gains_beside/A/gain": {},
+     "archived/analysis/part_A/gains_beside/A/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/gains_beside/J/gain": {},
+     "archived/analysis/part_A/gains_beside/J/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/gains_beside/C/gain": {},
+     "archived/analysis/part_A/gains_beside/C/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/verdict_143": {},
+     "archived/analysis/part_B/oscillation_143": {},
+     "archived/analysis/part_B/qubits/143/group": {},
+     "archived/analysis/part_B/qubits/143/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_P1": {},
+     "archived/analysis/part_B/qubits/143/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/143/echo_loss": {},
+     "archived/analysis/part_B/qubits/143/r_3p4": {},
+     "archived/analysis/part_B/qubits/143/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/e_3p4": {},
+     "archived/analysis/part_B/qubits/143/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/143/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/143/ramsey_fit/a": {},
+     "archived/analysis/part_B/qubits/143/ramsey_fit/f_MHz": {},
+     "archived/analysis/part_B/qubits/143/ramsey_fit/a_err": {},
+     "archived/analysis/part_B/qubits/143/ramsey_fit/f_err": {},
+     "archived/analysis/part_B/qubits/143/ramsey_fit/sse": {},
+     "archived/analysis/part_B/qubits/143/oscillation_pairs": {},
+     "archived/analysis/part_B/qubits/131/group": {},
+     "archived/analysis/part_B/qubits/131/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_P1": {},
+     "archived/analysis/part_B/qubits/131/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/131/echo_loss": {},
+     "archived/analysis/part_B/qubits/131/r_3p4": {},
+     "archived/analysis/part_B/qubits/131/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/e_3p4": {},
+     "archived/analysis/part_B/qubits/131/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/131/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/131/oscillation_pairs": {},
+     "archived/analysis/part_B/qubits/124/group": {},
+     "archived/analysis/part_B/qubits/124/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_P1": {},
+     "archived/analysis/part_B/qubits/124/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/124/echo_loss": {},
+     "archived/analysis/part_B/qubits/124/r_3p4": {},
+     "archived/analysis/part_B/qubits/124/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/e_3p4": {},
+     "archived/analysis/part_B/qubits/124/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/124/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/124/oscillation_pairs": {},
+     "archived/analysis/part_B/qubits/142/group": {},
+     "archived/analysis/part_B/qubits/142/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_P1": {},
+     "archived/analysis/part_B/qubits/142/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/142/echo_loss": {},
+     "archived/analysis/part_B/qubits/142/r_3p4": {},
+     "archived/analysis/part_B/qubits/142/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/e_3p4": {},
+     "archived/analysis/part_B/qubits/142/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/142/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/142/oscillation_pairs": {},
+     "archived/analysis/part_B/qubits/144/group": {},
+     "archived/analysis/part_B/qubits/144/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_P1": {},
+     "archived/analysis/part_B/qubits/144/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/144/echo_loss": {},
+     "archived/analysis/part_B/qubits/144/r_3p4": {},
+     "archived/analysis/part_B/qubits/144/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/e_3p4": {},
+     "archived/analysis/part_B/qubits/144/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/144/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/144/oscillation_pairs": {},
+     "archived/analysis/part_B/qubits/125/group": {},
+     "archived/analysis/part_B/qubits/125/ramsey_P1": {},
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_P1": {},
+     "archived/analysis/part_B/qubits/125/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_ci90/1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_ci90/2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_ci90/3.4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_ci90/4": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/echo_ci90/8": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/ramsey_loss": {},
+     "archived/analysis/part_B/qubits/125/echo_loss": {},
+     "archived/analysis/part_B/qubits/125/r_3p4": {},
+     "archived/analysis/part_B/qubits/125/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/e_3p4": {},
+     "archived/analysis/part_B/qubits/125/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/r_minus_3e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/three_e_minus_2r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/qubits/125/kind_of_loss": {},
+     "archived/analysis/part_B/qubits/125/oscillation_pairs": {},
+     "archived/analysis/beside_after_data/q143_loss_k46_S0_3p37us": {},
+     "archived/analysis/beside_after_data/q143_ramsey_loss_k47_3p4us": {},
+     "archived/analysis/beside_after_data/q144_loss_k46": {},
+     "archived/analysis/beside_after_data/q144_ramsey_loss_k47": {},
+     "archived/analysis/beside_after_data/J0_k47": {},
+     "archived/analysis/beside_after_data/idle_windows_143_in_A_dt": {}
+    }
+   }
   ]
  }
 }

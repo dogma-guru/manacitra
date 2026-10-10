@@ -25,6 +25,7 @@ from datetime import datetime
 from functools import cache
 from pathlib import Path
 
+import _reuse_runs as reuse
 import numpy as np
 
 from manacitra import archive as ar
@@ -266,6 +267,13 @@ def clear_caches() -> None:
         k42_day2,
         k42_after_the_fact,
         k42_inputs,
+        reuse_doc,
+        k43_map,
+        k43_run_recomputed,
+        k44_recomputed,
+        k45_recomputed,
+        k46_recomputed,
+        k47_recomputed,
     ):
         fn.cache_clear()
 
@@ -1309,6 +1317,210 @@ def k42_inputs():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- Kickoffs 43 to 47 (Amendment A17)
+#: The six records of findings 11 to 13 and the coupling map Kickoff 43's chain search reads
+K43_MAP, K43_RUN, K44, K45, K46, K47 = (
+    f"ibm_fez/{n}.json" for n in ("k43-map", "k43-reuse", "k44-reset", "k45-collapse", "k46-middle", "k47-wait")
+)
+FEZ_MAP = "ibm_fez/coupling-map.json"
+
+
+@cache
+def reuse_doc(file: str) -> dict:
+    return ar.load(file)
+
+
+def _xor5() -> dict:
+    """Kickoff 43's XOR_5: the classical bits it measures and its exact ideal, which Kickoffs 45 to 47 score against."""
+    return reuse_doc(K43_RUN)["circuits"]["XOR_5"]
+
+
+@cache
+def k43_map():
+    """Kickoff 43, Job 1: the whole-chip map, its statistics, the dead-pair filter and its verdict, from the counts."""
+    doc = reuse_doc(K43_MAP)
+    an = reuse.k43_map(doc)
+    P = [p11_from(c, len(doc["rounds"][rn])) for (rn, _), c in zip(doc["order"], doc["counts"])]
+    leaves = compare(
+        "Kickoff 43, Job 1, the map", {K43_MAP: {"per_circuit_P11": P, "archived": {"analysis": an}}}, {K43_MAP: doc}
+    )
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["map_verdict_all_edges"]["verdict"], an["map_verdict_all_edges"]["verdict"]),
+            (
+                "verdict after the dead-pair filter",
+                a["map_verdict_after_filter"]["verdict"],
+                an["map_verdict_after_filter"]["verdict"],
+            ),
+            ("r_split(k)", _pearson(a["r_split"]), _pearson(an["r_split"])),
+            ("r(k, x)", _pearson(a["r_k_x"]), _pearson(an["r_k_x"])),
+            ("working couplers", float(a["n_working_pairs"]), float(an["n_working_pairs"])),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k43_run_recomputed() -> tuple[dict, dict]:
+    run = reuse_doc(K43_RUN)
+    pl = reuse.k43_placements(reuse_doc(K43_MAP), run, reuse_doc(FEZ_MAP))
+    for cell, by in reuse.k43_resets_on(run).items():
+        for p, resets in by.items():
+            pl[cell][p]["resets_on_physical_qubit"] = resets
+    return reuse.k43_reuse(run), pl
+
+
+def k43_run():
+    """Kickoff 43, Job 2: the map placement's chain search under Amendment A1's score (and the two rules beside it),
+    F per cell, G and its interval, the verdict, and what the run reported beside it, from the counts."""
+    run = reuse_doc(K43_RUN)
+    an, pl = k43_run_recomputed()
+    leaves = compare(
+        "Kickoff 43, Job 2, the run", {K43_RUN: {"placements": pl, "archived": {"analysis": an}}}, {K43_RUN: run}
+    )
+    a = run["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], an["verdict"]),
+            ("G_reuse", a["G_reuse"]["point"], an["G_reuse"]["point"]),
+            ("G_reuse 90% interval, low", a["G_reuse"]["ci90"][0], an["G_reuse"]["ci90"][0]),
+            ("G_reuse 90% interval, high", a["G_reuse"]["ci90"][1], an["G_reuse"]["ci90"][1]),
+            ("G_no_reuse", a["G_no_reuse"]["point"], an["G_no_reuse"]["point"]),
+            *(
+                (f"G_reuse, {c}", a["per_circuit"][c]["G_reuse"]["point"], an["per_circuit"][c]["G_reuse"]["point"])
+                for c in reuse.CIRCS
+            ),
+            *(
+                (
+                    f"{cell}: chain under the as-fixed rule",
+                    "-".join(map(str, run["placements"][cell]["beside_not_run"]["as_fixed"]["chain"])),
+                    "-".join(map(str, pl[cell]["beside_not_run"]["as_fixed"]["chain"])),
+                )
+                for cell in run["placements"]
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k44_recomputed() -> dict:
+    return reuse.k44_probe(reuse_doc(K44))
+
+
+def k44():
+    """Kickoff 44: e_m, eps and c per instance and per qubit, D and its interval, the verdict, the probe's verdict, and
+    the lines beside them (the T1 correction after the data among them), from the counts."""
+    doc, r = reuse_doc(K44), k44_recomputed()
+    leaves = compare("Kickoff 44, the reuse-cost probe", {K44: {"archived": {"analysis": r}}}, {K44: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], r["verdict"]),
+            ("D (c)", a["D"]["c"]["point"], r["D"]["c"]["point"]),
+            ("D 90% interval, low", a["D"]["c"]["ci90"][0], r["D"]["c"]["ci90"][0]),
+            ("D 90% interval, high", a["D"]["c"]["ci90"][1], r["D"]["c"]["ci90"][1]),
+            (
+                "D (c), T1-corrected after the data",
+                a["beside_after_data"]["t1_decay_in_R0"]["D_c_with_T1_adjusted_eps"],
+                r["beside_after_data"]["t1_decay_in_R0"]["D_c_with_T1_adjusted_eps"],
+            ),
+            *(
+                (f"probe verdict, {k}", a["probe_verdict"][k]["verdict"], r["probe_verdict"][k]["verdict"])
+                for k in ("e_m", "eps")
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k45_recomputed() -> dict:
+    return reuse.k45_collapse(reuse_doc(K45), _xor5())
+
+
+def k45():
+    """Kickoff 45: Part A's cells, the collapse and the patterns; Part B's idle losses, residuals and mid-circuit
+    errors, H_idle and H_repeat, and the lines beside them, from the counts."""
+    doc, r = reuse_doc(K45), k45_recomputed()
+    leaves = compare("Kickoff 45, the collapse taken apart", {K45: {"archived": {"analysis": r}}}, {K45: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["part_A"]["collapse"], r["part_A"]["collapse"]),
+            *(
+                (f"F, cell {c}", a["part_A"]["cells"][c]["F"], r["part_A"]["cells"][c]["F"])
+                for c in a["part_A"]["cells"]
+            ),
+            *(
+                (f"{h}: verdict", a["part_B"]["verdicts"][h]["verdict"], r["part_B"]["verdicts"][h]["verdict"])
+                for h in ("H_idle", "H_repeat")
+            ),
+            *(
+                (f"{h}: D", a["part_B"]["verdicts"][h]["D"], r["part_B"]["verdicts"][h]["D"])
+                for h in ("H_idle", "H_repeat")
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k46_recomputed() -> dict:
+    return reuse.k46_middle(reuse_doc(K46), _xor5())
+
+
+def k46():
+    """Kickoff 46: Part A's six chains and the fixed patterns; Part B's d, i and c's errors, H_spectator, and the
+    spectator's loss in S0 beside them, from the counts."""
+    doc, r = reuse_doc(K46), k46_recomputed()
+    leaves = compare("Kickoff 46, the middle line", {K46: {"archived": {"analysis": r}}}, {K46: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["part_B"]["H_spectator"]["verdict"], r["part_B"]["H_spectator"]["verdict"]),
+            ("H_spectator: D", a["part_B"]["H_spectator"]["D"], r["part_B"]["H_spectator"]["D"]),
+            *(
+                (f"F, cell {c}", a["part_A"]["cells"][c]["F"], r["part_A"]["cells"][c]["F"])
+                for c in a["part_A"]["cells"]
+            ),
+            ("patterns", "; ".join(a["part_A"]["patterns"]), "; ".join(r["part_A"]["patterns"])),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k47_recomputed() -> dict:
+    r = reuse.k47_wait(reuse_doc(K47), _xor5())
+    r["beside_after_data"] = reuse.k47_beside(reuse_doc(K47), r, k46_recomputed())
+    return r
+
+
+def k47():
+    """Kickoff 47: Part A's cells without and with refocusing, H_phase and the gains; Part B's Ramsey and echo P(1),
+    the kind of loss on 143 and the fits, from the counts."""
+    doc, r = reuse_doc(K47), k47_recomputed()
+    leaves = compare("Kickoff 47, the wait", {K47: {"archived": {"analysis": r}}}, {K47: doc})
+    a = doc["archived"]["analysis"]
+    q, qa = r["part_B"]["qubits"]["143"], a["part_B"]["qubits"]["143"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["part_A"]["H_phase"], r["part_A"]["H_phase"]),
+            *(
+                (f"F, cell {c}", a["part_A"]["cells"][c]["F"], r["part_A"]["cells"][c]["F"])
+                for c in a["part_A"]["cells"]
+            ),
+            ("143: kind of loss", qa["kind_of_loss"], q["kind_of_loss"]),
+            ("143: Ramsey loss at 3.4 us", qa["r_3p4"], q["r_3p4"]),
+            ("143: echo loss at 3.4 us", qa["e_3p4"], q["e_3p4"]),
+            ("143: fitted offset (MHz)", qa["ramsey_fit"]["f_MHz"], q["ramsey_fit"]["f_MHz"]),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1347,6 +1559,12 @@ CASES = {
     "Kickoff 42, Day 2": k42_day2,
     "Kickoff 42, after the fact": k42_after_the_fact,
     "Kickoff 42, ideal values, figures and programs": k42_inputs,
+    "Kickoff 43, Job 1, the map": k43_map,
+    "Kickoff 43, Job 2, the run": k43_run,
+    "Kickoff 44, the reuse-cost probe": k44,
+    "Kickoff 45, the collapse taken apart": k45,
+    "Kickoff 46, the middle line": k46,
+    "Kickoff 47, the wait": k47,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1368,4 +1586,10 @@ REQUIRED = {
     "Kickoff 41, Part B, the payoff with the day-old scores": "USEFUL",
     "Kickoff 42, Day 1": "SPREAD",
     "Kickoff 42, Day 2": "HOLDS",
+    "Kickoff 43, Job 1, the map": "NOT SETTLED",
+    "Kickoff 43, Job 2, the run": "USEFUL FOR REUSE",
+    "Kickoff 44, the reuse-cost probe": "NOT SUPPORTED",
+    "Kickoff 45, the collapse taken apart": "REPEATS",
+    "Kickoff 46, the middle line": "NOT SUPPORTED",
+    "Kickoff 47, the wait": "SUPPORTED",
 }

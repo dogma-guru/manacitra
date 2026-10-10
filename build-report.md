@@ -2393,3 +2393,104 @@ verification, and the DOI are recorded with step 4's follow-up.
 - **Zenodo.** It archived v0.2.0 with its own DOI, `10.5281/zenodo.23281215`, under the concept DOI
   `10.5281/zenodo.23228518`, which now resolves to it.
 - **Step 4.** The README's version-DOI parenthetical names v0.2.0's DOI, and `VERSION_DOIS` gains its line.
+
+## 30. Amendment A17: findings 11 to 13, the reuse runs of Kickoffs 43 to 47 (10 October 2026)
+
+**Why.** The author ruled on 10 October 2026, in chat, that the work stays open, with no patent filing, and that the
+findings of Kickoffs 43 to 47 go public in this repository, then on the site, draft first. This section records the
+draft. The merge and the 0.3.0 release wait for the author's go, given after he has read the findings rendered on the
+branch.
+
+**Order.** A17 starts after A16 was complete. Pull request 17 (v0.2.0's DOI) merged as `c348ea6` at 12:01:57 UTC, and
+the branch `findings/reuse-k43-k47` starts there. Before that, the work was read-only: the sources were read, the
+citations checked, and the recompute tried on copies outside the repository.
+
+**Sources.** The five hand-backs (code, inputs, records, reports and checksums), the five scorecards, Kickoff 43's
+Amendment A1 and the five kickoff texts. Nothing whose name contains "SEALED" was read. Every file in each hand-back
+matched its checksum list, and each archive matched its published SHA-256. Each data file names its sources by file name
+and SHA-256 and gives its archive's SHA-256 (`meta.sources`, `meta.source_archive_sha256`).
+
+**The data: six files in `data/ibm_fez/`.**
+- **The files:**
+  - `k43-map.json` (6.4 MB): Kickoff 43's Job 1, in the format of a Kickoff 35 day.
+  - `k43-reuse.json` (1.5 MB): Job 2's 80 circuits, the circuits' sources and structure, and the placements.
+  - `k44-reset.json` (37.3 MB): 48 circuits of 180-bit keys, the largest file in `data/`.
+  - `k45-collapse.json` (16.6 MB), `k46-middle.json` and `k47-wait.json` (0.1 MB each).
+- **Kept:** the counts as IBM returned them, each run's own analysis under `archived`, the published figures the
+  analyses read, the chains, the refocusing record (the sequence, its spacing, the pulses on each qubit, the idle
+  windows before and after), the calibration stamps in UTC, and the job IDs.
+- **Dropped:** the instance's name and every account and plan detail; every dollar amount, cap and estimate; the gate
+  and usage records beyond the charged seconds; IBM's `details` list; the reports, logs and predictions; and folder names
+  and paths (file names stay, `path` became `file`, and a key naming a source folder now names the kickoff).
+- **Changed form:** NaN, written by the source for the map rule's unmeasured inputs, became null.
+- **Checked:** the converter, a scratch tool outside the repository, refused any output containing the instance's
+  name, a dollar sign, a home path or a source folder's name. The identifier scan then passed on every new file.
+- **Two record changes before the recompute:** Kickoff 47's refocusing record keeps the pulses and windows in one place
+  (`refocusing`), not twice. Kickoff 46's file keeps the figures published under the 05:52:36 UTC stamp, which its check
+  read at 06:19 UTC (`published_at_check`).
+
+**The circuits' licence.** QR-Map names RevLib and QASMBench as the sources of its circuits. The files used are:
+- **XOR_5, BV_10 and Sym_9:** from the CaQR repository at commit `0b935d96…`, which carries no licence file (GitHub's
+  API, 10 October 2026). RevLib's site states no terms for its files.
+- **Mul_13:** from QASMBench at commit `357b9423…`, whose BSD-style licence allows redistribution. QASMBench credits the
+  multiply circuit to a repository that carries no licence.
+
+The licences are therefore unclear for all four, and by A17's rule only their hashes are archived, with a script.
+`tools/fetch_reuse_circuits.py` downloads each file at its commit into an empty folder, refuses it if its SHA-256
+differs, and recomputes its exact ideal output with Qiskit's statevector. Against the archive the largest total
+variation was 2.3·10⁻¹⁵, fetched on 10 October. The script does not rebuild the compiled reuse circuits: they came from a
+reimplementation of QR-Map's Tapering, written for the study and not in this repository. Whether to publish it is the
+author's ruling (the review packet says why).
+
+**The recompute.** `tests/_reuse_runs.py` is a test helper, not part of the package, and no command was added.
+- **What it ports:** each run's analysis, reading the data files: F, G and the bootstrap of Kickoff 43, its chain
+  search under all three scores, and the probes and verdicts of Kickoffs 44 to 47.
+- **Reuse:** the map of Job 1 is computed by the package's own Kickoff 35 functions (`full_chip_day`,
+  `persistence_day`, `full_chip_levels`, `map_verdict`).
+- **Bootstraps:** each keeps its run's seed and order of random draws.
+- **Under numpy 2.5.3, the runs' version:** every archived number reproduces, intervals included. The largest
+  difference is 2.2·10⁻¹⁶, in the map's correlations. The chain search finds every archived chain, score and count.
+- **The cases:** `tests/_reproduce.py` gains six (the map, the run, and Kickoffs 44 to 47), with their required verdicts.
+- **Relaxed fields:** 330, the intervals and what is computed from their widths, each marked "resampled-shots" (10⁻³),
+  as Kickoff 33's are, and enumerated in `test_the_marked_fields_are_exactly_the_intended_ones`.
+- **Excluded, with reasons:** labels; four rounded copies of numbers compared in their own files; an integer computed
+  from an interval's width; and the fits' poorly constrained decay times, whose last digits move with the solver's
+  tolerance. 143's fitted offset and its error, which the text gives, move by about 10⁻⁹ and are compared.
+
+**The text.**
+- **`docs/findings.md`:** findings 11 to 13 under A17's headlines, and six bullets under "What it has not shown".
+- **`README.md`:** rows 11 to 13, "Thirteen findings, from runs on 5 to 10 October 2026", and the new limit line.
+- **`docs/kickoffs.md`:** rows 43 to 47.
+- **`data/README.md`:** the six files, their formats, the recompute, and what was left out.
+- **`docs/index.md`:** three rows in the table of where each number comes from, and two date and count lines.
+- **The figure:** `docs/diagrams/reuse-wait.svg`, drawn by `docs/make_diagrams.py`. The other nine diagrams rebuild byte
+  for byte.
+
+**Readings, logged.** Each is a place where the text departs from a hand-back report or from A17's wording; the review
+packet lists them with reasons.
+- **Three roundings, corrected by the tests:** chain J in Kickoff 46 is F 0.074, not 0.075; the healthy chain in Kickoff
+  45 is 0.829, not 0.830; the low end of H_repeat's interval is −0.021, not −0.022. Each report had rounded twice.
+- **Where 143 sat:** 143 is on a never-retired line in XOR_5's and BV_10's calibration chains, the two largest gains. In
+  Sym_9 its line was retired once, and in Mul_13 four times, so the text names the circuits rather than "the circuits
+  that collapsed".
+- **The 05:52:36 stamp** is dated by Kickoff 46's check record (06:19 UTC). Under all three stamps, the region's published
+  readout, T1 and T2 figures were the same; the text says so beside "a later calibration".
+- **144's wait loss:** the text names the two measures it compares, Kickoff 46's P(1) after 3.37 µs and Kickoff 47's
+  rise over 3.4 µs.
+- **The "Three processors, three days" limit** now says "of findings 1 to 10", beside A17's new line.
+
+**The tests:**
+- **The counts:** 634 pass, against 587 on `main` (47 new).
+- **`tests/test_readme_numbers.py`:** `test_finding_11`, its circuits test, `test_finding_12`, `test_finding_13` and
+  `test_the_reuse_wait_picture` check every number in the new text against the recompute.
+- **The existing tests updated:** the dates, the table's thirteen rows, the new kickoff rows, and three retired phrases,
+  among them the corrected "collapses on every chain tried that contains 143".
+- **`tests/test_reuse_circuits.py`:** checks the fetch script without the network.
+- **`tests/test_data_meta.py`:** allows 10 October.
+- **`tests/test_field_inventory.py`:** mutates one field each of Kickoff 43 and Kickoff 47.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, with the vocabulary list.
+- **The DCO check and the git identity scan:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the six files. The signing workflow signs them on `main` after the merge.

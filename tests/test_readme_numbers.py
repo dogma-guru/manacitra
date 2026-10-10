@@ -220,11 +220,27 @@ def _utc(s):
 
 
 def test_the_findings_dates():
-    assert "The findings come from runs on 5 to 7 October 2026." in README
+    assert "The findings come from runs on 5 to 10 October 2026." in README
+    assert "Thirteen findings, from runs on 5 to 10 October 2026." in README
     runs = [p for p in archive.records() if p.parent.name != "simulated" and "k33-workload" not in p.name]
     days = {archive.load(p)["meta"]["utc"][:10] for p in runs if not p.name.endswith("coupling-map.json")}
-    assert days == {"2026-10-05", "2026-10-06", "2026-10-07"}
-    assert "- **Three processors, three days.**" in README and "all on 5 to 7 October 2026." in README
+    assert days == {"2026-10-05", "2026-10-06", "2026-10-07", "2026-10-10"}
+    assert "- **Three processors, three days.** The hardware results of findings 1 to 10" in README
+    assert "all on 5 to 7 October 2026." in README
+    # Amendment A17: findings 11 to 13, one processor on one day, three published calibration stamps
+    reuse = [p for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-10"]
+    assert sorted(p.name for p in reuse) == [
+        "k43-map.json",
+        "k43-reuse.json",
+        "k44-reset.json",
+        "k45-collapse.json",
+        "k46-middle.json",
+        "k47-wait.json",
+    ]
+    assert {archive.load(p)["meta"]["processor"] for p in reuse} == {"ibm_fez"}
+    stamps = {archive.load(p)["meta"].get("calibration_last_update_utc") for p in reuse} - {None}
+    assert sorted(s[11:16] for s in stamps) == ["03:16", "06:12", "09:56"]
+    assert "Findings 11 to 13 are from one processor on one day, across three published calibration stamps." in README
 
 
 def test_finding_6_times():
@@ -491,6 +507,11 @@ def test_the_new_rows_and_bullets():
         "40, 6 October 2026",
         "41, 7 October 2026",
         "42, 6 to 7 October 2026",
+        "43, 10 October 2026",
+        "44, 10 October 2026",
+        "45, 10 October 2026",
+        "46, 10 October 2026",
+        "47, 10 October 2026",
     ):
         assert f"| {k} |" in README
     assert "- **How long a map lasts beyond two days.**" in README and "- **Two routes to one processor.**" in README
@@ -618,6 +639,9 @@ RETIRED = [
     "the level was not tested as a chooser",  # A14: it was, for reference, on both IBM chips
     "highest kept share first",  # A15: pick ranks by |1 - k|
     "the n pairs that kept the most",  # A15, the pipeline diagram and its alt text
+    "Ten findings, from runs on 5 to 7 October 2026",  # A17: thirteen, from 5 to 10 October
+    "collapses on every chain tried that contains 143",  # A17: two chains containing 143 did not collapse
+    "collapsed on every chain containing 143",  # A17, the same
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -695,7 +719,7 @@ def test_the_findings_table_matches_the_findings():
         r"^\| \[(\d+)\]\(docs/findings\.md#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", readme, re.M
     )
     rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
-    assert [n for n, *_ in rows] == [str(i) for i in range(1, 11)]
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 14)]
     for n, head, kicks, verdict in rows:
         assert head == full[n], n
         item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
@@ -795,3 +819,260 @@ def test_the_distance_from_the_ideal_paragraph():
     assert "from a prior map whose largest k is 1.07" in method
     assert "(106-107 under highest first, 22-23 under |1 − k|)" in method
     assert "differ by 0.003 against a shot noise of about 0.05 in each" in method
+
+
+# --------------------------------------------------------------------------- Amendment A17: findings 11 to 13
+def _cell_F(case_recomputed, cell):
+    return case_recomputed["part_A"]["cells"][cell]
+
+
+def test_finding_11():
+    """Kickoff 43, recomputed from the counts (tests/_reuse_runs.py): the verdict and its interval, the split by
+    circuit and the mean without XOR_5, the original rule's chains through 33-34, the map's own verdict, and where 143
+    sat in each placement."""
+    from _reproduce import K43_MAP, K43_RUN, k43_run_recomputed, reuse_doc
+    from _reuse_runs import _couplers, k43_map
+
+    m, run = reuse_doc(K43_MAP), reuse_doc(K43_RUN)
+    assert (
+        hhmm(m["timestamps"]["running"]),
+        hhmm(run["timestamps"]["running"]),
+        hhmm(run["timestamps"]["finished"]),
+    ) == (
+        "04:13",
+        "04:17",
+        "04:54",
+    )
+    assert "(Kickoff 43; ibm_fez, 10 October 2026: the map at 04:13 UTC, the run from 04:17 to 04:54 UTC)" in README
+    an, pl = k43_run_recomputed()
+    g, g0 = an["G_reuse"], an["G_no_reuse"]
+    assert an["verdict"] == "USEFUL FOR REUSE"
+    assert (r(g["point"], 4), r(g["ci90"][0], 4), r(g["ci90"][1], 4)) == (0.2246, 0.2227, 0.2267)
+    assert (r(g0["point"], 4), r(g0["ci90"][0], 4), r(g0["ci90"][1], 4)) == (0.0182, 0.0161, 0.0204)
+    assert "the verdict is USEFUL FOR REUSE: G_reuse = +0.2246, 90% interval +0.2227 to +0.2267." in README
+    assert "Without reuse, the same circuits gave G = +0.0182 (+0.0161 to +0.0204)." in README
+    assert sum(v["shots_pooled"] for v in an["cells"].values()) == 16 * 100_000
+    per = {c: an["per_circuit"][c]["G_reuse"]["point"] for c in ("XOR_5", "BV_10", "Sym_9", "Mul_13")}
+    assert [r(v, 3) for v in per.values()] == [0.743, 0.288, 0.035, -0.167]
+    assert r(np.mean([per[c] for c in ("BV_10", "Sym_9", "Mul_13")]), 3) == 0.052
+    assert (
+        "By circuit, G_reuse was +0.743 for XOR_5, +0.288 for BV_10, +0.035 for Sym_9 and −0.167 for Mul_13" in README
+    )
+    assert "Without XOR_5 the mean is +0.052." in README
+    # Amendment A1: the as-fixed rule's eight chains, all through 33-34
+    a = k43_map(m)
+    e = [tuple(x) for x in a["edges"]].index((33, 34))
+    assert (r(a["k"][e], 2), r(a["P_no"][e], 2)) == (4.65, 0.52)
+    assert all((33, 34) in _couplers(v["beside_not_run"]["as_fixed"]["chain"]) for v in pl.values()) and len(pl) == 8
+    assert "all eight chains would have gone through coupler 33-34 (k 4.65, plain level 0.52)" in README
+    assert a["map_verdict_all_edges"]["verdict"] == a["map_verdict_after_filter"]["verdict"] == "NOT SETTLED"
+    assert "The map's own verdict that morning was NOT SETTLED." in README
+    # where 143 sat: never retired in XOR_5's and BV_10's calibration chains, once in Sym_9's, four times in Mul_13's;
+    # never on a map chain
+    times = {}
+    for c in ("XOR_5", "BV_10", "Sym_9", "Mul_13"):
+        row = run["placements"][f"{c}|reuse"]
+        assert 143 not in pl[f"{c}|reuse"]["map"]["chain"] and 143 in row["calibration"]["chain"]
+        times[c] = row["calibration"]["resets_on_physical_qubit"].get("143", 0)
+    assert times == {"XOR_5": 0, "BV_10": 0, "Sym_9": 1, "Mul_13": 4}
+    assert sorted(per, key=per.get)[-2:] == ["BV_10", "XOR_5"]
+    assert "in Sym_9, 143's line was retired once, and in Mul_13, four times. The map's chains kept 143 out" in README
+
+
+def test_finding_11_the_circuits_and_their_sources():
+    """The four circuits are fetched, not copied: each names its repository, a full commit and the SHA-256 the runs
+    used, and the structure the text relies on is in the record."""
+    from _reproduce import K43_RUN, reuse_doc
+
+    circ = reuse_doc(K43_RUN)["circuits"]
+    assert sorted(circ) == ["BV_10", "Mul_13", "Sym_9", "XOR_5"]
+    for c in circ.values():
+        s = c["source"]
+        assert s["repository"] in ("github.com/ruadapt/CaQR", "github.com/pnnl/QASMBench")
+        assert len(s["commit"]) == 40 and len(s["sha256"]) == 64
+    x = circ["XOR_5"]["reuse"]
+    assert (x["w"], x["cz"], x["measures"], x["resets"]) == (3, 5, 6, 3)
+    assert x["resets_per_line"] == [1, 0, 2] and x["measures_per_line"][2] == 3
+    assert "XOR_5's reuse circuit, three lines of which two are retired" in README
+
+
+def test_finding_12():
+    """Kickoffs 44 to 46, recomputed from the counts: the collapsing and holding chains, the five explanations with
+    their verdicts and intervals, and the calibration stamps."""
+    from _reproduce import (
+        K43_RUN,
+        K44,
+        K45,
+        K46,
+        k43_run_recomputed,
+        k44_recomputed,
+        k45_recomputed,
+        k46_recomputed,
+        reuse_doc,
+    )
+
+    when = [hhmm(reuse_doc(f)["timestamps"]["running"]) for f in (K44, K45, K46)]
+    assert when == ["05:40", "05:57", "07:07"] and "10 October 2026, at 05:40, 05:57 and 07:07 UTC)" in README
+    k43, _ = k43_run_recomputed()
+    c45, c46 = k45_recomputed()["part_A"]["cells"], k46_recomputed()["part_A"]["cells"]
+    ch45, ch46 = reuse_doc(K45)["cells"], reuse_doc(K46)["cells"]
+
+    def F(cells, chains, chain):
+        (cell,) = [c for c, v in chains.items() if v["chain"] == chain and c in cells]
+        return cells[cell]
+
+    assert reuse_doc(K43_RUN)["placements"]["XOR_5|reuse"]["calibration"]["chain"] == [144, 143, 142]
+    a = [
+        k43["cells"]["XOR_5|reuse|calibration"]["F"],
+        F(c45, ch45, [144, 143, 142])["F"],
+        F(c46, ch46, [144, 143, 142])["F"],
+    ]
+    assert [r(v, 3) for v in a] == [0.087, 0.090, 0.098]
+    assert "collapsed on 144-143-142 (F 0.087 in Kickoff 43, 0.090 in Kickoff 45 and 0.098 in Kickoff 46)" in README
+    low = {
+        "142-143-144": F(c45, ch45, [142, 143, 144]),
+        "136-143-142": F(c46, ch46, [136, 143, 142]),
+        "136-143-144": F(c46, ch46, [136, 143, 144]),
+        "143-144-145": F(c46, ch46, [143, 144, 145]),
+    }
+    assert {k: (r(v["F"], 3), v["class"]) for k, v in low.items()} == {
+        "142-143-144": (0.071, "LOW"),
+        "136-143-142": (0.091, "LOW"),
+        "136-143-144": (0.094, "LOW"),
+        "143-144-145": (0.074, "LOW"),
+    }
+    assert (
+        "mirrored, on 142-143-144 (0.071); on 136-143-142 (0.091) and 136-143-144 (0.094); and on 143-144-145 (0.074)."
+        in README
+    )
+    e45, k46 = F(c45, ch45, [143, 142, 141]), F(c46, ch46, [141, 142, 143])
+    assert (r(e45["F"], 3), e45["class"], r(k46["F"], 3), k46["class"]) == (0.665, "HIGH", 0.467, "MIDDLE")
+    assert (
+        "143-142-141 held (Kickoff 45, F 0.665), and 141-142-143 fell to the middle band (Kickoff 46, 0.467)" in README
+    )
+    healthy = [k43["cells"]["XOR_5|reuse|map"], F(c45, ch45, [132, 131, 138]), F(c46, ch46, [132, 131, 138])]
+    assert [r(v["F"], 3) for v in healthy] == [0.830, 0.829, 0.837] and r(
+        F(c45, ch45, [125, 124, 123])["F"], 3
+    ) == 0.784
+    assert (
+        "132-131-138 (0.830 in Kickoff 43, 0.829 in Kickoff 45 and 0.837 in Kickoff 46) and 125-124-123 (0.784)"
+        in README
+    )
+    region = [k43["cells"]["XOR_5|no_reuse|calibration"]["F"], c45["F"]["F"]]
+    assert ch45["F"]["chain"] == [124, 123, 136, 143, 142, 141] and [r(v, 3) for v in region] == [0.887, 0.868]
+    assert "124-123-136-143-142-141, scored 0.887 in Kickoff 43 and 0.868 in Kickoff 45." in README
+    # the five explanations
+    p44 = k44_recomputed()
+    d, adj = p44["D"]["c"], p44["beside_after_data"]["t1_decay_in_R0"]["D_c_with_T1_adjusted_eps"]
+    assert p44["verdict"] == "NOT SUPPORTED" and reuse_doc(K44)["fixed_before_the_data"]["delta_c"] == 0.02
+    assert (r(d["point"], 3), r(d["ci90"][0], 3), r(d["ci90"][1], 3), r(adj, 3)) == (-0.034, -0.039, -0.028, -0.042)
+    assert "D = −0.034, 90% interval −0.039 to −0.028, below the margin of 0.02." in README
+    assert "Corrected with the published T1, after the data, D is −0.042. The verdict did not change." in README
+    v45 = k45_recomputed()
+    rep, idle = v45["part_B"]["verdicts"]["H_repeat"], v45["part_B"]["verdicts"]["H_idle"]
+    assert rep["verdict"] == "NOT SUPPORTED" and idle["verdict"] == "SUPPORTED"
+    assert (r(rep["D"], 3), r(rep["ci90"][0], 3), r(rep["ci90"][1], 3)) == (-0.018, -0.021, -0.014)
+    assert (r(idle["D"], 3), r(idle["ci90"][0], 3), r(idle["ci90"][1], 3)) == (0.031, 0.026, 0.035)
+    assert r(v45["beside_after_data"]["D_x_I2_without_141"], 3) == 0.014
+    assert "NOT SUPPORTED, D = −0.018 (−0.021 to −0.014)." in README
+    assert "SUPPORTED by its rule, D = +0.031 (+0.026 to +0.035)." in README and "(without it, D is +0.014" in README
+    pub45 = reuse_doc(K45)["published_at_build"]["142"]["readout_error"]
+    m44, m45 = p44["T_C_table"]["142"]["e_m"], v45["part_B"]["q142_first_mid_err"]
+    m46 = k46_recomputed()["part_B"]["c_mid_err_142"]
+    assert (r(m44, 3), r(m45, 3), r(m44 / pub45, 1), r(m45 / pub45, 1)) == (0.026, 0.049, 8.3, 15.6)
+    assert (r(m46, 3), r(k46_recomputed()["part_B"]["q142_mid_err_over_readout"], 1)) == (0.004, 1.3)
+    assert r((1 - m45) ** 3, 2) == 0.86 and 0.09 < r(a[1] / healthy[1]["F"], 2) < 0.12
+    assert "0.026 in Kickoff 44 and 0.049 in Kickoff 45, 8.3 and 15.6 times its published readout error" in README
+    assert "by a factor of about (1 − 0.049)³ = 0.86" in README and "(0.004 in Kickoff 46, 1.3 times)" in README
+    sp = k46_recomputed()["part_B"]["H_spectator"]
+    assert sp["verdict"] == "NOT SUPPORTED" and sp["margin"] == 0.05
+    assert (r(sp["D"], 3), r(sp["ci90"][0], 3), r(sp["ci90"][1], 3)) == (-0.003, -0.018, 0.011)
+    assert "NOT SUPPORTED, D = −0.003 (−0.018 to +0.011), below the margin of 0.05." in README
+    assert k46_recomputed()["part_A"]["patterns"] == ["no fixed pattern holds: reported as observed, with no reading"]
+    # the stamps: 03:16:31 at the builds of 43 to 45; 05:52:36 at 06:19 with the CZ figures changed; 06:12:47 at 46,
+    # with the region's readout, T1 and T2 unchanged
+    s = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K43_RUN, K44, K45, K46)]
+    assert s == ["2026-10-10T03:16:31Z"] * 3 + ["2026-10-10T06:12:47Z"]
+    chk = reuse_doc(K46)["published_at_check"]
+    assert (chk["calibration_last_update_utc"], hhmm(chk["read_utc"])) == ("2026-10-10T05:52:36Z", "06:19")
+    assert hhmm(reuse_doc(K45)["timestamps"]["running"]) == "05:57"  # 05:56:44, four minutes after 05:52:36
+    cz45, cz46 = reuse_doc(K45)["published_cz_on_chains"], chk["published_cz_on_chains"]
+    assert cz45["143-144"] != cz46["143-144"] and (r(cz45["143-144"], 4), r(cz46["143-144"], 4)) == (0.0022, 0.0026)
+    p45, p46, b46 = reuse_doc(K45)["published_at_build"], chk["published"], reuse_doc(K46)["published_at_build"]
+    for q in p46:
+        for f in ("readout_error", "T1", "T2"):
+            assert p45[q][f] == p46[q][f] == b46[q][f], (q, f)
+    assert "At 06:19 UTC, when Kickoff 46 was checked, it read 05:52:36 UTC, four minutes before Kickoff 45" in README
+    assert "Kickoff 46 ran under 06:12:47 UTC, a later calibration than Kickoffs 43 to 45" in README
+
+
+def test_finding_13():
+    """Kickoff 47, recomputed from the counts: Part A's cells and gains, Part B's losses, the fit, the scheduled waits,
+    and what changed between calibrations."""
+    from _reproduce import K46, K47, k46_recomputed, k47_recomputed, reuse_doc
+
+    doc = reuse_doc(K47)
+    assert (hhmm(doc["timestamps"]["running"]), hhmm(doc["timestamps"]["finished"])) == ("10:54", "10:57")
+    assert "(Kickoff 47; ibm_fez, 10 October 2026, 10:54 to 10:57 UTC)" in README
+    k = k47_recomputed()
+    c, g = k["part_A"]["cells"], k["part_A"]["gains_beside"]
+    assert k["part_A"]["H_phase"] == "SUPPORTED" and doc["cells"]["A0"]["chain"] == [144, 143, 142]
+    assert [r(c["A0"][f], 3) for f in ("F",)] + [r(x, 3) for x in c["A0"]["ci90"]] == [0.071, 0.069, 0.073]
+    assert [r(c["A1"]["F"], 3)] + [r(x, 3) for x in c["A1"]["ci90"]] == [0.843, 0.838, 0.847]
+    assert [r(g["A"]["gain"], 3)] + [r(x, 3) for x in g["A"]["ci90"]] == [0.772, 0.767, 0.777]
+    assert "(F 0.071, 90% interval 0.069 to 0.073), and scored 0.843 (0.838 to 0.847)" in README
+    assert "a gain of +0.772 (+0.767 to +0.777)." in README
+    assert [r(c[x]["F"], 3) for x in ("J0", "J1", "C0", "C1")] == [0.875, 0.863, 0.833, 0.784]
+    assert [r(-g[x]["gain"], 3) for x in ("C", "J")] == [0.049, 0.011]
+    assert "chain J, 143-144-145, scored 0.875 without pulses and 0.863 with them" in README
+    assert "and the healthy chain C, 132-131-138, 0.833 and 0.784." in README
+    assert "Refocusing cost the healthy chain 0.049 and chain J 0.011." in README
+    q = k["part_B"]["qubits"]["143"]
+    assert q["kind_of_loss"] == "REFOCUSABLE" and doc["taus_us"] == [0, 1, 2, 3.4, 4, 8]
+    assert [r(q["r_3p4"], 3)] + [r(x, 3) for x in q["r_ci90"]] == [0.223, 0.215, 0.231]
+    assert [r(q["e_3p4"], 3)] + [r(x, 3) for x in q["e_ci90"]] == [0.015, 0.012, 0.018]
+    assert "was 0.223 (0.215 to 0.231); with one refocusing pulse halfway" in README
+    assert "the loss was 0.015 (0.012 to 0.018)." in README
+    w = doc["refocusing"]["cells"]["A0"]["idle_windows_dt_before"]["143"]
+    dt = doc["refocusing"]["dt_s"]
+    assert len(w) == 3 and (r(min(w) * dt * 1e6, 2), r(max(w) * dt * 1e6, 2)) == (3.34, 3.37)
+    assert "143 waited in three windows of 3.34 to 3.37 µs while its neighbours were measured and reset." in README
+    fit = q["ramsey_fit"]
+    assert (r(1000 * fit["f_MHz"], 1), r(1000 * fit["f_err"], 1)) == (46.7, 2.7)
+    assert "a single offset of 46.7 ± 2.7 kHz describes 143's Ramsey curve over 0 to 8 µs." in README
+    assert r(q["ramsey_P1"]["8"], 2) == 0.80 and "143's reached 0.80 at 8 µs" in README
+    assert '"T₂ is reported from a Hahn echo sequence"' in README
+    assert doc["citation_T2"]["says"].startswith("T2 is reported from a Hahn echo sequence")
+    s46 = k46_recomputed()["beside_after_data"]["spectator_P1_in_S0_vs_T2"]
+    p144 = [s46[k]["P1_S0"] for k in ("144;143", "144;145")]
+    p143 = [s46[k]["P1_S0"] for k in ("143;136", "143;142", "143;144")]
+    q144 = k["part_B"]["qubits"]["144"]
+    assert {r(v, 2) for v in p144} == {0.15, 0.16} and r(np.mean(p144), 2) == 0.16
+    assert r(min(p144), 2) == 0.15 and r(q144["r_3p4"], 3) == 0.012
+    assert (r(min(p143), 2), r(max(p143), 2), r(q["r_3p4"], 3)) == (0.22, 0.24, 0.223)
+    wait46 = k46_recomputed()["beside_after_data"]["tau_s0_s"]
+    assert r(wait46 * 1e6, 2) == 3.37 and "its P(1) after a wait of 3.37 µs in superposition" in README
+    stamps = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K46, K47)]
+    assert stamps == ["2026-10-10T06:12:47Z", "2026-10-10T09:56:30Z"]
+    assert "to 0.012 under the 09:56 stamp (here, the rise in P(1) over a wait of 3.4 µs)" in README
+    assert "143's stayed (0.22 to 0.24 in Kickoff 46, 0.223 here)." in README
+
+
+def test_the_reuse_wait_picture():
+    """Finding 13's picture: made from the data by docs/make_diagrams.py, referenced from finding 13, and its alt text
+    carries the numbers of the data."""
+    from _reproduce import k47_recomputed
+
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    item = findings.split('<a id="finding-13"></a>', 1)[1]
+    assert "](diagrams/reuse-wait.svg)" in item and (DIAGRAMS / "reuse-wait.png").is_file()
+    alt = " ".join(item.split("![", 1)[1].split("](diagrams/reuse-wait.svg)", 1)[0].split())
+    k = k47_recomputed()
+    c, q = k["part_A"]["cells"], k["part_B"]["qubits"]["143"]
+    for cell in ("A0", "A1", "C0", "C1"):
+        assert f"{c[cell]['F']:.3f}" in alt, cell
+    assert f"{q['ramsey_P1']['0']:.3f}" in alt and f"{q['ramsey_P1']['8']:.2f}" in alt
+    assert max(q["echo_P1"].values()) <= 0.03 and "stay at 0.03 or below" in alt
+    assert "46.7 ± 2.7 kHz" in alt and "three windows of 3.34 to 3.37 µs" in alt
+    text = svg_text(DIAGRAMS / "reuse-wait.svg")
+    assert "a fit: one steady offset, 46.7 ± 2.7 kHz" in text and "10 October 2026" in text
