@@ -156,8 +156,8 @@ z
     <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0b0b0b" x="389.43" y="111.674925" transform="rotate(-0 389.43 111.674925)">Pick</text>
    </g>
    <g id="text_8">
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(329.374961 136.893775)">out: the n pairs that kept the</text>
-    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(335.378195 146.856044)">most; verdict not checked</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(336.357336 136.893775)">out: the n pairs closest to</text>
+    <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(334.589695 146.856044)">k = 1; verdict not checked</text>
    </g>
    <g id="text_9">
     <text style="font-size: 8.3px; font-family: 'DejaVu Sans'; fill: #52514e" transform="translate(346.490469 173.450314)">in: the map (and, for</text>

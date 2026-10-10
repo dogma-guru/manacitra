@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Amendment A15: `pick` ranks the kept share by its distance from the ideal, |1 − k|, after the dead-pair filter, and
+  reports pairs with k above 1.2 or below 0; `--by kept-share-highest` gives the rule as run in Kickoff 33.
+
 ## 0.1.2 (8 October 2026)
 
 Corrections from the second public trial and two source reviews. No behaviour, data or archived number changed; finding 4

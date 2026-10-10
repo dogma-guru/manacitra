@@ -33,3 +33,17 @@ print(
     f"90% interval [{g['ci90'][0]:+.4f}, {g['ci90'][1]:+.4f}]"
 )
 print(f"verdict: {payoff['verdict']['verdict']}")
+
+# Amendment A15: `manacitra pick` now ranks the kept share by its distance from the ideal, |1 - k|, after the dead-pair
+# filter. The pick above is Kickoff 33's, as run (highest k); this is the same prior map under the new rule.
+from manacitra.circuits import CIRCUITS  # noqa: E402
+from manacitra.layout import pick_by_kept_share  # noqa: E402
+
+level_prior = [v * CIRCUITS["A"].ideal_no for v in L_prior]  # each pair's mean P(A no) in Kickoff 32's dense condition
+by_distance = pick_by_kept_share(k_prior, 8, level_prior)
+print("\nunder |1 - k| (pick's default since Amendment A15):", [pairs[i] for i in by_distance])
+if set(by_distance) == set(by_map):
+    print("the same eight pairs as Kickoff 33's pick")
+else:
+    print("pairs only in Kickoff 33's pick:", [pairs[i] for i in by_map if i not in by_distance])
+    print("pairs only under |1 - k|:      ", [pairs[i] for i in by_distance if i not in by_map])

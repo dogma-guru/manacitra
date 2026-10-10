@@ -173,9 +173,14 @@ What would discredit the map's persistence: FADES.
   mapped in a few circuits. A heavy-hex map has no qubit with more than three neighbours and no odd cycle, so three
   rounds suffice; on ibm_fez's 176 couplers the rounds hold 60, 59 and 57 pairs. The round count is computed and
   reported, never assumed; a plain greedy colouring is also available (`method="greedy"`).
-- `layout.pick_pairs`: the n pairs with the highest k (or the lowest x).
-- `manacitra pick --by kept-share` (the default) ranks a map's pairs by k; `--by level` by the plain level, each pair's
-  mean P(11) on circuit A without the offset; `--by x` by the published score. The kept share chose the better pairs
+- `layout.pick_pairs`: the n pairs with the highest values (or the lowest, for x).
+- `layout.pick_by_kept_share` (Amendment A15): the n pairs whose kept share is closest to the ideal, |1 − k| smallest
+  first, ties to the lower index, after the dead-pair filter (plain level at least 0.5).
+- `manacitra pick --by kept-share` (the default) ranks a map's pairs by |1 − k|, closest to the ideal first, after the
+  dead-pair filter; `--by kept-share-highest` by k, highest first, the rule as run in Kickoff 33. After the ranked list
+  it prints how many usable pairs have k above 1.2 or below 0, and the three furthest from 1 with their k and plain
+  level (Amendment A15). `--by level` ranks by the plain level, each pair's mean P(11) on circuit A without the
+  offset; `--by x` by the published score. The kept share chose the better pairs
   on ibm_fez (Kickoff 33) and was not settled on ibm_kingston; the plain level chose better pairs on the
   Rigetti processor, on the same day and a day later (Kickoffs 40 and 41), where the kept share did not. On every payoff
   run both scores were scored against the published figures: on IBM the kept share was the primary test and the level

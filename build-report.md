@@ -2278,3 +2278,70 @@ signing run, the verification and the DOI are recorded with step 4's follow-up.
 - **Zenodo.** It archived v0.1.2 with its own DOI, `10.5281/zenodo.23248147`, under the concept DOI
   `10.5281/zenodo.23228518`, which now resolves to it.
 - **Step 4.** The README's version-DOI parenthetical names v0.1.2's DOI, and `VERSION_DOIS` gains its line.
+
+## 28. Amendment A15: `pick` ranks the kept share by its distance from the ideal (10 October 2026)
+
+**Why.**
+- **Where it went wrong.** `manacitra pick` ranked pairs by the kept share, highest first, which treats k as "more is
+  better". It is not: k = 1 is a pair that kept exactly the gap of 0.037765, and a pair whose k is far above 1 is not
+  keeping more; its two circuits are being pulled apart by an error.
+- **The archive shows it.** In Kickoff 35's whole-chip maps of ibm_fez, read from `k35-day2.json` and `k35-day3.json`,
+  the usable pair (plain level at least 0.5) with the highest k on both days is 33-34. Its k is 4.52 and 4.66, at a
+  plain level of 0.507 and 0.520.
+- **Where it hardly mattered.** In the published IBM runs the kept shares stay near 1: the largest k is 1.06 in
+  Kickoff 31's map and 1.07 in the Kickoff 33 prior map. There the change is small (below).
+
+**The change:**
+- **`layout.py`.** It gains `pick_by_kept_share(k, n, level=None)`: it drops pairs below the dead-pair floor when
+  levels are given, then takes the n smallest |1 − k|, ties to the lower index. It also gains `usable_pairs` and
+  `kept_share_outliers`. `pick_pairs` is unchanged, and `--by level` and `--by x` still use it.
+- **`cli.py`.** `--by kept-share`, the default, uses the new ranking. `--by kept-share-highest` gives the rule as run in
+  Kickoff 33, highest k first, so the archived pick can be reproduced from the command line. After the ranked list, a
+  blank line, then how many usable pairs have k above 1.2 or below 0, and the three furthest from 1 with their k and
+  plain level.
+- **Unchanged.** `verdicts.top_n` is unchanged except for one docstring line ("As run in Kickoff 33 (highest k); `pick`
+  now ranks by |1 − k|, Amendment A15."). It still reproduces Kickoff 33's archived analysis, and every reproduction
+  test passes unchanged.
+- **`examples/03_pick_pairs.py`.** The archived reproduction and its 35.6% line are kept exactly. After them it prints
+  the pick under |1 − k| and which pairs change.
+
+**The default pick on the Kickoff 33 prior map, Kickoff 32's dense condition.** A15 asks for this to be reported, not
+asserted. Highest first gives the archived pick: 106-107, 88-89, 151-152, 94-95, 142-143, 129-130, 13-14 and 114-115.
+Under |1 − k| it is 151-152, 94-95, 142-143, 129-130, 13-14, 88-89, 114-115 and 22-23. **One pair changes**:
+- 106-107 (k 1.067, |1 − k| = 0.067) leaves, and 22-23 (k 0.937, |1 − k| = 0.063) joins.
+- Their distances from 1 differ by 0.003, against a shot noise in each k of about 0.05.
+
+So the published pick is unaffected within shot noise, as A15 expected, but it is not identical.
+
+**Readings, logged.** Each is a place where the code or the files differ from A15's text:
+- **`pick` refuses both test files.** `manacitra pick` refuses `k35-day3.json` and `k32-isolation.json`: they are not
+  map runs (Amendment A8). So A15's tests "under `--by kept-share-highest` …" cannot run from the command line. They test
+  the same rankings, `pick_pairs` and `pick_by_kept_share`, on the kept shares and levels those files carry.
+- **33-34 is first only among usable pairs.** On Day 3, highest first over all pairs puts 27-28 first (k 4.79, at a plain
+  level of 0.227, a dead pair), then 33-34. A15's reason, "the highest k among pairs that pass the dead-pair filter",
+  holds; the test asserts it over the usable pairs.
+- **Two corrections to A15's numbers.** A15 said the Kickoff 33 map's "largest k 1.06". That is Kickoff 31's map; the
+  prior map Kickoff 33 picked from has 1.07. A15 also said the published pick is "unaffected". It changes by one pair,
+  within shot noise. `docs/method.md` gives both as recomputed.
+- **The option name.** A15 calls the published-score ranking `--by published`. The option is `--by x`.
+- **Where the README line went.** The README's "What it does" said `pick` ranks "highest kept share first", which is
+  now wrong, so the sentence changes there. That serves as A15's one README line, and no second line is added under
+  "Install and try it".
+- **The pipeline diagram.** It said Pick returns "the n pairs that kept the most". It now says "the n pairs closest to
+  k = 1", and so do its alt texts in the README and `docs/method.md`. Only `pipeline.svg` and `pipeline.png` were
+  regenerated; the other eight diagrams are byte for byte.
+
+**The tests:**
+- **`tests/test_layout.py`, three new tests.**
+  - A synthetic map: the k 4.6 pair is not picked, the k 1.0 pair comes first, and a dead pair is left out.
+  - Kickoff 35, Day 3, read from the file: 33-34 is first among usable pairs highest first, and not in the default top
+    8.
+  - The Kickoff 33 prior map highest first gives the independent literal `INDEPENDENT["pick_by_map"]`.
+- **`test_pick_by`** now covers `kept-share-highest`, and checks the default against |1 − k|.
+- **`test_the_distance_from_the_ideal_paragraph`** recomputes the paragraph's numbers. It caught one slip in my first
+  draft: "0.004" for what is 0.0033 (rounded to 0.003).
+- **The retired-phrase list** gains "highest kept share first" and "the n pairs that kept the most".
+- **The two `pick` output helpers** in the tests read the ranked lines before the blank line.
+
+**After the amendment:** 587 tests pass (582 before; 5 new); Ruff is clean; both scans are clean; nothing in `data/`
+changed, and every archived number reproduces.

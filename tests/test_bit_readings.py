@@ -52,7 +52,8 @@ def _stat(out: str, name: str) -> float:
 
 
 def _picked(out: str) -> list:
-    return [json.loads(line.split("]")[0].strip() + "]") for line in out.splitlines()[1:]]
+    ranked = out.split("\n\n", 1)[0]  # the summary of pairs far from k = 1 follows a blank line (Amendment A15)
+    return [json.loads(line.split("]")[0].strip() + "]") for line in ranked.splitlines()[1:]]
 
 
 def _path(name: str) -> str:
