@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 (10 October 2026)
+
+Code to rerun the wait on hardware: Kickoff 47's Part B and the wait test, built by the package for a backend and a
+chain you name, with a dated reconstruction of Part B's circuits; and provider text cleaned of account identifiers
+on every backend. No finding changed.
 
 - Amendment A18: `manacitra.wait` builds Kickoff 47's Part B for any qubits and waits, and the wait test, a three-line
   circuit written here, on a chain the user names; its analysis gives the Ramsey and echo losses and Kickoff 47's kind
@@ -11,10 +15,11 @@
   `k47-wait.json` is unchanged. No finding changed.
 - Amendment A18, ruling R1: on every backend, a provider's error text is cleaned before the ledger stores it or the
   console shows it, with nothing of the original chained to it, and the log records of the IBM and Open Quantum clients,
-  the IBM client's libraries, `requests` and `urllib3` are cleaned as they are made, no other logger's (ruling R2); instance names, CRNs,
-  account and hub/group/project identifiers, tokens and email addresses become `[redacted]`. Open Quantum's balance-floor refusal names the account by its ledger scope, not by the saved account's
-  name. `wait_loss_kind` refuses intervals that are not two finite, ordered bounds; a translation in `manacitra.wait`
-  that routes a circuit is refused.
+  the IBM client's libraries, `requests` and `urllib3` are cleaned as they are made, no other logger's (ruling R2);
+  instance names, CRNs, account and hub/group/project identifiers, tokens and email addresses become `[redacted]`. Open
+  Quantum's balance-floor refusal names the account by its ledger scope, not by the saved account's name.
+  `wait_loss_kind` refuses intervals that are not two finite, ordered bounds; a translation in `manacitra.wait` that
+  routes a circuit is refused.
 
 ## 0.3.0 (10 October 2026)
 
