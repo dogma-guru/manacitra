@@ -6,9 +6,11 @@ Qiskit Aer, with a frequency offset planted by a noise pass written here (every 
 delay and an RZ of 2 pi f t). The Aer tests use no vendor noise model and no device data: they run on a synthetic
 three-qubit target whose durations are round numbers chosen here."""
 
+import copy
 import hashlib
 import json
 import math
+import re
 from types import SimpleNamespace
 
 import numpy as np
@@ -144,37 +146,140 @@ def test_a_chain_without_couplers_is_refused(fez):
         wait.build_wait_test((144, 143, 142), refocus=True)
 
 
-# --------------------------------------------------------------------------- Part B against Kickoff 47's archive
-def test_part_b_matches_kickoff_47_instruction_by_instruction(fez):
-    """Part B, built here for Kickoff 47's groups and waits on the snapshot, equals Kickoff 47's own builder's
-    circuits as the archive records them (part_B_structure), instruction by instruction, and their operation counts
-    equal those recorded from the circuits as sent (part_B_circuits); the order is the run's."""
-    rec = archive.load(K47)
+def test_a_routed_translation_is_refused(fez):
+    """The review: the level-0 pass manager would route a circuit with a CZ off the coupling map. to_backend refuses
+    any translation that routed, moved a qubit, touched a qubit not named or changed the two-qubit gate count."""
+    from qiskit import QuantumCircuit
+
+    qc = QuantumCircuit(3, 3)
+    qc.h(0)
+    qc.cz(0, 2)  # 144 and 142 share no coupler
+    qc.measure(range(3), range(3))
+    with pytest.raises(RuntimeError, match="routed the circuit"):
+        wait.to_backend(qc, (144, 143, 142), fez)
+    logical = wait.wait_test_logical()
+    wait.check_translation(logical, wait.build_wait_test((144, 143, 142), False, fez), (144, 143, 142))
+    with pytest.raises(RuntimeError, match="qubits not named"):
+        wait.check_translation(logical, wait.build_wait_test((132, 131, 138), False, fez), (144, 143, 142))
+
+
+# --------------------------------------------------------------------------- Part B against the reconstruction
+RECON = "ibm_fez/k47-wait-part-b-reconstruction.json"
+RECON_LABEL = "reconstructed on 10 October 2026 by rerunning the original builder; not the circuits as sent"
+
+
+def part_b_mismatches(built, fez) -> list[str]:
+    """Every way a built Part B differs from Kickoff 47's: each circuit, of both copies, against the reconstruction's
+    entry for its label, instruction by instruction; its operation counts and qubits against those recorded from the
+    circuits as sent (part_B_circuits); the labels against the run's order; and the set of circuits. Empty if none."""
+    rec, ref = archive.load(K47), archive.load(RECON)["circuits"]
     us_of = {dt: us for us, dt in rec["tau_dt"].items()}
-    built = wait.part_b(wait.KICKOFF_47_GROUPS, wait.KICKOFF_47_WAITS_DT)
-    seen = set()
+    out = []
     for e in built:
         lab = e["label"]
-        key = f"g{lab['group']}|{us_of[lab['tau_dt']]}|{lab['variant']}"
-        if key in seen:
+        key = f"g{lab['group']}|{us_of.get(lab['tau_dt'])}|{lab['variant']}"
+        name = f"{key}, copy {lab['copy']}"
+        if key not in ref:
+            out.append(f"{name}: not in the reconstruction")
             continue
-        seen.add(key)
-        got = wait.structure(wait.to_backend(e["circuit"], e["layout"], fez))
-        want = rec["part_B_structure"]["circuits"][key]
-        assert [r[:3] for r in got] == [r[:3] for r in want], key
-        assert all(a[3] == pytest.approx(b[3], abs=1e-12) for a, b in zip(got, want)), key
         isa = wait.to_backend(e["circuit"], e["layout"], fez)
-        assert ops(isa) == rec["part_B_circuits"][key]["count_ops"], key
-        assert rec["part_B_circuits"][key]["qubits"] == e["layout"]
-    assert seen == set(rec["part_B_structure"]["circuits"]) == set(rec["part_B_circuits"])
-    canon = json.dumps(rec["part_B_structure"]["circuits"], sort_keys=True, separators=(",", ":"))
-    assert hashlib.sha256(canon.encode()).hexdigest() == rec["part_B_structure"]["circuits_sha256"]
+        got, want = wait.structure(isa), ref[key]
+        if [r[:3] for r in got] != [r[:3] for r in want] or any(
+            a[3] != pytest.approx(b[3], abs=1e-12) for a, b in zip(got, want)
+        ):
+            out.append(f"{name}: its instructions differ from the reconstruction")
+        if ops(isa) != rec["part_B_circuits"][key]["count_ops"] or e["layout"] != rec["part_B_circuits"][key]["qubits"]:
+            out.append(f"{name}: its operation counts or qubits differ from those recorded at the run")
     ours = [
-        (x["label"]["group"], float(us_of[x["label"]["tau_dt"]]), x["label"]["variant"], x["label"]["copy"])
-        for x in built
+        (e["label"]["group"], us_of.get(e["label"]["tau_dt"]), e["label"]["variant"], e["label"]["copy"]) for e in built
     ]
-    theirs = [(a["group"], float(a["tau_us"]), a["variant"], a["copy"]) for a in rec["labels"] if a["part"] == "B"]
-    assert ours == theirs
+    theirs = [(a["group"], str(a["tau_us"]), a["variant"], a["copy"]) for a in rec["labels"] if a["part"] == "B"]
+    if ours != theirs:
+        out.append("the circuits are not those of the run, in the run's order")
+    if set(ref) != set(rec["part_B_circuits"]):
+        out.append("the reconstruction and the record of the run name different circuits")
+    return out
+
+
+def test_part_b_matches_kickoff_47_both_copies(fez):
+    """Part B, built here for Kickoff 47's groups and waits on the snapshot: all 48 circuits, both copies, each equal
+    instruction by instruction to the reconstruction's entry for its label, with the operation counts recorded from
+    the circuits as sent, in the run's order."""
+    built = wait.part_b(wait.KICKOFF_47_GROUPS, wait.KICKOFF_47_WAITS_DT)
+    assert len(built) == 48 and sum(e["label"]["copy"] == 2 for e in built) == 24
+    assert part_b_mismatches(built, fez) == []
+
+
+def _delay_plus_two(circuit):
+    from qiskit.circuit import Delay
+
+    for k, inst in enumerate(circuit.data):
+        if inst.operation.name == "delay":
+            circuit.data[k] = inst.replace(operation=Delay(inst.operation.duration + 2, unit="dt"))
+            return
+    raise AssertionError("no delay to change")
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "an extra X, second copy",
+        "a changed delay, second copy",
+        "a missing circuit",
+        "no circuits",
+        "an extra X, first copy",
+        "a changed delay, first copy",
+    ],
+)
+def test_the_part_b_comparison_fails_on_a_changed_circuit(fez, mutation):
+    """Controls that must fail (the review of pull request 21): one changed circuit of either copy, one missing, or
+    none at all."""
+    built = wait.part_b(wait.KICKOFF_47_GROUPS, wait.KICKOFF_47_WAITS_DT)
+    copy = 2 if "second" in mutation else 1
+    waited = [e for e in built if e["label"]["copy"] == copy and e["label"]["tau_dt"] > 0]
+    if mutation == "no circuits":
+        built = []
+    elif mutation == "a missing circuit":
+        del built[31]
+    elif "extra X" in mutation:
+        waited[0]["circuit"].x(0)
+    else:
+        _delay_plus_two(waited[5]["circuit"])
+    found = part_b_mismatches(built, fez)
+    assert found, mutation
+    if "copy" in mutation:  # the mismatches name the changed circuit, and no other
+        lab = (waited[0] if "extra X" in mutation else waited[5])["label"]
+        us = {dt: us for us, dt in archive.load(K47)["tau_dt"].items()}[lab["tau_dt"]]
+        name = f"g{lab['group']}|{us}|{lab['variant']}, copy {copy}: "
+        assert name + "its instructions differ from the reconstruction" in found and all(
+            f.startswith(name) for f in found
+        )
+
+
+def test_the_reconstruction_is_recorded_and_can_be_repeated(fez):
+    """The sidecar names the released archive by its SHA-256, which still matches it (the released file is unchanged);
+    its circuits hash to the recorded SHA-256; and the builder's Part B text, run here as the record says, rebuilds
+    the same 24 circuits, in the run's order, with nothing of Part A in it."""
+    rec, recon = archive.load(K47), archive.load(RECON)
+    m = recon["meta"]
+    assert m["label"] == RECON_LABEL and m["reconstructed_on"] == "2026-10-10"
+    released = (archive.data_dir() / K47).read_bytes()
+    assert m["released_archive"] == {"file": K47, "sha256": hashlib.sha256(released).hexdigest()}
+    assert m["sources"][0]["sha256"] == rec["meta"]["source_scripts"][0]["sha256"]
+    canon = json.dumps(recon["circuits"], sort_keys=True, separators=(",", ":"))
+    assert hashlib.sha256(canon.encode()).hexdigest() == m["circuits_sha256"]
+    text = m["builder"]["text"]
+    assert hashlib.sha256(text.encode()).hexdigest() == m["builder"]["text_sha256"]
+    assert not any(
+        w in text for w in ("build_A", "order_A", "CHAINS", "CELLS", "SPACING", "Path", "HERE", "import sys")
+    )
+    assert not re.search(r"[A-Za-z_.]+/[A-Za-z_]", text)  # no path
+    ns: dict = {}
+    exec(compile(text, "build_B", "exec"), ns)  # the record's own text, as its how_to_repeat says
+    isa, _, _ = ns["build_B"](fez)
+    assert {f"g{g}|{tau}|{v}": wait.structure(c) for (g, tau, v), c in isa.items()} == recon["circuits"]
+    order = [(b["group"], b["tau_us"], b["variant"], b["copy"]) for b in ns["b_list"]()]
+    assert order == [(a["group"], a["tau_us"], a["variant"], a["copy"]) for a in rec["labels"] if a["part"] == "B"]
 
 
 def _k47_losses(**kw):
@@ -209,6 +314,39 @@ def test_the_rules_thresholds_are_parameters():
     assert wait.wait_loss_kind([0.1, 0.3], [0.01, 0.2], [0.01, 0.2], floor=0.31) == "NOT REPRODUCED"
     _, got = _k47_losses(floor=0.25, n_boot=2000)
     assert got["143"]["kind_of_loss"] == "NOT REPRODUCED"
+
+
+@pytest.mark.parametrize(
+    "intervals, floor, kind",
+    [
+        (([0, 0.1], [0, 0], [0, 0]), 0.1, "MIXED"),  # the upper bound equal to the floor is not below it
+        (([0, 0.099], [1, 2], [1, 2]), 0.1, "NOT REPRODUCED"),  # below the floor, before the other two
+        (([0.1, 0.2], [0, 1], [-1, 0]), 0.1, "MIXED"),  # a lower bound of exactly 0 is not above 0
+        (([0.1, 0.2], [-1, 0], [0, 1]), 0.1, "MIXED"),
+        (([0.1, 0.2], [1, 2], [1, 2]), 0.1, "REFOCUSABLE"),  # both above 0: REFOCUSABLE is checked first
+    ],
+)
+def test_the_rule_at_its_boundaries(intervals, floor, kind):
+    """The review's cases on valid intervals, with the documented strict comparisons."""
+    assert wait.wait_loss_kind(*intervals, floor=floor) == kind
+
+
+@pytest.mark.parametrize(
+    "intervals, floor",
+    [
+        (([math.nan, math.nan], [math.nan, math.nan], [math.nan, math.nan]), 0.1),
+        (([0.9, 0.05], [-1, 1], [-1, 1]), 0.1),  # reversed bounds
+        (([0.1, 0.2], [0.3, 0.1], [-1, 1]), 0.1),
+        (([0.1, 0.2], [-1, 1], [-1, math.inf]), 0.1),
+        (([0.1], [-1, 1], [-1, 1]), 0.1),  # one bound
+        (([0.1, 0.2], [-1, 1], [-1, 1]), math.nan),  # the floor
+        (([0.1, 0.2], [-1, 1], [-1, 1]), math.inf),
+    ],
+)
+def test_the_rule_refuses_an_invalid_interval(intervals, floor):
+    """Before the review, NaN intervals read MIXED and the reversed interval NOT REPRODUCED; now each is refused."""
+    with pytest.raises(ValueError):
+        wait.wait_loss_kind(*intervals, floor=floor)
 
 
 # --------------------------------------------------------------------------- offline, on Aer, an offset planted here
@@ -276,8 +414,10 @@ def planted(circuit, target, qubit: int, f_hz: float = 0.0, t_phi_s: float | Non
     return out
 
 
-def aer_counts(circuits, shots, seed, **noise):
-    """Every circuit run on Aer with its own shots; with sign_switch, each shot's offset is +f or -f, drawn per shot."""
+def aer_counts(circuits, shots, seed, trace: list | None = None, **noise):
+    """Every circuit run on Aer with its own shots; with sign_switch, each shot's offset is +f or -f, drawn per shot:
+    each circuit runs once with +f and once with -f, keeping every shot's outcome, and each shot then takes its outcome
+    from one of the two by its own sign. With trace, every circuit's signs and kept outcomes are appended to it."""
     from qiskit_aer import AerSimulator
 
     sim, target = AerSimulator(), synthetic_backend().target
@@ -306,11 +446,13 @@ def aer_counts(circuits, shots, seed, **noise):
         for j, k in enumerate(ks):
             sign = rng.integers(0, 2, size=n)
             plus, minus = mem[1].get_memory(j), mem[-1].get_memory(j)
+            kept = [plus[i] if sign[i] else minus[i] for i in range(n)]
             cts: dict = {}
-            for i in range(n):
-                key = plus[i] if sign[i] else minus[i]
+            for key in kept:
                 cts[key] = cts.get(key, 0) + 1
             out[k] = cts
+            if trace is not None:
+                trace.append({"circuit": k, "signs": sign, "outcomes": kept})
     return out
 
 
@@ -322,9 +464,17 @@ def synthetic_run():
     return be, circuits, labels, shots
 
 
-def analysed(synthetic_run, **noise):
+_ANALYSED: dict = {}
+
+
+def analysed(synthetic_run, corrupt=None, **noise):
+    """The run's analysis under a noise, made once per noise; corrupt(labels, counts) may change the counts first."""
     be, circuits, labels, shots = synthetic_run
-    res = wait.analyse_wait_run(labels, aer_counts(circuits, shots, seed=1818, **noise), be.dt)
+    key = tuple(sorted(noise.items()))
+    if key not in _ANALYSED:
+        _ANALYSED[key] = aer_counts(circuits, shots, seed=1818, **noise)
+    counts = _ANALYSED[key] if corrupt is None else corrupt(labels, copy.deepcopy(_ANALYSED[key]))
+    res = wait.analyse_wait_run(labels, counts, be.dt)
     assert res["part_b"]["reference_wait_dt"] == 850  # 3.4 us at the synthetic dt
     return res["wait_test"], res["part_b"]["qubits"]
 
@@ -342,12 +492,35 @@ def test_the_synthetic_run_is_built_as_on_hardware(synthetic_run):
             assert wait.fidelity(wait.exact_distribution(c), ideal) == pytest.approx(1.0, abs=1e-9)
 
 
+def no_offset_failures(w, q) -> list[str]:
+    """The no-offset test's conditions that fail: Part B NOT REPRODUCED on every qubit; F above 0.99 with and without
+    refocusing (the review: not only a small difference between them); and the two within 0.05."""
+    out = []
+    if {row["kind_of_loss"] for row in q.values()} != {"NOT REPRODUCED"}:
+        out.append("Part B is not NOT REPRODUCED on every qubit")
+    if not (w["F_no"] > 0.99 and w["F_refocus"] > 0.99):
+        out.append(f"F is not above 0.99: {w['F_no']:.4f} and {w['F_refocus']:.4f}")
+    if abs(w["F_refocus"] - w["F_no"]) >= 0.05:
+        out.append("F with and without refocusing differ by 0.05 or more")
+    return out
+
+
 def test_offline_no_offset(synthetic_run):
-    """No offset: Part B reads NOT REPRODUCED on every qubit, and the wait test's F with and without refocusing
-    differ by less than 0.05."""
-    w, q = analysed(synthetic_run)
-    assert {row["kind_of_loss"] for row in q.values()} == {"NOT REPRODUCED"}
-    assert abs(w["F_refocus"] - w["F_no"]) < 0.05
+    """No offset: Part B reads NOT REPRODUCED on every qubit, the wait test's F is above 0.99 without and with
+    refocusing, and the two differ by less than 0.05."""
+    assert no_offset_failures(*analysed(synthetic_run)) == []
+
+
+def test_the_no_offset_test_fails_on_a_broken_wait_test(synthetic_run):
+    """The review's control: every wait-test shot moved to an outcome of the wrong parity (F = 0 for both variants),
+    Part B left as it was. The difference between the two F's is still 0, but the test now fails."""
+
+    def broken(labels, counts):
+        return [{"100000": sum(c.values())} if lab["part"] == "W" else c for lab, c in zip(labels, counts)]
+
+    w, q = analysed(synthetic_run, corrupt=broken)
+    assert w["F_no"] == w["F_refocus"] == 0.0
+    assert no_offset_failures(w, q) == ["F is not above 0.99: 0.0000 and 0.0000"]
 
 
 def test_offline_a_steady_offset_on_m(synthetic_run):
@@ -361,11 +534,84 @@ def test_offline_a_steady_offset_on_m(synthetic_run):
     assert q[str(wait.L1)]["kind_of_loss"] == q[str(wait.L3)]["kind_of_loss"] == "NOT REPRODUCED"
 
 
-def test_offline_an_offset_that_switches_sign_per_shot(synthetic_run):
-    """+47 kHz or -47 kHz on M, drawn per shot: REFOCUSABLE."""
+def test_offline_the_rule_cannot_tell_plus_from_minus(synthetic_run):
+    """A limitation, recorded as a test: +47 kHz or -47 kHz on M, drawn per shot, reads as the steady offset does.
+    Part B and the wait test see M's phase only through its cosine, so they cannot tell +f from -f: the verdict is
+    REFOCUSABLE again, and the losses and F's equal the steady offset's within shot noise. That the harness does switch
+    per shot is checked apart (test_the_switching_harness_switches); the review found that this test alone cannot."""
     w, q = analysed(synthetic_run, f_hz=F_OFFSET, sign_switch=True)
-    assert q[str(wait.M)]["kind_of_loss"] == "REFOCUSABLE"
+    ws, qs = analysed(synthetic_run, f_hz=F_OFFSET)
+    m, ms = q[str(wait.M)], qs[str(wait.M)]
+    assert m["kind_of_loss"] == ms["kind_of_loss"] == "REFOCUSABLE"
     assert w["F_refocus"] > 0.9 and w["F_no"] <= w["F_refocus"] - 0.3
+    assert abs(m["r"] - ms["r"]) < 0.03 and abs(m["e"] - ms["e"]) < 0.02
+    assert abs(w["F_no"] - ws["F_no"]) < 0.02 and abs(w["F_refocus"] - ws["F_refocus"]) < 0.02
+
+
+def sign_witness():
+    """A circuit that tells +f from -f: Ramsey on M with a quarter-turn readout (H; a wait of 850 dt; S; H; measure).
+    A phase phi gives P(1) = (1 + sin phi) / 2: at 47 kHz, 0.92 for +f and 0.08 for -f."""
+    from qiskit import QuantumCircuit
+
+    qc = QuantumCircuit(3, 1)
+    qc.h(wait.M)
+    qc.delay(850, wait.M, unit="dt")
+    qc.s(wait.M)
+    qc.h(wait.M)
+    qc.measure(wait.M, 0)
+    return wait.to_backend(qc, (0, 1, 2), synthetic_backend())
+
+
+WITNESS_SHOTS = 4000
+WITNESS_P1 = (1 + math.sin(2 * math.pi * F_OFFSET * 850 * DT)) / 2  # 0.922 for +f; 1 - it for -f
+
+
+def harness_failures(counts: dict, trace: list) -> list[str]:
+    """The switching harness's conditions that fail, on the witness: a sign recorded for every shot; both signs used,
+    in numbers within 0.03 of half each; each sign's shots reading as that sign's steady offset (P(1) within 0.03);
+    the counts being the kept outcomes; and P(1) overall the mixture of the two (within 0.04 of 0.5)."""
+    if len(trace) != 1 or len(trace[0]["signs"]) != WITNESS_SHOTS:
+        return ["no sign recorded for each shot"]
+    signs, ones = np.asarray(trace[0]["signs"]), np.array([o == "1" for o in trace[0]["outcomes"]])
+    out = []
+    if set(signs.tolist()) != {0, 1} or abs(signs.mean() - 0.5) >= 0.03:
+        out.append(f"the signs are not used about equally: {signs.mean():.3f} of shots took +f")
+    else:
+        if abs(ones[signs == 1].mean() - WITNESS_P1) >= 0.03 or abs(ones[signs == 0].mean() - (1 - WITNESS_P1)) >= 0.03:
+            out.append("a sign's shots do not read as that sign's offset")
+    kept: dict = {}
+    for o in trace[0]["outcomes"]:
+        kept[o] = kept.get(o, 0) + 1
+    if kept != counts:
+        out.append("the counts are not the kept outcomes")
+    if abs(counts.get("1", 0) / WITNESS_SHOTS - 0.5) >= 0.04:
+        out.append(f"P(1) is not the mixture: {counts.get('1', 0) / WITNESS_SHOTS:.3f}")
+    return out
+
+
+def test_the_switching_harness_switches():
+    """The review: the harness itself, on a circuit where +f and -f differ. Run steady, the witness reads 0.92 with +f
+    and 0.08 with -f; switched per shot, both signs are used about equally, each sign's shots read as its own offset,
+    and the whole reads as their mixture, 0.5."""
+    pytest.importorskip("qiskit_aer")
+    c = sign_witness()
+    for f, want in ((F_OFFSET, WITNESS_P1), (-F_OFFSET, 1 - WITNESS_P1)):
+        steady = aer_counts([c], [WITNESS_SHOTS], seed=7, f_hz=f)[0]
+        assert abs(steady.get("1", 0) / WITNESS_SHOTS - want) < 0.03
+    trace: list = []
+    switched = aer_counts([c], [WITNESS_SHOTS], seed=7, trace=trace, f_hz=F_OFFSET, sign_switch=True)[0]
+    assert harness_failures(switched, trace) == []
+
+
+def test_the_harness_test_fails_with_switching_off():
+    """The review's control: with the per-shot switch turned off (the steady offset only), the harness test fails."""
+    pytest.importorskip("qiskit_aer")
+    trace: list = []
+    steady = aer_counts([sign_witness()], [WITNESS_SHOTS], seed=7, trace=trace, f_hz=F_OFFSET)[0]
+    assert harness_failures(steady, trace) == ["no sign recorded for each shot"]
+    fake = [{"signs": np.ones(WITNESS_SHOTS, int), "outcomes": [k for k, n in steady.items() for _ in range(n)]}]
+    assert any("not used about equally" in f for f in harness_failures(steady, fake))
+    assert any("not the mixture" in f for f in harness_failures(steady, fake))
 
 
 def test_offline_a_loss_that_refocusing_cannot_remove(synthetic_run):

@@ -6,8 +6,15 @@
   circuit written here, on a chain the user names; its analysis gives the Ramsey and echo losses and Kickoff 47's kind
   of loss, with the rule's thresholds as parameters. `examples/04_wait_test.py` builds both for a backend as a dry run,
   sends them only with `--submit`, through the submit-once guard (`IBMCircuitsBackend`), and analyses the counts;
-  `docs/reproduce.md` says how to rerun them and what a rerun is. `k47-wait.json` gains Part B's structure. No finding
-  changed.
+  `docs/reproduce.md` says how to rerun them and what a rerun is. A new data file,
+  `k47-wait-part-b-reconstruction.json`, holds a dated reconstruction of Part B's circuits with the builder's text;
+  `k47-wait.json` is unchanged. No finding changed.
+- Amendment A18, ruling R1: on every backend, a provider's error text is cleaned before the ledger stores it or the
+  console shows it, with nothing of the original chained to it, and the providers' clients' log records are cleaned as
+  they are made; instance names, CRNs, account and hub/group/project identifiers, tokens and email addresses become
+  `[redacted]`. Open Quantum's balance-floor refusal names the account by its ledger scope, not by the saved account's
+  name. `wait_loss_kind` refuses intervals that are not two finite, ordered bounds; a translation in `manacitra.wait`
+  that routes a circuit is refused.
 
 ## 0.3.0 (10 October 2026)
 

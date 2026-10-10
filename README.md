@@ -110,6 +110,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
+- [`docs/reproduce.md`](docs/reproduce.md): rerunning finding 13's Part B and the wait test on hardware, and why a rerun is a new measurement.
 - [`docs/index.md`](docs/index.md): the long version: the circuits, the three rules with their thresholds, the backends, the safety guards, reproducing every number, and sealing and signing.
 - [`data/README.md`](data/README.md): the dataset, its formats, and how to recompute the payoff.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md), and [`build-report.md`](build-report.md), the record of how this release was built and checked.

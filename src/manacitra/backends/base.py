@@ -46,6 +46,7 @@ from typing import Protocol, runtime_checkable
 import numpy as np
 
 from ..circuits import ORDER_16
+from .redact import scrub, scrubbed
 
 
 def utc_now() -> str:
@@ -476,11 +477,14 @@ def submit_once(
     pre: dict = {}
     preflight = getattr(backend, "_preflight", None)
     if preflight is not None:
+        err = None
         try:
             pre = preflight(job, ledger, **send_kw) or {}
-        except Exception as e:
-            ledger.append({"event": "refused", "job_hash": h, "utc": utc_now(), "reason": str(e) or type(e).__name__})
-            raise
+        except Exception as e:  # provider text is cleaned before it is stored or raised (A18, ruling R1)
+            ledger.append({"event": "refused", "job_hash": h, "utc": utc_now(), "reason": scrub(e) or type(e).__name__})
+            err = scrubbed(e)
+        if err is not None:
+            raise err
     with ledger.lock():
         entries = ledger.entries()
         earlier = _repeat_check(h, entries, allow_resubmit)
@@ -490,6 +494,7 @@ def submit_once(
         if account is not None:
             more, reserve = account(job, pre, entries)
             failed += more
+        failed = [scrub(f) for f in failed]
         if failed:
             err = getattr(backend, "_refusal", _default_refusal)(failed)
             ledger._write([{"event": "refused", "job_hash": h, "utc": utc_now(), "reason": str(err)}])
@@ -514,6 +519,7 @@ def submit_once(
         log(
             f"resubmitting job {h[:12]} with allow_resubmit, reason: {reason or 'none given'} (logged in {ledger.path})"
         )
+    err = None
     try:
         handle = backend._send(job, **send_kw)
     except Exception as e:
@@ -522,7 +528,9 @@ def submit_once(
             failed_rec["job_ids_created"] = list(e.job_ids_created)
         failed_rec["reservation"] = "kept: the send may have reached the provider; a fetch settles it"
         _record_after_send(ledger, failed_rec, log)
-        raise
+        err = scrubbed(e)
+    if err is not None:
+        raise err
     _record_after_send(ledger, {"event": "sent", "job_hash": h, "utc": utc_now(), "handle": asdict(handle)}, log)
     return handle
 

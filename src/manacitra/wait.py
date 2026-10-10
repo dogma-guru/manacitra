@@ -118,7 +118,38 @@ def to_backend(circuit, layout: Sequence[int], backend, seed_transpiler: int = 4
     pm = generate_preset_pass_manager(
         backend=backend, optimization_level=0, initial_layout=list(layout), seed_transpiler=seed_transpiler
     )
-    return pm.run(circuit)
+    out = pm.run(circuit)
+    check_translation(circuit, out, layout)
+    return out
+
+
+def _two_qubit(circuit) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for inst in circuit.data:
+        if len(inst.qubits) == 2 and inst.operation.name != "barrier":
+            out[inst.operation.name] = out.get(inst.operation.name, 0) + 1
+    return out
+
+
+def check_translation(logical, isa, layout: Sequence[int]) -> None:
+    """Refuses (RuntimeError) a translation that routed the circuit: a swap, a final layout that moves a qubit, an
+    instruction on a qubit not named, or a two-qubit gate count that differs from the circuit's (a swap translated to
+    CZ shows here). Optimization level 0 routes only a circuit with a gate off the coupling map, and the circuits here
+    have none; this makes sure no other circuit passes silently (A18, ruling R1)."""
+    named = {int(q) for q in layout}
+    problems = []
+    if "swap" in isa.count_ops():
+        problems.append("a swap was inserted")
+    final = getattr(getattr(isa, "layout", None), "final_layout", None)
+    if final is not None and any(isa.find_bit(v).index != p for v, p in final.get_virtual_bits().items()):
+        problems.append("the final layout moves a qubit")
+    used = {isa.find_bit(q).index for inst in isa.data for q in inst.qubits}
+    if not used <= named:
+        problems.append(f"instructions on qubits not named: {sorted(used - named)}")
+    if _two_qubit(isa) != _two_qubit(logical):
+        problems.append(f"two-qubit gates {_two_qubit(logical)} became {_two_qubit(isa)}")
+    if problems:
+        raise RuntimeError(f"refused: the translation onto {sorted(named)} routed the circuit: " + "; ".join(problems))
 
 
 def structure(circuit) -> list[list]:
@@ -141,9 +172,28 @@ def structure(circuit) -> list[list]:
     return out
 
 
+def _interval(name: str, ci) -> tuple[float, float]:
+    try:
+        lo, hi = (float(x) for x in ci)
+    except (TypeError, ValueError):
+        raise ValueError(f"{name}: an interval is two numbers, the lower first") from None
+    if not (math.isfinite(lo) and math.isfinite(hi)) or lo > hi:
+        raise ValueError(f"{name}: an interval's bounds must be finite, the lower not above the upper; got {ci!r}")
+    return lo, hi
+
+
 def wait_loss_kind(r_ci, r_minus_ke_ci, ke_minus_jr_ci, floor: float = LOSS_FLOOR) -> str:
     """Kickoff 47's rule for the kind of loss on one qubit, checked in this order, from the 90% intervals of the
-    Ramsey loss r, of r - k e and of k' e - j r (Kickoff 47: k = 3, k' = 3, j = 2)."""
+    Ramsey loss r, of r - k e and of k' e - j r (Kickoff 47: k = 3, k' = 3, j = 2).
+
+    Each interval is two finite bounds, the lower first, and the floor is finite; anything else is refused
+    (ValueError). The comparisons are strict: an upper bound equal to the floor is not below it, and a lower bound of
+    exactly 0 is not above 0."""
+    r_ci = _interval("r", r_ci)
+    r_minus_ke_ci = _interval("r - k e", r_minus_ke_ci)
+    ke_minus_jr_ci = _interval("k' e - j r", ke_minus_jr_ci)
+    if not math.isfinite(float(floor)):
+        raise ValueError(f"the floor must be finite; got {floor!r}")
     if r_ci[1] < floor:
         return "NOT REPRODUCED"
     if r_minus_ke_ci[0] > 0:

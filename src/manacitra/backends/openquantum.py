@@ -39,6 +39,7 @@ import numpy as np
 
 from ..circuits import CIRCUITS, offset_of, parse_label, unitary
 from .base import Estimate, GuardedSubmit, JobHandle, Ledger, MapCounts, MapJob, SpendRefused, Target
+from .redact import guard_client_logging, provider_call
 
 PROCESSOR = "rigetti:cepheus-1-108q"
 CREDITS_PER_TASK = 3
@@ -336,8 +337,11 @@ class OpenQuantumBackend(GuardedSubmit):
         self.balance_floor = balance_floor
         self._quotes: dict[str, dict] = {}
         self._discovery: dict | None = None
+        guard_client_logging()  # the clients' log records are cleaned as they are made (A18, ruling R1)
 
+    # every call into the SDK goes through provider_call, which re-raises its exceptions with their text cleaned
     @property
+    @provider_call
     def service(self):
         if self._service is None:
             check_sdk()
@@ -346,9 +350,11 @@ class OpenQuantumBackend(GuardedSubmit):
             self._service = OpenQuantumService.from_saved_account(name=self.account)
         return self._service
 
+    @provider_call
     def _org(self):
         return self.service.scheduler._resolve_organization_id(None)  # used in calls only; never stored
 
+    @provider_call
     def discover(self) -> dict:
         d = self.service.scheduler.get_backend_class(self.processor)
         cap = d["constraint_data"]
@@ -363,6 +369,7 @@ class OpenQuantumBackend(GuardedSubmit):
         }
         return self._discovery
 
+    @provider_call
     def target(self) -> Target:
         d = self._discovery or self.discover()
         names = [o["name"] for o in d["native_ops"] or []]
@@ -383,6 +390,7 @@ class OpenQuantumBackend(GuardedSubmit):
             ],
         )
 
+    @provider_call
     def balance(self) -> dict:
         b = self.service.management.get_credit_balance(self._org())
         return {"spark_credits": b.spark_credits, "full_credits": b.full_credits}
@@ -437,7 +445,7 @@ class OpenQuantumBackend(GuardedSubmit):
         named = ", ".join(f"{r['job_hash'][:12]} ({r['credits']:g} credits, reserved {r['utc']})" for r in held)
         return (
             f"balance floor: balance {balance:g} - open reservations {held_credits:g} - {q:g} for this job = "
-            f"{after:g} < floor {self.balance_floor:g}; open reservations on the saved account {self.account!r}: "
+            f"{after:g} < floor {self.balance_floor:g}; open reservations on {self.account_scope}: "
             f"{named or 'none'}"
         )
 
@@ -449,6 +457,7 @@ class OpenQuantumBackend(GuardedSubmit):
         prio = next(q for q in plan.queue_priorities if q.queue_priority_id == QueuePriorityType.STANDARD.value)
         return plan.name, plan.price + prio.price_increase
 
+    @provider_call
     def quote(self, job: MapJob, committed_credits: float | None = None) -> dict:
         """Prepare every task (no charge) and read the Public plan's standard-queue price, then test it.
 
@@ -598,6 +607,7 @@ class OpenQuantumBackend(GuardedSubmit):
             raise
         return JobHandle.for_job(self.name, self.processor, ids, job)
 
+    @provider_call
     def fetch(self, handle: JobHandle) -> MapCounts:
         sch = self.service.scheduler
         outcomes = []

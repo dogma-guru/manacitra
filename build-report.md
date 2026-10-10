@@ -2599,13 +2599,15 @@ branch `feat/a18-wait-test` starts there. No hardware, no provider job and no co
   "SEALED" was read.
 - **How it was checked.** The diff against `main` was searched, case-insensitively, for taper, qrmap, CaQR, QASMBench,
   RevLib, R-01, restore, route and routing, Sabre, reuse compil(ation), qubit reuse and dynamic circuit. The only matches
-  are the two lines of `wait.py`'s docstring that state the boundary. The data block added to `k47-wait.json` matches
-  none. Every added import is from the standard library, NumPy, SciPy, Qiskit, Qiskit Aer, qiskit-ibm-runtime or the
+  are the two lines of `wait.py`'s docstring that state the boundary. The reconstruction file, the builder's text
+  included, matches none. Every added import is from the standard library, NumPy, SciPy, Qiskit, Qiskit Aer, qiskit-ibm-runtime or the
   package itself.
 - **Translation.** `to_backend` translates with Qiskit's preset pass manager at optimization level 0, with the chain as
   the layout, as Kickoff 47 translated Part B. That pass manager's routing stage runs `SabreSwap` only if `CheckMap`
   finds a two-qubit gate off the coupling map. Every CZ of the wait test is on a coupler, so nothing is routed: on both
-  chains of the dry runs, the circuit as built has no swap, the same 5 CZ, and only the chain's qubits.
+  chains of the dry runs, the circuit as built has no swap, the same 5 CZ, and only the chain's qubits. Since ruling R1,
+  `check_translation` refuses any translation that routed (a swap, a moved qubit, a qubit not named, or a changed
+  two-qubit gate count; a swap translated to CZ shows in the count).
 
 **Part B, rebuilt (`manacitra.wait.part_b`).**
 - **The circuits.** Ramsey: H; a wait τ; H; measure. Echo: H; τ/2; X; τ/2; H; measure. Waits are in dt, rounded to
@@ -2614,14 +2616,21 @@ branch `feat/a18-wait-test` starts there. No hardware, no provider job and no co
 - **The archive did not carry enough to check them.** It recorded each circuit's operation counts and checks, not its
   instructions, and the hand-back holds the run's script, `hw_47.py` (SHA-256 `39fcc651c1c2…`, as its checksum list
   gives), but not the circuits as sent.
-  - **What was added.** `k47-wait.json` gains one block, `part_B_structure`: the 24 circuits, instruction by
-    instruction, made by running the script's own builder with Qiskit 2.5.2 onto qiskit-ibm-runtime 0.50.0's offline
-    ibm_fez snapshot.
-  - **Its records.** The block records the script's SHA-256 and its own (`circuits_sha256`, `ae2578437697…`).
-  - **How it was checked.** Every circuit's operation counts equal those recorded from the circuits as sent, and nothing
-    else in the file changed.
-- **The match.** Built for Kickoff 47's groups and waits, `part_b` equals the block instruction by instruction: gates,
-  delays in dt, qubits, classical bits and order. The labels follow the run's order.
+  - **What was added.** A file of its own, `data/ibm_fez/k47-wait-part-b-reconstruction.json` (ruling R1; the first
+    draft had put the same circuits into the released `k47-wait.json`, which is now as released). It holds the 24
+    circuits, instruction by instruction, made on 10 October 2026 by running the script's own Part B builder with
+    Qiskit 2.5.2 onto qiskit-ibm-runtime 0.50.0's offline ibm_fez snapshot, labelled as a reconstruction, not the
+    circuits as sent.
+  - **Its records.** The released archive's SHA-256 (`affe9c5c832e…`); the environment; the script's SHA-256; the
+    circuits' own (`circuits_sha256`, `ae2578437697…`); and the builder's Part B text, verbatim (lines 37 to 38, 128 to
+    165 and 221 to 224 of the script: `GROUPS`, `TAUS_US`, `tau_dt`, `build_B` and `b_list`), which passed the
+    identifier scan before it was added and holds nothing of Part A.
+  - **How it was checked.** The text, run alone, rebuilds the same 24 circuits, and its order is the run's. Every
+    circuit's operation counts equal those recorded from the circuits as sent. Whether the circuits are identical,
+    instruction by instruction, to the ones submitted cannot be checked, because those were not saved.
+- **The match.** Built for Kickoff 47's groups and waits, all 48 of `part_b`'s circuits, both copies, equal the
+  reconstruction's entry for their label instruction by instruction: gates, delays in dt, qubits, classical bits and
+  order. The labels follow the run's order.
 - **The analysis.** `part_b_losses` is A17's Part B analysis, moved from `tests/_reuse_runs.py` into the package, not
   copied: the recompute now calls it. It draws its random numbers in the same order, so Kickoff 47's reproduction is
   unchanged. Kickoff 47's rule is `wait_loss_kind`; the floor (0.10) and the factors (3, and 3 and 2) are parameters.
@@ -2679,10 +2688,62 @@ used. The brief's thresholds, all met:
 **Docs.**
 - **New:** `docs/reproduce.md`, on rerunning finding 13's Part B and the wait test, why a rerun is a new measurement
   with its own brief, and the offline tests.
-- **Changed:** a line in the README's "Install and try it"; a paragraph in `docs/method.md`; the entry for
-  `k47-wait.json` in `data/README.md`; and the changelog's Unreleased bullet.
+- **Changed:** a line in the README's "Install and try it" and one in its Documentation list; a paragraph in
+  `docs/method.md`; a row and a sentence for the reconstruction in `data/README.md`; and the changelog's Unreleased
+  bullets.
 - **Checked:** `test_the_wait_test_pages` checks the new pages' numbers against the code, the snapshot and the archive.
 - **No new finding.**
 
-**Signing.** `k47-wait.json`, `data/README.md` and `data/SHA256SUMS` changed, so their bundles are made again on `main`
-after the merge.
+**Signing.** The new reconstruction file, `data/README.md` and `data/SHA256SUMS` are signed on `main` after the merge.
+`k47-wait.json` is as released, and it verifies against its existing bundle.
+
+**Ruling R1 (10 October 2026): the review's fixes, before the merge.** An independent review of pull request 21 found no
+blocker in the circuit mathematics or the submission guards, and recommended changes in six of nine categories. The
+author took them all, with four items of Mantri's.
+- **The archive comparison skipped the second copies.** It now compares all 48 built circuits, each against the
+  reconstruction's entry for its label, and keeps the order and key-set checks. Six controls must fail, and do: an extra
+  X or a changed delay in a circuit of either copy, a missing circuit, and none at all.
+- **`wait_loss_kind` accepted invalid intervals.** NaN intervals read MIXED, and a reversed interval NOT REPRODUCED. It
+  now refuses any interval that is not two finite bounds with the lower first, and a floor that is not finite. Tests
+  record the strict comparisons: an upper bound equal to the floor is not below it, and a lower bound of 0 is not above
+  0.
+- **The offline controls were weaker than they looked.**
+  - **No offset.** The test passed with both wait-test F's forced to 0. It now requires F above 0.99 for both
+    variants, and a control with every wait-test shot moved to the wrong parity fails it.
+  - **Switching.** The switching test passed with the switching turned off, as it must, since Part B and the wait test
+    see M's phase only through its cosine. It is kept, renamed as the limitation it records. The harness is tested
+    apart: each shot's sign is recorded, both signs are used in about equal numbers, and on a circuit that tells +f
+    from −f (Ramsey with a quarter-turn readout, P(1) 0.92 against 0.08) each sign's shots read as their own offset and
+    the whole as the mixture, 0.5. With the switching off, that test fails.
+- **Identifiers could reach the ledger, the console or the logs.** The review saw a provider's error text stored
+  verbatim in the ledger and raised again, and the IBM client log "Invalid instance" with the instance (on a
+  fabricated object and a made-up identifier; no account was touched).
+  - **The sanitizer.** `manacitra.backends.redact` replaces instance names, CRNs, account and hub/group/project
+    identifiers, tokens, email addresses and home folders with `[redacted]`, and replaces first the active account's
+    own instance and token, read from the client object when it is created.
+  - **Where it runs.** The submit-once guard cleans provider text before every ledger write and raises only a clean
+    copy, with nothing chained. Every IBM and Open Quantum method that calls its client does the same. The clients'
+    log records are cleaned as they are made, and so is logging's error report when a handler fails on one.
+  - **Its tests.** `tests/test_redact.py` uses made-up markers shaped like a CRN, an instance name, a token, an account
+    ID, a hub/group/project and an email address, in exceptions and in log records. It asserts that none reaches the
+    ledger, stdout, stderr or a log handler: through the guard on any backend, IBM's client failing to start (and
+    `manacitra map --backend ibm`), the client's own discovery warning, `examples/04_wait_test.py`, and an Open Quantum
+    fetch.
+  - **One earlier test changed.** Open Quantum's balance-floor refusal named the saved account's local name, and an A6
+    test asserted it. It now names the account by its ledger scope, the hash the ledger already used, and the test
+    asserts that.
+- **Unmapped circuits could still be routed.** `check_translation` now refuses any translation that routed, and a
+  circuit with a CZ off the coupling map is refused in a test.
+- **The documentation overstated the archive match.** `docs/reproduce.md` now says that the circuits match a dated
+  reconstruction and the operation counts recorded from the circuits as sent, that identity with the circuits submitted
+  cannot be checked, and links the provenance record.
+- **A released, signed data file had been edited.** `k47-wait.json` is restored to its released bytes (SHA-256
+  `affe9c5c832e…`) and verifies against its bundle. The reconstruction is its own file.
+- **Mantri's items.**
+  - The dephasing control stays.
+  - `docs/reproduce.md` is in the README's Documentation list.
+  - `docs/reproduce.md` says that `--cap-s` is checked against the repository's estimate and a shared ledger, and that
+    the hard stop is the provider's own limit.
+- **A known item, not changed here.** qiskit-ibm-runtime 0.50.0 deprecates `SamplerV2`, which `IBMBackend` and
+  `IBMCircuitsBackend` use. Its successor is `qiskit_ibm_runtime.executor_sampler.Sampler`, and the old class stays at
+  least three months after that release. This pull request does not migrate.

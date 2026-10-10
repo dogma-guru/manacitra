@@ -41,6 +41,7 @@ from .base import (
     Target,
     utc_now,
 )
+from .redact import guard_client_logging, provider_call, register
 
 SECONDS_PER_SHOT = 0.3e-3
 OVERHEAD_S = 5.0
@@ -103,20 +104,30 @@ class IBMBackend(GuardedSubmit):
         self.optimization_level = optimization_level
         self.usage_log: list[dict] = []
         self._prepared: dict[str, tuple] = {}
+        guard_client_logging()  # the client's log records are cleaned as they are made (A18, ruling R1)
 
-    # -- the runtime client, created lazily from the saved account
+    # -- the runtime client, created lazily from the saved account. Every call into it goes through provider_call,
+    # -- which re-raises its exceptions with their text cleaned (redact.py)
     @property
+    @provider_call
     def service(self):
         if self._service is None:
             from qiskit_ibm_runtime import QiskitRuntimeService
 
             self._service = QiskitRuntimeService()
+            try:  # the active account's instance and token, from the client object, to be cleaned wherever they appear
+                acct = self._service.active_account() or {}
+                register(acct.get("instance"), acct.get("token"))
+            except Exception:
+                pass
         return self._service
 
+    @provider_call
     def backend(self):
         return self.service.backend(self.processor)
 
     # -- the protocol
+    @provider_call
     def target(self) -> Target:
         b = self.backend()
         t = b.target
@@ -287,6 +298,7 @@ class IBMBackend(GuardedSubmit):
         self.last_submission = {"cap": getattr(self, "_last_cap", None), "checks": checks, "handle": handle}
         return handle
 
+    @provider_call
     def fetch(self, handle: JobHandle) -> MapCounts:
         rj = self.service.job(handle.job_ids[0])
         status = str(rj.status())
@@ -439,6 +451,7 @@ class IBMCircuitsBackend(IBMBackend):
         self.last_submission = {"cap": getattr(self, "_last_cap", None), "handle": handle}
         return handle
 
+    @provider_call
     def fetch_counts(self, handle: JobHandle) -> dict:
         """The counts of every circuit, in order, as Qiskit returns them, with the job's times and charged seconds;
         settles the job's reservation once the provider reports its charge."""
