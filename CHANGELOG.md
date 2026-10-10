@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Amendment A17: findings 11 to 13, from reuse circuits on ibm_fez on 10 October 2026 (Kickoffs 43 to 47), with their data in `data/ibm_fez/`, their recompute in `tests/_reuse_runs.py`, one figure and `tools/fetch_reuse_circuits.py`. No behaviour of the package changed.
+
 ## 0.2.0 (10 October 2026)
 
 The default of `manacitra pick` changed: it now ranks pairs by |1 − k|. To get 0.1.x's ranking, use

@@ -315,7 +315,7 @@ pytest tests/test_readme_numbers.py   # the statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the seven diagrams, from data/
+python docs/make_diagrams.py          # the ten diagrams, from data/
 ```
 
 (*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
@@ -349,6 +349,9 @@ Where each README number comes from:
 | Rigetti, Kickoff 40: d = 0.99, PINNED; r_split 0.97, r_AB 0.81, r_Ax 0.20, DIAGNOSTIC; the level's 31% less error; SD of k 1.1; r = −0.17 against Kickoff 34b; r = −0.18 and 0.24 against Kickoff 37 | `rigetti_cepheus_1_108q/k40-*.json` | `archive.braket_placement`, `braket_map`, `braket_payoff` |
 | Rigetti, Kickoff 41: r = 0.85 (0.61 without the extremes), 0.80 for the level, HOLDS; 27% less error, G +0.0122 (+0.0077, +0.0168), USEFUL | `rigetti_cepheus_1_108q/k41-*.json` (with `k40-*.json`) | `archive.pinned_map_persistence`, `day_old_payoff` |
 | Rigetti, Kickoff 42: the shape check; r = +0.24; pooled r 0.85, median 0.98; 0.72 and 0.90, HOLDS; the switch | `rigetti_cepheus_1_108q/k42-*.json` | `archive.offset_scan` |
+| ibm_fez, Kickoff 43: G_reuse +0.2246 (+0.2227, +0.2267), USEFUL FOR REUSE; G without reuse +0.0182; the split by circuit; the original rule's chains through 33-34; the map NOT SETTLED | `ibm_fez/k43-map.json`, `k43-reuse.json`, `coupling-map.json` | `tests/_reuse_runs.py`: `k43_map`, `k43_placements`, `k43_reuse` |
+| ibm_fez, Kickoffs 44 to 46: the collapsing and holding chains; D −0.034 (−0.039, −0.028), −0.042 corrected; D −0.018, +0.031 (+0.014 without 141), −0.003; 142's mid-circuit error | `ibm_fez/k44-reset.json`, `k45-collapse.json`, `k46-middle.json` | `tests/_reuse_runs.py`: `k44_probe`, `k45_collapse`, `k46_middle` |
+| ibm_fez, Kickoff 47: F 0.071 and 0.843 on chain A, the gains; Ramsey loss 0.223, echo loss 0.015, REFOCUSABLE; the fit, 46.7 ± 2.7 kHz | `ibm_fez/k47-wait.json` (with `k43-reuse.json` for XOR_5's ideal) | `tests/_reuse_runs.py`: `k47_wait` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -358,7 +361,7 @@ in Kickoff 36's own report.
 ## 8. What kind of claim each part is
 
 - **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor (through two routes) returned
-  them on 5 to 7 October 2026, and the simulation outputs, as run on the author's computer on 5 October.
+  them on 5 to 7 October 2026 (and ibm_fez again on 10 October), and the simulation outputs, as run on the author's computer on 5 October.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it

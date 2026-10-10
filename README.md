@@ -18,7 +18,7 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Findings
 
-Ten findings, from runs on 5 to 7 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
+Thirteen findings, from runs on 5 to 10 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
 
 | # | finding | where | kickoff, 2026 | verdict |
 |---|---|---|---|---|
@@ -32,13 +32,17 @@ Ten findings, from runs on 5 to 7 October 2026. Each is given in full, with its 
 | [8](docs/findings.md#finding-8) | On the Rigetti processor, with placement pinned, the map is DIAGNOSTIC | Rigetti Cepheus-1-108Q, through Amazon Braket | 40, 6 Oct | PINNED; DIAGNOSTIC; payoff NOT SETTLED |
 | [9](docs/findings.md#finding-9) | The pinned Rigetti map lasted a day, and the day-old level chose better pairs | Rigetti Cepheus-1-108Q, through Amazon Braket | 41, 7 Oct | HOLDS; the level USEFUL; the kept share NOT SETTLED |
 | [10](docs/findings.md#finding-10) | On the Rigetti processor, a pair's response to a particular program repeats a day later, and a smooth shift of the offset does not describe it | Rigetti Cepheus-1-108Q, through Amazon Braket | 42, 6 to 7 Oct | SPREAD, MIXED, DOES NOT; the per-program pattern HOLDS a day later |
+| [11](docs/findings.md#finding-11) | On ibm_fez, reuse circuits placed by the map scored higher than Qiskit's calibration placement, mostly because the map's chains avoided one qubit | ibm_fez | 43, 10 Oct | USEFUL FOR REUSE (G = +0.2246 in fidelity), mostly from avoiding one qubit; the map's own verdict NOT SETTLED |
+| [12](docs/findings.md#finding-12) | On ibm_fez, a reuse circuit collapsed on chains around qubits 143 and 144, and five explanations for it were tested and set aside | ibm_fez | 44, 45, 46, 10 Oct | NOT SUPPORTED for one retirement, repeated retirements and a neighbour's retirement; idle loss SUPPORTED by its rule but not tracking the collapse |
+| [13](docs/findings.md#finding-13) | Qubit 143 lost phase while it waited in superposition, IBM's echo-measured T2 does not show that kind of loss, and refocusing pulses restored the circuit | ibm_fez | 47, 10 Oct | H_phase SUPPORTED; the loss on 143 REFOCUSABLE |
 
 What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
 
 ## Limits
 
 - **One circuit family.** Every map comes from one encoded four-site Hamiltonian, at two strengths of its diagonal coupling (circuits A and B). Other circuits might order the pairs differently.
-- **Three processors, three days.** The hardware results are from ibm_fez and ibm_kingston, and from Rigetti Cepheus-1-108Q through Open Quantum and through Amazon Braket, all on 5 to 7 October 2026.
+- **Three processors, three days.** The hardware results of findings 1 to 10 are from ibm_fez and ibm_kingston, and from Rigetti Cepheus-1-108Q through Open Quantum and through Amazon Braket, all on 5 to 7 October 2026.
+- **One processor, one day, for the reuse findings.** Findings 11 to 13 are from one processor on one day, across three published calibration stamps.
 - **Two routes to one processor.** The Rigetti findings through Open Quantum (2, 6) and through Amazon Braket (8 to 10) are from the same processor, but only the Braket route records where each pair ran. The difference between them is a difference between the two platforms' placement records, not between the vendors' machines.
 - **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
 - **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
@@ -100,7 +104,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the ten findings in full, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the thirteen findings in full, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
