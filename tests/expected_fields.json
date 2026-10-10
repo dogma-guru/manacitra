@@ -5374,12 +5374,6 @@
       "compare": "resampled-shots"
      },
      "archived/analysis/G_reuse/shot_only_formula_width": {},
-     "archived/analysis/G_reuse/ratio_width_to_shot_only_formula": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/G_reuse/ratio_width_to_shot_only_boot": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/G_no_reuse/point": {},
      "archived/analysis/G_no_reuse/ci90": {
       "compare": "resampled-shots"
@@ -5394,12 +5388,6 @@
       "compare": "resampled-shots"
      },
      "archived/analysis/G_no_reuse/shot_only_formula_width": {},
-     "archived/analysis/G_no_reuse/ratio_width_to_shot_only_formula": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/G_no_reuse/ratio_width_to_shot_only_boot": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/Delta/point": {},
      "archived/analysis/Delta/ci90": {
       "compare": "resampled-shots"
@@ -5414,12 +5402,6 @@
       "compare": "resampled-shots"
      },
      "archived/analysis/Delta/shot_only_formula_width": {},
-     "archived/analysis/Delta/ratio_width_to_shot_only_formula": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/Delta/ratio_width_to_shot_only_boot": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/verdict": {},
      "archived/analysis/verdict_conditions/G_reuse_ci90_entirely_below_delta": {},
      "archived/analysis/verdict_conditions/G_reuse_ci90_entirely_above_0": {},
@@ -5607,9 +5589,6 @@
      "archived/analysis/D/c/shot_only_width": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/D/c/ratio_width_to_shot_only": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/D/e_m/point": {},
      "archived/analysis/D/e_m/ci90": {
       "compare": "resampled-shots"
@@ -5623,9 +5602,6 @@
      "archived/analysis/D/e_m/shot_only_width": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/D/e_m/ratio_width_to_shot_only": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/D/eps/point": {},
      "archived/analysis/D/eps/ci90": {
       "compare": "resampled-shots"
@@ -5637,9 +5613,6 @@
       "compare": "resampled-shots"
      },
      "archived/analysis/D/eps/shot_only_width": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/D/eps/ratio_width_to_shot_only": {
       "compare": "resampled-shots"
      },
      "archived/analysis/T": {},
@@ -5728,9 +5701,6 @@
      "archived/analysis/part_B/verdicts/H_idle/shot_only_ci90": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/part_B/verdicts/H_idle/width_ratio": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/verdicts/H_idle/verdict": {},
      "archived/analysis/part_B/verdicts/H_idle/conditions": {},
      "archived/analysis/part_B/verdicts/H_repeat/quantity": {},
@@ -5739,9 +5709,6 @@
       "compare": "resampled-shots"
      },
      "archived/analysis/part_B/verdicts/H_repeat/shot_only_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/verdicts/H_repeat/width_ratio": {
       "compare": "resampled-shots"
      },
      "archived/analysis/part_B/verdicts/H_repeat/verdict": {},
@@ -6247,13 +6214,7 @@
      "archived/analysis/part_B/table/124;123/P0_S1": {},
      "archived/analysis/part_B/table/124;123/P0_S0": {},
      "archived/analysis/part_B/table/124;123/d": {},
-     "archived/analysis/part_B/table/124;123/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/124;123/i": {},
-     "archived/analysis/part_B/table/124;123/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/124;123/c_mid_err": {},
      "archived/analysis/part_B/table/124;123/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6267,13 +6228,7 @@
      "archived/analysis/part_B/table/124;125/P0_S1": {},
      "archived/analysis/part_B/table/124;125/P0_S0": {},
      "archived/analysis/part_B/table/124;125/d": {},
-     "archived/analysis/part_B/table/124;125/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/124;125/i": {},
-     "archived/analysis/part_B/table/124;125/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/124;125/c_mid_err": {},
      "archived/analysis/part_B/table/124;125/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6287,13 +6242,7 @@
      "archived/analysis/part_B/table/131;130/P0_S1": {},
      "archived/analysis/part_B/table/131;130/P0_S0": {},
      "archived/analysis/part_B/table/131;130/d": {},
-     "archived/analysis/part_B/table/131;130/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;130/i": {},
-     "archived/analysis/part_B/table/131;130/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;130/c_mid_err": {},
      "archived/analysis/part_B/table/131;130/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6307,13 +6256,7 @@
      "archived/analysis/part_B/table/131;132/P0_S1": {},
      "archived/analysis/part_B/table/131;132/P0_S0": {},
      "archived/analysis/part_B/table/131;132/d": {},
-     "archived/analysis/part_B/table/131;132/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;132/i": {},
-     "archived/analysis/part_B/table/131;132/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;132/c_mid_err": {},
      "archived/analysis/part_B/table/131;132/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6327,13 +6270,7 @@
      "archived/analysis/part_B/table/131;138/P0_S1": {},
      "archived/analysis/part_B/table/131;138/P0_S0": {},
      "archived/analysis/part_B/table/131;138/d": {},
-     "archived/analysis/part_B/table/131;138/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;138/i": {},
-     "archived/analysis/part_B/table/131;138/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/131;138/c_mid_err": {},
      "archived/analysis/part_B/table/131;138/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6347,13 +6284,7 @@
      "archived/analysis/part_B/table/142;141/P0_S1": {},
      "archived/analysis/part_B/table/142;141/P0_S0": {},
      "archived/analysis/part_B/table/142;141/d": {},
-     "archived/analysis/part_B/table/142;141/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/142;141/i": {},
-     "archived/analysis/part_B/table/142;141/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/142;141/c_mid_err": {},
      "archived/analysis/part_B/table/142;141/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6367,13 +6298,7 @@
      "archived/analysis/part_B/table/142;143/P0_S1": {},
      "archived/analysis/part_B/table/142;143/P0_S0": {},
      "archived/analysis/part_B/table/142;143/d": {},
-     "archived/analysis/part_B/table/142;143/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/142;143/i": {},
-     "archived/analysis/part_B/table/142;143/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/142;143/c_mid_err": {},
      "archived/analysis/part_B/table/142;143/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6387,13 +6312,7 @@
      "archived/analysis/part_B/table/143;136/P0_S1": {},
      "archived/analysis/part_B/table/143;136/P0_S0": {},
      "archived/analysis/part_B/table/143;136/d": {},
-     "archived/analysis/part_B/table/143;136/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;136/i": {},
-     "archived/analysis/part_B/table/143;136/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;136/c_mid_err": {},
      "archived/analysis/part_B/table/143;136/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6407,13 +6326,7 @@
      "archived/analysis/part_B/table/143;142/P0_S1": {},
      "archived/analysis/part_B/table/143;142/P0_S0": {},
      "archived/analysis/part_B/table/143;142/d": {},
-     "archived/analysis/part_B/table/143;142/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;142/i": {},
-     "archived/analysis/part_B/table/143;142/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;142/c_mid_err": {},
      "archived/analysis/part_B/table/143;142/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6427,13 +6340,7 @@
      "archived/analysis/part_B/table/143;144/P0_S1": {},
      "archived/analysis/part_B/table/143;144/P0_S0": {},
      "archived/analysis/part_B/table/143;144/d": {},
-     "archived/analysis/part_B/table/143;144/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;144/i": {},
-     "archived/analysis/part_B/table/143;144/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/143;144/c_mid_err": {},
      "archived/analysis/part_B/table/143;144/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6447,13 +6354,7 @@
      "archived/analysis/part_B/table/144;143/P0_S1": {},
      "archived/analysis/part_B/table/144;143/P0_S0": {},
      "archived/analysis/part_B/table/144;143/d": {},
-     "archived/analysis/part_B/table/144;143/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/144;143/i": {},
-     "archived/analysis/part_B/table/144;143/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/144;143/c_mid_err": {},
      "archived/analysis/part_B/table/144;143/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6467,13 +6368,7 @@
      "archived/analysis/part_B/table/144;145/P0_S1": {},
      "archived/analysis/part_B/table/144;145/P0_S0": {},
      "archived/analysis/part_B/table/144;145/d": {},
-     "archived/analysis/part_B/table/144;145/d_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/144;145/i": {},
-     "archived/analysis/part_B/table/144;145/i_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/table/144;145/c_mid_err": {},
      "archived/analysis/part_B/table/144;145/c_mid_err_ci90": {
       "compare": "resampled-shots"
@@ -6596,12 +6491,6 @@
      "archived/analysis/part_B/qubits/143/e_ci90": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/part_B/qubits/143/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/143/three_e_minus_2r_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/qubits/143/kind_of_loss": {},
      "archived/analysis/part_B/qubits/143/ramsey_fit/a": {},
      "archived/analysis/part_B/qubits/143/ramsey_fit/f_MHz": {},
@@ -6658,12 +6547,6 @@
      "archived/analysis/part_B/qubits/131/e_ci90": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/part_B/qubits/131/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/131/three_e_minus_2r_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/qubits/131/kind_of_loss": {},
      "archived/analysis/part_B/qubits/131/oscillation_pairs": {},
      "archived/analysis/part_B/qubits/124/group": {},
@@ -6713,12 +6596,6 @@
      },
      "archived/analysis/part_B/qubits/124/e_3p4": {},
      "archived/analysis/part_B/qubits/124/e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/124/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/124/three_e_minus_2r_ci90": {
       "compare": "resampled-shots"
      },
      "archived/analysis/part_B/qubits/124/kind_of_loss": {},
@@ -6772,12 +6649,6 @@
      "archived/analysis/part_B/qubits/142/e_ci90": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/part_B/qubits/142/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/142/three_e_minus_2r_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/qubits/142/kind_of_loss": {},
      "archived/analysis/part_B/qubits/142/oscillation_pairs": {},
      "archived/analysis/part_B/qubits/144/group": {},
@@ -6829,12 +6700,6 @@
      "archived/analysis/part_B/qubits/144/e_ci90": {
       "compare": "resampled-shots"
      },
-     "archived/analysis/part_B/qubits/144/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/144/three_e_minus_2r_ci90": {
-      "compare": "resampled-shots"
-     },
      "archived/analysis/part_B/qubits/144/kind_of_loss": {},
      "archived/analysis/part_B/qubits/144/oscillation_pairs": {},
      "archived/analysis/part_B/qubits/125/group": {},
@@ -6884,12 +6749,6 @@
      },
      "archived/analysis/part_B/qubits/125/e_3p4": {},
      "archived/analysis/part_B/qubits/125/e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/125/r_minus_3e_ci90": {
-      "compare": "resampled-shots"
-     },
-     "archived/analysis/part_B/qubits/125/three_e_minus_2r_ci90": {
       "compare": "resampled-shots"
      },
      "archived/analysis/part_B/qubits/125/kind_of_loss": {},

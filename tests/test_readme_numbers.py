@@ -848,8 +848,11 @@ def test_finding_11():
     an, pl = k43_run_recomputed()
     g, g0 = an["G_reuse"], an["G_no_reuse"]
     assert an["verdict"] == "USEFUL FOR REUSE"
-    assert (r(g["point"], 4), r(g["ci90"][0], 4), r(g["ci90"][1], 4)) == (0.2246, 0.2227, 0.2267)
-    assert (r(g0["point"], 4), r(g0["ci90"][0], 4), r(g0["ci90"][1], 4)) == (0.0182, 0.0161, 0.0204)
+    # the points from the recompute; the interval ends from the run's own bootstrap, as archived (the recompute agrees
+    # to 10⁻³ in tests/test_reproduction.py; its last digit can move with the platform's random stream)
+    ga = run["archived"]["analysis"]
+    assert (r(g["point"], 4), *(r(x, 4) for x in ga["G_reuse"]["ci90"])) == (0.2246, 0.2227, 0.2267)
+    assert (r(g0["point"], 4), *(r(x, 4) for x in ga["G_no_reuse"]["ci90"])) == (0.0182, 0.0161, 0.0204)
     assert "the verdict is USEFUL FOR REUSE: G_reuse = +0.2246, 90% interval +0.2227 to +0.2267." in README
     assert "Without reuse, the same circuits gave G = +0.0182 (+0.0161 to +0.0204)." in README
     assert sum(v["shots_pooled"] for v in an["cells"].values()) == 16 * 100_000
@@ -966,14 +969,17 @@ def test_finding_12():
     p44 = k44_recomputed()
     d, adj = p44["D"]["c"], p44["beside_after_data"]["t1_decay_in_R0"]["D_c_with_T1_adjusted_eps"]
     assert p44["verdict"] == "NOT SUPPORTED" and reuse_doc(K44)["fixed_before_the_data"]["delta_c"] == 0.02
-    assert (r(d["point"], 3), r(d["ci90"][0], 3), r(d["ci90"][1], 3), r(adj, 3)) == (-0.034, -0.039, -0.028, -0.042)
+    a44, a45, a46 = (reuse_doc(f)["archived"]["analysis"] for f in (K44, K45, K46))  # interval ends, as archived
+    ci = a44["D"]["c"]["ci90"]
+    assert (r(d["point"], 3), r(ci[0], 3), r(ci[1], 3), r(adj, 3)) == (-0.034, -0.039, -0.028, -0.042)
     assert "D = −0.034, 90% interval −0.039 to −0.028, below the margin of 0.02." in README
     assert "Corrected with the published T1, after the data, D is −0.042. The verdict did not change." in README
     v45 = k45_recomputed()
     rep, idle = v45["part_B"]["verdicts"]["H_repeat"], v45["part_B"]["verdicts"]["H_idle"]
     assert rep["verdict"] == "NOT SUPPORTED" and idle["verdict"] == "SUPPORTED"
-    assert (r(rep["D"], 3), r(rep["ci90"][0], 3), r(rep["ci90"][1], 3)) == (-0.018, -0.021, -0.014)
-    assert (r(idle["D"], 3), r(idle["ci90"][0], 3), r(idle["ci90"][1], 3)) == (0.031, 0.026, 0.035)
+    ci_rep, ci_idle = (a45["part_B"]["verdicts"][h]["ci90"] for h in ("H_repeat", "H_idle"))
+    assert (r(rep["D"], 3), r(ci_rep[0], 3), r(ci_rep[1], 3)) == (-0.018, -0.021, -0.014)
+    assert (r(idle["D"], 3), r(ci_idle[0], 3), r(ci_idle[1], 3)) == (0.031, 0.026, 0.035)
     assert r(v45["beside_after_data"]["D_x_I2_without_141"], 3) == 0.014
     assert "NOT SUPPORTED, D = −0.018 (−0.021 to −0.014)." in README
     assert "SUPPORTED by its rule, D = +0.031 (+0.026 to +0.035)." in README and "(without it, D is +0.014" in README
@@ -987,7 +993,8 @@ def test_finding_12():
     assert "by a factor of about (1 − 0.049)³ = 0.86" in README and "(0.004 in Kickoff 46, 1.3 times)" in README
     sp = k46_recomputed()["part_B"]["H_spectator"]
     assert sp["verdict"] == "NOT SUPPORTED" and sp["margin"] == 0.05
-    assert (r(sp["D"], 3), r(sp["ci90"][0], 3), r(sp["ci90"][1], 3)) == (-0.003, -0.018, 0.011)
+    ci = a46["part_B"]["H_spectator"]["ci90"]
+    assert (r(sp["D"], 3), r(ci[0], 3), r(ci[1], 3)) == (-0.003, -0.018, 0.011)
     assert "NOT SUPPORTED, D = −0.003 (−0.018 to +0.011), below the margin of 0.05." in README
     assert k46_recomputed()["part_A"]["patterns"] == ["no fixed pattern holds: reported as observed, with no reading"]
     # the stamps: 03:16:31 at the builds of 43 to 45; 05:52:36 at 06:19 with the CZ figures changed; 06:12:47 at 46,
@@ -1018,9 +1025,11 @@ def test_finding_13():
     k = k47_recomputed()
     c, g = k["part_A"]["cells"], k["part_A"]["gains_beside"]
     assert k["part_A"]["H_phase"] == "SUPPORTED" and doc["cells"]["A0"]["chain"] == [144, 143, 142]
-    assert [r(c["A0"][f], 3) for f in ("F",)] + [r(x, 3) for x in c["A0"]["ci90"]] == [0.071, 0.069, 0.073]
-    assert [r(c["A1"]["F"], 3)] + [r(x, 3) for x in c["A1"]["ci90"]] == [0.843, 0.838, 0.847]
-    assert [r(g["A"]["gain"], 3)] + [r(x, 3) for x in g["A"]["ci90"]] == [0.772, 0.767, 0.777]
+    a = doc["archived"]["analysis"]  # interval ends, as archived; points from the recompute
+    ca, ga = a["part_A"]["cells"], a["part_A"]["gains_beside"]
+    assert [r(c["A0"]["F"], 3)] + [r(x, 3) for x in ca["A0"]["ci90"]] == [0.071, 0.069, 0.073]
+    assert [r(c["A1"]["F"], 3)] + [r(x, 3) for x in ca["A1"]["ci90"]] == [0.843, 0.838, 0.847]
+    assert [r(g["A"]["gain"], 3)] + [r(x, 3) for x in ga["A"]["ci90"]] == [0.772, 0.767, 0.777]
     assert "(F 0.071, 90% interval 0.069 to 0.073), and scored 0.843 (0.838 to 0.847)" in README
     assert "a gain of +0.772 (+0.767 to +0.777)." in README
     # ruling R1: the pulses went only into the idle windows long enough to hold the sequence (four pulses per window)
@@ -1040,8 +1049,9 @@ def test_finding_13():
     assert "Refocusing cost the healthy chain 0.049 and chain J 0.011." in README
     q = k["part_B"]["qubits"]["143"]
     assert q["kind_of_loss"] == "REFOCUSABLE" and doc["taus_us"] == [0, 1, 2, 3.4, 4, 8]
-    assert [r(q["r_3p4"], 3)] + [r(x, 3) for x in q["r_ci90"]] == [0.223, 0.215, 0.231]
-    assert [r(q["e_3p4"], 3)] + [r(x, 3) for x in q["e_ci90"]] == [0.015, 0.012, 0.018]
+    qa = a["part_B"]["qubits"]["143"]
+    assert [r(q["r_3p4"], 3)] + [r(x, 3) for x in qa["r_ci90"]] == [0.223, 0.215, 0.231]
+    assert [r(q["e_3p4"], 3)] + [r(x, 3) for x in qa["e_ci90"]] == [0.015, 0.012, 0.018]
     assert "was 0.223 (0.215 to 0.231); with one refocusing pulse halfway" in README
     assert "the loss was 0.015 (0.012 to 0.018)." in README
     w = doc["refocusing"]["cells"]["A0"]["idle_windows_dt_before"]["143"]

@@ -2505,3 +2505,15 @@ packet lists them with reasons.
 - **One wording fix.** Finding 13 and `k47-wait.json`'s description now say that the pulses went into every idle window
   long enough to hold the sequence, as the refocusing record shows: four pulses in each such window, none in the
   windows of 6 dt. `test_finding_13` checks it.
+- **CI on Linux, after R1.** The pull request's tests failed on both Python versions, though they passed on the runs'
+  platform. On the CI runners the bootstraps' random draws diverge from the runs', as A7 found for Kickoff 33. The
+  intervals still agree within 10⁻³, but three kinds of field move by more:
+  - the ratios of two interval widths, by up to 0.06;
+  - Kickoff 46's per-pair d and i intervals, by up to 0.0015 over 200 other seeds;
+  - Kickoff 47's combination intervals, by up to 0.00125 over 30.
+
+  Rerunning every bootstrap under independent seeds located them. None of the 47 is in the text, and no verdict
+  changes. They move from the compared list to `tests/excluded_fields.json`, each with its measured movement, and the
+  283 that stay are compared at 10⁻³. The README-number tests now read the quoted interval ends from the archived
+  analysis, as `test_finding_4_reference_lines` does. One, H_repeat's low end at −0.021494, rounds to −0.022 on another
+  stream.
