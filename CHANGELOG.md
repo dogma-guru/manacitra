@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (10 October 2026)
+
+Findings 11 to 13, from reuse circuits on ibm_fez on 10 October 2026, with their data. No behaviour of the package changed.
 
 - Amendment A17: findings 11 to 13, from reuse circuits on ibm_fez on 10 October 2026 (Kickoffs 43 to 47), with their data in `data/ibm_fez/`, their recompute in `tests/_reuse_runs.py`, one figure and `tools/fetch_reuse_circuits.py`. No behaviour of the package changed.
 
