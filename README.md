@@ -92,6 +92,8 @@ print(result["verdict"]["verdict"], [pairs[i] for i in pick_pairs(result["kA"], 
 
 It prints `DIAGNOSTIC` and the eight pairs that kept the most. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
 
+A fourth, `examples/04_wait_test.py`, builds finding 13's Part B and the wait test for a backend and chain you name, as a dry run unless `--submit`; [`docs/reproduce.md`](docs/reproduce.md) says how to rerun them on hardware, and why a rerun is a new measurement.
+
 ## Reproducing the numbers
 
 ```bash

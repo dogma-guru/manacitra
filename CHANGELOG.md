@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Amendment A18: `manacitra.wait` builds Kickoff 47's Part B for any qubits and waits, and the wait test, a three-line
+  circuit written here, on a chain the user names; its analysis gives the Ramsey and echo losses and Kickoff 47's kind
+  of loss, with the rule's thresholds as parameters. `examples/04_wait_test.py` builds both for a backend as a dry run,
+  sends them only with `--submit`, through the submit-once guard (`IBMCircuitsBackend`), and analyses the counts;
+  `docs/reproduce.md` says how to rerun them and what a rerun is. `k47-wait.json` gains Part B's structure. No finding
+  changed.
+
 ## 0.3.0 (10 October 2026)
 
 Findings 11 to 13, from reuse circuits on ibm_fez on 10 October 2026, with their data. No behaviour of the package changed.

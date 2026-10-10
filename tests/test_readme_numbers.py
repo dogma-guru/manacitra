@@ -33,7 +33,14 @@ from manacitra import archive
 
 ROOT = Path(__file__).resolve().parents[1]
 #: The README and the pages it links to for its findings, method, kickoffs and install details
-README_PAGES = ("README.md", "docs/findings.md", "docs/method.md", "docs/kickoffs.md", "docs/install.md")
+README_PAGES = (
+    "README.md",
+    "docs/findings.md",
+    "docs/method.md",
+    "docs/kickoffs.md",
+    "docs/install.md",
+    "docs/reproduce.md",
+)
 README = "\n\n".join((ROOT / p).read_text() for p in README_PAGES)
 
 
@@ -1097,3 +1104,39 @@ def test_the_reuse_wait_picture():
     assert "46.7 ± 2.7 kHz" in alt and "three windows of 3.34 to 3.37 µs" in alt
     text = svg_text(DIAGRAMS / "reuse-wait.svg")
     assert "a fit: one steady offset, 46.7 ± 2.7 kHz" in text and "10 October 2026" in text
+
+
+# --------------------------------------------------------------------------- Amendment A18: the wait, rerun
+def test_the_wait_test_pages():
+    """docs/method.md's paragraph on the wait test and docs/reproduce.md carry the numbers of the code, the offline
+    snapshot and the archive: the exact ideal and the sensitivity, the blind offset, the job's size, M's waits in the
+    snapshot and 143's live waits in Kickoff 47, and the two calibration stamps of 144's change."""
+    pytest.importorskip("qiskit_ibm_runtime")
+    from _reproduce import K46, K47, reuse_doc
+    from qiskit_ibm_runtime.fake_provider import FakeFez
+
+    from manacitra import wait
+
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split("\n## The wait test\n", 1)[1].split())
+    page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    ideal = wait.wait_test_ideal()
+    assert len(ideal) == 32 and 2**wait.WAIT_TEST_CLBITS == 64 and "uniform over 32 of the 64 outcomes" in method
+    s = wait.wait_test_sensitivity()
+    assert r(s["F_each_wait"], 3) == r(s["F_one_wait"], 3) == 0.5 and "or in only one, gives 0.5" in method
+    fez = FakeFez()
+    plain = wait.build_wait_test((144, 143, 142), False, fez)
+    total = sum(wait.idle_windows(wait.scheduled(plain, fez.target), 143))
+    assert round(1 / (total * fez.dt) / 1e3) == 105 and "about 105 kHz with the offline ibm_fez snapshot's" in method
+    circuits, labels, shots = wait.wait_run((144, 143, 142), fez)
+    assert len(circuits) == 58 and sum(shots) == 292_000 and "58 circuits and 292,000 shots" in page
+    assert {n for lab, n in zip(labels, shots) if lab["part"] == "W"} == {10_000} and "10,000 shots each" in page
+    assert {n for lab, n in zip(labels, shots) if lab["part"] == "B"} == {4_000} and "4,000 shots each" in page
+    assert wait.KICKOFF_47_WAITS_DT == (0, 250, 500, 850, 1000, 2000)
+    assert "waits of 0, 250, 500, 850, 1,000 and 2,000 dt" in page
+    assert {v["dt"] for v in wait.wait_lengths(fez, (144, 143, 142)).values()} == {786}
+    live = reuse_doc(K47)["refocusing"]["cells"]["A0"]["idle_windows_dt_before"]["143"]
+    assert live == [836, 836, 842] and "M's waits are 786 dt in the snapshot" in page
+    assert "143's waits on the live backend were 836, 836 and 842 dt" in page
+    stamps = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K46, K47)]
+    assert [t[11:16] for t in stamps] == ["06:12", "09:56"]
+    assert "from 0.15 under IBM's 06:12 UTC calibration stamp (Kickoff 46) to 0.012 under the 09:56 UTC stamp" in page

@@ -22,6 +22,7 @@ import numpy as np
 
 from manacitra import archive as ar
 from manacitra.verdicts import map_verdict, persistence_day
+from manacitra.wait import part_b_losses
 
 N_BOOT = 10_000
 Z90 = 1.6448536269514722  # the 95th percentile of the standard normal, as Kickoff 43's analysis wrote it
@@ -1047,56 +1048,6 @@ def k46_middle(rec: dict, xor5: dict) -> dict:
 
 
 # =========================================================================== Kickoff 47
-def _ramsey_fit(taus, p1):
-    from scipy.optimize import curve_fit
-
-    t, y = np.array(taus, float), np.array(p1, float)
-    c0 = y[0]
-
-    def model(tt, a, T, f):
-        return c0 + a * (1 - np.exp(-tt / T) * np.cos(2 * np.pi * f * tt))
-
-    best = None
-    for f0 in np.linspace(0.0, 0.5, 11):
-        try:
-            popt, pcov = curve_fit(model, t, y, p0=[0.3, 5.0, f0], bounds=([0, 0.05, 0], [0.7, 1e4, 1.0]), maxfev=20000)
-        except Exception:
-            continue
-        sse = float(np.sum((model(t, *popt) - y) ** 2))
-        if best is None or sse < best[0]:
-            best = (sse, popt, pcov)
-    if best is None:
-        return None
-    sse, popt, pcov = best
-    err = np.sqrt(np.clip(np.diag(pcov), 0, None))
-    return {
-        "a": float(popt[0]),
-        "T_us": float(popt[1]),
-        "f_MHz": float(popt[2]),
-        "a_err": float(err[0]),
-        "T_err": float(err[1]),
-        "f_err": float(err[2]),
-        "sse": sse,
-    }
-
-
-def _echo_fit(taus, p1):
-    from scipy.optimize import curve_fit
-
-    t, y = np.array(taus, float), np.array(p1, float)
-    c0 = y[0]
-
-    def model(tt, a, T):
-        return c0 + a * (1 - np.exp(-tt / T))
-
-    try:
-        popt, pcov = curve_fit(model, t, y, p0=[0.3, 20.0], bounds=([0, 0.05], [0.7, 1e5]), maxfev=20000)
-    except Exception as ex:
-        return {"error": type(ex).__name__}
-    err = np.sqrt(np.clip(np.diag(pcov), 0, None))
-    return {"a": float(popt[0]), "T_us": float(popt[1]), "a_err": float(err[0]), "T_err": float(err[1])}
-
-
 def k47_wait(rec: dict, xor5: dict) -> dict:
     """Kickoff 47. Part A: the three chains without and with XY4 refocusing; H_phase on the circuit (SUPPORTED if A1
     is HIGH; read only if C0 and C1 are HIGH and A0 is LOW) and the gain from refocusing on each chain with its interval
@@ -1120,69 +1071,18 @@ def k47_wait(rec: dict, xor5: dict) -> dict:
         gate, verdict = "A0 is not LOW: the collapse did not repeat; reported descriptively", None
     else:
         gate, verdict = None, {"HIGH": "SUPPORTED", "LOW": "NOT SUPPORTED", "MIDDLE": "NOT SETTLED"}[cl["A1"]]
-    taus = rec["taus_us"]
-    raw = defaultdict(dict)
-    for lab, cts in zip(rec["labels"], rec["counts"]):
-        if lab["part"] == "B":
-            raw[(lab["group"], lab["tau_us"], lab["variant"])][lab["copy"]] = cts
-    rng = np.random.default_rng(seed_b)
-    qubits = {}
-    for g, qs in sorted(rec["groups"].items(), key=lambda z: int(z[0])):
-        for i, q in enumerate(qs):
-            P, B = {}, {}
-            for tau in taus:
-                for v in ("R", "E"):
-                    ones, tots = [], []
-                    for c in (1, 2):
-                        cts = raw[(int(g), tau, v)][c]
-                        ones.append(sum(n for k, n in cts.items() if _bits(k)[i] == "1"))
-                        tots.append(sum(cts.values()))
-                    ones, tots = np.array(ones), np.array(tots)
-                    P[(tau, v)] = ones.sum() / tots.sum()
-                    acc1, accn = np.zeros(N_BOOT), np.zeros(N_BOOT)
-                    for _ in range(2):
-                        pick = rng.integers(0, 2, size=N_BOOT)
-                        acc1 += rng.binomial(tots[pick], ones[pick] / tots[pick])
-                        accn += tots[pick]
-                    B[(tau, v)] = acc1 / accn
-            r, e = P[(3.4, "R")] - P[(0, "R")], P[(3.4, "E")] - P[(0, "E")]
-            rb, eb = B[(3.4, "R")] - B[(0, "R")], B[(3.4, "E")] - B[(0, "E")]
-            ci_r, ci_e, ci_r3e, ci_3e2r = pct(rb), pct(eb), pct(rb - 3 * eb), pct(3 * eb - 2 * rb)
-            if ci_r[1] < 0.10:
-                kind = "NOT REPRODUCED"
-            elif ci_r3e[0] > 0:
-                kind = "REFOCUSABLE"
-            elif ci_3e2r[0] > 0:
-                kind = "NOT REFOCUSABLE"
-            else:
-                kind = "MIXED"
-            ram, ech = [P[(t, "R")] for t in taus], [P[(t, "E")] for t in taus]
-            ram_ci = [pct(B[(t, "R")]) for t in taus]
-            osc = [
-                [taus[a], taus[b], ram[a], ram[b]]
-                for a in range(len(taus))
-                for b in range(a + 1, len(taus))
-                if ram[b] < ram[a] - 0.1 and ram_ci[b][1] < ram_ci[a][0]
-            ]
-            qubits[str(q)] = {
-                "group": int(g),
-                "ramsey_P1": dict(zip(map(str, taus), ram)),
-                "ramsey_ci90": dict(zip(map(str, taus), ram_ci)),
-                "echo_P1": dict(zip(map(str, taus), ech)),
-                "echo_ci90": dict(zip(map(str, taus), [pct(B[(t, "E")]) for t in taus])),
-                "ramsey_loss": {str(t): P[(t, "R")] - P[(0, "R")] for t in taus},
-                "echo_loss": {str(t): P[(t, "E")] - P[(0, "E")] for t in taus},
-                "r_3p4": r,
-                "r_ci90": ci_r,
-                "e_3p4": e,
-                "e_ci90": ci_e,
-                "r_minus_3e_ci90": ci_r3e,
-                "three_e_minus_2r_ci90": ci_3e2r,
-                "kind_of_loss": kind,
-                "ramsey_fit": _ramsey_fit(taus, ram),
-                "echo_fit": _echo_fit(taus, ech),
-                "oscillation_pairs": osc,
-            }
+    # Part B by the package's own analysis (manacitra.wait, Amendment A18), with Kickoff 47's groups, waits and rule
+    groups = [qs for _, qs in sorted(rec["groups"].items(), key=lambda z: int(z[0]))]
+    losses = part_b_losses(
+        rec["labels"], rec["counts"], groups, rec["taus_us"], reference=3.4, seed=seed_b, wait_key="tau_us"
+    )
+    rename = {
+        "r": "r_3p4",
+        "e": "e_3p4",
+        "r_minus_ke_ci90": "r_minus_3e_ci90",
+        "ke_minus_jr_ci90": "three_e_minus_2r_ci90",
+    }
+    qubits = {q: {rename.get(k, k): v for k, v in row.items()} for q, row in losses.items()}
     return {
         "part_A": {"cells": cells, "classes": cl, "gate": gate, "H_phase": verdict, "gains_beside": gains},
         "part_B": {
