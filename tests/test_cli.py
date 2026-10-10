@@ -25,7 +25,7 @@ def test_map_on_the_simulator_then_pick(tmp_path, capsys):
     assert "verdict: DIAGNOSTIC" in capsys.readouterr().out
     assert len(json.loads(out.read_text())["outcomes"]) == 16
     assert main(["pick", str(out), "--n", "5"]) == 0
-    assert capsys.readouterr().out.count("k_A") == 5
+    assert capsys.readouterr().out.split("\n\n")[0].count("k_A") == 5
 
 
 @pytest.mark.skipif(importlib.util.find_spec("qiskit_ibm_runtime") is None, reason="needs the [ibm] extra")
@@ -88,7 +88,7 @@ def test_pick_warns_when_the_verdict_is_not_usable(tmp_path, capsys):
     assert "verdict: NOISE" in capsys.readouterr().out
     assert main(["pick", str(out), "--n", "5"]) == 0
     got = capsys.readouterr()
-    assert "warning: this map's verdict is NOISE" in got.err and got.out.count("k_A") == 5
+    assert "warning: this map's verdict is NOISE" in got.err and got.out.split("\n\n")[0].count("k_A") == 5
 
 
 def test_pick_is_quiet_on_a_usable_map(capsys):
@@ -97,13 +97,15 @@ def test_pick_is_quiet_on_a_usable_map(capsys):
 
 
 def _picked(text):
-    return [json.loads(line.split("]")[0].strip() + "]") for line in text.splitlines()[1:]]
+    ranked = text.split("\n\n", 1)[0]  # the summary of pairs far from k = 1 follows a blank line (Amendment A15)
+    return [json.loads(line.split("]")[0].strip() + "]") for line in ranked.splitlines()[1:]]
 
 
-@pytest.mark.parametrize("by", ["kept-share", "level", "x", "k"])
+@pytest.mark.parametrize("by", ["kept-share", "kept-share-highest", "level", "x", "k"])
 def test_pick_by(by, capsys):
-    """Amendment A7, 5.2: --by kept-share (the default, and its earlier name k), --by level (each pair's mean P(A no),
-    highest first) and --by x (the published score, lowest first), on Kickoff 31's ibm_fez map."""
+    """Amendment A7, 5.2, and A15: --by kept-share (the default, and its earlier name k) by |1 - k| after the dead-pair
+    filter, --by kept-share-highest (highest k, as Kickoff 33 ran it), --by level (each pair's mean P(A no), highest
+    first) and --by x (the published score, lowest first), on Kickoff 31's ibm_fez map."""
     import numpy as np
 
     from manacitra.keptshare import kept_from_order
@@ -112,11 +114,20 @@ def test_pick_by(by, capsys):
     rec = archive.load(path)
     k, _, level = kept_from_order(archive.p11_table(rec), rec["order"], "A")
     x = np.array([r["x"] for r in rec["published_at_submission"]])
-    want = {"kept-share": np.argsort(-k), "k": np.argsort(-k), "level": np.argsort(-level), "x": np.argsort(x)}[by][:6]
+    by_distance = sorted((i for i in range(len(k)) if level[i] >= 0.5), key=lambda i: (abs(1 - k[i]), i))
+    want = {
+        "kept-share": by_distance,
+        "k": by_distance,
+        "kept-share-highest": np.argsort(-k),
+        "level": np.argsort(-level),
+        "x": np.argsort(x),
+    }[by][:6]
     assert main(["pick", str(path), "--n", "6", "--by", by]) == 0
     out = capsys.readouterr().out
     assert _picked(out) == [rec["pairs"][i] for i in want]
-    assert {"kept-share": "kept share", "k": "kept share", "level": "plain level", "x": "published score"}[by] in out
+    names = {"kept-share": "closest to the ideal", "k": "closest to the ideal", "kept-share-highest": "highest first"}
+    assert {**names, "level": "plain level", "x": "published score"}[by] in out
+    assert "\nof the 27 usable pairs (level at least 0.5)" in out and "furthest from k = 1: " in out
 
 
 def test_pick_by_level_differs_from_the_default(capsys):

@@ -407,7 +407,7 @@ def diagram_pipeline(out: Path):
             "k from two circuits,\nsplit halves, published x",
             "NOISE / REDUNDANT /\nDIAGNOSTIC / MAP PRESENT\n/ NOT SETTLED",
         ),
-        ("Pick", "the map (and, for\ncomparison, x)", "the n pairs that kept the\nmost; verdict not checked"),
+        ("Pick", "the map (and, for\ncomparison, x)", "the n pairs closest to\nk = 1; verdict not checked"),
         ("Run (yours)", "your own job, run by\nyou on the picked pairs", "not run by Manacitra"),
     ]
     w, h, gap, y = 2.2, 1.25, 0.55, 1.15

@@ -9,7 +9,9 @@
 * edge_rounds: every edge, split into the fewest rounds of disjoint pairs. A heavy-hex map has no qubit with more than
   three neighbours and no odd cycle, so three rounds suffice (Konig's edge-colouring theorem); the round count is
   reported, never assumed.
-* pick_pairs: the n pairs with the highest kept share (or lowest published score).
+* pick_pairs: the n pairs with the highest values (or the lowest, for a published score).
+* pick_by_kept_share: the n pairs whose kept share is closest to the ideal, |1 - k|, after the dead-pair filter
+  (Amendment A15); the default of `manacitra pick`.
 * published_score_braket: x on Amazon Braket, from its standardized device properties, with the placeholder rule.
 * vendor_flag: whether the vendor has marked a pair as not measured or not working (Amendment A7).
 """
@@ -173,3 +175,36 @@ def pick_pairs(values, n: int = 8, highest: bool = True) -> list[int]:
     """Indices of the n pairs with the highest values (a kept-share map) or the lowest (a published score)."""
     v = np.asarray(values, float)
     return [int(i) for i in np.argsort(-v if highest else v)[:n]]
+
+
+#: A pair whose plain level, its mean P(A no), is below this is dead (the archive's dead-pair rule)
+DEAD_PAIR_FLOOR = 0.5
+
+
+def usable_pairs(level=None, floor: float = DEAD_PAIR_FLOOR) -> list[int] | None:
+    """Indices of the pairs whose plain level is at least the floor, or None when no levels are given (all usable)."""
+    return None if level is None else [i for i, v in enumerate(np.asarray(level, float)) if v >= floor]
+
+
+def pick_by_kept_share(k, n: int = 8, level=None, floor: float = DEAD_PAIR_FLOOR) -> list[int]:
+    """The n pairs whose kept share is closest to the ideal, |1 - k| smallest first, ties to the lower index
+    (Amendment A15). k = 1 is a pair that kept exactly the circuit's gap; a k far above 1 is a pair whose two circuits
+    are being pulled apart by an error, not one that kept more. When `level` (each pair's mean P(A no)) is given, pairs
+    below the dead-pair floor are left out first. Kickoff 33 ranked highest k first, as pick_pairs(k, n) does."""
+    k = np.asarray(k, float)
+    keep = usable_pairs(level, floor)
+    pool = range(len(k)) if keep is None else keep
+    return sorted(pool, key=lambda i: (abs(1.0 - k[i]), i))[:n]
+
+
+def kept_share_outliers(k, level=None, floor: float = DEAD_PAIR_FLOOR, high: float = 1.2, low: float = 0.0) -> dict:
+    """Among the usable pairs: how many have k above `high` or below `low`, and the three furthest from 1."""
+    k = np.asarray(k, float)
+    keep = usable_pairs(level, floor)
+    pool = list(range(len(k))) if keep is None else keep
+    return {
+        "usable": len(pool),
+        "above": sum(1 for i in pool if k[i] > high),
+        "below": sum(1 for i in pool if k[i] < low),
+        "furthest": sorted(pool, key=lambda i: (-abs(1.0 - k[i]), i))[:3],
+    }

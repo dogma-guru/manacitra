@@ -207,10 +207,13 @@ def cmd_verdict(a) -> int:
 USABLE_VERDICTS = ("DIAGNOSTIC", "MAP PRESENT")
 
 
-#: What `pick --by` ranks by: the kept share k_A (highest first), the plain level, each pair's mean P(A no) (highest
-#: first; Amendment A7), or the published score x (lowest first). "k" is the earlier name of kept-share.
+#: What `pick --by` ranks by: the kept share k_A by its distance from the ideal, |1 - k| smallest first, after the
+#: dead-pair filter (Amendment A15); the kept share highest first, the rule as run in Kickoff 33; the plain level, each
+#: pair's mean P(A no) (highest first; Amendment A7); or the published score x (lowest first). "k" is the earlier name
+#: of kept-share.
 PICK_BY = {
-    "kept-share": "kept share (highest first)",
+    "kept-share": "kept share, closest to the ideal first (|1 - k|; pairs below the dead-pair floor left out)",
+    "kept-share-highest": "kept share, highest first (the rule as run in Kickoff 33)",
     "level": "plain level, mean P(A no) (highest first)",
     "x": "published score (lowest first)",
 }
@@ -220,10 +223,12 @@ def cmd_pick(a) -> int:
     """Rank pairs from a map. It does not condition on the verdict; it warns (on stderr) when the map's verdict is not
     DIAGNOSTIC or MAP PRESENT. Running the user's own job on the pairs is the user's step, not Manacitra's.
 
-    --by kept-share (the default) ranks by the kept share; --by level by the plain level, which chose better pairs on
-    the Rigetti processor where the kept share did not (Kickoffs 40 and 41); --by x by the published score."""
+    --by kept-share (the default) ranks by the kept share's distance from the ideal, |1 - k|, after the dead-pair
+    filter (Amendment A15); --by kept-share-highest by the kept share, highest first, as Kickoff 33 ran it; --by level
+    by the plain level, which chose better pairs on the Rigetti processor where the kept share did not (Kickoffs 40 and
+    41); --by x by the published score."""
     from .keptshare import kept_from_order
-    from .layout import pick_pairs
+    from .layout import kept_share_outliers, pick_by_kept_share, pick_pairs
 
     view = _load_view(a.file)
     P, order, pairs, x = view["P"], view["order"], view["pairs"], view["x"]
@@ -238,14 +243,23 @@ def cmd_pick(a) -> int:
     by = "kept-share" if a.by == "k" else a.by
     if by == "x" and x is None:
         raise SystemExit("this map has no published score; use --by kept-share or --by level")
-    idx = {"kept-share": lambda: pick_pairs(k, a.n), "level": lambda: pick_pairs(level, a.n)}.get(
-        by, lambda: pick_pairs(x, a.n, highest=False)
-    )()
+    idx = {
+        "kept-share": lambda: pick_by_kept_share(k, a.n, level),
+        "kept-share-highest": lambda: pick_pairs(k, a.n),
+        "level": lambda: pick_pairs(level, a.n),
+    }.get(by, lambda: pick_pairs(x, a.n, highest=False))()
     print(f"the {a.n} pairs by {PICK_BY[by]}, of {view['set']}:")
     for i in idx:
         print(
             f"  {list(pairs[i])}  k_A {k[i]:.3f}  level {level[i]:.4f}" + (f"  x {x[i]:.4f}" if x is not None else "")
         )
+    o = kept_share_outliers(k, level)  # Amendment A15: the pairs whose kept share is far from the ideal of 1
+    print(f"\nof the {o['usable']} usable pairs (level at least 0.5), {o['above']} have k above 1.2", end="")
+    print(f" and {o['below']} below 0")
+    print(
+        "furthest from k = 1: "
+        + "; ".join(f"{list(pairs[i])} k_A {k[i]:.3f} level {level[i]:.4f}" for i in o["furthest"])
+    )
     return 0
 
 

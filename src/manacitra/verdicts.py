@@ -331,7 +331,9 @@ def payoff_verdict(partial_r: float, p_partial: float, gain_ci90: Sequence[float
 
 
 def top_n(values, n: int = 8, largest: bool = True) -> list[int]:
-    """Indices of the n largest (or smallest) values, as Kickoff 33 picked them."""
+    """Indices of the n largest (or smallest) values, as Kickoff 33 picked them.
+
+    As run in Kickoff 33 (highest k); `pick` now ranks by |1 - k|, Amendment A15."""
     v = np.asarray(values, float)
     return [int(i) for i in np.argsort(-v if largest else v)[:n]]
 

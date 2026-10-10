@@ -616,6 +616,8 @@ RETIRED = [
     "ran on other qubits than",  # A13
     "labels, not locations",  # A13
     "the level was not tested as a chooser",  # A14: it was, for reference, on both IBM chips
+    "highest kept share first",  # A15: pick ranks by |1 - k|
+    "the n pairs that kept the most",  # A15, the pipeline diagram and its alt text
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -713,8 +715,9 @@ def test_the_front_page():
     what = front.split("\n## What it does\n", 1)[1].split("\n## ", 1)[0]
     assert "](docs/diagrams/chip-map.svg)" in what and "](docs/diagrams/pipeline.svg)" in front
     assert (
-        "highest kept share first, or, with `--by level`, by the plain level, which chose better pairs on the Rigetti "
-        "processor where the kept share did not." in what
+        "by how close each pair's kept share is to the ideal of 1, |1 − k| (`--by kept-share-highest` gives the "
+        "highest-first rule Kickoff 33 used), or, with `--by level`, by the plain level, which chose better pairs on "
+        "the Rigetti processor where the kept share did not." in what
     )
 
 
@@ -753,3 +756,42 @@ def test_finding_4_reference_lines():
     assert "(r = 0.80 between them) did not pick the same eight" in README
     front = (ROOT / "README.md").read_text()
     assert "| USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT SETTLED on ibm_kingston |" in front
+
+
+def test_the_distance_from_the_ideal_paragraph():
+    """Amendment A15, docs/method.md: the Kickoff 35 pair, the Kickoff 33 prior map's largest k, and the one pair the
+    two rules swap, with its distances from 1 and their shot noise, recomputed from the archive."""
+    from manacitra.circuits import CIRCUITS, GAP
+    from manacitra.keptshare import p11_from_bitstrings
+    from manacitra.layout import pick_by_kept_share, pick_pairs, usable_pairs
+
+    for day, (kk, lv) in ((2, (4.52, 0.51)), (3, (4.66, 0.52))):
+        an = archive.load(f"ibm_fez/k35-day{day}.json")["archived"]["analysis"]
+        edges, k, level = [tuple(e) for e in an["edges"]], np.asarray(an["k"]), np.asarray(an["P_no"])
+        top = max(usable_pairs(level), key=lambda i: k[i])
+        assert edges[top] == (33, 34) and (r(k[top], 2), r(level[top], 2)) == (kk, lv)
+    fez = archive.fez_or_kingston("ibm_fez")
+    k31, k32, k33 = fez["k31-map"], fez["k32-isolation"], fez["k33-payoff"]
+    iso = archive.isolation_analysis(k32, k31["pairs"], k31["archived"]["analysis"]["kA"])
+    k, pairs = np.asarray(iso["kD_all27"]), [tuple(p) for p in k33["pairs"]]
+    level = np.asarray(iso["L_D_all27"]) * CIRCUITS["A"].ideal_no
+    assert r(k.max(), 2) == 1.07
+    old, new = set(pick_pairs(k, 8)), set(pick_by_kept_share(k, 8, level))
+    assert [pairs[i] for i in old - new] == [(106, 107)] and [pairs[i] for i in new - old] == [(22, 23)]
+    (a,), (b,) = old - new, new - old
+    assert r(abs(1 - k[a]) - abs(1 - k[b]), 3) == 0.003
+    dense = [tuple(q) for q in k32["selection"]["dense_pairs"]]
+    D = {"no": [], "off": []}
+    for (cond, v), c in zip(k32["plan"], k32["counts"]):
+        if cond == "D":
+            D[v].append(p11_from_bitstrings(c, len(dense)))
+    n = len(D["no"]) * k32["meta"]["shots_per_circuit"]
+    for p in ((106, 107), (22, 23)):
+        i = dense.index(p)
+        no, off = np.mean([x[i] for x in D["no"]]), np.mean([x[i] for x in D["off"]])
+        assert r(np.sqrt(no * (1 - no) / n + off * (1 - off) / n) / GAP["A"], 2) == 0.05
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    assert "33-34, at k 4.52 and 4.66, with a plain level of 0.51 and 0.52" in method
+    assert "from a prior map whose largest k is 1.07" in method
+    assert "(106-107 under highest first, 22-23 under |1 − k|)" in method
+    assert "differ by 0.003 against a shot noise of about 0.05 in each" in method
