@@ -2517,3 +2517,8 @@ packet lists them with reasons.
   283 that stay are compared at 10⁻³. The README-number tests now read the quoted interval ends from the archived
   analysis, as `test_finding_4_reference_lines` does. One, H_repeat's low end at −0.021494, rounds to −0.022 on another
   stream.
+- **Ties.** The next CI run found a second kind of field that differs by platform. Kickoff 44's three split-half rank
+  correlations and two of Kickoff 45's reported ranks (124 and 138 on r_3) rank tied values. Their ranks break ties by
+  the order of NumPy's default sort, which differs between platforms. A stable sort or average ranks moves the
+  correlations by up to 0.001. None of the five is in the text or used by a rule, and they are excluded with that
+  reason.
