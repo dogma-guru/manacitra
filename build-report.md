@@ -2761,3 +2761,37 @@ addendum (a second independent review, of `ec1ae18`):
   through `redact.scrub`, and on any failure one fixed line.
 - **Two more controls.** The archive comparison must fail, and does, on a changed measurement target in a second-copy
   circuit and on two circuits swapped in order; `wait_loss_kind` refuses an interval of three bounds as well as one.
+
+## 33. Release v0.4.0 (10 October 2026)
+
+**What it carries.** Amendment A18, with its rulings R1 and R2 and R2's addendum (pull request 21, merged as `6b881a7`;
+section 32): `manacitra.wait` (Kickoff 47's Part B for any qubits and waits, and the wait test), `examples/04_wait_test.py`,
+`backends/redact.py` (provider text cleaned of account identifiers on every backend), `docs/reproduce.md`, and a new
+data file, `k47-wait-part-b-reconstruction.json`. No finding changed.
+
+**The version, by the author's go given in chat on 10 October ("release 0.4.0")**, is 0.4.0: A18 adds a module, so it is
+a minor version (ruling R2).
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (with `date-released: 2026-10-10`) and the
+  README's citation, with a dated changelog entry. Its lead sentence, written for this release: "Code to rerun the wait
+  on hardware: Kickoff 47's Part B and the wait test, built by the package for a backend and a chain you name, with a
+  dated reconstruction of Part B's circuits; and provider text cleaned of account identifiers on every backend. No
+  finding changed."
+- **What keeps them together.** `test_the_version_is_the_same_everywhere`.
+- **The package.** Since 0.3.0, `src/` gains `wait.py` and `backends/redact.py`, and `backends/base.py`, `ibm.py` and
+  `openquantum.py` change (A18), besides the version line. The packages build as `manacitra-0.4.0`; neither the wheel
+  nor the sdist contains `data/`, and the wheel carries both new modules.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical names v0.3.0's DOI until Zenodo has minted v0.4.0's (release step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. A18's new data file, `data/README.md` and
+`data/SHA256SUMS` were signed on `main` after pull request 21's merge (the bundle commit `9690e67`). This release pull
+request changes no signed file.
+
+**The release path** is the release steps in `docs/index.md` section 9:
+1. the merge, then signing on `main`;
+2. the annotated tag, on the bundle commit if there is one, otherwise on the merge commit;
+3. the release, with its assets verified against `@refs/tags/v0.4.0` and the negative control against
+   `@refs/tags/v0.3.0`.
+
+The merge, the tag, the release and its verification, and the DOI are recorded with step 4's follow-up.
