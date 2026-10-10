@@ -924,6 +924,10 @@
    "archived/analysis/part_B/qubits/144/three_e_minus_2r_ci90": "an interval beside the verdict, not in the text, whose ends sit on a lattice of 1/8000: on another random stream they move by up to 0.00125 (measured over 30 other seeds), beyond the 10⁻³ the intervals are compared at; it reproduces exactly under the runs' numpy on the runs' platform",
    "archived/analysis/part_B/qubits/125/r_minus_3e_ci90": "an interval beside the verdict, not in the text, whose ends sit on a lattice of 1/8000: on another random stream they move by up to 0.001 (measured over 30 other seeds), beyond the 10⁻³ the intervals are compared at; it reproduces exactly under the runs' numpy on the runs' platform",
    "archived/analysis/part_B/qubits/125/three_e_minus_2r_ci90": "an interval beside the verdict, not in the text, whose ends sit on a lattice of 1/8000: on another random stream they move by up to 0.00125 (measured over 30 other seeds), beyond the 10⁻³ the intervals are compared at; it reproduces exactly under the runs' numpy on the runs' platform"
+  },
+  "ibm_fez/k47-wait-part-b-reconstruction.json": {
+   "meta": "record metadata (provenance: the released archive's SHA-256, the reconstruction's date and environment, the builder's Part B text and its hash), not a statistic",
+   "circuits": "input: Part B's 24 circuits, instruction by instruction, reconstructed on 10 October 2026 by rerunning the run's own builder, not the circuits as sent (Amendment A18, ruling R1); tests/test_wait.py checks manacitra.wait's Part B against it and repeats the reconstruction from meta.builder"
   }
  }
 }

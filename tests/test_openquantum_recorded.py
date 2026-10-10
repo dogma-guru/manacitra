@@ -240,7 +240,9 @@ def test_open_reservations_on_the_account_count_against_the_floor(ledger):
         be.submit(wave(W2), after=h1)
     msg = str(e.value)
     assert "balance floor: balance 122 - open reservations 24 - 24 for this job = 74 < floor 90" in msg
-    assert f"{h1.job_hash[:12]} (24 credits, reserved " in msg and "on the saved account 'default'" in msg
+    # the account is named by its ledger scope, a hash of the saved account's name, not by the name (A18, ruling R1)
+    assert f"{h1.job_hash[:12]} (24 credits, reserved " in msg and f"on {be.account_scope}: " in msg
+    assert "default" not in msg
     assert "quote test failed: balance_after_at_least_floor" in msg  # the early refusal, from the quote, too
     assert len(svc.scheduler.created) == 8 and events(be)[-1] == "refused"
 

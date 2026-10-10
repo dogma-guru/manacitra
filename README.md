@@ -92,6 +92,8 @@ print(result["verdict"]["verdict"], [pairs[i] for i in pick_pairs(result["kA"], 
 
 It prints `DIAGNOSTIC` and the eight pairs that kept the most. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
 
+A fourth, `examples/04_wait_test.py`, builds finding 13's Part B and the wait test for a backend and chain you name, as a dry run unless `--submit`; [`docs/reproduce.md`](docs/reproduce.md) says how to rerun them on hardware, and why a rerun is a new measurement.
+
 ## Reproducing the numbers
 
 ```bash
@@ -108,6 +110,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
+- [`docs/reproduce.md`](docs/reproduce.md): rerunning finding 13's Part B and the wait test on hardware, and why a rerun is a new measurement.
 - [`docs/index.md`](docs/index.md): the long version: the circuits, the three rules with their thresholds, the backends, the safety guards, reproducing every number, and sealing and signing.
 - [`data/README.md`](data/README.md): the dataset, its formats, and how to recompute the payoff.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), [`CHANGELOG.md`](CHANGELOG.md), and [`build-report.md`](build-report.md), the record of how this release was built and checked.
