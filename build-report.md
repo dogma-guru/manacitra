@@ -2522,3 +2522,32 @@ packet lists them with reasons.
   the order of NumPy's default sort, which differs between platforms. A stable sort or average ranks moves the
   correlations by up to 0.001. None of the five is in the text or used by a rule, and they are excluded with that
   reason.
+
+## 31. Release v0.3.0 (10 October 2026)
+
+**What it carries.** Amendment A17 and its ruling R1 only (pull request 18, merged as `c2ed5aa`; section 30):
+findings 11 to 13, from Kickoffs 43 to 47 on ibm_fez on 10 October 2026, with their six data files in `data/ibm_fez/`,
+their recompute in `tests/_reuse_runs.py`, the figure `reuse-wait.svg` and `tools/fetch_reuse_circuits.py`.
+
+**The version, by the author's ruling (A17, ruling R1)**, is 0.3.0:
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (with `date-released: 2026-10-10`) and the
+  README's citation, with a dated changelog entry. A17 fixed the entry's lead sentence: "Findings 11 to 13, from reuse
+  circuits on ibm_fez on 10 October 2026, with their data. No behaviour of the package changed."
+- **What keeps them together.** `test_the_version_is_the_same_everywhere`. `test_the_citation_uses_the_concept_doi`
+  reads the release date from the changelog, so no test needed editing beyond the version docstring.
+- **The package.** Its behaviour is unchanged: since 0.2.0, the only change under `src/` is the version line.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The
+README's version-DOI parenthetical names v0.2.0's DOI until Zenodo has minted v0.3.0's (release step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. The six new data files, the edited `data/README.md`
+and `data/SHA256SUMS` were signed on `main` after pull request 18's merge (the bundle commit `d0a83ae`). This release
+pull request changes no signed file.
+
+**The release path** is the release steps in `docs/index.md` section 9:
+1. the merge, then signing on `main`;
+2. the annotated tag, on the bundle commit if there is one, otherwise on the merge commit;
+3. the release, with its assets verified against `@refs/tags/v0.3.0` and the negative control against
+   `@refs/tags/v0.2.0`.
+
+The merge, the tag, the release and its verification, and the DOI are recorded with step 4's follow-up.
