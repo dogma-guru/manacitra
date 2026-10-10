@@ -48,7 +48,7 @@
     "job_id": "db51hoamb58s7389sja0",
     "charged_s": 133,
     "calibration_last_update_utc": "2026-10-10T09:56:30Z",
-    "description": "Kickoff 47, the wait. Part A: Kickoff 43's XOR_5 reuse circuit on chains A (144-143-142), J (143-144-145) and C (132-131-138), each without and with XY4 refocusing pulses in its idle windows, 5 interleaved copies, 10000 shots each. Part B: Ramsey (H, wait, H) and echo (H, half wait, X, half wait, H) on two groups of three qubits at six waits from 0 to 8 us, each run twice, 4000 shots each. 78 circuits, counts; the sampler's own dynamical decoupling and twirling off, as IBM recorded them.",
+    "description": "Kickoff 47, the wait. Part A: Kickoff 43's XOR_5 reuse circuit on chains A (144-143-142), J (143-144-145) and C (132-131-138), each without and with XY4 refocusing pulses in every idle window long enough to hold the sequence, 5 interleaved copies, 10000 shots each. Part B: Ramsey (H, wait, H) and echo (H, half wait, X, half wait, H) on two groups of three qubits at six waits from 0 to 8 us, each run twice, 4000 shots each. 78 circuits, counts; the sampler's own dynamical decoupling and twirling off, as IBM recorded them.",
     "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0"
   },
   "cells": {

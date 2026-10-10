@@ -2494,3 +2494,14 @@ packet lists them with reasons.
 - **The identifier scan:** clean on the tree, with the vocabulary list.
 - **The DCO check and the git identity scan:** clean on the branch.
 - **`data/SHA256SUMS`:** gains the six files. The signing workflow signs them on `main` after the merge.
+
+**Ruling R1 (the author, 10 October 2026, 13:10 UTC), on the review packet's three questions:**
+- **The build step stays out.** No Tapering reimplementation, no Tapering results and no compiled reuse circuits enter
+  the repository (logged in the author's deferred register as D-02). `data/README.md` says what a reader needs to rerun
+  the circuits.
+- **The six data files stay plain JSON, without Git LFS.** GitHub's source archive, which Zenodo keeps, would carry
+  only pointers, and the packages do not include `data/`.
+- **The continuation paragraphs stay.**
+- **One wording fix.** Finding 13 and `k47-wait.json`'s description now say that the pulses went into every idle window
+  long enough to hold the sequence, as the refocusing record shows: four pulses in each such window, none in the
+  windows of 6 dt. `test_finding_13` checks it.

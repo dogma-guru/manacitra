@@ -642,6 +642,7 @@ RETIRED = [
     "Ten findings, from runs on 5 to 7 October 2026",  # A17: thirteen, from 5 to 10 October
     "collapses on every chain tried that contains 143",  # A17: two chains containing 143 did not collapse
     "collapsed on every chain containing 143",  # A17, the same
+    "into every idle window of the chain by",  # A17 ruling R1: only the windows long enough to hold the sequence
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -1022,6 +1023,16 @@ def test_finding_13():
     assert [r(g["A"]["gain"], 3)] + [r(x, 3) for x in g["A"]["ci90"]] == [0.772, 0.767, 0.777]
     assert "(F 0.071, 90% interval 0.069 to 0.073), and scored 0.843 (0.838 to 0.847)" in README
     assert "a gain of +0.772 (+0.767 to +0.777)." in README
+    # ruling R1: the pulses went only into the idle windows long enough to hold the sequence (four pulses per window)
+    assert "into every idle window of the chain long enough to hold the sequence: a gain" in README
+    skipped = 0
+    for cell in ("A1", "J1", "C1"):
+        rec = doc["refocusing"]["cells"][cell]
+        for q_, before in rec["idle_windows_dt_before"].items():
+            held = [w for w in before if w >= 100]
+            assert rec["pulses_inserted_per_qubit"][q_] == 4 * len(held), (cell, q_)
+            skipped += len(before) - len(held)
+    assert skipped > 0 and "XY4" in doc["refocusing"]["sequence"]
     assert [r(c[x]["F"], 3) for x in ("J0", "J1", "C0", "C1")] == [0.875, 0.863, 0.833, 0.784]
     assert [r(-g[x]["gain"], 3) for x in ("C", "J")] == [0.049, 0.011]
     assert "chain J, 143-144-145, scored 0.875 without pulses and 0.863 with them" in README
