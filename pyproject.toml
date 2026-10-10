@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "manacitra"
-version = "0.1.2"
+version = "0.2.0"
 description = "A map of a quantum processor's qubit pairs: which pairs keep a small, known difference, and which lose it."
 readme = "README.md"
 requires-python = ">=3.11"

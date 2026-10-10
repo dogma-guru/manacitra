@@ -5,8 +5,8 @@ type: software
 authors:
   - given-names: Anish
     family-names: Patel
-version: 0.1.2
-date-released: 2026-10-08
+version: 0.2.0
+date-released: 2026-10-10
 doi: 10.5281/zenodo.23228518
 license: Apache-2.0
 repository-code: "https://github.com/dogma-guru/manacitra"

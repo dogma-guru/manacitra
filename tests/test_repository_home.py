@@ -101,7 +101,7 @@ V010_DOI = VERSION_DOIS["0.1.0"]
 
 
 def test_the_version_is_the_same_everywhere():
-    """pyproject.toml, the package, CITATION.cff and the README's citation name one version (0.1.2 since 8 October)."""
+    """pyproject.toml, the package, CITATION.cff and the README's citation name one version (0.2.0 since 10 October)."""
     import manacitra
 
     version = tomllib.loads(_read("pyproject.toml"))["project"]["version"]
@@ -116,7 +116,13 @@ def test_the_citation_uses_the_concept_doi():
     of 8 October). Beside it, the README names the latest published version's own DOI, for an exact citation; each
     release updates that one line once Zenodo has minted the DOI (the author's ruling of 8 October)."""
     assert re.search(r"^doi: (.+)$", _read("CITATION.cff"), re.M).group(1) == CONCEPT_DOI
-    assert re.search(r"^date-released: (.+)$", _read("CITATION.cff"), re.M).group(1) == "2026-10-08"
+    # date-released is the current version's release date, as its changelog entry gives it
+    import datetime
+
+    version = re.search(r"^version: (.+)$", _read("CITATION.cff"), re.M).group(1)
+    day = re.search(rf"^## {re.escape(version)} \((\d+ \w+ \d{{4}})\)$", _read("CHANGELOG.md"), re.M).group(1)
+    released = datetime.datetime.strptime(day, "%d %B %Y").date().isoformat()
+    assert re.search(r"^date-released: (.+)$", _read("CITATION.cff"), re.M).group(1) == released
     readme = _read("README.md")
     citation = next(line for line in readme.splitlines() if line.startswith("> Patel, A. (2026)."))
     assert f"https://doi.org/{CONCEPT_DOI}." in citation

@@ -2345,3 +2345,26 @@ So the published pick is unaffected within shot noise, as A15 expected, but it i
 
 **After the amendment:** 587 tests pass (582 before; 5 new); Ruff is clean; both scans are clean; nothing in `data/`
 changed, and every archived number reproduces.
+
+## 29. Release v0.2.0 (10 October 2026)
+
+**What it carries.** Amendment A15 only (pull request 15, merged as `e2b61a5`; section 28): `manacitra pick` ranks
+the kept share by its distance from the ideal, |1 − k|, after the dead-pair filter, and reports pairs with k above 1.2
+or below 0; `--by kept-share-highest` gives the rule as run in Kickoff 33.
+
+**Why 0.2.0, not 0.1.3, by the author's ruling.** The default of `manacitra pick` changed, so a script that calls it
+gets different pairs. The minor number marks that, and the changelog entry says so: to get 0.1.x's ranking, use
+`--by kept-share-highest`. On the Kickoff 33 map the new default swaps one pair (106-107 for 22-23), whose distances
+from 1 differ by 0.003 against shot noise of 0.05. `verdicts.top_n` and every archived reproduction are unchanged.
+
+**The version** is 0.2.0 in `pyproject.toml`, the package, `CITATION.cff` (with `date-released: 2026-10-10`) and the
+README's citation, with a dated changelog entry. `test_the_version_is_the_same_everywhere` keeps them together.
+`test_the_citation_uses_the_concept_doi` pinned `date-released` to 2026-10-08. It now checks that the date is the one
+in the current version's changelog entry, so that a release no longer needs that test edited.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The
+README's version-DOI parenthetical names v0.1.2's DOI until Zenodo has minted v0.2.0's (release step 4).
+
+**The release path** is the release steps in `docs/index.md` section 9: the merge, signing on `main`, the annotated
+tag, the release, and verifying its assets against `@refs/tags/v0.2.0`. The merge, the tag, the release and its
+verification, and the DOI are recorded with step 4's follow-up.

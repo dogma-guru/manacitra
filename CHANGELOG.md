@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (10 October 2026)
+
+The default of `manacitra pick` changed: it now ranks pairs by |1 − k|. To get 0.1.x's ranking, use
+`--by kept-share-highest`. On the Kickoff 33 map the new default swaps one pair (106-107 for 22-23), whose distances
+from 1 differ by 0.003 against shot noise of 0.05. `verdicts.top_n` and every archived reproduction are unchanged.
 
 - Amendment A15: `pick` ranks the kept share by its distance from the ideal, |1 − k|, after the dead-pair filter, and
   reports pairs with k above 1.2 or below 0; `--by kept-share-highest` gives the rule as run in Kickoff 33.
