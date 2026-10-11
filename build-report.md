@@ -2899,9 +2899,11 @@ wait test on hardware", required to give AGREE.
 listed, with its reason, in the review packet (`A19-review-packet.md`). Among them:
 - **Two roundings, corrected by the tests:** 143's d_M is +0.003, not +0.004 (0.00347), and the low end of 142's d_M
   interval is +0.041, not +0.042 (0.04147). The values agree with the report's to 2.2·10⁻¹⁶; the report rounded twice.
-- **Exact half cases kept out:** some quantities are exact multiples of 1/4000 that end in a 5 (142's and 124's Ramsey
-  losses at 3.4 µs, 0.0555 and 0.0705; two interval ends). The text gives them at a precision where they do not round
-  either way.
+- **Exact half cases:** some quantities are exact multiples of 1/4000 that end in a 5. Where rounding half up and
+  Python's rounding of the stored number disagree (142's and 124's Ramsey losses at 3.4 µs, 0.0555 and 0.0705, which the
+  report rounded in opposite directions; the low ends of 124's and 131's Ramsey loss intervals at T_M, 0.3515 and
+  0.0445), the text gives the quantity at a precision where both agree, or not at all. Four others are quoted at three
+  places, where both give the same digits: 0.579 (0.5785), 0.350 (0.3495), 0.376 (0.3755) and 0.452 (0.4515).
 - **The run's time:** 02:13 to 02:14 UTC, the house's rounding to the nearest minute (it ran from 02:12:32).
 - **143 across the stamps:** the offset was fitted under two stamps, about 15 hours apart; under the earlier two, what
   was seen was the collapse of the circuit with 143 waiting in it. The text keeps the two apart, and says "every
