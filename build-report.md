@@ -2971,3 +2971,34 @@ request changes no signed file.
    `@refs/tags/v0.4.0`.
 
 The merge, the tag, the release and its verification, and the DOI are recorded with step 4's follow-up.
+
+**The release (11 October 2026), by the author's go given in chat on 11 October.**
+- **The merge.** Pull request 25 (this release) was merged as `a55354d` with a merge commit, at 15:12:55 UTC, after
+  every required check had passed on its head, `81f68f8`, itself.
+- **After the release merge.** No signed file changed (`tools/sign_targets.py` lists none between `bb1413c` and
+  `a55354d`), so there was no bundle commit, and the tag is on the merge commit.
+- **Not checked before tagging, unlike 0.4.0:** the tree's signed files against `…/sign.yml@refs/heads/main`. The
+  author approved the verification environment for the release assets only. Signing on `main` after pull request 24,
+  which wrote the three new bundles, passed.
+- **The tag and the release.** `v0.5.0` is annotated and unsigned, as every earlier tag (tag object `cf86a3a`; `git tag
+  -v` finds no signature), on `a55354d`. The release is at <https://github.com/dogma-guru/manacitra/releases/tag/v0.5.0>,
+  published at 15:13:31 UTC, with the changelog's 0.5.0 entry as its notes (its wrapped lines joined, the words
+  unchanged).
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Verified from a fresh download, with `sigstore` 4.5.0,** installed by the author's leave into a throwaway
+  environment outside the repository and deleted afterwards; nothing was added to the project's dependencies or CI:
+
+  ```
+  $ sigstore verify identity --offline manacitra-0.5.0-py3-none-any.whl manacitra-0.5.0.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.5.0 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.5.0-py3-none-any.whl
+  OK: manacitra-0.5.0.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages, and both source archives verify. The negative control: against
+  `…@refs/tags/v0.4.0`, the wheel fails (exit status 1). The wheel carries version 0.5.0; neither package contains
+  `data/`.
+- **Zenodo.** It archived v0.5.0 with its own DOI, `10.5281/zenodo.23300255` (record created 15:13:45 UTC, linked to the
+  `v0.5.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
+- **Step 4.** The README's version-DOI parenthetical names v0.5.0's DOI, and `VERSION_DOIS` gains its line.
