@@ -2941,3 +2941,33 @@ the author's go in chat, given after he has read the rendered finding.
 - **Everything else in the packet: accepted.**
 
 Both edits are checked by `test_finding_14`, and the two replaced phrases are on the retired list.
+
+## 35. Release v0.5.0 (11 October 2026)
+
+**What it carries.** Amendment A19 and its ruling R1 only (pull request 24, merged as `da2d997`; section 34): finding
+14, from Kickoff 48's wait test on ibm_fez on 11 October 2026, with its data file `data/ibm_fez/k48-wait-test.json`, its
+recompute in `tests/_reuse_runs.py`, the test that rebuilds its circuits, and the figure `wait-test-hardware.svg`. No
+behaviour of the package changed.
+
+**The version, by the author's go given in chat on 11 October ("go", on ruling R1)**, is 0.5.0, as R1 names it.
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (with `date-released: 2026-10-11`) and the
+  README's citation, with a dated changelog entry. Its lead sentence is the author's, fixed in A19: "Finding 14, from the
+  wait test on ibm_fez on 11 October 2026, with its data. No behaviour of the package changed."
+- **What keeps them together.** `test_the_version_is_the_same_everywhere`.
+- **The package.** Since 0.4.0, nothing in `src/` changes but the version line. The packages build as
+  `manacitra-0.5.0`; neither the wheel nor the sdist contains `data/`.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical names v0.4.0's DOI until Zenodo has minted v0.5.0's (release step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. A19's new data file, `data/README.md` and
+`data/SHA256SUMS` were signed on `main` after pull request 24's merge (the bundle commit `bb1413c`). This release pull
+request changes no signed file.
+
+**The release path** is the release steps in `docs/index.md` section 9:
+1. the merge, then signing on `main`;
+2. the annotated tag, on the bundle commit if there is one, otherwise on the merge commit;
+3. the release, with its assets verified against `@refs/tags/v0.5.0` and the negative control against
+   `@refs/tags/v0.4.0`.
+
+The merge, the tag, the release and its verification, and the DOI are recorded with step 4's follow-up.
