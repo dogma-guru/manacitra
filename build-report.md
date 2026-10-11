@@ -2922,3 +2922,22 @@ listed, with its reason, in the review packet (`A19-review-packet.md`). Among th
 - **The DCO check:** clean on the branch.
 - **`data/SHA256SUMS`:** gains the file. The signing workflow signs it, `data/README.md` and `data/SHA256SUMS` on
   `main` after the merge.
+
+**Ruling R1 (11 October 2026), on the review packet's five questions.** Prepared with Mantri; it takes effect with
+the author's go in chat, given after he has read the rendered finding.
+- **The two roundings (D2, D3): accepted.** The text keeps +0.003 and +0.041. The stop rule covers a disagreement in
+  value; a rounding slip in a report's prose is logged as a departure, as in A17.
+- **143 across the stamps (D6, D7): accepted as written.** Kickoffs 43 to 45 ran under 03:16, Kickoff 46 under 06:12,
+  Kickoff 47 under 09:56 and Kickoff 48 under 01:35. Kickoff 43's start to Kickoff 48's finish is 21 h 57 min, and
+  Kickoff 47 to Kickoff 48 is 15 h 18 min. The collapse and the fits stay apart.
+- **The disconfirmer (D11): adopted, edited.** Its first clause named a condition this job had already answered: the
+  echo loss of 0.03 at 10.45 µs is part of what the reading was drawn from, and cannot test it. The sentence now says
+  so, names a later run that would set the reading down, and says what Ramsey curves taken in blocks minutes apart
+  would narrow.
+- **The placement bullets (D8) and the Ramsey P(1) intervals (D16): accepted.** The MERA-style bullet stays.
+- **One further edit.** Finding 14's item on why the prediction should work now reads "an established finding about the
+  circuit, on which the rule rests", not "not tested here": the run did not test the identity on its own, but the
+  AGREE verdict tests the prediction built on it.
+- **Everything else in the packet: accepted.**
+
+Both edits are checked by `test_finding_14`, and the two replaced phrases are on the retired list.

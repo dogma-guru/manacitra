@@ -664,6 +664,8 @@ RETIRED = [
     "Thirteen findings, from runs on 5 to 10 October 2026",  # A19: fourteen, from 5 to 11 October
     "Whether the offset persists across days.",  # A19: edited with finding 14's evidence of 11 October
     "Whether a measured wait loss chooses better placements",  # A19: the bullet on choosing by the Ramsey loss
+    "an established finding about the circuit, not tested here",  # A19 R1: the rule rests on it, and AGREE tests that
+    "would test whether the wander is that slow",  # A19 R1: the disconfirmer names a later run, and what narrows it
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -1230,6 +1232,7 @@ def test_finding_14():
     ideal = wait.wait_test_ideal()
     assert len(ideal) == 32 and all(int(key[0]) == sum(map(int, key[1:])) % 2 for key in ideal)
     assert "F without refocusing is 1 − P(parity flipped)" in item
+    assert "an established finding about the circuit, on which the rule rests:" in item  # A19, ruling R1
     # the wait length
     pb = k["part_B"]
     assert [pb[q]["kind_of_loss"] for q in ("142", "124")] == ["NOT REPRODUCED"] * 2
@@ -1277,6 +1280,9 @@ def test_finding_14():
     assert r(p143["F_no"], 2) == 0.39 and "F without refocusing was 0.39, not near 0" in item
     cycles = fit["f_MHz"] * 2612 * m["T_M"]["dt_s"] * 1e6
     assert r(cycles, 1) == 0.5 and "about half a cycle over the 10.45 µs wait" in item
+    # A19, ruling R1: the disconfirmer names a later run, since this job's echo is what the reading was drawn from
+    assert "This job's echo is part of what the reading was drawn from, so it cannot test it." in item
+    assert "if each decayed at about 11.5 µs, it is faster." in item and r(fit["T_us"], 1) == 11.5
     # the chains with small losses
     d144, d131 = (k["prediction"][n]["d_M"] for n in ("144", "131"))
     assert (f"{d144:+.3f}", f"{d131:+.3f}") == ("-0.057", "+0.094")
