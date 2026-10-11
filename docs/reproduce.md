@@ -1,6 +1,6 @@
 # Rerunning the wait on hardware
 
-The short version is in the [README](../README.md#install-and-try-it). This page says how to rerun [finding 13](findings.md#finding-13)'s Part B and how to run the wait test on a chain you choose, with code the repository owns (`manacitra.wait`, Amendment A18), and what such a rerun is. The archived numbers are reproduced from the archived counts, with no hardware ([Reproducing the numbers](../README.md#reproducing-the-numbers)).
+The short version is in the [README](../README.md#install-and-try-it). This page says how to rerun [finding 13](findings.md#finding-13)'s Part B and how to run the wait test on a chain you choose, with code the repository owns (`manacitra.wait`, Amendment A18), and what such a rerun is. The wait test ran on hardware in [finding 14](findings.md#finding-14), on five chains of ibm_fez on 11 October 2026, built by this code at `f28642a`. The archived numbers are reproduced from the archived counts, with no hardware ([Reproducing the numbers](../README.md#reproducing-the-numbers)).
 
 ## What a rerun is
 

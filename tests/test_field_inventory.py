@@ -146,6 +146,8 @@ MUTATED = {
     # Amendment A17: the verdict quantity of Kickoff 43 and the verdict of Kickoff 47
     "Kickoff 43, Job 2, the run": ("ibm_fez/k43-reuse.json", "archived/analysis/G_reuse/point"),
     "Kickoff 47, the wait": ("ibm_fez/k47-wait.json", "archived/analysis/part_A/H_phase"),
+    # Amendment A19: the verdict of Kickoff 48
+    "Kickoff 48, the wait test on hardware": ("ibm_fez/k48-wait-test.json", "archived/analysis/H48"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 
@@ -263,8 +265,8 @@ def test_the_resampling_rule():
 
 def test_the_marked_fields_are_exactly_the_intended_ones():
     """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
-    on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, and (Amendment A17)
-    the 283 interval fields of Kickoffs 43 to 47, enumerated below."""
+    on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, (Amendment A17) the
+    283 interval fields of Kickoffs 43 to 47 and (Amendment A19) Kickoff 48's 75, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -291,7 +293,8 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot | REUSE_MARKED and (len(shots), len(boot), len(REUSE_MARKED)) == (9, 19, 283)
+    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED
+    assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
 
 
 def _reuse_marked() -> set:
@@ -347,5 +350,21 @@ def _reuse_marked() -> set:
     return out
 
 
+def _wait_test_marked() -> set:
+    """Amendment A19: Kickoff 48's 90% bootstrap intervals that stay within 10⁻³ over 200 other seeds, each compared at
+    10⁻³: Part A's F on each chain and variant, the gains, and Part B's echo intervals and its losses' at 3.4 µs. The
+    Ramsey intervals, the Ramsey loss at T_M's, d_M's and the combination intervals move by more: they are in
+    tests/excluded_fields.json, with the measured movement."""
+    rs, f, a = "resampled-shots", "ibm_fez/k48-wait-test.json", "archived/analysis"
+    chains, qubits = ("143", "144", "142", "131", "124"), ("143", "131", "124", "142", "144", "125")
+    waits = (0, 250, 500, 850, 1000, 2000, 2612, 4000)
+    out = {(f, f"{a}/part_A/{c}/{v}/ci90", rs) for c in chains for v in ("no", "refocus")}
+    out |= {(f, f"{a}/prediction/{c}/gain_ci90", rs) for c in chains}
+    out |= {(f, f"{a}/part_B/{q}/echo_ci90/{w}", rs) for q in qubits for w in waits}
+    out |= {(f, f"{a}/part_B/{q}/{x}", rs) for q in qubits for x in ("r_ci90", "e_ci90")}
+    return out
+
+
 REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")
 REUSE_MARKED = _reuse_marked()
+WAIT_TEST_MARKED = _wait_test_marked()
