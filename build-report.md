@@ -2795,3 +2795,31 @@ request changes no signed file.
    `@refs/tags/v0.3.0`.
 
 The merge, the tag, the release and its verification, and the DOI are recorded with step 4's follow-up.
+
+**The release (10 October 2026), by the author's go given in chat on 10 October ("release 0.4.0").**
+- **The merge.** Pull request 22 (this release) was merged as `a152461` with a merge commit, at 23:40:49 UTC, after
+  every required check had passed on its head, `69f1784`, itself.
+- **After the release merge.** Signing on `main` passed. No signed file changed, so there was no bundle commit, and the
+  tag is on the merge commit.
+- **Checked before tagging.** All 240 signed files in the tree verified against `…/sign.yml@refs/heads/main` (A17's 239
+  and A18's reconstruction file), and the git identity scan was clean on 115 commits.
+- **The tag and the release.** `v0.4.0` is annotated and unsigned, on `a152461`. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.4.0>, published at 23:43:31 UTC, with the changelog's 0.4.0
+  entry as its notes (its wrapped lines joined, the words unchanged).
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Verified from a fresh download, with `sigstore` 4.5.0:**
+
+  ```
+  $ sigstore verify identity --offline manacitra-0.4.0-py3-none-any.whl manacitra-0.4.0.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.4.0 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.4.0-py3-none-any.whl
+  OK: manacitra-0.4.0.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages, and both source archives verify. The negative control: against
+  `…@refs/tags/v0.3.0`, the wheel fails (exit status 1). The wheel carries version 0.4.0, `wait.py` and
+  `backends/redact.py`; neither package contains `data/`.
+- **Zenodo.** It archived v0.4.0 with its own DOI, `10.5281/zenodo.23289535` (record created 23:43:45 UTC, linked to the
+  `v0.4.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
+- **Step 4.** The README's version-DOI parenthetical names v0.4.0's DOI, and `VERSION_DOIS` gains its line.
