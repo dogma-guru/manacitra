@@ -293,6 +293,92 @@ def test_the_reconstruction_is_recorded_and_can_be_repeated(fez):
     assert order == [(a["group"], a["tau_us"], a["variant"], a["copy"]) for a in rec["labels"] if a["part"] == "B"]
 
 
+# --------------------------------------------------------------------------- Kickoff 48's circuits, rebuilt (A19)
+K48 = "ibm_fez/k48-wait-test.json"
+
+
+def _x_on(circuit, q: int) -> int:
+    return sum(1 for i in circuit.data if i.operation.name == "x" and circuit.find_bit(i.qubits[0]).index == q)
+
+
+def _t_m(circuit, backend, M: int) -> dict:
+    """M's wait in the circuit as scheduled (wait.scheduled, padded, so its instructions tile time), as Kickoff 48's
+    record defines T_M: from the end of M's first sx (its first H) to the start of its last, in dt; with M's idle
+    windows and its whole timeline."""
+    t, sch = backend.target, wait.scheduled(circuit, backend.target)
+    clock, sx = 0, []
+    for inst in sch.data:
+        qs = tuple(sch.find_bit(q).index for q in inst.qubits)
+        if M not in qs:
+            continue
+        name = inst.operation.name
+        if name == "delay":
+            d = int(inst.operation.duration)
+        elif name in ("barrier", "rz"):
+            d = 0
+        else:
+            d = int(round(t[name][qs].duration / backend.dt))
+        if name == "sx":
+            sx.append((clock, clock + d))
+        clock += d
+    return {
+        "first_H_end_dt": sx[0][1],
+        "last_H_start_dt": sx[-1][0],
+        "T_M_dt": sx[-1][0] - sx[0][1],
+        "T_M_us": (sx[-1][0] - sx[0][1]) * backend.dt * 1e6,
+        "M_idle_windows_dt": wait.idle_windows(sch, M),
+        "M_total_dt": clock,
+    }
+
+
+def test_kickoff_48s_circuits_are_rebuilt_by_the_package(fez):
+    """Kickoff 48's circuits were built by manacitra.wait at f28642a, unedited, against the live ibm_fez target. Built
+    again here for the offline snapshot, every circuit has the structure the run's dry run recorded on that snapshot
+    (operation counts, refocusing pulses on each qubit, exact F = 1, the chain as the layout, and M's wait T_M); the
+    unrefocused cells have the live build's counts and checks, and the refocused ones its 12 pulses on M (the end
+    lines' pulses depend on the live durations); and Part B, for the live waits, the live build's labels, order and
+    counts. The live durations are not in the snapshot, so the live T_M (2,611 dt) is checked as the record states it:
+    M's three measure-and-reset windows of 836 dt and three of 6 dt, and five CZs of equal length."""
+    rec = archive.load(K48)
+    m, off = rec["meta"], rec["offline_build"]
+    assert m["built_from"]["commit"].startswith("f28642a") and m["built_from"]["version"] == "0.4.0"
+    assert "rebuilds every circuit" in m["built_from"]["rebuild"]
+    ideal = wait.wait_test_ideal()
+    for name, chain in m["chains"].items():
+        M = chain[1]
+        plain, refocused = wait.build_wait_test(chain, False, fez), wait.build_wait_test(chain, True, fez)
+        assert _t_m(plain, fez, M) == off["T_M"][name], name
+        for v, c in (("no", plain), ("refocus", refocused)):
+            built = {k: int(n) for k, n in c.count_ops().items()}
+            pulses = {str(q): _x_on(c, q) - _x_on(plain, q) for q in chain}
+            assert built == off["cells"][f"{name}|{v}"]["count_ops"], (name, v)
+            assert pulses == off["cells"][f"{name}|{v}"]["pulses_on_chain"], (name, v)
+            assert list(c.layout.initial_index_layout(filter_ancillas=True)) == chain
+            assert wait.fidelity(wait.exact_distribution(c), ideal) == pytest.approx(1.0, abs=1e-9)
+            live = rec["cells"][f"{name}|{v}"]
+            assert all(live["checks"].values()) and live["chain"] == chain and live["M"] == M
+            assert pulses[str(M)] == live["pulses_on_chain"][str(M)] == (12 if v == "refocus" else 0)
+            if v == "no":
+                assert built == live["count_ops"], name
+        # T_M is M's idle windows and its five CZs: on the snapshot with its CZ duration, live with five equal ones
+        cz = int(round(fez.target["cz"][(chain[0], M)].duration / fez.dt))
+        o = off["T_M"][name]
+        assert o["T_M_dt"] == sum(o["M_idle_windows_dt"]) + 5 * cz == 2481
+        tm = m["T_M"]["per_chain"][name]
+        assert tm["M_idle_windows_dt"] == [836, 6, 836, 6, 836, 6] and tm["T_M_dt"] == 2611
+        assert (tm["T_M_dt"] - sum(tm["M_idle_windows_dt"])) % 5 == 0
+        assert wait.even_wait(tm["T_M_dt"]) == m["T_M"]["used_dt"][0] == 2612
+    for key, recs in (("offline", off["part_B_circuits"]), ("live", rec["part_B_circuits"])):
+        waits = sorted({r["label"]["tau_dt"] for r in recs})
+        assert waits == (off["waits_dt"] if key == "offline" else m["waits_dt"])
+        for e, r in zip(wait.part_b([tuple(g) for g in m["groups"]], waits), recs, strict=True):
+            isa = wait.to_backend(e["circuit"], e["layout"], fez)
+            assert {**e["label"], "qubits": e["layout"]} == r["label"] and r["pass"]
+            assert {k: int(n) for k, n in isa.count_ops().items()} == r["count_ops"], (key, r["label"])
+    sent = [lab for lab in rec["labels"] if lab["part"] == "B"]
+    assert sent == [r["label"] for r in rec["part_B_circuits"]]  # Part B went in the package's order
+
+
 def _k47_losses(**kw):
     rec = archive.load(K47)
     groups = [qs for _, qs in sorted(rec["groups"].items(), key=lambda z: int(z[0]))]

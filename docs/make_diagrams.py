@@ -1,6 +1,6 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the README's and the long documentation's ten diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the README's and the long documentation's eleven diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -16,6 +16,8 @@
 9. map-explainer.svg     how the map works in one picture, for docs/index.md: circuits, levels, k, the chip, the checks
 10. reuse-wait.svg       Kickoff 47 (finding 13): XOR_5's reuse circuit without and with refocusing; qubit 143's Ramsey
                          and echo curves, with the fit of one steady offset drawn as a fit
+11. wait-test-hardware.svg  Kickoff 48 (finding 14): the wait test's F on five chains without and with refocusing,
+                         with the value predicted from each waiting qubit's Ramsey loss; four qubits' Ramsey curves
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. Diagrams 8 and 9 draw thin lines across the whole chip, so they use the ramp without its lightest step
@@ -1051,6 +1053,149 @@ def diagram_reuse_wait(out: Path):
     save(fig, out, "reuse-wait")
 
 
+# --------------------------------------------------------------------------- 11. the wait test on hardware (finding 14)
+def _wait_test_F(rec: dict, M: int, variant: str) -> float:
+    """F for one cell of Kickoff 48's wait test, pooled over its copies: the squared Hellinger overlap of its counts
+    with the wait test's exact ideal (manacitra.wait)."""
+    from manacitra import wait
+
+    got: dict = {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        if lab["part"] == "W" and lab["M"] == M and lab["variant"] == variant:
+            for key, n in cts.items():
+                k = key.replace(" ", "")[-wait.WAIT_TEST_CLBITS :]
+                got[k] = got.get(k, 0) + n
+    return wait.fidelity(got, wait.wait_test_ideal())
+
+
+def _ramsey_p1(rec: dict, qubit: int) -> list[float]:
+    """Kickoff 48's Ramsey P(1) of one Part B qubit at each wait, pooled over the two copies."""
+    out = []
+    for tau in rec["meta"]["waits_dt"]:
+        ones = tot = 0
+        for lab, cts in zip(rec["labels"], rec["counts"]):
+            if lab["part"] == "B" and qubit in lab["qubits"] and lab["tau_dt"] == tau and lab["variant"] == "R":
+                i = lab["qubits"].index(qubit)
+                ones += sum(n for k, n in cts.items() if k.replace(" ", "")[::-1][i] == "1")
+                tot += sum(cts.values())
+        out.append(ones / tot)
+    return out
+
+
+def diagram_wait_test_hardware(out: Path):
+    """Finding 14 in two panels: on each of the five chains, the wait test's F without and with XY4 refocusing, with
+    the value predicted from the waiting qubit's Ramsey loss at the circuit's own wait marked; and the Ramsey P(1)
+    against the wait of 143, 142, 124 and 144, with guides at Kickoff 47's 3.4 us and at the circuit's wait T_M. Points
+    and the prediction are computed here from the counts; the 90% intervals are the run's, as archived, which
+    tests/test_reproduction.py recomputes."""
+    rec = archive.load("ibm_fez/k48-wait-test.json")
+    m, an = rec["meta"], rec["archived"]["analysis"]
+    dt_us = m["T_M"]["dt_s"] * 1e6
+    waits = m["waits_dt"]
+    tm = m["T_M"]["used_dt"][0]
+    order = ["143", "142", "124", "144", "131"]  # the informative chains first, as finding 14 lists them
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.2, 4.9), gridspec_kw={"width_ratios": [1.3, 1], "wspace": 0.28})
+    w, gap = 0.37, 0.07
+    for j, name in enumerate(order):
+        M = int(name)
+        ram = _ramsey_p1(rec, M)
+        loss = ram[waits.index(tm)] - ram[0]
+        f = {v: _wait_test_F(rec, M, v) for v in ("no", "refocus")}
+        pred = f["refocus"] * (1 - loss)
+        for d, (v, colour, label) in enumerate(
+            (("no", "#c3c2b7", "no refocusing"), ("refocus", SERIES_1, "XY4 refocusing"))
+        ):
+            x = j + (d - 0.5) * (w + gap)
+            lo, hi = an["part_A"][name][v]["ci90"]
+            ax1.bar(x, f[v], width=w, color=colour, label=label if j == 0 else None, zorder=2)
+            ax1.errorbar(x, f[v], yerr=[[f[v] - lo], [hi - f[v]]], color=INK, lw=1, capsize=3, zorder=3)
+            ax1.text(
+                x,
+                0.03,
+                f"{f[v]:.3f}",
+                ha="center",
+                va="bottom",
+                fontsize=7.5,
+                color=INK if v == "no" else SURFACE,
+                zorder=3,
+            )
+        x0 = j - 0.5 * (w + gap)
+        ax1.plot(
+            [x0 - w / 2 - 0.03, x0 + w / 2 + 0.03],
+            [pred, pred],
+            color=INK,
+            lw=2.2,
+            zorder=4,
+            solid_capstyle="butt",
+            path_effects=HALO,
+            label="predicted from M's Ramsey loss at T_M" if j == 0 else None,
+        )
+    ax1.set_xticks(range(len(order)))
+    ax1.set_xticklabels(
+        [
+            f"{'-'.join(map(str, m['chains'][n]))}\nM = {n}\n"
+            + ("informative" if an["prediction"][n]["informative"] else "")
+            for n in order
+        ],
+        fontsize=8.5,
+    )
+    ax1.set_ylim(0, 1.2)
+    ax1.set_ylabel("F, overlap with the exact ideal output")
+    ax1.yaxis.grid(True, color=GRID, lw=0.8)
+    ax1.set_axisbelow(True)
+    ax1.legend(loc="upper left", frameon=False, fontsize=8.5, ncols=2)
+    ax1.set_title("The wait test on five chains: measured, and predicted", loc="left", fontsize=10.5, color=INK)
+
+    t = [w_ * dt_us for w_ in waits]
+    series = (
+        (143, SERIES_1, "o"),
+        (142, SERIES_2, "s"),
+        (124, "#1baf7a", "D"),
+        (144, MUTED, "^"),
+    )
+    ends = {}
+    for q, colour, marker in series:
+        ys = _ramsey_p1(rec, q)
+        ci = [an["part_B"][str(q)]["ramsey_ci90"][str(w_)] for w_ in waits]
+        err = [[y - c[0] for y, c in zip(ys, ci)], [c[1] - y for y, c in zip(ys, ci)]]
+        ax2.errorbar(t, ys, yerr=err, fmt=marker, ms=6, color=colour, ecolor=colour, capsize=2.5, lw=1, zorder=3)
+        ax2.plot(t, ys, color=colour, lw=1.2, zorder=2)
+        ends[q] = ys[-1]
+    placed: list[float] = []
+    for q in sorted(ends, key=ends.get, reverse=True):  # direct labels at the last wait, kept 0.04 apart
+        y = min([ends[q]] + [p - 0.04 for p in placed])
+        placed.append(y)
+        ax2.text(t[-1] + 0.45, y, str(q), color=INK, fontsize=9, va="center", fontweight="bold")
+    ax2.axvline(850 * dt_us, color=MUTED, lw=1, ls=(0, (1, 2)), zorder=1)
+    ax2.axvline(tm * dt_us, color=INK_2, lw=1, ls=(0, (4, 3)), zorder=1)
+    ax2.text(850 * dt_us + 0.2, 0.87, "3.4 µs:\nKickoff 47's\nreference wait", fontsize=8, color=INK_2, va="top")
+    ax2.text(
+        tm * dt_us + 0.2,
+        0.87,
+        f"T_M = {tm * dt_us:.2f} µs:\nthe circuit's\nown wait",
+        fontsize=8,
+        color=INK_2,
+        va="top",
+    )
+    ax2.set_xlim(-0.4, 17.6)
+    ax2.set_ylim(-0.02, 0.9)
+    ax2.set_xlabel("wait in superposition (µs)")
+    ax2.set_ylabel("Ramsey P(1) (ideal 0)")
+    ax2.yaxis.grid(True, color=GRID, lw=0.8)
+    ax2.set_axisbelow(True)
+    ax2.set_title("The waiting qubits' Ramsey loss, wait by wait", loc="left", fontsize=10.5, color=INK)
+    fig.text(
+        0.125,
+        1.0,
+        "ibm_fez, Kickoff 48, 11 October 2026, 02:13 to 02:14 UTC, one job. Bars, points and predictions from the "
+        "counts; whiskers, 90% bootstrap intervals.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "wait-test-hardware")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1065,7 +1210,8 @@ def main(argv=None):
     diagram_whole_chip_days(a.out)
     diagram_map_explainer(a.out)
     diagram_reuse_wait(a.out)
-    print(f"wrote 10 diagrams (SVG and PNG) to {a.out}")
+    diagram_wait_test_hardware(a.out)
+    print(f"wrote 11 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

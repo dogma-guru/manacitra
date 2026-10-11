@@ -29,7 +29,7 @@ from _reproduce import (
     k42_scan,
 )
 
-from manacitra import archive
+from manacitra import archive, wait
 
 ROOT = Path(__file__).resolve().parents[1]
 #: The README and the pages it links to for its findings, method, kickoffs and install details
@@ -227,8 +227,8 @@ def _utc(s):
 
 
 def test_the_findings_dates():
-    assert "The findings come from runs on 5 to 10 October 2026." in README
-    assert "Thirteen findings, from runs on 5 to 10 October 2026." in README
+    assert "The findings come from runs on 5 to 11 October 2026." in README
+    assert "Fourteen findings, from runs on 5 to 11 October 2026." in README
     # a reconstruction (A18, ruling R1: Kickoff 47's Part B circuits) is a record about a run, not a run
     runs = [
         p
@@ -236,7 +236,7 @@ def test_the_findings_dates():
         if p.parent.name != "simulated" and "k33-workload" not in p.name and "reconstruction" not in p.name
     ]
     days = {archive.load(p)["meta"]["utc"][:10] for p in runs if not p.name.endswith("coupling-map.json")}
-    assert days == {"2026-10-05", "2026-10-06", "2026-10-07", "2026-10-10"}
+    assert days == {"2026-10-05", "2026-10-06", "2026-10-07", "2026-10-10", "2026-10-11"}
     assert "- **Three processors, three days.** The hardware results of findings 1 to 10" in README
     assert "all on 5 to 7 October 2026." in README
     # Amendment A17: findings 11 to 13, one processor on one day, three published calibration stamps
@@ -253,6 +253,11 @@ def test_the_findings_dates():
     stamps = {archive.load(p)["meta"].get("calibration_last_update_utc") for p in reuse} - {None}
     assert sorted(s[11:16] for s in stamps) == ["03:16", "06:12", "09:56"]
     assert "Findings 11 to 13 are from one processor on one day, across three published calibration stamps." in README
+    # Amendment A19: finding 14, one job on 11 October 2026 under a fourth stamp
+    (k48,) = [p for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-11"]
+    m48 = archive.load(k48)["meta"]
+    assert k48.name == "k48-wait-test.json" and m48["processor"] == "ibm_fez"
+    assert m48["calibration_last_update_utc"][11:16] == "01:35" and m48["calibration_last_update_utc"] not in stamps
 
 
 def test_finding_6_times():
@@ -524,6 +529,7 @@ def test_the_new_rows_and_bullets():
         "45, 10 October 2026",
         "46, 10 October 2026",
         "47, 10 October 2026",
+        "48, 11 October 2026",
     ):
         assert f"| {k} |" in README
     assert "- **How long a map lasts beyond two days.**" in README and "- **Two routes to one processor.**" in README
@@ -655,6 +661,9 @@ RETIRED = [
     "collapses on every chain tried that contains 143",  # A17: two chains containing 143 did not collapse
     "collapsed on every chain containing 143",  # A17, the same
     "into every idle window of the chain by",  # A17 ruling R1: only the windows long enough to hold the sequence
+    "Thirteen findings, from runs on 5 to 10 October 2026",  # A19: fourteen, from 5 to 11 October
+    "Whether the offset persists across days.",  # A19: edited with finding 14's evidence of 11 October
+    "Whether a measured wait loss chooses better placements",  # A19: the bullet on choosing by the Ramsey loss
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -732,7 +741,7 @@ def test_the_findings_table_matches_the_findings():
         r"^\| \[(\d+)\]\(docs/findings\.md#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", readme, re.M
     )
     rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
-    assert [n for n, *_ in rows] == [str(i) for i in range(1, 14)]
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 15)]
     for n, head, kicks, verdict in rows:
         assert head == full[n], n
         item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
@@ -1145,3 +1154,191 @@ def test_the_wait_test_pages():
     stamps = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K46, K47)]
     assert [t[11:16] for t in stamps] == ["06:12", "09:56"]
     assert "from 0.15 under IBM's 06:12 UTC calibration stamp (Kickoff 46) to 0.012 under the 09:56 UTC stamp" in page
+
+
+# --------------------------------------------------------------------------- Amendment A19: finding 14
+def _item_14() -> str:
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    return " ".join(findings.split('<a id="finding-14"></a>', 1)[1].split("\n## ", 1)[0].split("![", 1)[0].split())
+
+
+def test_finding_14():
+    """Kickoff 48, recomputed from the counts: what ran and when, the rule and its verdict, the five chains, the wait
+    length, 143 a day later across the calibration stamps, the theory's numbers, and the residuals of the two chains
+    with small losses. Interval ends are quoted from the archived analysis, points from the recompute."""
+    from _reproduce import K43_RUN, K46, K47, K48, k47_recomputed, k48_recomputed, reuse_doc
+
+    item = _item_14()
+    doc = reuse_doc(K48)
+    m, a = doc["meta"], doc["archived"]["analysis"]
+    k = k48_recomputed()
+    # what ran, and when
+    assert (hhmm(doc["timestamps"]["running"]), hhmm(doc["timestamps"]["finished"])) == ("02:13", "02:14")
+    assert "(Kickoff 48; ibm_fez, 11 October 2026, 02:13 to 02:14 UTC)" in item
+    assert m["built_from"]["commit"].startswith("f28642a") and m["built_from"]["version"] == "0.4.0"
+    assert "built unedited from this repository at commit `f28642a` (v0.4.0)" in item
+    chains = ["-".join(map(str, m["chains"][n])) for n in ("143", "142", "124", "144", "131")]
+    assert "five chains L1-M-L3, each without and with XY4 refocusing pulses: " + ", ".join(chains[:4]) in item
+    assert f"and {chains[4]}, in four interleaved copies of 5,000 shots" in item
+    assert m["copies"] == 4 and m["shots_by_part"] == {"W": 5000, "B": 2000} and "twice with 2,000 shots" in item
+    assert [tuple(g) for g in m["groups"]] == [tuple(g) for g in wait.KICKOFF_47_GROUPS]
+    us = [r(w * m["T_M"]["dt_s"] * 1e6, 2) for w in m["waits_dt"]]
+    assert us == [0, 1, 2, 3.4, 4, 8, 10.45, 16] and m["T_M"]["used_dt"] == [2612]
+    assert (
+        "at Kickoff 47's six waits, at a wait equal to the circuit's own, T_M = 2,612 dt (10.45 µs), "
+        "and at 16 µs" in item
+    )
+    tms = {v["T_M_dt"] for v in m["T_M"]["per_chain"].values()}
+    assert tms == {2611} and "2,611 dt on every chain, made even." in item
+    assert len(doc["counts"]) == 104 and m["calibration_last_update_utc"] == "2026-10-11T01:35:00Z"
+    assert "One job of 104 circuits, under IBM's calibration stamp of 01:35 UTC." in item
+    # the rule and the verdict
+    fixed = doc["fixed_before_the_data"]
+    assert (fixed["margin"], fixed["informative_floor"]) == (0.15, 0.2)
+    assert "has its 90% interval inside ±0.15" in item and "entirely above 0.2" in item
+    assert k["H48"] == "AGREE" and k["informative_chains"] == ["143", "142", "124"]
+    assert "The verdict: AGREE, informative, with three informative chains." in item
+    # the five chains
+    for n, chain in zip(("143", "142", "124", "144", "131"), chains):
+        p, pa = k["prediction"][n], a["prediction"][n]
+        loss = f"{p['dP_R_TM']:.3f}"
+        f_no, f_ref, f_pred = (f"{p[x]:.3f}" for x in ("F_no", "F_ref", "F_pred"))
+        d = f"{p['d_M']:+.3f}".replace("-", "−")
+        lo, hi = (f"{x:+.3f}".replace("-", "−") for x in pa["d_M_ci90"])
+        if n == "143":
+            want = (
+                f"**{chain}**, with {n} waiting: Ramsey loss at T_M {loss}; F {f_no} without refocusing and {f_ref} "
+                f"with; F_pred {f_pred}; d_M {d} (90% interval {lo} to {hi})."
+            )
+        else:
+            want = (
+                f"**{chain}**, with {n} waiting: Ramsey loss {loss}; F {f_no} and {f_ref}; F_pred {f_pred}; "
+                f"d_M {d} ({lo} to {hi})."
+            )
+        assert want in item, want
+        assert p["inside_margin"] and not p["outside_margin"]
+        assert abs(r(p["F_no"], 3) - r(pa["F_no"], 3)) < 1e-12 and abs(p["d_M"] - pa["d_M"]) < 1e-9
+    p143 = k["prediction"]["143"]
+    assert (r(p143["F_no"], 3), r(p143["F_pred"], 3), r(p143["d_M"], 3)) == (0.389, 0.386, 0.003)
+    assert min(abs(p["d_M"]) for p in k["prediction"].values()) == abs(p143["d_M"])
+    assert "The closest case: 0.389 measured, 0.386 predicted." in item
+    informative = [a["prediction"][n]["dP_R_TM_ci90"] for n in ("143", "142", "124")]
+    others = [a["prediction"][n]["dP_R_TM_ci90"] for n in ("144", "131")]
+    assert min(lo for lo, _ in informative) > 0.33 and max(hi for _, hi in others) < 0.09
+    assert "90% intervals entirely above 0.33, and the other two's lay entirely below 0.09." in item
+    # the established finding: the exact ideal is the parity, and a phase takes F to cos²(φ/2) = 1 − sin²(φ/2)
+    ideal = wait.wait_test_ideal()
+    assert len(ideal) == 32 and all(int(key[0]) == sum(map(int, key[1:])) % 2 for key in ideal)
+    assert "F without refocusing is 1 − P(parity flipped)" in item
+    # the wait length
+    pb = k["part_B"]
+    assert [pb[q]["kind_of_loss"] for q in ("142", "124")] == ["NOT REPRODUCED"] * 2
+    assert [r(pb[q]["r"], 2) for q in ("142", "124")] == [0.06, 0.07]
+    assert [r(k["prediction"][q]["dP_R_TM"], 2) for q in ("142", "124")] == [0.35, 0.37]
+    assert (
+        "with Ramsey losses of 0.06 and 0.07 there, yet they lost 0.35 and 0.37 over the circuit's "
+        "10.45 µs wait" in item
+    )
+    assert "F 0.602 and 0.510 without refocusing, against 0.832 and 0.881 with it." in item
+    # 143 a day later
+    q = pb["143"]
+    q47 = k47_recomputed()["part_B"]["qubits"]["143"]
+    assert q["kind_of_loss"] == "REFOCUSABLE" and (r(q["r"], 3), r(q47["r_3p4"], 3)) == (0.260, 0.223)
+    assert "REFOCUSABLE again, with a Ramsey loss of 0.260 at 3.4 µs (0.223 in finding 13)." in item
+    fit, fit47 = q["ramsey_fit"], q47["ramsey_fit"]
+    assert (r(1000 * fit["f_MHz"], 1), r(1000 * fit["f_err"], 1)) == (47.1, 1.8)
+    assert (r(1000 * fit47["f_MHz"], 1), r(1000 * fit47["f_err"], 1)) == (46.7, 2.7)
+    assert "gives 47.1 ± 1.8 kHz, against finding 13's fit of 46.7 ± 2.7 kHz." in item
+    stamps = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K43_RUN, K46, K47, K48)]
+    assert [s[11:16] for s in stamps] == ["03:16", "06:12", "09:56", "01:35"] and stamps[-1][:10] == "2026-10-11"
+    assert "from 03:16 UTC on 10 October to 01:35 UTC on 11 October, in runs spread over about 22 hours" in item
+    span = (_utc(reuse_doc(K48)["timestamps"]["finished"]) - _utc(reuse_doc(K43_RUN)["timestamps"]["running"])).seconds
+    assert round(span / 3600) == 22
+    assert "collapsed on it under the 03:16, 06:12 and 09:56 stamps (findings 12 and 13)" in item
+    assert "and the wait test read 0.389 under the 01:35 stamp." in item
+    apart = _utc(doc["timestamps"]["running"]) - _utc(reuse_doc(K47)["timestamps"]["running"])
+    assert round(apart.total_seconds() / 3600) == 15 and "under the last two stamps, about 15 hours apart." in item
+    ram, ci = q["ramsey_P1"], a["part_B"]["143"]["ramsey_ci90"]
+    assert (r(ram["2000"], 3), r(ram["4000"], 3)) == (0.627, 0.452) and ram["4000"] < ram["2000"] - 0.1
+    assert ci["4000"][1] < ci["2000"][0] and k["beside"]["oscillation_143_8_or_TM_to_16us"]
+    assert (
+        "143's Ramsey P(1) fell from 0.627 at 8 µs to 0.452 at 16 µs, by more than 0.1 with separated "
+        "intervals." in item
+    )
+    # the theory
+    assert (r(fit["T_us"], 1), round(fit47["T_us"]), round(fit47["T_err"])) == (11.5, 108, 74)
+    assert (r(q47["ramsey_P1"]["8"], 2), r(ram["2000"], 3)) == (0.80, 0.627)
+    assert (
+        "fitted at 11.5 µs, against 108 ± 74 µs the day before (a fit to waits up to 8 µs; at 8 µs its Ramsey P(1) "
+        "was 0.80 then and 0.627 now)" in item
+    )
+    assert (r(q["echo_loss"]["2612"], 2), r(q["ramsey_loss"]["2612"], 2)) == (0.03, 0.58)
+    assert "(an echo loss of 0.03 at 10.45 µs, against a Ramsey loss of 0.58)" in item
+    assert r(p143["F_no"], 2) == 0.39 and "F without refocusing was 0.39, not near 0" in item
+    cycles = fit["f_MHz"] * 2612 * m["T_M"]["dt_s"] * 1e6
+    assert r(cycles, 1) == 0.5 and "about half a cycle over the 10.45 µs wait" in item
+    # the chains with small losses
+    d144, d131 = (k["prediction"][n]["d_M"] for n in ("144", "131"))
+    assert (f"{d144:+.3f}", f"{d131:+.3f}") == ("-0.057", "+0.094")
+    assert "residuals of −0.057 (144) and +0.094 (131)" in item
+    assert r(-k["prediction"]["131"]["gain"], 3) == 0.047 and "refocusing lowered F by 0.047." in item
+    assert "one processor, one day and five qubits" in item and "Manacitra does not rank machines." in item
+
+
+def test_finding_14_beside_the_findings():
+    """The README's limit line, the kickoffs row, the pages that point to finding 14, and what has not been shown."""
+    from _reproduce import K47, K48, reuse_doc
+
+    doc = reuse_doc(K48)
+    assert doc["meta"]["processor"] == "ibm_fez" and doc["meta"]["calibration_last_update_utc"].startswith("2026-10-11")
+    assert (
+        "- **One processor, one day, five qubits, for finding 14.** Finding 14 is from one job on ibm_fez on 11 "
+        "October 2026, under one published calibration stamp." in README
+    )
+    assert "| 48, 11 October 2026 |" in README and "`ibm_fez/k48-wait-test.json`" in README
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    assert "It ran on five chains of ibm_fez on 11 October 2026" in method and "(findings.md#finding-14)" in method
+    assert "The wait test ran on hardware in [finding 14](findings.md#finding-14)" in page
+    flat = " ".join(README.split())
+    assert "Finding 14 shows the check predicts; it has not been tested as a chooser." in flat
+    assert "- **The MERA-style comparison.**" in flat
+    assert "- **Other chips.** Findings 11 to 14 are from ibm_fez alone." in flat
+    apart = _utc(doc["timestamps"]["running"]) - _utc(reuse_doc(K47)["timestamps"]["running"])
+    assert round(apart.total_seconds() / 3600) == 15
+    assert "finding 14 fitted it again, about 15 hours later and across one day boundary" in flat
+    assert "ran under, over about 22 hours. Whether it lasts longer, and why it is there, are not known" in flat
+
+
+def test_the_wait_test_hardware_picture():
+    """Finding 14's picture: made from the data by docs/make_diagrams.py, referenced from finding 14, and its alt text
+    carries the numbers of the data."""
+    from _reproduce import k48_recomputed
+
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    item = findings.split('<a id="finding-14"></a>', 1)[1]
+    assert "](diagrams/wait-test-hardware.svg)" in item and (DIAGRAMS / "wait-test-hardware.png").is_file()
+    alt = " ".join(item.split("![", 1)[1].split("](diagrams/wait-test-hardware.svg)", 1)[0].split())
+    k = k48_recomputed()
+    for n in ("143", "142", "124", "144", "131"):
+        p = k["prediction"][n]
+        chain = "-".join(map(str, p["chain"]))
+        want = (
+            f"{p['F_no']:.3f} without refocusing against {p['F_pred']:.3f} predicted, and {p['F_ref']:.3f} with"
+            if n == "143"
+            else (f"{chain}, {p['F_no']:.3f} against {p['F_pred']:.3f}, and {p['F_ref']:.3f}")
+        )
+        assert want in alt, want
+    ram = {q: k["part_B"][q]["ramsey_P1"] for q in ("143", "142", "124", "144")}
+    assert f"143 reads {ram['143']['850']:.3f}" in alt and max(ram[q]["850"] for q in ("142", "124", "144")) <= 0.073
+    assert f"{ram['124']['850']:.3f} or below" in alt
+    at_tm = ", ".join(f"{q} {ram[q]['2612']:.3f}" for q in ("124", "142"))
+    assert f"at T_M, 143 reads {ram['143']['2612']:.3f}, {at_tm} and 144 {ram['144']['2612']:.3f}." in alt
+    assert f"peaks at {ram['143']['2000']:.3f} at 8 µs and falls to {ram['143']['4000']:.3f} at 16 µs" in alt
+    assert max(ram["143"].values()) == ram["143"]["2000"]
+    assert f"to {ram['142']['4000']:.3f} and {ram['124']['4000']:.3f}." in alt
+    text = svg_text(DIAGRAMS / "wait-test-hardware.svg")
+    assert "11 October 2026, 02:13 to 02:14 UTC" in text and "T_M = 10.45 µs" in text
+    assert "predicted from M's Ramsey loss at T_M" in text
+    index = " ".join((ROOT / "docs" / "index.md").read_text().split())
+    assert len(list(DIAGRAMS.glob("*.svg"))) == 11 and "# the eleven diagrams, from data/" in index

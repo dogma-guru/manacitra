@@ -1,7 +1,7 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Kickoffs 43 to 47 (findings 11 to 13), recomputed from the archived counts in data/ibm_fez/k43-map.json to
-k47-wait.json.
+"""Kickoffs 43 to 48 (findings 11 to 14), recomputed from the archived counts in data/ibm_fez/k43-map.json to
+k48-wait-test.json.
 
 Each function takes the data files as loaded and returns the analysis in the shape the run archived it (under
 archived/analysis), so that tests/_reproduce.py compares the two field by field. The rules are the runs' own, fixed
@@ -9,8 +9,9 @@ before the data (Kickoff 43 with its Amendment A1). The bootstraps keep each run
 so an interval reproduces exactly under the runs' numpy (2.5) and agrees to 10⁻³ elsewhere (the "resampled-shots" mark
 in tests/expected_fields.json, as for Kickoff 33's intervals).
 
-This is a test helper, not part of the package: no command reads these runs, and a probe that measures a wait loss
-is a later step, by plan (Amendment A17).
+This is a test helper, not part of the package: no command reads these runs. Kickoff 48's circuits were built by the
+package (manacitra.wait, Amendment A18), and its recompute uses the package's analysis wherever it covers the quantity
+(Amendment A19).
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from collections import defaultdict
 import numpy as np
 
 from manacitra import archive as ar
+from manacitra import wait
 from manacitra.verdicts import map_verdict, persistence_day
 from manacitra.wait import part_b_losses
 
@@ -1107,4 +1109,168 @@ def k47_beside(rec: dict, k47: dict, k46: dict) -> dict:
         "q144_ramsey_loss_k47": q["144"]["r_3p4"],
         "J0_k47": k47["part_A"]["cells"]["J0"]["F"],
         "idle_windows_143_in_A_dt": rec["refocusing"]["cells"]["A0"]["idle_windows_dt_before"]["143"],
+    }
+
+
+# =========================================================================== Kickoff 48
+def _wait_test_keys() -> tuple[list[str], np.ndarray]:
+    """The wait test's 64 outcomes in the run's order (the ideal's 32 sorted, then the other 32 in counting order),
+    and the ideal's probability of each."""
+    ideal = wait.wait_test_ideal()
+    n = wait.WAIT_TEST_CLBITS
+    keys = sorted(ideal) + [k for k in (format(i, f"0{n}b") for i in range(2**n)) if k not in ideal]
+    return keys, np.array([ideal.get(k, 0.0) for k in keys])
+
+
+def k48_wait_test(rec: dict) -> dict:
+    """Kickoff 48, the wait test on hardware. Part A: on each chain, the wait test's F without and with XY4 refocusing,
+    pooled over its copies, by the package's analysis (manacitra.wait.analyse_wait_run), with the run's 90% bootstrap
+    interval (copies with replacement, each redrawn from a multinomial; seed bootstrap_A) and class. Part B by the
+    package (manacitra.wait.part_b_losses; seed bootstrap_B). The prediction, H48's rule as fixed before the run:
+    F_pred = F_ref x (1 - dP_R(T_M)), dP_R(T_M) the waiting qubit's Ramsey loss at the circuit's wait; d_M = F_no -
+    F_pred, with a joint bootstrap of both parts (seed joint), in the run's order: chain by chain, F_no and F_ref, then
+    P_R(T_M) and P_R(0). Then the verdict and what the run reported beside it."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds = m["seeds"]
+    n_boot = seeds["n_boot"]
+    labels, counts = rec["labels"], rec["counts"]
+    dt = m["T_M"]["dt_s"]
+    keys, q = _wait_test_keys()
+
+    def F(V):
+        return np.sqrt(V / V.sum(-1, keepdims=True) * q).sum(-1) ** 2
+
+    cells = defaultdict(list)
+    for lab, cts in zip(labels, counts):
+        if lab["part"] == "W":
+            d: dict = defaultdict(int)
+            for k, n in cts.items():
+                d[k.replace(" ", "")[-wait.WAIT_TEST_CLBITS :]] += n
+            cells[(str(lab["M"]), lab["variant"])].append([d.get(k, 0) for k in keys])
+
+    def draw(rng, name, v):
+        V = np.array(cells[(name, v)], float)
+        freq = V / V.sum(1, keepdims=True)
+        idx = rng.integers(0, V.shape[0], size=(n_boot, V.shape[0]))
+        return F(rng.multinomial(int(V[0].sum()), freq[idx]).sum(1))
+
+    def cls(ci):
+        return "LOW" if ci[1] < 0.3 else ("HIGH" if ci[0] > 0.6 else "MIDDLE")
+
+    rng_a = np.random.default_rng(seeds["bootstrap_A"])
+    part_a = {}
+    for name in m["chains"]:
+        mine = [(lab, cts) for lab, cts in zip(labels, counts) if lab["part"] == "W" and str(lab["M"]) == name]
+        wt = wait.analyse_wait_run([lab for lab, _ in mine], [c for _, c in mine], dt)["wait_test"]
+        part_a[name] = {}
+        for v, key in (("no", "F_no"), ("refocus", "F_refocus")):
+            ci = pct(draw(rng_a, name, v))
+            V = np.array(cells[(name, v)], float)
+            part_a[name][v] = {
+                "F": wt[key],
+                "ci90": ci,
+                "class": cls(ci),
+                "F_per_copy": wt["F_per_copy"][v],
+                "copies": int(V.shape[0]),
+                "shots": int(V.sum()),
+            }
+
+    waits = list(m["waits_dt"])
+    part_b = part_b_losses(
+        labels,
+        counts,
+        [tuple(g) for g in m["groups"]],
+        waits,
+        reference=fixed["reference_wait_dt"],
+        seed=seeds["bootstrap_B"],
+        wait_key="tau_dt",
+        waits_us=[w * dt * 1e6 for w in waits],
+    )
+
+    raw: dict = defaultdict(dict)
+    pos = {}
+    for lab, cts in zip(labels, counts):
+        if lab["part"] == "B":
+            raw[(lab["group"], lab["tau_dt"], lab["variant"])][lab["copy"]] = cts
+            for i, qq in enumerate(lab["qubits"]):
+                pos[qq] = (lab["group"], i)
+
+    def ramsey_tallies(qubit, tau):
+        g, i = pos[qubit]
+        ones = [sum(n for k, n in raw[(g, tau, "R")][c].items() if _bits(k)[i] == "1") for c in (1, 2)]
+        return np.array(ones), np.array([sum(raw[(g, tau, "R")][c].values()) for c in (1, 2)])
+
+    margin, floor = fixed["margin"], fixed["informative_floor"]
+    rng = np.random.default_rng(seeds["joint"])
+    pred = {}
+    for name, chain in m["chains"].items():
+        M = chain[1]
+        tm = wait.even_wait(m["T_M"]["per_chain"][name]["T_M_dt"])
+        b = {v: draw(rng, name, v) for v in ("no", "refocus")}
+        pr = {}
+        for tau in (tm, 0):
+            o, t = ramsey_tallies(M, tau)
+            acc1, accn = np.zeros(n_boot), np.zeros(n_boot)
+            for _ in range(2):
+                pick = rng.integers(0, 2, size=n_boot)
+                acc1 += rng.binomial(t[pick], o[pick] / t[pick])
+                accn += t[pick]
+            pr[tau] = acc1 / accn
+        loss = part_b[str(M)]["ramsey_loss"][str(tm)]
+        loss_b = pr[tm] - pr[0]
+        f_no, f_ref = part_a[name]["no"]["F"], part_a[name]["refocus"]["F"]
+        f_pred = f_ref * (1 - loss)
+        ci_d, ci_loss = pct(b["no"] - b["refocus"] * (1 - loss_b)), pct(loss_b)
+        pred[name] = {
+            "chain": chain,
+            "M": M,
+            "T_M_dt": tm,
+            "T_M_us": tm * dt * 1e6,
+            "dP_R_TM": loss,
+            "dP_R_TM_ci90": ci_loss,
+            "F_no": f_no,
+            "F_ref": f_ref,
+            "F_pred": f_pred,
+            "d_M": f_no - f_pred,
+            "d_M_ci90": ci_d,
+            "informative": ci_loss[0] > floor,
+            "inside_margin": ci_d[0] > -margin and ci_d[1] < margin,
+            "outside_margin": ci_d[0] > margin or ci_d[1] < -margin,
+            "gain": f_ref - f_no,
+            "gain_ci90": pct(b["refocus"] - b["no"]),
+            "gain_class": f"{part_a[name]['no']['class']} -> {part_a[name]['refocus']['class']}",
+        }
+    if any(p["outside_margin"] for p in pred.values()):
+        verdict = "DISAGREE"
+    elif all(p["inside_margin"] for p in pred.values()):
+        verdict = "AGREE"
+    else:
+        verdict = "NOT SETTLED"
+    informative = [n for n, p in pred.items() if p["informative"]]
+    if not informative:
+        verdict += ", uninformative"
+    # beside the verdict, as the run reported it: 143's kind of loss, whether its offset is still there, and the
+    # oscillation sign, a fall of more than 0.1 with separated intervals from 8 us or T_M to the last wait (16 us)
+    q143 = part_b["143"]
+    ram, ci = q143["ramsey_P1"], q143["ramsey_ci90"]
+    last = str(waits[-1])
+    osc = [
+        [int(a), waits[-1], ram[a], ram[last]]
+        for a in ("2000", str(pred["143"]["T_M_dt"]))
+        if ram[last] < ram[a] - 0.1 and ci[last][1] < ci[a][0]
+    ]
+    return {
+        "H48": verdict,
+        "informative_chains": informative,
+        "prediction": pred,
+        "part_A": part_a,
+        "part_B": part_b,
+        "waits_dt": waits,
+        "beside": {
+            "q143_kind_of_loss_3p4us": q143["kind_of_loss"],
+            "q143_r_3p4": q143["r"],
+            "offset_still_there": bool(q143["r_ci90"][0] > 0.1),
+            "oscillation_143_8_or_TM_to_16us": osc,
+            "kinds": {k: v["kind_of_loss"] for k, v in part_b.items()},
+        },
     }

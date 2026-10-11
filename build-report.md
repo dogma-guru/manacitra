@@ -2823,3 +2823,100 @@ The merge, the tag, the release and its verification, and the DOI are recorded w
 - **Zenodo.** It archived v0.4.0 with its own DOI, `10.5281/zenodo.23289535` (record created 23:43:45 UTC, linked to the
   `v0.4.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
 - **Step 4.** The README's version-DOI parenthetical names v0.4.0's DOI, and `VERSION_DOIS` gains its line.
+
+## 34. Amendment A19: finding 14, the wait test on hardware (11 October 2026)
+
+**Why.** The author ruled on 11 October 2026, in chat, that Kickoff 48's result goes into the repository as finding 14:
+draft first, the author reviews, then publish. This section records the draft. The merge and the 0.5.0 release wait for
+the author's go, given in chat after he has read the rendered finding.
+
+**Order.** The branch `findings/k48-wait-test` starts at `f28642a`, the merge of pull request 23 (v0.4.0's DOI). No
+hardware, no provider job and no contact with anyone.
+
+**Sources.** Kickoff 48's hand-back (`hardware-48/`: the counts, the job record, the check and dry-run records, the
+inputs, the results, the code and its checksums), the report, Mantri's scorecard and the kickoff text. Nothing whose
+name contains "SEALED" was read. Every file in the hand-back matched its checksum list, and the archive matched its
+published SHA-256. The package the run installed is this repository at `f28642a`: its `wait.py`, `workload.py` and
+`__init__.py` have the SHA-256 of those files at that commit.
+
+**The data: `data/ibm_fez/k48-wait-test.json` (0.2 MB).**
+- **Kept:** the counts as IBM returned them; the run's analysis under `archived`; the live build's record of every
+  circuit (counts, checks, exact noiseless F, the refocusing pulses on each qubit); M's wait T_M as scheduled on the
+  live backend; the dry run's build on the offline snapshot (`offline_build`); the published figures at build; the
+  sampler's options as IBM recorded them; the calibration stamps in UTC; and the job ID. `meta` names every source by
+  file name and SHA-256, the archive's SHA-256, the package commit and `wait.py`'s SHA-256, and gives the chains,
+  groups, waits, T_M and seeds.
+- **Dropped:** the instance's name and every account and plan detail; every dollar amount, cap and estimate; the gate's
+  reads and the usage records beyond the charged seconds; IBM's `details` list; the run log, the report, the scorecard
+  and the predictions; the installed copy of the package; and folder names and paths. Of the results file, only the
+  analysis was kept; its run, usage, T_M and field-list blocks were not (the same facts are kept from the job and counts
+  records, without the dollar amounts).
+- **Checked:** the converter, a scratch tool outside the repository, refused to write the file if the check record and
+  the submission record carried different builds, or if the output contained the instance's name, a dollar sign, a
+  home path, a source folder's name, "usd" or an email address. The identifier scan passed on the file.
+
+**The circuits.** They were built by `manacitra.wait` at `f28642a`, unedited, so nothing outside the repository is
+needed to rebuild them. `tests/test_wait.py` (`test_kickoff_48s_circuits_are_rebuilt_by_the_package`) builds every
+circuit again for the offline ibm_fez snapshot (qiskit-ibm-runtime 0.50.0; the dry run used 0.49.0) and finds the dry
+run's record exactly: the operation counts, the pulses on each qubit, exact F = 1, the chain as the layout, and T_M,
+2,481 dt on the snapshot. Against the live record, it finds the unrefocused cells' counts and checks, the 12 pulses on M
+in each refocused cell, and Part B's labels, order and counts for the live waits. The live durations are not in the
+snapshot, so the live T_M (2,611 dt) is checked as recorded: M's windows of 836 and 6 dt and five CZs of equal length.
+
+**The recompute.** `tests/_reuse_runs.py` gains `k48_wait_test`, and `tests/_reproduce.py` the case "Kickoff 48, the
+wait test on hardware", required to give AGREE.
+- **The package where it covers the quantity:** F by `manacitra.wait.analyse_wait_run`, chain by chain; Part B by
+  `part_b_losses`. The Part A intervals and the joint bootstrap of the prediction are ported from the run's analysis,
+  with its seeds (4848043, 4848 and 48) and its order of draws.
+- **Under numpy 2.5.3:** every archived number reproduces, intervals included. The largest difference is 2.2·10⁻¹⁶.
+- **Other random streams.** Following A17's lesson, every bootstrap was rerun under 200 other seeds. Four families of
+  interval move by 10⁻³ or more: the combination intervals beside the kinds of loss (up to 0.00275), the Ramsey loss at
+  T_M's (0.0015), d_M's (0.00115) and the Ramsey P(1) intervals (just over 0.001, on one of its 48 fields). Their 70 fields
+  are excluded with that reason; the text quotes d_M's intervals from the archive. The other 75 intervals move by at most
+  0.00075 and are compared at 10⁻³ ("resampled-shots"). No verdict, flag or label changed under any seed.
+- **Fits.** With the solver's tolerances varied, 143's fitted offset and its error move by about 10⁻⁹ and are compared;
+  its decay time moves by 3.7·10⁻⁵ and is excluded at 10⁻⁶, and the text's 11.5 µs is checked from the recompute. The
+  other qubits' fits and every echo fit are excluded, as for Kickoff 47.
+- **The inventory:** 262 fields compared, 75 of them at 10⁻³, and 58 exclusions, each with its reason.
+  `test_field_inventory.py` mutates the verdict and lists the 75 marked fields one by one.
+
+**The text.**
+- **`docs/findings.md`:** finding 14 under the fixed headline; the dates and counts of the opening paragraph; three
+  bullets of "What it has not shown" edited (the offset's persistence, dated with the new evidence; the placement
+  question; other chips).
+- **`README.md`:** row 14, "Fourteen findings, from runs on 5 to 11 October 2026", and a limit line for finding 14.
+  The line on findings 1 to 10 is unchanged.
+- **`docs/kickoffs.md`:** row 48. **`docs/reproduce.md`** and **`docs/method.md`:** a sentence each pointing to finding
+  14. **`docs/index.md`:** the table row, the eleven diagrams, and 10 and 11 October.
+- **`data/README.md`:** the file, its format, its recompute, what was left out, and eighteen IBM job IDs.
+- **The figure:** `docs/diagrams/wait-test-hardware.svg` and its PNG, drawn by `docs/make_diagrams.py` from the data:
+  the five chains' F without and with refocusing, with the predicted value marked, and the Ramsey curves of 143, 142,
+  124 and 144, with guides at 3.4 µs and at T_M. The colours are the house's two categorical slots and the reference
+  palette's third, checked for colour-vision separation on the figure's surface, with every curve labelled. The other
+  ten diagrams rebuild byte for byte.
+
+**Readings, logged.** Each place where the text departs from the amendment's wording, the report or the scorecard is
+listed, with its reason, in the review packet (`A19-review-packet.md`). Among them:
+- **Two roundings, corrected by the tests:** 143's d_M is +0.003, not +0.004 (0.00347), and the low end of 142's d_M
+  interval is +0.041, not +0.042 (0.04147). The values agree with the report's to 2.2·10⁻¹⁶; the report rounded twice.
+- **Exact half cases kept out:** some quantities are exact multiples of 1/4000 that end in a 5 (142's and 124's Ramsey
+  losses at 3.4 µs, 0.0555 and 0.0705; two interval ends). The text gives them at a precision where they do not round
+  either way.
+- **The run's time:** 02:13 to 02:14 UTC, the house's rounding to the nearest minute (it ran from 02:12:32).
+- **143 across the stamps:** the offset was fitted under two stamps, about 15 hours apart; under the earlier two, what
+  was seen was the collapse of the circuit with 143 waiting in it. The text keeps the two apart, and says "every
+  calibration stamp these runs ran under", not "every published stamp".
+
+**The tests:**
+- **The counts:** 743 pass, against 729 on `main` (14 new).
+- **`tests/test_readme_numbers.py`:** `test_finding_14`, `test_finding_14_beside_the_findings` and
+  `test_the_wait_test_hardware_picture` check every number in the new text against the recompute or the archive; the
+  dates, the table's fourteen rows and the kickoff row are updated, and three retired phrases are added.
+- **`tests/test_data_meta.py`:** allows 11 October.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the file. The signing workflow signs it, `data/README.md` and `data/SHA256SUMS` on
+  `main` after the merge.

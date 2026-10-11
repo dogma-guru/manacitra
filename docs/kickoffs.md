@@ -39,6 +39,7 @@ The practices below are as the author's dated records describe them; those recor
 | 45, 10 October 2026 | Does the collapse repeat, and do idle loss or repeated retirements explain it? | ibm_fez | the collapse REPEATS; idle loss SUPPORTED by its rule, carried by one qubit; repeated retirement NOT SUPPORTED | `ibm_fez/k45-collapse.json` |
 | 46, 10 October 2026 | Is qubit 143 disturbed when its neighbours are retired? | ibm_fez | no fixed pattern holds; a neighbour's retirement NOT SUPPORTED | `ibm_fez/k46-middle.json` |
 | 47, 10 October 2026 | Does phase build up on 143 while it waits, and do refocusing pulses save the circuit? | ibm_fez | H_phase SUPPORTED (refocusing restored the circuit); the loss on 143 REFOCUSABLE | `ibm_fez/k47-wait.json` |
+| 48, 11 October 2026 | Does a qubit's Ramsey loss, measured at the circuit's own wait length, predict how much a reuse-shaped circuit loses when that qubit waits in it? | ibm_fez | AGREE, informative (three of five chains); 143's loss REFOCUSABLE again | `ibm_fez/k48-wait-test.json` (the circuits built by `manacitra.wait` at `f28642a`, which rebuilds them) |
 
 The kickoff texts and the sealed predictions are kept and dated, and are not part of this release.
 

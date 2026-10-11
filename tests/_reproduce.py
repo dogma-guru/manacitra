@@ -274,6 +274,7 @@ def clear_caches() -> None:
         k45_recomputed,
         k46_recomputed,
         k47_recomputed,
+        k48_recomputed,
     ):
         fn.cache_clear()
 
@@ -1521,6 +1522,38 @@ def k47():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- Kickoff 48 (Amendment A19)
+K48 = "ibm_fez/k48-wait-test.json"
+
+
+@cache
+def k48_recomputed() -> dict:
+    return reuse.k48_wait_test(reuse_doc(K48))
+
+
+def k48():
+    """Kickoff 48: the wait test's F on five chains without and with refocusing; Part B's Ramsey and echo P(1), losses
+    and kinds; the prediction from each waiting qubit's Ramsey loss at the circuit's wait, d_M with the joint
+    bootstrap, and H48, from the counts."""
+    doc, r = reuse_doc(K48), k48_recomputed()
+    leaves = compare("Kickoff 48, the wait test on hardware", {K48: {"archived": {"analysis": r}}}, {K48: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["H48"], r["H48"]),
+            ("informative chains", ", ".join(a["informative_chains"]), ", ".join(r["informative_chains"])),
+            *((f"d_M, M = {n}", a["prediction"][n]["d_M"], r["prediction"][n]["d_M"]) for n in a["prediction"]),
+            ("143: kind of loss at 3.4 us", a["part_B"]["143"]["kind_of_loss"], r["part_B"]["143"]["kind_of_loss"]),
+            (
+                "143: fitted offset (MHz)",
+                a["part_B"]["143"]["ramsey_fit"]["f_MHz"],
+                r["part_B"]["143"]["ramsey_fit"]["f_MHz"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1565,6 +1598,7 @@ CASES = {
     "Kickoff 45, the collapse taken apart": k45,
     "Kickoff 46, the middle line": k46,
     "Kickoff 47, the wait": k47,
+    "Kickoff 48, the wait test on hardware": k48,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1592,4 +1626,5 @@ REQUIRED = {
     "Kickoff 45, the collapse taken apart": "REPEATS",
     "Kickoff 46, the middle line": "NOT SUPPORTED",
     "Kickoff 47, the wait": "SUPPORTED",
+    "Kickoff 48, the wait test on hardware": "AGREE",
 }

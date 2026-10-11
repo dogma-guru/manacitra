@@ -18,7 +18,7 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Findings
 
-Thirteen findings, from runs on 5 to 10 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
+Fourteen findings, from runs on 5 to 11 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
 
 | # | finding | where | kickoff, 2026 | verdict |
 |---|---|---|---|---|
@@ -35,6 +35,7 @@ Thirteen findings, from runs on 5 to 10 October 2026. Each is given in full, wit
 | [11](docs/findings.md#finding-11) | On ibm_fez, reuse circuits placed by the map scored higher than Qiskit's calibration placement, mostly because the map's chains avoided one qubit | ibm_fez | 43, 10 Oct | USEFUL FOR REUSE (G = +0.2246 in fidelity), mostly from avoiding one qubit; the map's own verdict NOT SETTLED |
 | [12](docs/findings.md#finding-12) | On ibm_fez, a reuse circuit collapsed on chains around qubits 143 and 144, and five explanations for it were tested and set aside | ibm_fez | 44, 45, 46, 10 Oct | NOT SUPPORTED for one retirement, repeated retirements and a neighbour's retirement; idle loss SUPPORTED by its rule but not tracking the collapse |
 | [13](docs/findings.md#finding-13) | Qubit 143 lost phase while it waited in superposition, IBM's echo-measured T2 does not show that kind of loss, and refocusing pulses restored the circuit | ibm_fez | 47, 10 Oct | H_phase SUPPORTED; the loss on 143 REFOCUSABLE |
+| [14](docs/findings.md#finding-14) | On ibm_fez, a qubit's Ramsey loss at the circuit's own wait length predicted how a reuse-shaped circuit fared when that qubit waited in it | ibm_fez | 48, 11 Oct | AGREE, informative (three of five chains) |
 
 What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
 
@@ -43,6 +44,7 @@ What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT 
 - **One circuit family.** Every map comes from one encoded four-site Hamiltonian, at two strengths of its diagonal coupling (circuits A and B). Other circuits might order the pairs differently.
 - **Three processors, three days.** The hardware results of findings 1 to 10 are from ibm_fez and ibm_kingston, and from Rigetti Cepheus-1-108Q through Open Quantum and through Amazon Braket, all on 5 to 7 October 2026.
 - **One processor, one day, for the reuse findings.** Findings 11 to 13 are from one processor on one day, across three published calibration stamps.
+- **One processor, one day, five qubits, for finding 14.** Finding 14 is from one job on ibm_fez on 11 October 2026, under one published calibration stamp.
 - **Two routes to one processor.** The Rigetti findings through Open Quantum (2, 6) and through Amazon Braket (8 to 10) are from the same processor, but only the Braket route records where each pair ran. The difference between them is a difference between the two platforms' placement records, not between the vendors' machines.
 - **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
 - **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
@@ -106,7 +108,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the thirteen findings in full, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the fourteen findings in full, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
