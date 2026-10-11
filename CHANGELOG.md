@@ -1,8 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (11 October 2026)
 
-- Amendment A19: finding 14, from the wait test on ibm_fez on 11 October 2026 (Kickoff 48), with its data in `data/ibm_fez/k48-wait-test.json`, its recompute in `tests/_reuse_runs.py`, a test that rebuilds its circuits with `manacitra.wait`, and one figure. No behaviour of the package changed.
+Finding 14, from the wait test on ibm_fez on 11 October 2026, with its data. No behaviour of the package changed.
+
+- Amendment A19: finding 14, from the wait test on ibm_fez on 11 October 2026 (Kickoff 48), with its data in
+  `data/ibm_fez/k48-wait-test.json`, its recompute in `tests/_reuse_runs.py`, a test that rebuilds its circuits with
+  `manacitra.wait`, and one figure. Ruling R1 edited two sentences of the finding before the merge. No behaviour of the
+  package changed.
 
 ## 0.4.0 (10 October 2026)
 
