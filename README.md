@@ -123,7 +123,7 @@ Please cite the software and, if you use them, the data, using [`CITATION.cff`](
 
 > Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.5.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
-That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.4.0: [10.5281/zenodo.23289535](https://doi.org/10.5281/zenodo.23289535)).
+That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.5.0: [10.5281/zenodo.23300255](https://doi.org/10.5281/zenodo.23300255)).
 
 ## Support
 
