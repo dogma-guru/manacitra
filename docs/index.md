@@ -443,7 +443,13 @@ For a sealed prediction, verify both: the commit record's signature (`sigstore v
 predictions.md.commit.json ...`), which shows who published the commitment and when, and the commitment itself
 (`manacitra verify predictions.md`), which shows the file is the one committed to.
 
-**Releasing.** The steps v0.1.0 and v0.1.1 took, in order:
+**When to release.** A finding reaches `main`, with its data and its signatures, once the author has reviewed it. A
+version is released when a line of work reaches a stopping point (a question answered or set down) or when the
+package's behaviour changes. Several findings may share one version. Each version has a permanent DOI, so versions are
+not cut for a change that the next one will replace.
+
+**Releasing.** The steps a release takes, in order. Every release from v0.1.0 on has followed them; the tree check in
+step 2 was written down after v0.5.0, which ran it afterwards (build report section 36).
 
 1. **A release pull request.** It sets the version in `pyproject.toml`, the package (`__version__`), `CITATION.cff`
    (`version` and `date-released`) and the README's citation line, and adds a dated `CHANGELOG.md` entry.
@@ -451,7 +457,10 @@ predictions.md.commit.json ...`), which shows who published the commitment and w
    `10.5281/zenodo.23228518`, which always resolves to the latest version.
 2. **The merge, then signing on `main`.** If a signed file changed, the bot commits new bundles. Tag that commit, so the
    release carries bundles that verify; otherwise tag the merge commit. The tag is annotated:
-   `git tag -a vX.Y.Z -m "Manacitra X.Y.Z"`.
+   `git tag -a vX.Y.Z -m "Manacitra X.Y.Z"`. Before tagging, verify every signed file in the tree against the
+   `@refs/heads/main` identity (the tree check). A release whose runner cannot run it records that in the build report,
+   and the check is run afterwards. The verification tool is installed for this check only: an exact `sigstore` version
+   in a throwaway environment outside the repository, with no credentials, deleted afterwards.
 3. **The release.** Publish it with the changelog entry as its notes. Watch `gate`, `build-release` and
    `sign-release`, then verify one asset from a fresh download with the `@refs/tags/vX.Y.Z` identity.
 4. **The version DOI, once Zenodo has minted it.** The README's citation paragraph names the new version's own DOI

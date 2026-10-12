@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Amendment A20: `docs/findings.md` says what was known before findings 13 and 14 (the Ramsey wait against the Hahn
+  echo, dynamical decoupling, ADAPT's choice of which idle qubits to refocus, and a study of how to insert refocusing
+  for idle qubits of different kinds), and its bullet on placement adds refocusing every idle qubit and ADAPT's choice
+  to the comparisons not yet run. `docs/index.md` section 9 says when a version is released, and its release steps
+  verify the tree's signed files before tagging. The build report records that check for v0.5.0, run after the release.
+  No finding and no behaviour of the package changed.
+
 ## 0.5.0 (11 October 2026)
 
 Finding 14, from the wait test on ibm_fez on 11 October 2026, with its data. No behaviour of the package changed.

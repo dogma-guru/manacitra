@@ -3002,3 +3002,84 @@ The merge, the tag, the release and its verification, and the DOI are recorded w
 - **Zenodo.** It archived v0.5.0 with its own DOI, `10.5281/zenodo.23300255` (record created 15:13:45 UTC, linked to the
   `v0.5.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
 - **Step 4.** The README's version-DOI parenthetical names v0.5.0's DOI, and `VERSION_DOIS` gains its line.
+
+## 36. The v0.5.0 tree check, run after the release (11 October 2026)
+
+**Why.** Section 35 records that the tree's signed files were not verified against `…/sign.yml@refs/heads/main` before
+`v0.5.0` was tagged: the author's leave for `sigstore` covered the release assets only. Amendment A20 (the author's
+ruling C1, given in chat on 11 October) gave leave to run the check after the release, offline, on the same terms.
+
+**The commit.** `563c040`, the merge of pull request 26 (v0.5.0's DOI). No signed file changed between the tag's
+commit, `a55354d`, and `563c040`: `python tools/sign_targets.py --before a55354d --after 563c040` lists none, and nothing
+in `data/` differs between the two. So the signed files checked here are the ones the tag names.
+
+**The tool.** `sigstore` 4.5.0 (wheel SHA-256 `f045b207f2e12605cf775ec38e89c5eda625d71ffa7830477db65e47ec2bc8b2`), with
+Python 3.14.8 and pip 26.2.1 on macOS 26.6.2 (arm64). By the author's leave, it was installed as exactly
+`sigstore==4.5.0` into a throwaway virtual environment outside the repository: its 31 wheels were downloaded first, then
+installed from that folder alone, and `pip check` found no broken requirements. No credentials were used. Nothing was
+added to the project's dependencies, lockfile or CI, and the environment was deleted afterwards.
+
+**The check,** at 00:39 UTC on 12 October 2026 (20:39 on 11 October, New York time).
+- **The bundles.** 241 files in the tree have a `.sigstore.json` bundle beside them, all in `data/`; the tree holds no
+  `*.commit.json` file.
+- **The result.** All 241 verified offline against the default-branch identity, one `OK:` line for each file and no
+  failure. In offline mode `sigstore` warned that it would not update its trust root.
+
+  ```
+  $ sigstore verify identity --offline <the 241 files> --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/heads/main --cert-oidc-issuer https://token.actions.githubusercontent.com
+  ```
+
+- **The negative control.** Against `…/sign.yml@refs/tags/v0.5.0`, `data/ibm_fez/k48-wait-test.json` fails (exit status
+  1): its certificate names `…/sign.yml@refs/heads/main`.
+
+This closes the omission recorded in section 35: every signed file in the tree at the v0.5.0 release verifies against
+`…/sign.yml@refs/heads/main`. Section 35 is left as written.
+
+## 37. Amendment A20: what was known before findings 13 and 14, and when and how to release (11 and 12 October 2026)
+
+**Why.** By the author's rulings of 11 October (C1 to C4, in chat), A20 closes the v0.5.0 tree check (section 36),
+brings the release steps up to date, says when a version is released (C3, option A: at stopping points), and says what
+was known before findings 13 and 14. Draft first: pull request 27, for the author's review. Nothing is merged, and
+under C3 no release follows A20.
+
+**The five documentation changes.**
+1. `docs/findings.md`, a new section before "What it has not shown": what was known before findings 13 and 14. The
+   Ramsey wait against the Hahn echo, dynamical decoupling, ADAPT's choice of which idle qubits to refocus, and Niu and
+   Todri-Sanial's study of how to insert refocusing, each cited and not tested here. Then what findings 13 and 14 add,
+   and that whether the check chooses better than ADAPT, or than refocusing every idle qubit, has not been tested.
+2. `docs/findings.md`, the placement bullet of "What it has not shown": it adds refocusing every idle qubit and ADAPT's
+   choice of qubits to refocus to the comparisons not yet run.
+3. `README.md`, the Documentation line for `docs/findings.md`: it names what was known before the findings.
+4. `docs/index.md` section 9: a paragraph on when to release; the lead of the release steps, which names section 36;
+   and the tree check in step 2, with the terms of the tool's install (C2).
+5. `CHANGELOG.md`: an `## Unreleased` entry for these changes.
+
+**The citations.** Each was checked before it was written: its DOI or arXiv identifier resolves, its record matches, and
+its source says what the sentence attributes to it. For Ramsey and Hahn the abstracts were read, as their full texts are
+paywalled; for ADAPT, the abstract; for Viola, Knill and Lloyd and for Niu and Todri-Sanial, the full text. The draft
+dropped Niu and Todri-Sanial: the kickoff had listed it under "Choosing which idle qubits to refocus", a question the
+paper says it does not study. Ruling R1 restored it under its own lead-in.
+
+**The tests.**
+- `test_what_was_known_before_findings_13_and_14` checks that the section is present, directly before "What it has not
+  shown", with each citation's identifiers, the restored sentence and the scope sentence in full, and "has not been
+  tested"; and the new bullet and README line.
+- `test_the_release_steps_carry_the_tree_check` checks step 2's two tree-check sentences, that the lead of the steps
+  names section 36, and the paragraph on when to release. It names no version.
+- The retired-phrase list gains the five replaced phrases.
+
+**Ruling R1 (12 October 2026, the author's go given in chat).** It answers the five questions of the review packet.
+- **Q1, Niu and Todri-Sanial.** Restored, under its own lead-in, with "to explain why".
+- **Q2, its place.** Its own sentence after ADAPT's, not a second item in a list under ADAPT's lead-in, where the
+  lead-in would again govern it.
+- **Q3, the scope sentence.** Replaced: "on one processor on one day" described finding 14 only. The sentence now gives
+  finding 13's part (10 October) and finding 14's (11 October).
+- **Q4, the lead of the release steps.** "The steps every release from v0.1.0 to v0.5.0 took" was false once step 2
+  named the tree check, since v0.5.0 ran it after tagging, and its version range would go stale at each release. It
+  now reads "The steps a release takes, in order", says every release from v0.1.0 on has followed them, and points to
+  section 36. The test checks its form only.
+- **Q5.** This section. Section 36 stays the record of the tree check.
+
+**Checks.** On the branch, after R1, these pass: the full suite, ruff, `tools/scan_secrets.py` (tree, `--staged`,
+`--git`), `tools/check_dco.py` and `tools/sha256sums.py --check`. No data file changed, and `tools/sign_targets.py`
+lists none. CI runs on pull request 27 and must pass before any merge.

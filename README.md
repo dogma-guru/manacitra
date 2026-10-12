@@ -108,7 +108,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the fourteen findings in full, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the fourteen findings in full, what was known before them, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
