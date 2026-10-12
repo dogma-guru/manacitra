@@ -147,3 +147,18 @@ def test_the_release_steps_carry_the_doi_line():
     )
     assert "test_the_version_is_the_same_everywhere" in steps and "`CITATION.cff` keeps the concept DOI" in steps
     assert '"version X.Y.Z: <DOI>"' in steps and "`VERSION_DOIS`" in steps
+
+
+def test_the_release_steps_carry_the_tree_check():
+    """Amendment A20: the release steps verify the tree's signed files before tagging, on the terms of the author's
+    leave, and name the latest published release as the last to take them; section 9 says when a version is cut."""
+    page = " ".join(_read("docs/index.md").split())
+    steps = page.split("**Releasing.**", 1)[1].split("**Plain SHA-256 stays**", 1)[0]
+    latest = max(VERSION_DOIS, key=lambda v: tuple(map(int, v.split("."))))
+    assert f"The steps every release from v0.1.0 to v{latest} took, in order:" in steps
+    assert "verify every signed file in the tree against the `@refs/heads/main` identity (the tree check)" in steps
+    assert "A release whose runner cannot run it records that in the build report" in steps
+    assert "an exact `sigstore` version in a throwaway environment outside the repository, with no credentials" in steps
+    when = page.split("**When to release.**", 1)[1].split("**Releasing.**", 1)[0]
+    assert "Several findings may share one version." in when
+    assert "versions are not cut for a change that the next one will replace." in when

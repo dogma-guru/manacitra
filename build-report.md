@@ -3002,3 +3002,35 @@ The merge, the tag, the release and its verification, and the DOI are recorded w
 - **Zenodo.** It archived v0.5.0 with its own DOI, `10.5281/zenodo.23300255` (record created 15:13:45 UTC, linked to the
   `v0.5.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
 - **Step 4.** The README's version-DOI parenthetical names v0.5.0's DOI, and `VERSION_DOIS` gains its line.
+
+## 36. The v0.5.0 tree check, run after the release (11 October 2026)
+
+**Why.** Section 35 records that the tree's signed files were not verified against `…/sign.yml@refs/heads/main` before
+`v0.5.0` was tagged: the author's leave for `sigstore` covered the release assets only. Amendment A20 (the author's
+ruling C1, given in chat on 11 October) gave leave to run the check after the release, offline, on the same terms.
+
+**The commit.** `563c040`, the merge of pull request 26 (v0.5.0's DOI). No signed file changed between the tag's
+commit, `a55354d`, and `563c040`: `python tools/sign_targets.py --before a55354d --after 563c040` lists none, and nothing
+in `data/` differs between the two. So the signed files checked here are the ones the tag names.
+
+**The tool.** `sigstore` 4.5.0 (wheel SHA-256 `f045b207f2e12605cf775ec38e89c5eda625d71ffa7830477db65e47ec2bc8b2`), with
+Python 3.14.8 and pip 26.2.1 on macOS 26.6.2 (arm64). By the author's leave, it was installed as exactly
+`sigstore==4.5.0` into a throwaway virtual environment outside the repository: its 31 wheels were downloaded first, then
+installed from that folder alone, and `pip check` found no broken requirements. No credentials were used. Nothing was
+added to the project's dependencies, lockfile or CI, and the environment was deleted afterwards.
+
+**The check,** at 00:39 UTC on 12 October 2026 (20:39 on 11 October, New York time).
+- **The bundles.** 241 files in the tree have a `.sigstore.json` bundle beside them, all in `data/`; the tree holds no
+  `*.commit.json` file.
+- **The result.** All 241 verified offline against the default-branch identity, one `OK:` line for each file and no
+  failure. In offline mode `sigstore` warned that it would not update its trust root.
+
+  ```
+  $ sigstore verify identity --offline <the 241 files> --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/heads/main --cert-oidc-issuer https://token.actions.githubusercontent.com
+  ```
+
+- **The negative control.** Against `…/sign.yml@refs/tags/v0.5.0`, `data/ibm_fez/k48-wait-test.json` fails (exit status
+  1): its certificate names `…/sign.yml@refs/heads/main`.
+
+This closes the omission recorded in section 35: every signed file in the tree at the v0.5.0 release verifies against
+`…/sign.yml@refs/heads/main`. Section 35 is left as written.

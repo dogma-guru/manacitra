@@ -666,6 +666,9 @@ RETIRED = [
     "Whether a measured wait loss chooses better placements",  # A19: the bullet on choosing by the Ramsey loss
     "an established finding about the circuit, not tested here",  # A19 R1: the rule rests on it, and AGREE tests that
     "would test whether the wander is that slow",  # A19 R1: the disconfirmer names a later run, and what narrows it
+    "compared with Qiskit's and with MERA-style placement, has not been run",  # A20: and refocusing, and ADAPT
+    "the fourteen findings in full, and what has not been shown",  # A20: and what was known before them
+    "The steps v0.1.0 and v0.1.1 took",  # A20: every release since took them
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -1314,6 +1317,31 @@ def test_finding_14_beside_the_findings():
     assert round(apart.total_seconds() / 3600) == 15
     assert "finding 14 fitted it again, about 15 hours later and across one day boundary" in flat
     assert "ran under, over about 22 hours. Whether it lasts longer, and why it is there, are not known" in flat
+
+
+def test_what_was_known_before_findings_13_and_14():
+    """Amendment A20: the findings page says what was known before findings 13 and 14, with each source it cites, just
+    before what has not been shown, and says plainly that the check has not been tested against those methods."""
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    head = "\n## What was known before these findings\n"
+    assert head in findings
+    section, after = findings.split(head, 1)[1].split("\n## ", 1)
+    assert after.startswith("What it has not shown\n")
+    section = " ".join(section.split())
+    for cited in (
+        "(Ramsey, Physical Review 78, 695, 1950)",
+        "(Hahn, Physical Review 80, 580, 1950)",
+        "(Viola, Knill and Lloyd, Physical Review Letters 82, 2417, 1999)",
+        "(Das, Tannu, Dangwal and Qureshi, MICRO 2021, doi 10.1145/3466752.3480059, arXiv:2109.05309)",
+    ):
+        assert cited in section, cited
+    assert "These are established findings, cited and not tested here." in section
+    assert "has not been tested" in section
+    untested = "Whether that check chooses better than ADAPT, or than refocusing every idle qubit, has not been tested."
+    assert untested in section
+    flat = " ".join(README.split())
+    assert "with refocusing every idle qubit and with ADAPT's choice of qubits to refocus, has not been run." in flat
+    assert "the fourteen findings in full, what was known before them, and what has not been shown." in flat
 
 
 def test_the_wait_test_hardware_picture():
