@@ -669,6 +669,8 @@ RETIRED = [
     "compared with Qiskit's and with MERA-style placement, has not been run",  # A20: and refocusing, and ADAPT
     "the fourteen findings in full, and what has not been shown",  # A20: and what was known before them
     "The steps v0.1.0 and v0.1.1 took",  # A20: every release since took them
+    "every release from v0.1.0 to v0.5.0",  # A20 R1, Q4: v0.5.0 ran the tree check after tagging, not before
+    "how a reuse-shaped circuit would fare, on one processor on one day",  # A20 R1, Q3: findings 13 and 14, two days
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -1333,9 +1335,23 @@ def test_what_was_known_before_findings_13_and_14():
         "(Hahn, Physical Review 80, 580, 1950)",
         "(Viola, Knill and Lloyd, Physical Review Letters 82, 2417, 1999)",
         "(Das, Tannu, Dangwal and Qureshi, MICRO 2021, doi 10.1145/3466752.3480059, arXiv:2109.05309)",
+        "(arXiv:2204.14251)",
     ):
         assert cited in section, cited
+    # ruling R1, Q1 and Q2: the paper studied how to insert refocusing, so it has its own lead-in, not ADAPT's
+    assert (
+        "How to insert refocusing for idle qubits of different kinds has been studied too: Niu and Todri-Sanial "
+        "(arXiv:2204.14251) used Ramsey experiments on IBM's 7-qubit Lagos to explain why one insertion strategy beat "
+        "another for a qubit beside a two-qubit gate." in section
+    )
     assert "These are established findings, cited and not tested here." in section
+    # ruling R1, Q3: finding 13 (10 October) and finding 14 (11 October) each add their own part
+    assert (
+        "What findings 13 and 14 add is narrower: on one processor, a qubit whose loss a Ramsey wait showed and IBM's "
+        "echo-measured T2 did not (finding 13, 10 October), and a rule, fixed before the run, that predicted from one "
+        "qubit's Ramsey loss at a circuit's own wait length how a reuse-shaped circuit would fare (finding 14, 11 "
+        "October)." in section
+    )
     assert "has not been tested" in section
     untested = "Whether that check chooses better than ADAPT, or than refocusing every idle qubit, has not been tested."
     assert untested in section

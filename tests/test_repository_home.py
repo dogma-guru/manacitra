@@ -151,14 +151,21 @@ def test_the_release_steps_carry_the_doi_line():
 
 def test_the_release_steps_carry_the_tree_check():
     """Amendment A20: the release steps verify the tree's signed files before tagging, on the terms of the author's
-    leave, and name the latest published release as the last to take them; section 9 says when a version is cut."""
+    leave, and the paragraph above them points to the record of v0.5.0's check; section 9 says when a version is cut.
+    Ruling R1 (Q4): the paragraph names no version range, so it does not go stale at each release."""
     page = " ".join(_read("docs/index.md").split())
     steps = page.split("**Releasing.**", 1)[1].split("**Plain SHA-256 stays**", 1)[0]
-    latest = max(VERSION_DOIS, key=lambda v: tuple(map(int, v.split("."))))
-    assert f"The steps every release from v0.1.0 to v{latest} took, in order:" in steps
-    assert "verify every signed file in the tree against the `@refs/heads/main` identity (the tree check)" in steps
-    assert "A release whose runner cannot run it records that in the build report" in steps
-    assert "an exact `sigstore` version in a throwaway environment outside the repository, with no credentials" in steps
+    lead, step_2 = steps.split(" 1. ", 1)[0], steps.split(" 2. ", 1)[1].split(" 3. ", 1)[0]
+    assert "(build report section 36)" in lead
+    assert (
+        "Before tagging, verify every signed file in the tree against the `@refs/heads/main` identity (the tree "
+        "check). A release whose runner cannot run it records that in the build report, and the check is run "
+        "afterwards."
+    ) in step_2
+    assert (
+        "The verification tool is installed for this check only: an exact `sigstore` version in a throwaway "
+        "environment outside the repository, with no credentials, deleted afterwards."
+    ) in step_2
     when = page.split("**When to release.**", 1)[1].split("**Releasing.**", 1)[0]
     assert "Several findings may share one version." in when
     assert "versions are not cut for a change that the next one will replace." in when

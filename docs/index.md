@@ -448,7 +448,8 @@ version is released when a line of work reaches a stopping point (a question ans
 package's behaviour changes. Several findings may share one version. Each version has a permanent DOI, so versions are
 not cut for a change that the next one will replace.
 
-**Releasing.** The steps every release from v0.1.0 to v0.5.0 took, in order:
+**Releasing.** The steps a release takes, in order. Every release from v0.1.0 on has followed them; the tree check in
+step 2 was written down after v0.5.0, which ran it afterwards (build report section 36).
 
 1. **A release pull request.** It sets the version in `pyproject.toml`, the package (`__version__`), `CITATION.cff`
    (`version` and `date-released`) and the README's citation line, and adds a dated `CHANGELOG.md` entry.
