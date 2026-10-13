@@ -22,6 +22,15 @@ fair coin, and M's result is their parity, so the exact output is uniform over 3
 Hellinger overlap with it. A phase phi gained by M while it waits takes F to cos²(phi / 2), however the phase is split
 between the waits: RZ(pi/2) inside each wait, or inside only one, takes F from 1 to 0.5 (`wait_test_sensitivity`).
 
+**The Ramsey over the circuit's wait** (Amendment A22) is the check of findings 14 to 19: M's Ramsey loss over the
+wait test's own wait T_M, from the end of M's first H to the start of its last, as scheduled. `build_wait_ramsey`
+builds it with the neighbours "active" (the default): the wait test as scheduled, with every CZ that touches M replaced
+by a delay of the same length on both its qubits, so M does only H, wait, H, measure while the end lines do everything
+they do in the circuit, at the same times. With the neighbours "idle", it builds 0.5.0's instrument, unchanged: Part
+B's Ramsey on M alone at T_M (made even), the instrument of findings 13 and 14. `predicted_fidelity` gives the
+prediction, F_pred = F_ref x (1 - (P(1) at T_M - P(1) at no wait)). A known phase, one RZ on M right after its first H,
+is the probe of Kickoffs 51 to 53 (`phase`, on both builders and on `build_wait_test`).
+
 **The boundary (D-02).** Nothing here is a reuse compiler, a port of a published reuse-compilation method, a
 restore-and-route step, or an algorithm that decides where to measure and reset. The wait test's measures and resets are
 written by hand and fixed in its definition, the same for every chain, and the user names the chain.
@@ -56,6 +65,9 @@ L1, M, L3 = 0, 1, 2
 WAIT_TEST_ROUNDS = ((L1, 0), (L3, 1), (L1, 2), (L3, 3), (L1, 4))
 WAIT_TEST_RETIRED = 3
 WAIT_TEST_CLBITS = 6
+#: What M's neighbours do in the Ramsey over the wait test's wait (Amendment A22): "active", what they do in the
+#: wait test (the default from 0.6.0, findings 16 to 19), or "idle" in |0> (0.5.0's instrument, findings 13 and 14)
+NEIGHBOURS = ("active", "idle")
 
 
 # --------------------------------------------------------------------------- Part B
@@ -525,13 +537,16 @@ def idle_windows(circuit, qubit: int) -> list[int]:
     ]
 
 
-def build_wait_test(chain: Sequence[int], refocus: bool = False, backend=None):
+def build_wait_test(chain: Sequence[int], refocus: bool = False, backend=None, phase: float = 0.0):
     """The wait test on the chain L1-M-L3 the user names (three physical qubits, L1 and L3 each coupled to M).
 
     With a backend: translated to its instructions at optimization level 0 with the chain as the layout, so the
     measures and resets stay where the definition puts them; with refocus=True, XY4 pulses are then inserted into every
     idle window of the chain long enough to hold the sequence (`refocused`). Without a backend, the circuit on three
-    lines, unplaced (refocusing needs the backend's durations)."""
+    lines, unplaced (refocusing needs the backend's durations).
+
+    phase: a known phase, in radians, as one RZ on M right after its first H (Kickoffs 51 to 53's probe, Amendment
+    A22), before any refocusing pulses are inserted. At 0, the default, nothing is inserted: the circuit is 0.5.0's."""
     chain = [int(q) for q in chain]
     if len(chain) != 3 or len(set(chain)) != 3:
         raise ValueError("the chain is three distinct qubits, L1-M-L3")
@@ -539,6 +554,11 @@ def build_wait_test(chain: Sequence[int], refocus: bool = False, backend=None):
     if backend is None:
         if refocus:
             raise ValueError("refocusing needs the backend's durations: pass backend")
+        if phase:
+            from qiskit.circuit import CircuitInstruction
+            from qiskit.circuit.library import RZGate
+
+            qc.data.insert(1, CircuitInstruction(RZGate(float(phase)), (qc.qubits[M],)))
         return qc
     t = backend.target
     gate = "cz"
@@ -546,7 +566,139 @@ def build_wait_test(chain: Sequence[int], refocus: bool = False, backend=None):
         if t[gate].get((a, b)) is None and t[gate].get((b, a)) is None:
             raise ValueError(f"refused: {a}-{b} is not a coupler with a CZ on this backend")
     isa = to_backend(qc, chain, backend)
+    if phase:
+        isa = _rebuild(isa, _with_phase(_instructions(isa), chain[1], phase), isa.name)
     return refocused(isa, t, chain) if refocus else isa
+
+
+# --------------------------------------------------------------------------- the Ramsey over the circuit's wait (A22)
+def _instructions(circuit) -> list[tuple]:
+    """A circuit as a list of (operation, physical qubits, clbits)."""
+    return [
+        (i.operation, [circuit.find_bit(q).index for q in i.qubits], [circuit.find_bit(c).index for c in i.clbits])
+        for i in circuit.data
+    ]
+
+
+def _rebuild(src, ins, name: str):
+    """A circuit with src's qubits, clbits, registers and layout record, holding these instructions."""
+    out = src.copy_empty_like(name=name)
+    for op, qs, cs in ins:
+        out.append(op, [out.qubits[i] for i in qs], [out.clbits[j] for j in cs])
+    out._layout = src.layout
+    return out
+
+
+def _with_phase(ins: list, m: int, phase: float) -> list:
+    """RZ(phase) on M right after the last RZ of M's first H (RZ, SX, RZ in the backend's instructions)."""
+    from qiskit.circuit.library import RZGate
+
+    on_m = [k for k, (_, qs, _) in enumerate(ins) if qs == [m]]
+    names = [ins[k][0].name for k in on_m]
+    i = names.index("sx") if "sx" in names else -1
+    if i < 1 or i + 1 >= len(names) or names[i - 1] != "rz" or names[i + 1] != "rz":
+        raise RuntimeError("refused: M's first H is not RZ, SX, RZ in the backend's instructions")
+    k = on_m[i + 1]
+    return ins[: k + 1] + [(RZGate(float(phase)), [m], [])] + ins[k + 1 :]
+
+
+def _duration(op, qs, target, dt) -> int:
+    """An instruction's length in dt: a delay's own, 0 for a barrier or an RZ (a frame change), else the target's."""
+    if op.name == "delay":
+        if op.unit != "dt":
+            raise ValueError("a delay not in dt")
+        return int(op.duration)
+    if op.name in ("barrier", "rz"):
+        return 0
+    return int(round(target[op.name][tuple(qs)].duration / dt))
+
+
+def _chain_schedule(circuit, backend, chain: Sequence[int]) -> list[tuple]:
+    """The circuit scheduled by `scheduled`, keeping only the instructions on the chain's qubits."""
+    sch = scheduled(circuit, backend.target)
+    return [x for x in _instructions(sch) if set(x[1]) <= set(chain)]
+
+
+def _timeline(ins: list, target, dt, qubits: Sequence[int]) -> list[tuple]:
+    """Start times, in dt, of a padded instruction list on these qubits: each qubit's instructions tile time, and every
+    instruction on several qubits starts when all of them are free at once. Refuses (RuntimeError) a list that is not
+    padded. Returns (index, name, qubits, clbits, start, duration) for each instruction on these qubits."""
+    clock: dict = defaultdict(int)
+    out = []
+    for k, (op, qs, cs) in enumerate(ins):
+        if not set(qs) & set(qubits):
+            continue
+        d = _duration(op, qs, target, dt)
+        starts = {clock[q] for q in qs}
+        if len(starts) != 1:
+            raise RuntimeError(f"not padded at {op.name} on {qs}: clocks {sorted(starts)}")
+        s = starts.pop()
+        for q in qs:
+            clock[q] = s + d
+        out.append((k, op.name, qs, cs, s, d))
+    return out
+
+
+def _window(tl: list, m: int) -> dict:
+    """M's window: from the end of its first SX (its first H) to the start of its last SX (its last H), in dt."""
+    sx = [(s, d) for _, name, qs, _, s, d in tl if name == "sx" and qs == [m]]
+    return {"start_dt": sx[0][0] + sx[0][1], "end_dt": sx[-1][0], "T_dt": sx[-1][0] - (sx[0][0] + sx[0][1])}
+
+
+def build_wait_ramsey(chain: Sequence[int], backend, neighbours: str = "active", phase: float = 0.0):
+    """M's Ramsey over the wait test's own wait T_M on the chain L1-M-L3, for the backend (Amendment A22). T_M runs from
+    the end of M's first H to the start of its last, in the wait test without refocusing as `scheduled` on the
+    backend's target.
+
+    neighbours="active" (the default): the wait test as scheduled, with every two-qubit gate that touches M replaced by
+    a delay of the same length on both its qubits, and every other instruction left at its scheduled time. M then does
+    only H, wait, H, measure (into the wait test's c5), and L1 and L3 do everything they do in the wait test, at the
+    same times: Kickoffs 50 to 53's R1, the instrument of findings 16 to 19.
+
+    neighbours="idle": 0.5.0's instrument, unchanged: Part B's Ramsey (`part_b_circuit`) on M alone at T_M made even
+    (`even_wait`), translated by `to_backend`, the neighbours idle in |0>: the instrument of findings 13 and 14.
+
+    phase: a known phase, in radians, as one RZ on M right after its first H, the probe of Kickoffs 51 to 53. At 0, the
+    default, nothing is inserted. The prediction from either Ramsey is `predicted_fidelity`."""
+    if neighbours not in NEIGHBOURS:
+        raise ValueError(f"neighbours is one of {NEIGHBOURS}; got {neighbours!r}")
+    if backend is None:
+        raise ValueError("the Ramsey over the circuit's wait needs the backend's durations: pass backend")
+    chain = [int(q) for q in chain]
+    plain = build_wait_test(chain, False, backend)
+    t, dt, m = backend.target, backend.dt, chain[1]
+    T = _window(_timeline(_chain_schedule(plain, backend, chain), t, dt, chain), m)["T_dt"]
+    if neighbours == "idle":
+        wait_dt = even_wait(T, getattr(t, "granularity", 1) or 1)
+        qc = part_b_circuit(1, wait_dt, "R")
+        if phase:
+            from qiskit.circuit import CircuitInstruction
+            from qiskit.circuit.library import RZGate
+
+            qc.data.insert(1, CircuitInstruction(RZGate(float(phase)), (qc.qubits[0],)))
+        return to_backend(qc, [m], backend)
+    source = _rebuild(plain, _with_phase(_instructions(plain), m, phase), plain.name) if phase else plain
+    ins = []
+    for op, qs, cs in _chain_schedule(source, backend, chain):
+        if len(qs) == 2 and op.name != "barrier" and m in qs:
+            from qiskit.circuit import Delay
+
+            d = _duration(op, qs, t, dt)
+            ins += [(Delay(d, unit="dt"), [q], []) for q in qs]
+        else:
+            ins.append((op, qs, cs))
+    return _rebuild(plain, ins, "wait-ramsey")
+
+
+def predicted_fidelity(f_ref: float, p1_wait: float, p1_zero: float) -> float:
+    """The wait test's predicted F without refocusing, F_pred = F_ref x (1 - loss), loss = M's P(1) after the Ramsey
+    over the circuit's wait (`build_wait_ramsey`) minus its P(1) with no wait: finding 14's rule with the idle-neighbour
+    Ramsey, Kickoff 53's revised rule with the active one (finding 19). f_ref is the wait test's F with refocusing. A
+    prediction: the rules test the residual d = F_no - F_pred against a margin fixed before the run."""
+    vals = [float(x) for x in (f_ref, p1_wait, p1_zero)]
+    if not all(math.isfinite(v) and 0.0 <= v <= 1.0 for v in vals):
+        raise ValueError(f"F_ref and the two P(1) are probabilities, finite and in [0, 1]; got {vals}")
+    return vals[0] * (1 - (vals[1] - vals[2]))
 
 
 def wait_lengths(backend, chain: Sequence[int]) -> dict:

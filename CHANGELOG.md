@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Findings 15 to 19, from five runs on ibm_fez on 13 October 2026, with their data. The check's default Ramsey now runs with the waiting qubit's neighbours active, as they are in the circuit; the 0.5.0 behaviour remains available. Not released: a second-day run on this code comes first.
+
 - Amendment A20: `docs/findings.md` says what was known before findings 13 and 14 (the Ramsey wait against the Hahn
   echo, dynamical decoupling, ADAPT's choice of which idle qubits to refocus, and a study of how to insert refocusing
   for idle qubits of different kinds), and its bullet on placement adds refocusing every idle qubit and ADAPT's choice
@@ -10,6 +12,13 @@
   No finding and no behaviour of the package changed.
 - Amendment A21: `docs/findings.md`, in what was known before findings 13 and 14, cites a mid-circuit reset experiment
   on ibm_fez (Nature Physics, 2026) as context. No finding and no behaviour of the package changed.
+- Amendment A22: `manacitra.wait.build_wait_ramsey` builds the Ramsey over the wait test's own wait, with the neighbours
+  active (the new default: the wait test as scheduled, every two-qubit gate on the waiting qubit replaced by a delay of
+  its length) or idle (0.5.0's instrument, unchanged); `predicted_fidelity` gives the prediction from F_ref and the two
+  Ramsey readings; and `build_wait_test` and `build_wait_ramsey` take a known phase on the waiting qubit (`phase`,
+  default 0, which inserts nothing). Findings 15 to 19 (Kickoffs 49 to 53), with their data in `data/ibm_fez/` (the
+  counts, the run records and each run's code, as verbatim lines of the scripts as run), the six posted rule files
+  published unchanged, their recomputes in `tests/_reuse_runs.py`, and one figure.
 
 ## 0.5.0 (11 October 2026)
 

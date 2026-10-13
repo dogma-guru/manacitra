@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 import re
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -825,3 +826,266 @@ def test_a_circuit_not_built_for_the_backend_is_refused(guarded):
     offline = IBMCircuitsBackend("ibm_fez", service=SnapshotService("ibm_fez"))
     with pytest.raises(UsageUnavailable):
         offline.submit(CircuitJob(circuits, labels, shots), log=lambda m: None)
+
+
+# --------------------------------------------------------------------------- the active-neighbour Ramsey (A22)
+#: Kickoff 53's four chains, drawn once by its posted procedure, and the two chains of Kickoffs 50 to 52
+A22_CHAINS = {
+    "30": (31, 30, 29),
+    "74": (75, 74, 73),
+    "121": (120, 121, 116),
+    "103": (96, 103, 104),
+    "144": (143, 144, 145),
+    "143": (144, 143, 142),
+}
+FIXTURE_050 = "fixtures/wait-0.5.0-fakefez.json"
+
+
+def _timeline(circuit, backend, qubits) -> list[tuple]:
+    """(name, qubits, clbits, start, duration) in dt for every instruction on these qubits of a padded circuit: each
+    qubit's instructions tile time from 0, and an instruction on several qubits starts when all are free at once.
+    Written here, not taken from the package, so the package's own timing is checked against it."""
+    t, clock, out = backend.target, {}, []
+    for inst in circuit.data:
+        qs = [circuit.find_bit(q).index for q in inst.qubits]
+        if not set(qs) & set(qubits):
+            continue
+        name = inst.operation.name
+        if name == "delay":
+            d = int(inst.operation.duration)
+        elif name in ("barrier", "rz"):
+            d = 0
+        else:
+            d = int(round(t[name][tuple(qs)].duration / backend.dt))
+        starts = {clock.get(q, 0) for q in qs}
+        assert len(starts) == 1, f"not padded at {name} on {qs}"
+        s = starts.pop()
+        for q in qs:
+            clock[q] = s + d
+        out.append((name, qs, [circuit.find_bit(c).index for c in inst.clbits], s, d))
+    return out
+
+
+def _scheduled_on_chain(circuit, backend, chain):
+    sch = wait.scheduled(circuit, backend.target)
+    return _timeline(sch, backend, chain)
+
+
+def _m_sequence(circuit, m) -> list[tuple]:
+    """M's instructions in order: (name, an RZ's angle, else None)."""
+    out = []
+    for inst in circuit.data:
+        if m in [circuit.find_bit(q).index for q in inst.qubits]:
+            name = inst.operation.name
+            out.append((name, float(inst.operation.params[0]) if name == "rz" else None))
+    return out
+
+
+@pytest.mark.parametrize("name", list(A22_CHAINS))
+def test_the_active_ramseys_neighbours_measure_and_reset_when_the_wait_test_does(fez, name):
+    """Amendment A22, 1c (timing): on Kickoff 53's four chains and on 143-144-145 and 144-143-142, built for the offline
+    ibm_fez snapshot, every measure and reset on L1 and L3 in the active-neighbour Ramsey starts at the same dt, and
+    lasts as long, as in the wait test as scheduled; and so does every other instruction on them, the CZs with M aside
+    (they are delays now). M's wait, from the end of its first H to the start of its last, is the wait test's T_M."""
+    chain = list(A22_CHAINS[name])
+    l1, m, l3 = chain
+    plain = wait.build_wait_test(chain, False, fez)
+    w_tl = _scheduled_on_chain(plain, fez, chain)
+    for phase in (0.0, math.pi / 2):
+        r_tl = _timeline(wait.build_wait_ramsey(chain, fez, phase=phase), fez, chain)
+        for q in (l1, l3):
+            events = [(n, s, d, c) for n, qs, c, s, d in w_tl if qs == [q] and n in ("measure", "reset")]
+            assert (
+                events
+                and [(n, s, d, c) for n, qs, c, s, d in r_tl if qs == [q] and n in ("measure", "reset")] == events
+            )
+            assert len([e for e in events if e[0] == "measure"]) == (3 if q == l1 else 2)
+            keep = [(n, s, d) for n, qs, _, s, d in w_tl if q in qs and n not in ("barrier", "delay", "cz")]
+            assert [(n, s, d) for n, qs, _, s, d in r_tl if q in qs and n not in ("barrier", "delay", "cz")] == keep
+        sx_w = [(s, d) for n, qs, _, s, d in w_tl if n == "sx" and qs == [m]]
+        sx_r = [(s, d) for n, qs, _, s, d in r_tl if n == "sx" and qs == [m]]
+        assert len(sx_r) == 2 and sx_r == [sx_w[0], sx_w[-1]]
+        assert sx_r[1][0] - sum(sx_r[0]) == 2481  # T_M on the snapshot (live: 2,611 dt)
+        assert not [1 for n, qs, *_ in r_tl if n == "cz"]
+
+
+@pytest.mark.parametrize("name", ["30", "144"])
+def test_between_its_two_h_gates_m_only_waits(fez, name):
+    """Amendment A22, 1c (M's operations): in the active-neighbour Ramsey, M's operations between its two H gates (each
+    RZ, SX, RZ) are delays and, when a phase is asked for, the one inserted RZ, right after the first H; barriers, which
+    are directives and last 0 dt, aside. The idle-neighbour Ramsey's M does H, a delay, H, and the RZ when asked."""
+    chain = list(A22_CHAINS[name])
+    m = chain[1]
+    for phase in (0.0, math.pi / 2, -math.pi / 2, math.pi):
+        for nb in wait.NEIGHBOURS:
+            seq = _m_sequence(wait.build_wait_ramsey(chain, fez, nb, phase), m)
+            i0 = [n for n, _ in seq].index("sx")
+            i1 = len(seq) - 1 - [n for n, _ in seq][::-1].index("sx")
+            assert [n for n, _ in seq].count("sx") == 2 and seq[i0 - 1][0] == seq[i0 + 1][0] == "rz"
+            assert seq[i1 - 1][0] == seq[i1 + 1][0] == "rz" and seq[-1][0] == "measure"
+            between = seq[i0 + 2 : i1 - 1]
+            rz = [a for n, a in between if n == "rz"]
+            assert {n for n, _ in between} <= {"delay", "barrier", "rz"}
+            assert rz == ([phase] if phase else []) and (not phase or between[0] == ("rz", phase))
+            assert [n for n, _ in between].count("delay") >= 1
+
+
+@pytest.mark.parametrize("name", list(A22_CHAINS))
+def test_the_ramseys_exact_values(fez, name):
+    """Amendment A22, 1c (exact values): by the package's exact simulation, M's P(1) is 0 at a phase of 0, 0.5 at +90
+    and -90 degrees and 1 at 180, in both Ramseys; and the wait test with the same phase gives F = cos^2(phase / 2)."""
+    chain = list(A22_CHAINS[name])
+    ideal = wait.wait_test_ideal()
+    for deg, want in ((0, 0.0), (90, 0.5), (-90, 0.5), (180, 1.0)):
+        phase = math.radians(deg)
+        for nb in wait.NEIGHBOURS:
+            p = wait.exact_distribution(wait.build_wait_ramsey(chain, fez, nb, phase))
+            assert sum(v for k, v in p.items() if k[0] == "1") == pytest.approx(want, abs=1e-9), (nb, deg)
+        f = wait.fidelity(wait.exact_distribution(wait.build_wait_test(chain, False, fez, phase)), ideal)
+        assert f == pytest.approx(math.cos(phase / 2) ** 2, abs=1e-9), deg
+
+
+def _run_code(record: str, file: str):
+    """A run's code as the data record keeps it (verbatim lines of the script as run), executed as a module."""
+    import sys
+    import types
+
+    text = archive.load(record)["source_code"][file]["text"]
+    mod = types.ModuleType(file[:-3])
+    mod.__file__ = f"{file}"  # the script's folder is not in this repository; its sys.path lines then add nothing used
+    saved = list(sys.path)
+    try:
+        exec(compile(text, file, "exec"), mod.__dict__)  # the record's own text, as for Kickoff 47's builder
+    finally:
+        sys.path[:] = saved
+    sys.modules[mod.__name__] = mod
+    return mod
+
+
+@pytest.fixture(scope="module")
+def hw_code():
+    import sys
+
+    before = {k: sys.modules.get(k) for k in ("hw_50", "hw_51")}
+    k50 = _run_code("ibm_fez/k50-neighbour-test.json", "hw_50.py")
+    k51 = _run_code("ibm_fez/k51-known-offset.json", "hw_51.py")
+    yield k50, k51
+    for k, v in before.items():
+        if v is None:
+            sys.modules.pop(k, None)
+        else:
+            sys.modules[k] = v
+
+
+@pytest.mark.parametrize("name", list(A22_CHAINS))
+def test_the_active_ramsey_is_what_the_hardware_runs_built(fez, hw_code, name):
+    """Amendment A22, 1c (equivalence): for the six chains on the offline ibm_fez snapshot, the package's active-
+    neighbour Ramsey is structurally identical to Kickoff 50's R1 as hw_50.py builds it (the same operations on the same
+    qubits, with the same parameters, at the same times), and with a phase of +90 or -90 degrees to Kickoff 51's R1 as
+    hw_51.py builds it. Both scripts run here from the data records' copies. At a phase of 0, Kickoffs 51 to 53 inserted
+    an explicit RZ(0) (a frame change of nothing); the package inserts nothing, and the circuits otherwise agree."""
+    k50, k51 = hw_code
+    chain = list(A22_CHAINS[name])
+    c50, info = k50.build_chain(name, chain, fez)
+    mine = wait.build_wait_ramsey(chain, fez)
+    assert wait.structure(mine) == wait.structure(c50["R1"])
+    assert _timeline(mine, fez, chain) == _timeline(c50["R1"], fez, chain)
+    assert info["T_M"]["T_dt"] == 2481
+    c51, _ = k51.build_chain(name, chain, fez)
+    for deg in (-90, 90):
+        theirs, ours = c51[("R1", deg)], wait.build_wait_ramsey(chain, fez, phase=math.radians(deg))
+        assert wait.structure(ours) == wait.structure(theirs)
+        assert _timeline(ours, fez, chain) == _timeline(theirs, fez, chain)
+        assert wait.structure(wait.build_wait_test(chain, False, fez, math.radians(deg))) == wait.structure(
+            c51[("W-no", deg)]
+        )
+    zero = [row for row in wait.structure(c51[("R1", 0)]) if row[0] != "rz" or row[3] != [0.0]]
+    assert len(zero) == len(wait.structure(c51[("R1", 0)])) - 1 and zero == wait.structure(mine)
+
+
+def test_the_check_defaults_to_active_neighbours_and_idle_is_050(fez):
+    """Amendment A22, 1b: the Ramsey over the circuit's wait defaults to active neighbours. With neighbours="idle" it
+    is 0.5.0's instrument exactly: for the six chains, the same circuit, instruction for instruction, as Manacitra at
+    a55354d (v0.5.0) built for the offline snapshot: Part B's Ramsey on M alone at T_M made even (the fixture, built
+    from a git archive of that commit). The wait test at its default phase of 0 is 0.5.0's too, without and with
+    refocusing. Anything else for neighbours, or no backend, is refused."""
+    import inspect
+
+    sig = inspect.signature(wait.build_wait_ramsey)
+    assert sig.parameters["neighbours"].default == "active" == wait.NEIGHBOURS[0]
+    assert sig.parameters["phase"].default == 0.0
+    assert inspect.signature(wait.build_wait_test).parameters["phase"].default == 0.0
+    fx = json.loads((Path(__file__).parent / FIXTURE_050).read_text())
+    assert (
+        fx["built_with"]["manacitra_commit"].startswith("a55354d") and fx["built_with"]["manacitra_version"] == "0.5.0"
+    )
+    assert (
+        fx["built_with"]["wait_py_sha256"]
+        == archive.load("ibm_fez/k49-wait-test.json")["meta"]["built_from"]["wait_py_sha256"]
+    )
+    assert sorted(fx["chains"]) == sorted(A22_CHAINS)
+    for name, rec in fx["chains"].items():
+        chain = list(A22_CHAINS[name])
+        assert rec["chain"] == chain
+        default = wait.build_wait_ramsey(chain, fez)
+        assert wait.structure(default) == wait.structure(wait.build_wait_ramsey(chain, fez, "active"))
+        assert wait.structure(wait.build_wait_ramsey(chain, fez, "idle")) == rec["idle"]
+        assert wait.structure(default) != rec["idle"]
+        assert wait.structure(wait.build_wait_test(chain, False, fez)) == rec["W-no"]
+        assert wait.structure(wait.build_wait_test(chain, True, fez)) == rec["W-ref"]
+    with pytest.raises(ValueError, match="neighbours is one of"):
+        wait.build_wait_ramsey(list(A22_CHAINS["144"]), fez, "quiet")
+    with pytest.raises(ValueError, match="needs the backend"):
+        wait.build_wait_ramsey(list(A22_CHAINS["144"]), None)
+
+
+def test_the_prediction_is_the_runs_own():
+    """Amendment A22, 1b: predicted_fidelity(F_ref, P(1) at T_M, P(1) at no wait) gives Kickoff 48's F_pred on every
+    chain (the idle-neighbour Ramsey's) and Kickoff 53's F_pred1 on every cell (the active one's), from the archived
+    quantities; and refuses a value that is not a probability."""
+    a48 = archive.load("ibm_fez/k48-wait-test.json")["archived"]["analysis"]
+    for n, p in a48["prediction"].items():
+        tm = str(p["T_M_dt"])
+        p1 = a48["part_B"][n]["ramsey_P1"]
+        assert wait.predicted_fidelity(p["F_ref"], p1[tm], p1["0"]) == pytest.approx(p["F_pred"], abs=1e-12), n
+    a53 = archive.load("ibm_fez/k53-revised-check.json")["archived"]["analysis"]
+    for c in a53["cells"]:
+        z = a53["chains"][c["M"]]["P1_Z"]
+        assert wait.predicted_fidelity(c["F_ref"], c["loss_R1"] + z, z) == pytest.approx(c["F_pred1"], abs=1e-12)
+        assert wait.predicted_fidelity(c["F_ref"], c["loss_R0"] + z, z) == pytest.approx(c["F_pred0"], abs=1e-12)
+    for bad in ((1.2, 0.1, 0.0), (0.9, float("nan"), 0.0), (0.9, 0.1, -0.1)):
+        with pytest.raises(ValueError, match="probabilities"):
+            wait.predicted_fidelity(*bad)
+
+
+RUNS_A22 = (
+    "ibm_fez/k49-wait-test.json",
+    "ibm_fez/k50-neighbour-test.json",
+    "ibm_fez/k51-known-offset.json",
+    "ibm_fez/k52-phase-sweep.json",
+    "ibm_fez/k53-revised-check.json",
+)
+
+
+@pytest.mark.parametrize("path", RUNS_A22)
+def test_the_runs_code_is_kept_as_verbatim_lines(path):
+    """Amendment A22, 2a: each run's analysis and circuit-building code is in its data record, as verbatim line
+    ranges of the script as run (named by its SHA-256): each kept text has its recorded SHA-256 and line count,
+    compiles, and carries no instance or account name, dollar amount, charge, usage block or path."""
+    rec = archive.load(path)
+    names = {s["file"]: s["sha256"] for s in rec["meta"]["source_scripts"]}
+    assert rec["source_code"]
+    for file, code in rec["source_code"].items():
+        assert code["file"] == file and code["sha256_as_run"] == names[file]
+        text = code["text"]
+        assert hashlib.sha256(text.encode()).hexdigest() == code["text_sha256"]
+        assert len(text.splitlines()) == sum(b - a + 1 for a, b in code["kept_lines"])
+        assert all(b < code["lines_as_run"] for _, b in code["kept_lines"])
+        compile(text, file, "exec")
+        bad = re.findall(
+            r"paid-|\bINSTANCE\b|instance_label|usd|\$|cap_|charge|\"usage\"|usage_remaining|QiskitRuntimeService"
+            r"|literature|preprint|handback|/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+",
+            text,
+            re.I,
+        )
+        assert not bad, (file, sorted(set(bad)))

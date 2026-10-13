@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
+from datetime import UTC
 
 import numpy as np
 
@@ -1272,5 +1273,549 @@ def k48_wait_test(rec: dict) -> dict:
             "offset_still_there": bool(q143["r_ci90"][0] > 0.1),
             "oscillation_143_8_or_TM_to_16us": osc,
             "kinds": {k: v["kind_of_loss"] for k, v in part_b.items()},
+        },
+    }
+
+
+# =========================================================================== Kickoffs 49 to 53 (Amendment A22)
+def k49_wait_test(rec: dict, k48: dict) -> dict:
+    """Kickoff 49, the wait test on a second day: Kickoff 48's recompute (k48_wait_test), unchanged, on Kickoff 49's
+    counts with its seeds, as the run computed it; then what the run reported beside the verdict, against Kickoff 48's
+    archived analysis (k48: that record): each qubit's kind of loss on both days, 143's Ramsey loss at 3.4 us, the
+    Ramsey fits labelled as fits, each chain's d_M beside Kickoff 48's, and the calibration stamps."""
+    r = k48_wait_test(rec)
+    a48 = k48["archived"]["analysis"]
+    pb = r["part_B"]
+    fits = {}
+    for q, v in pb.items():
+        f = v["ramsey_fit"]
+        fits[q] = (
+            None
+            if f is None
+            else {
+                "offset_kHz": f["f_MHz"] * 1e3,
+                "offset_err_kHz": f["f_err"] * 1e3,
+                "decay_us": f["T_us"],
+                "amplitude": f["a"],
+                "label": "a fit (manacitra.wait.ramsey_fit), not a measurement",
+            }
+        )
+    d_beside = {
+        n: {
+            "d_M_k49": p["d_M"],
+            "d_M_ci90_k49": p["d_M_ci90"],
+            "d_M_k48": a48["prediction"][n]["d_M"],
+            "d_M_ci90_k48": a48["prediction"][n]["d_M_ci90"],
+            "dP_R_TM_k49": p["dP_R_TM"],
+            "dP_R_TM_k48": a48["prediction"][n]["dP_R_TM"],
+            "informative_k49": p["informative"],
+            "informative_k48": a48["prediction"][n]["informative"],
+        }
+        for n, p in r["prediction"].items()
+    }
+    run = rec["run"]
+    stamps = {
+        "at_build": run["calibration_at_build"],
+        "at_submission": run["calibration_at_submission"],
+        "after_fetch": run["calibration_after_fetch"],
+        "k48": run["calibration_k48"],
+    }
+    k48_utc = _utc(k48["run"]["calibration_at_build"])
+    days = {k: (_utc(v) - k48_utc).total_seconds() / 86400 for k, v in stamps.items() if k != "k48"}
+    return {
+        "verdict": r["H48"],
+        **r,
+        "beside": {
+            **r["beside"],
+            "kinds_k47_rule_3p4us": {q: v["kind_of_loss"] for q, v in pb.items()},
+            "kinds_k48": {q: v["kind_of_loss"] for q, v in a48["part_B"].items()},
+            "q143_r_ci90": pb["143"]["r_ci90"],
+            "q143_r_k48": a48["part_B"]["143"]["r"],
+            "ramsey_fits": fits,
+            "ramsey_fits_k48_kHz": {
+                q: (None if v["ramsey_fit"] is None else v["ramsey_fit"]["f_MHz"] * 1e3)
+                for q, v in a48["part_B"].items()
+            },
+            "d_M_beside_k48": d_beside,
+            "calibration_stamps": stamps,
+            "days_since_k48_stamp": days,
+        },
+    }
+
+
+def _utc(stamp: str):
+    """A calibration stamp, as IBM's properties give it (an offset, or a trailing UTC), as a UTC datetime."""
+    from datetime import datetime
+
+    s = stamp.replace(" UTC", "+00:00") if stamp.endswith(" UTC") else stamp
+    return datetime.fromisoformat(s).astimezone(UTC)
+
+
+def _cells_and_bits(labels, counts, key):
+    """The runs' tallies from the counts, as Kickoffs 50 to 53's analyses made them: for each wait-test position, the
+    64 outcomes in the recompute's order (_wait_test_keys); for each Ramsey position, M's ones and shots from its own
+    bit (the label's m_clbit); each listed by copy. key(label) names a position's cell."""
+    keys, _ = _wait_test_keys()
+    cells, bits, pooled = defaultdict(list), defaultdict(list), defaultdict(lambda: defaultdict(int))
+    for lab, cts in zip(labels, counts):
+        k_ = key(lab)
+        if lab["part"] == "W":
+            d: dict = defaultdict(int)
+            for k, n in cts.items():
+                kk = k.replace(" ", "")[-wait.WAIT_TEST_CLBITS :]
+                d[kk] += n
+                pooled[k_][kk] += n
+            cells[k_].append((lab["copy"], [d.get(k, 0) for k in keys]))
+        else:
+            i = lab["m_clbit"]
+            ones = sum(n for k, n in cts.items() if k.replace(" ", "")[::-1][i] == "1")
+            bits[k_].append((lab["copy"], ones, sum(cts.values())))
+    for dd in (cells, bits):
+        for k in dd:
+            dd[k].sort(key=lambda x: x[0])
+    return cells, bits, pooled
+
+
+def _draws(rng, n_boot: int, cells, bits):
+    """The two draws of Kickoffs 50 to 53's joint bootstrap, from one random stream: a wait-test cell's F (the copies
+    with replacement, each redrawn from a multinomial) and a Ramsey's P(1) (the copies with replacement, each redrawn
+    binomially)."""
+    _, q = _wait_test_keys()
+
+    def F(V):
+        return np.sqrt(V / V.sum(-1, keepdims=True) * q).sum(-1) ** 2
+
+    def draw_F(key):
+        V = np.array([x[1] for x in cells[key]], float)
+        freq = V / V.sum(1, keepdims=True)
+        idx = rng.integers(0, V.shape[0], size=(n_boot, V.shape[0]))
+        return F(rng.multinomial(int(V[0].sum()), freq[idx]).sum(1))
+
+    def draw_P(key):
+        o = np.array([x[1] for x in bits[key]])
+        t = np.array([x[2] for x in bits[key]])
+        acc1, accn = np.zeros(n_boot), np.zeros(n_boot)
+        for _ in range(len(o)):
+            pick = rng.integers(0, len(o), size=n_boot)
+            acc1 += rng.binomial(t[pick], o[pick] / t[pick])
+            accn += t[pick]
+        return acc1 / accn
+
+    return draw_F, draw_P
+
+
+def _p1(bits, key) -> float:
+    return sum(x[1] for x in bits[key]) / sum(x[2] for x in bits[key])
+
+
+def _stamps(rec: dict, earlier: str, name: str) -> tuple[dict, dict]:
+    """The calibration stamps at build, submission and fetch beside an earlier run's, and the hours since it."""
+    run = rec["run"]
+    stamps = {
+        "at_build": run["calibration_at_build"],
+        "at_submission": run["calibration_at_submission"],
+        "after_fetch": run["calibration_after_fetch"],
+        name: earlier,
+    }
+    t0 = _utc(earlier)
+    return stamps, {k: (_utc(v) - t0).total_seconds() / 3600 for k, v in stamps.items() if k != name}
+
+
+#: Kickoff 50's figures from Kickoff 49 and Kickoff 51's from Kickoff 50, as the analyses carried them (the earlier
+#: reports' roundings, beside the verdicts; tests/test_readme_numbers.py checks them against those runs' recomputes)
+K49_144_AS_CARRIED = {"F_no": 0.786, "F_ref": 0.896, "dP_R_TM": 0.326, "d_M": 0.182}
+K50_D0_AS_CARRIED = {"144": 0.044, "143": -0.014}
+
+
+def k50_neighbour(rec: dict) -> dict:
+    """Kickoff 50, the neighbour test, as its analysis fixed it before the data: per M (144, then 143), F_no and F_ref
+    by the package's analysis (manacitra.wait.analyse_wait_run), M's P(1) in R0 to R3, E0, E1 and Z from its own bit,
+    loss = P(1) - P(1) of Z; Delta_active = loss(R0) - loss(R1), d0 and d1; one joint bootstrap (seed bootstrap). H50
+    on 144, the gap first."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds, dt = m["seeds"], m["T_M"]["dt_s"]
+    labels, counts = rec["labels"], rec["counts"]
+    order, ramsey = ("144", "143"), ("Z", "R0", "R1", "R2", "R3", "E0", "E1")
+
+    def key(lab):
+        return (str(lab["M"]), lab["variant"]) if lab["part"] == "W" else (str(lab["M"]), lab["circuit"])
+
+    cells, bits, _ = _cells_and_bits(labels, counts, key)
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    out = {}
+    for M in order:
+        mine = [(lab, cts) for lab, cts in zip(labels, counts) if str(lab["M"]) == M and lab["part"] == "W"]
+        wt = wait.analyse_wait_run([lab for lab, _ in mine], [c for _, c in mine], dt)["wait_test"]
+        Fb = {"no": draw_F((M, "no")), "refocus": draw_F((M, "refocus"))}
+        Pb = {c: draw_P((M, c)) for c in ramsey}
+        P = {c: _p1(bits, (M, c)) for c in ramsey}
+        loss = {c: P[c] - P["Z"] for c in ramsey if c != "Z"}
+        loss_b = {c: Pb[c] - Pb["Z"] for c in ramsey if c != "Z"}
+        f_no, f_ref = wt["F_no"], wt["F_refocus"]
+        q_ = {
+            "F_no": f_no,
+            "F_no_ci90": pct(Fb["no"]),
+            "F_ref": f_ref,
+            "F_ref_ci90": pct(Fb["refocus"]),
+            "F_per_copy": wt["F_per_copy"],
+            "P1": P,
+            "P1_ci90": {c: pct(Pb[c]) for c in ramsey},
+            "shots": {c: [x[2] for x in bits[(M, c)]] for c in ramsey},
+            "loss": loss,
+            "loss_ci90": {c: pct(v) for c, v in loss_b.items()},
+            "delta_active": loss["R0"] - loss["R1"],
+            "delta_active_ci90": pct(loss_b["R0"] - loss_b["R1"]),
+            "d0": f_no - f_ref * (1 - loss["R0"]),
+            "d0_ci90": pct(Fb["no"] - Fb["refocus"] * (1 - loss_b["R0"])),
+            "d1": f_no - f_ref * (1 - loss["R1"]),
+            "d1_ci90": pct(Fb["no"] - Fb["refocus"] * (1 - loss_b["R1"])),
+            "state_split_R0_minus_R2": loss["R0"] - loss["R2"],
+            "state_split_ci90": pct(loss_b["R0"] - loss_b["R2"]),
+            "readout_split_R0_minus_R3": loss["R0"] - loss["R3"],
+            "readout_split_ci90": pct(loss_b["R0"] - loss_b["R3"]),
+            "echo_active_E0_minus_E1": loss["E0"] - loss["E1"],
+            "echo_active_ci90": pct(loss_b["E0"] - loss_b["E1"]),
+        }
+        lo, hi = q_["d1_ci90"]
+        mg = fixed["d1_margin_beside"]
+        q_["d1_vs_0p15"] = "inside" if (lo > -mg and hi < mg) else ("outside" if (lo > mg or hi < -mg) else "neither")
+        out[M] = q_
+    p = out["144"]
+    reproduced = p["d0_ci90"][0] > fixed["reproduced_floor"]
+    lo, hi = p["delta_active_ci90"]
+    if lo > fixed["supported"]:
+        h50 = "SUPPORTED"
+    elif hi < -fixed["supported"]:
+        h50 = "OPPOSITE"
+    elif lo > -fixed["not_supported_band"] and hi < fixed["not_supported_band"]:
+        h50 = "NOT SUPPORTED"
+    else:
+        h50 = "NOT SETTLED"
+    verdict = f"{h50}, REPRODUCED" if reproduced else f"{h50} (Kickoff 49's gap not present today)"
+    stamps, hours = _stamps(rec, "2026-10-13 16:08:33 UTC", "k49")
+    return {
+        "verdict": verdict,
+        "H50": h50,
+        "reproduced": reproduced,
+        "per_M": out,
+        "beside": {
+            "delta_active_143": out["143"]["delta_active"],
+            "delta_active_143_ci90": out["143"]["delta_active_ci90"],
+            "d1": {M: [out[M]["d1"], out[M]["d1_ci90"], out[M]["d1_vs_0p15"]] for M in order},
+            "calibration_stamps": stamps,
+            "hours_since_k49_stamp": hours,
+            "k49_144": dict(K49_144_AS_CARRIED),
+        },
+    }
+
+
+def _fit3(lm, l0, lp) -> dict:
+    """Kickoff 51's fit: loss(phi) = a sin^2((phi + theta) / 2) + b through the points at -90, 0 and +90 degrees,
+    a >= 0."""
+    c = (lp + lm) / 2
+    ks, kc = (lp - lm) / 2, c - l0
+    k = np.hypot(ks, kc)
+    return {"theta_deg": np.degrees(np.arctan2(ks, kc)), "a": 2 * k, "b": c - k}
+
+
+def k51_known_offset(rec: dict) -> dict:
+    """Kickoff 51, a known offset, as its analysis fixed it before the data: per M (144, then 143) and phi in {-90, 0,
+    +90}, F_no(phi) and F_ref against the phi = 0 parity ideal, M's losses in R0, R1 and R2; d(phi) with each and the
+    swings A, A1, A2; the three-point fits of R0's and R2's losses, labelled as fits; one joint bootstrap (seed
+    bootstrap). H51."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds = m["seeds"]
+    labels, counts = rec["labels"], rec["counts"]
+    order, phis = ("144", "143"), (-90, 0, 90)
+    cells, bits, pooled = _cells_and_bits(labels, counts, lambda lab: (str(lab["M"]), lab["circuit"], lab["phi_deg"]))
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    out = {}
+    for M in order:
+        wkeys = [(M, "W-no", p) for p in phis] + [(M, "W-ref", 0)]
+        rkeys = [(M, "Z", 0)] + [(M, k, p) for k in ("R0", "R1", "R2") for p in phis]
+        Fb = {k: draw_F(k) for k in wkeys}
+        Pb = {k: draw_P(k) for k in rkeys}
+        Fp = {k: wait.fidelity(dict(pooled[k]), ideal) for k in wkeys}
+        P = {k: _p1(bits, k) for k in rkeys}
+        z = (M, "Z", 0)
+        loss = {(c, p): P[(M, c, p)] - P[z] for c in ("R0", "R1", "R2") for p in phis}
+        loss_b = {(c, p): Pb[(M, c, p)] - Pb[z] for c in ("R0", "R1", "R2") for p in phis}
+        f_ref, f_ref_b = Fp[(M, "W-ref", 0)], Fb[(M, "W-ref", 0)]
+        res = {
+            "F_no": {str(p): Fp[(M, "W-no", p)] for p in phis},
+            "F_no_ci90": {str(p): pct(Fb[(M, "W-no", p)]) for p in phis},
+            "F_ref": f_ref,
+            "F_ref_ci90": pct(f_ref_b),
+            "P1_Z": P[z],
+            "P1_Z_ci90": pct(Pb[z]),
+            "loss": {f"{c}|{p:+d}": v for (c, p), v in loss.items()},
+            "loss_ci90": {f"{c}|{p:+d}": pct(v) for (c, p), v in loss_b.items()},
+        }
+        for tag, c in (("", "R0"), ("1", "R1"), ("2", "R2")):
+            d = {p: Fp[(M, "W-no", p)] - f_ref * (1 - loss[(c, p)]) for p in phis}
+            db = {p: Fb[(M, "W-no", p)] - f_ref_b * (1 - loss_b[(c, p)]) for p in phis}
+            res[f"d{tag or '0'}"] = {str(p): v for p, v in d.items()}
+            res[f"d{tag or '0'}_ci90"] = {str(p): pct(db[p]) for p in phis}
+            res[f"A{tag}"] = (d[90] - d[-90]) / 2
+            res[f"A{tag}_ci90"] = pct((db[90] - db[-90]) / 2)
+            res[f"mean_abs_d{tag or '0'}"] = float(np.mean([abs(d[p]) for p in phis]))
+        for c in ("R0", "R2"):
+            f = _fit3(*(loss[(c, p)] for p in phis))
+            fb = _fit3(*(loss_b[(c, p)] for p in phis))
+            th = f["theta_deg"]
+            wrapped = th + (fb["theta_deg"] - th + 180) % 360 - 180
+            res[f"fit_{c}"] = {
+                "theta_deg": float(th),
+                "theta_ci90": pct(wrapped),
+                "a": float(f["a"]),
+                "b": float(f["b"]),
+                "label": "a fit (exact through the three points), not a measurement",
+            }
+        res["R1_tracks_better_than_R0"] = res["mean_abs_d1"] < res["mean_abs_d0"]
+        lo, hi = res["A_ci90"]
+        res["A_outside_0p05"] = lo > fixed["supported_outside"] or hi < -fixed["supported_outside"]
+        res["A_inside_0p03"] = lo > -fixed["not_supported_inside"] and hi < fixed["not_supported_inside"]
+        out[M] = res
+    if any(out[M]["A_outside_0p05"] for M in order):
+        verdict = "SUPPORTED"
+    elif all(out[M]["A_inside_0p03"] for M in order):
+        verdict = "NOT SUPPORTED"
+    else:
+        verdict = "NOT SETTLED"
+    stamps, hours = _stamps(rec, "2026-10-13 17:32:21 UTC", "k50")
+    return {
+        "verdict": verdict,
+        "per_M": out,
+        "beside": {
+            "d_at_0_k51": {M: out[M]["d0"]["0"] for M in order},
+            "d0_k50": dict(K50_D0_AS_CARRIED),
+            "calibration_stamps": stamps,
+            "hours_since_k50_stamp": hours,
+        },
+    }
+
+
+K52_PHIS = (0, 60, 120, 180, 240, 300)
+_K52_X = np.column_stack([np.ones(6), np.cos(np.radians(K52_PHIS)), np.sin(np.radians(K52_PHIS))])
+_K52_PINV = np.linalg.pinv(_K52_X)
+
+
+def _wrap(x):
+    """Degrees wrapped to (-180, +180]."""
+    w = (np.asarray(x, float) + 180.0) % 360.0 - 180.0
+    return np.where(w <= -180.0, w + 360.0, w)
+
+
+def _fit6(y):
+    """Kickoff 52's fit: OLS of y(phi) = c + b cos(phi) + s sin(phi) over the six phases (on the last axis)."""
+    coef = np.asarray(y, float) @ _K52_PINV.T
+    return coef[..., 0], coef[..., 1], coef[..., 2]
+
+
+def theta_ramsey(y):
+    """A Ramsey's fitted offset from its losses over the six phases: atan2(s, -b), in degrees."""
+    _, b, s = _fit6(y)
+    return np.degrees(np.arctan2(s, -b))
+
+
+def theta_wait_test(y):
+    """The wait test's fitted offset from F_no over the six phases: atan2(-s, b), in degrees."""
+    _, b, s = _fit6(y)
+    return np.degrees(np.arctan2(-s, b))
+
+
+def k52_phase_sweep(rec: dict) -> dict:
+    """Kickoff 52, the phase sweep, as its analysis fixed it before the data: per M (143, then 144), F_no(phi) at six
+    phases and F_ref, M's losses in R0 and R1; the fitted offsets theta_W, theta_R0 and theta_R1; Delta = theta_W -
+    theta_R0 and the two parts beside it; one joint bootstrap (seed bootstrap), refitting on every resample. H52a and
+    H52b."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds = m["seeds"]
+    labels, counts = rec["labels"], rec["counts"]
+    order, name = ("143", "144"), {"143": "H52a", "144": "H52b"}
+    margin = fixed["margin_deg"]
+
+    def near(draws, point):
+        return point + _wrap(np.asarray(draws) - point)
+
+    def verdict_of(ci):
+        lo, hi = ci
+        if lo > margin or hi < -margin:
+            return "DIFFERENT"
+        if lo > -margin and hi < margin:
+            return "SAME"
+        return "NOT SETTLED"
+
+    cells, bits, pooled = _cells_and_bits(labels, counts, lambda lab: (str(lab["M"]), lab["circuit"], lab["phi_deg"]))
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    out = {}
+    for M in order:
+        wkeys = [(M, "W-no", p) for p in K52_PHIS] + [(M, "W-ref", 0)]
+        rkeys = [(M, "Z", 0)] + [(M, c, p) for c in ("R0", "R1") for p in K52_PHIS]
+        Fb = {k: draw_F(k) for k in wkeys}
+        Pb = {k: draw_P(k) for k in rkeys}
+        Fp = {k: wait.fidelity(dict(pooled[k]), ideal) for k in wkeys}
+        P = {k: _p1(bits, k) for k in rkeys}
+        z = (M, "Z", 0)
+        y = {"W": np.array([Fp[(M, "W-no", p)] for p in K52_PHIS])}
+        yb = {"W": np.stack([Fb[(M, "W-no", p)] for p in K52_PHIS], -1)}
+        for c in ("R0", "R1"):
+            y[c] = np.array([P[(M, c, p)] - P[z] for p in K52_PHIS])
+            yb[c] = np.stack([Pb[(M, c, p)] - Pb[z] for p in K52_PHIS], -1)
+        th = {
+            "W": float(theta_wait_test(y["W"])),
+            "R0": float(theta_ramsey(y["R0"])),
+            "R1": float(theta_ramsey(y["R1"])),
+        }
+        thb = {"W": theta_wait_test(yb["W"]), "R0": theta_ramsey(yb["R0"]), "R1": theta_ramsey(yb["R1"])}
+        diffs = {}
+        for dn, (a, b) in (
+            ("Delta_W_minus_R0", ("W", "R0")),
+            ("W_minus_R1", ("W", "R1")),
+            ("R1_minus_R0", ("R1", "R0")),
+        ):
+            pt = float(_wrap(th[a] - th[b]))
+            diffs[dn] = {"deg": pt, "ci90": pct(near(_wrap(thb[a] - thb[b]), pt))}
+        fits = {}
+        for c in ("W", "R0", "R1"):
+            c0, b, s = _fit6(y[c])
+            fits[c] = {
+                "theta_deg": th[c],
+                "theta_ci90": pct(near(thb[c], th[c])),
+                "c": float(c0),
+                "b": float(b),
+                "s": float(s),
+                "amplitude": float(math.hypot(b, s)),
+                "residuals": (y[c] - _K52_X @ np.array([c0, b, s])).tolist(),
+                "y": y[c].tolist(),
+                "label": "a fit (OLS of c + b cos phi + s sin phi over the six phases), fixed before the data",
+            }
+        f_ref, f_ref_b = Fp[(M, "W-ref", 0)], Fb[(M, "W-ref", 0)]
+        resid = {}
+        for t, c in (("d0", "R0"), ("d1", "R1")):
+            resid[t] = {str(p): float(y["W"][i] - f_ref * (1 - y[c][i])) for i, p in enumerate(K52_PHIS)}
+            resid[t + "_ci90"] = {
+                str(p): pct(yb["W"][:, i] - f_ref_b * (1 - yb[c][:, i])) for i, p in enumerate(K52_PHIS)
+            }
+        out[M] = {
+            "verdict_name": name[M],
+            "verdict": verdict_of(diffs["Delta_W_minus_R0"]["ci90"]),
+            **diffs,
+            "fits": fits,
+            "R1_closer_than_R0": abs(diffs["W_minus_R1"]["deg"]) < abs(diffs["Delta_W_minus_R0"]["deg"]),
+            "F_no": {str(p): Fp[(M, "W-no", p)] for p in K52_PHIS},
+            "F_no_ci90": {str(p): pct(Fb[(M, "W-no", p)]) for p in K52_PHIS},
+            "F_ref": f_ref,
+            "F_ref_ci90": pct(f_ref_b),
+            "P1_Z": P[z],
+            "P1_Z_ci90": pct(Pb[z]),
+            "loss": {f"{c}|{p}": float(y[c][i]) for c in ("R0", "R1") for i, p in enumerate(K52_PHIS)},
+            "loss_ci90": {f"{c}|{p}": pct(yb[c][:, i]) for c in ("R0", "R1") for i, p in enumerate(K52_PHIS)},
+            **resid,
+        }
+    stamps, hours = _stamps(rec, "2026-10-13 17:32:21 UTC", "k51")
+    return {
+        "H52a": out["143"]["verdict"],
+        "H52b": out["144"]["verdict"],
+        "per_M": out,
+        "beside": {"calibration_stamps": stamps, "hours_since_k51_stamp": hours},
+    }
+
+
+def k53_revised_check(rec: dict) -> dict:
+    """Kickoff 53, the revised check on new chains, as its analysis fixed it before the data: per chain in the drawn
+    order and phi in {0, +90}, F_no(phi), F_ref and M's losses in R0 and R1; the revised residual d1 with R1's loss and
+    the original d0 with R0's; one joint bootstrap (seed bootstrap). H53 on the cells informative by R1, and the
+    original rule's verdict beside it."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds = m["seeds"]
+    labels, counts = rec["labels"], rec["counts"]
+    margin, floor = fixed["margin"], fixed["informative_floor"]
+    order = [str(c["chain"][1]) for c in rec["chain_draw"]["drawn"]]
+    phis = (0, 90)
+
+    def rule(cs, d_key, loss_key):
+        inf = [c for c in cs if c[loss_key + "_ci90"][0] > floor]
+        out_ = [c for c in inf if c[d_key + "_ci90"][0] > margin or c[d_key + "_ci90"][1] < -margin]
+        inside = [c for c in inf if c[d_key + "_ci90"][0] > -margin and c[d_key + "_ci90"][1] < margin]
+        v = "DISAGREE" if out_ else ("AGREE" if len(inside) == len(inf) else "NOT SETTLED")
+        if not inf:
+            v += ", uninformative"
+        return v, [c["cell"] for c in inf]
+
+    cells, bits, pooled = _cells_and_bits(labels, counts, lambda lab: (str(lab["M"]), lab["circuit"], lab["phi_deg"]))
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    per_cell, per_chain = [], {}
+    for M in order:
+        wkeys = [(M, "W-no", p) for p in phis] + [(M, "W-ref", 0)]
+        rkeys = [(M, "Z", 0)] + [(M, c, p) for c in ("R0", "R1") for p in phis]
+        Fb = {k: draw_F(k) for k in wkeys}
+        Pb = {k: draw_P(k) for k in rkeys}
+        Fp = {k: wait.fidelity(dict(pooled[k]), ideal) for k in wkeys}
+        P = {k: _p1(bits, k) for k in rkeys}
+        z = (M, "Z", 0)
+        f_ref, f_ref_b = Fp[(M, "W-ref", 0)], Fb[(M, "W-ref", 0)]
+        per_chain[M] = {"F_ref": f_ref, "F_ref_ci90": pct(f_ref_b), "P1_Z": P[z], "P1_Z_ci90": pct(Pb[z])}
+        for p in phis:
+            l0, l1 = P[(M, "R0", p)] - P[z], P[(M, "R1", p)] - P[z]
+            l0b, l1b = Pb[(M, "R0", p)] - Pb[z], Pb[(M, "R1", p)] - Pb[z]
+            fno, fnob = Fp[(M, "W-no", p)], Fb[(M, "W-no", p)]
+            per_cell.append(
+                {
+                    "cell": f"{M}|{p:+d}",
+                    "M": M,
+                    "phi_deg": p,
+                    "F_no": fno,
+                    "F_no_ci90": pct(fnob),
+                    "F_ref": f_ref,
+                    "loss_R0": l0,
+                    "loss_R0_ci90": pct(l0b),
+                    "loss_R1": l1,
+                    "loss_R1_ci90": pct(l1b),
+                    "F_pred1": f_ref * (1 - l1),
+                    "d1": fno - f_ref * (1 - l1),
+                    "d1_ci90": pct(fnob - f_ref_b * (1 - l1b)),
+                    "F_pred0": f_ref * (1 - l0),
+                    "d0": fno - f_ref * (1 - l0),
+                    "d0_ci90": pct(fnob - f_ref_b * (1 - l0b)),
+                }
+            )
+    for c in per_cell:
+        c["informative_R1"] = c["loss_R1_ci90"][0] > floor
+        c["informative_R0"] = c["loss_R0_ci90"][0] > floor
+        c["d1_inside"] = c["d1_ci90"][0] > -margin and c["d1_ci90"][1] < margin
+        c["d1_outside"] = c["d1_ci90"][0] > margin or c["d1_ci90"][1] < -margin
+        c["abs_d1_lt_abs_d0"] = abs(c["d1"]) < abs(c["d0"])
+    verdict, informative = rule(per_cell, "d1", "loss_R1")
+    v0, inf0 = rule(per_cell, "d0", "loss_R0")
+    inf_cells = [c for c in per_cell if c["informative_R1"]]
+    run = rec["run"]
+    return {
+        "H53": verdict,
+        "informative_cells": informative,
+        "cells": per_cell,
+        "chains": per_chain,
+        "beside": {
+            "original_rule_verdict": v0,
+            "original_rule_informative_cells": inf0,
+            "mean_abs_d1_informative": float(np.mean([abs(c["d1"]) for c in inf_cells])) if inf_cells else None,
+            "mean_abs_d0_informative": float(np.mean([abs(c["d0"]) for c in inf_cells])) if inf_cells else None,
+            "mean_abs_d1_all": float(np.mean([abs(c["d1"]) for c in per_cell])),
+            "mean_abs_d0_all": float(np.mean([abs(c["d0"]) for c in per_cell])),
+            "abs_d1_lt_abs_d0": {c["cell"]: c["abs_d1_lt_abs_d0"] for c in per_cell},
+            "phi0_cells_informative_on_their_own": [
+                c["cell"] for c in per_cell if c["phi_deg"] == 0 and c["informative_R1"]
+            ],
+        },
+        "chain_order": order,
+        "calibration_stamps": {
+            "at_build": run["calibration_at_build"],
+            "at_submission": run["calibration_at_submission"],
+            "after_fetch": run["calibration_after_fetch"],
+            "chains_drawn_under": rec["chain_draw"]["calibration_stamp"],
+            "k52_after_fetch": "2026-10-13 18:56:54 UTC",
         },
     }

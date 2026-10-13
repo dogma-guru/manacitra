@@ -1,6 +1,6 @@
 # Copyright 2026 Dogma LLC
 # SPDX-License-Identifier: Apache-2.0
-"""Make the README's and the long documentation's eleven diagrams from the data in data/, as SVG with a PNG fallback.
+"""Make the README's and the long documentation's twelve diagrams from the data in data/, as SVG with a PNG fallback.
 
     python docs/make_diagrams.py [--out docs/diagrams]
 
@@ -18,6 +18,8 @@
                          and echo curves, with the fit of one steady offset drawn as a fit
 11. wait-test-hardware.svg  Kickoff 48 (finding 14): the wait test's F on five chains without and with refocusing,
                          with the value predicted from each waiting qubit's Ramsey loss; four qubits' Ramsey curves
+12. phase-sweep.svg      Kickoff 52 (finding 18): on qubit 144, the wait test's F and the idle- and active-neighbour
+                         Ramseys' kept share against a known phase swept all the way round, each with its fit
 
 Colours: one sequential blue ramp for magnitude; two categorical slots for the two picks; text in ink, never in a
 series colour. Diagrams 8 and 9 draw thin lines across the whole chip, so they use the ramp without its lightest step
@@ -1196,6 +1198,120 @@ def diagram_wait_test_hardware(out: Path):
     save(fig, out, "wait-test-hardware")
 
 
+def _sweep_points(rec: dict, M: int) -> dict:
+    """Kickoff 52 on one waiting qubit, from the counts, pooled over the two copies: the wait test's F without
+    refocusing at each phase (the squared Hellinger overlap with the wait test's exact ideal), and each Ramsey's loss,
+    M's P(1) from its own bit minus its P(1) in Z."""
+    from manacitra import wait
+
+    ideal = wait.wait_test_ideal()
+    pooled: dict = {}
+    ones: dict = {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        if lab["M"] != M:
+            continue
+        key = (lab["circuit"], lab["phi_deg"])
+        if lab["part"] == "W":
+            got = pooled.setdefault(key, {})
+            for k, n in cts.items():
+                kk = k.replace(" ", "")[-wait.WAIT_TEST_CLBITS :]
+                got[kk] = got.get(kk, 0) + n
+        else:
+            o, s = ones.get(key, (0, 0))
+            i = lab["m_clbit"]
+            got1 = sum(n for k, n in cts.items() if k.replace(" ", "")[::-1][i] == "1")
+            ones[key] = (o + got1, s + sum(cts.values()))
+    phis = rec["meta"]["phis_deg"]
+    z = ones[("Z", 0)][0] / ones[("Z", 0)][1]
+    out = {"phis": phis, "W": [wait.fidelity(pooled[("W-no", p)], ideal) for p in phis]}
+    for c in ("R0", "R1"):
+        out[c] = [ones[(c, p)][0] / ones[(c, p)][1] - z for p in phis]
+    return out
+
+
+def _sweep_fit(phis, y):
+    """Kickoff 52's fit, as its rule fixed it: y = c + b cos(phi) + s sin(phi), least squares over the six phases."""
+    x = np.radians(phis)
+    coef, *_ = np.linalg.lstsq(np.column_stack([np.ones(len(x)), np.cos(x), np.sin(x)]), np.asarray(y), rcond=None)
+    return coef
+
+
+def diagram_phase_sweep(out: Path):
+    """Finding 18 on qubit 144: against a known phase phi on the waiting qubit, swept all the way round, the wait test's
+    F without refocusing and each Ramsey's kept share, 1 minus its loss, with the neighbours idle and active, each with
+    the fit the rule fixed. Each fitted curve peaks at phi = -theta, theta being that instrument's effective offset, so
+    the gaps between the peaks are the differences the rule measured. Points and fits are computed here from the
+    counts; the 90% intervals are the run's, as archived, which tests/test_reproduction.py recomputes."""
+    rec = archive.load("ibm_fez/k52-phase-sweep.json")
+    an = rec["archived"]["analysis"]["per_M"]["144"]
+    pts = _sweep_points(rec, 144)
+    phis = pts["phis"]
+    xs = [p if p <= 180 else p - 360 for p in phis]  # 0 to 300 degrees, drawn from -180 to +180 around 0
+    grid = np.linspace(-180, 180, 361)
+    series = (
+        ("W", SERIES_1, "o", "the wait test, F without refocusing", False),
+        ("R0", MUTED, "s", "Ramsey, neighbours idle: 1 − loss", True),
+        ("R1", SERIES_2, "D", "Ramsey, neighbours active: 1 − loss", True),
+    )
+    fig, ax = plt.subplots(figsize=(8.6, 4.9))
+    peaks = {}
+    for name, colour, marker, label, flip in series:
+        y = pts[name]
+        c, b, s = _sweep_fit(phis, y)
+        curve = c + b * np.cos(np.radians(grid)) + s * np.sin(np.radians(grid))
+        theta = np.degrees(np.arctan2(-s, b)) if name == "W" else np.degrees(np.arctan2(s, -b))
+        peaks[name] = theta
+        if name == "W":
+            ci = [an["F_no_ci90"][str(p)] for p in phis]
+        else:
+            ci = [an["loss_ci90"][f"{name}|{p}"] for p in phis]
+        if flip:
+            y, curve = [1 - v for v in y], 1 - curve
+            ci = [[1 - hi, 1 - lo] for lo, hi in ci]
+        order = np.argsort(xs)
+        xo = [xs[i] for i in order]
+        yo = [y[i] for i in order]
+        err = [[yo[k] - ci[i][0] for k, i in enumerate(order)], [ci[i][1] - yo[k] for k, i in enumerate(order)]]
+        ax.plot(grid, curve, color=colour, lw=1.6, zorder=2)
+        ax.errorbar(xo, yo, yerr=err, fmt=marker, ms=6.5, color=colour, ecolor=colour, capsize=2.5, lw=1, zorder=3)
+        ax.plot([], [], color=colour, marker=marker, lw=1.6, label=label)
+    for name, y_txt in (("W", 1.17), ("R1", 1.105), ("R0", 1.04)):
+        x = -peaks[name]
+        colour = {"W": SERIES_1, "R0": MUTED, "R1": SERIES_2}[name]
+        ax.axvline(x, color=colour, lw=1, ls=(0, (4, 3)), zorder=1)
+        sym = {"W": "θ_W", "R0": "θ_R0", "R1": "θ_R1"}[name]
+        ax.text(x + 2.5, y_txt, f"{sym} = {_minus(f'{peaks[name]:+.1f}')}°", fontsize=8.5, color=INK, va="center")
+    d = an["Delta_W_minus_R0"]["deg"]
+    left = an["W_minus_R1"]["deg"]
+    ax.text(
+        -174,
+        1.17,
+        f"Δ = θ_W − θ_R0 = {_minus(f'{d:+.1f}')}°\nθ_W − θ_R1 = {_minus(f'{left:+.1f}')}°",
+        fontsize=9,
+        color=INK,
+        va="top",
+    )
+    ax.set_xlim(-180, 180)
+    ax.set_xticks(range(-180, 181, 60))
+    ax.set_xticklabels([f"{_minus(str(v))}°" if v else "0°" for v in range(-180, 181, 60)])
+    ax.set_ylim(0, 1.22)
+    ax.set_xlabel("known phase φ added to the waiting qubit, 144 (each fitted curve peaks at φ = −θ)")
+    ax.set_ylabel("F, or 1 − loss (ideal 1 at φ = 0)")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.legend(loc="lower center", frameon=False, fontsize=8.5)
+    ax.set_title("Qubit 144: the wait test and two Ramseys against a known phase", loc="left", fontsize=10.5, color=INK)
+    fig.text(
+        0.125,
+        0.995,
+        "ibm_fez, Kickoff 52, 13 October 2026, 18:59 to 20:00 UTC, one job. Points and fits from the counts; whiskers, "
+        "90% bootstrap intervals.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "phase-sweep")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1211,7 +1327,8 @@ def main(argv=None):
     diagram_map_explainer(a.out)
     diagram_reuse_wait(a.out)
     diagram_wait_test_hardware(a.out)
-    print(f"wrote 11 diagrams (SVG and PNG) to {a.out}")
+    diagram_phase_sweep(a.out)
+    print(f"wrote 12 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":
