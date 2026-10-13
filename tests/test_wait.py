@@ -945,6 +945,28 @@ def test_the_ramseys_exact_values(fez, name):
         assert f == pytest.approx(math.cos(phase / 2) ** 2, abs=1e-9), deg
 
 
+def test_the_unplaced_wait_test_takes_its_phase_right_after_ms_first_h():
+    """A22, ruling R1, A1: built without a backend, the wait test with a known phase carries one RZ(phase) on M,
+    directly after M's first H, and nothing at a phase of 0; its exact F against the phase-0 ideal is cos^2(phase / 2)
+    at 0, +90, -90 and 180 degrees."""
+    ideal = wait.wait_test_ideal()
+    for deg in (0, 90, -90, 180):
+        phase = math.radians(deg)
+        qc = wait.build_wait_test((0, 1, 2), phase=phase)
+        on_m = [
+            (i.operation.name, [float(x) for x in i.operation.params])
+            for i in qc.data
+            if wait.M in [qc.find_bit(q).index for q in i.qubits] and len(i.qubits) == 1
+        ]
+        first_h = [n for n, _ in on_m].index("h")
+        rz = [(k, p) for k, (n, p) in enumerate(on_m) if n == "rz"]
+        assert first_h == 0 and rz == ([(1, [phase])] if deg else [])
+        assert [i.operation.name for i in qc.data][: 2 if deg else 1] == (["h", "rz"] if deg else ["h"])
+        assert qc.find_bit(qc.data[0].qubits[0]).index == wait.M
+        f = wait.fidelity(wait.exact_distribution(qc), ideal)
+        assert f == pytest.approx(math.cos(phase / 2) ** 2, abs=1e-12), deg
+
+
 def _run_code(record: str, file: str):
     """A run's code as the data record keeps it (verbatim lines of the script as run), executed as a module."""
     import sys

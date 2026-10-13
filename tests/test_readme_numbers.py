@@ -1341,7 +1341,8 @@ def test_finding_14_beside_the_findings():
     apart = _utc(doc["timestamps"]["running"]) - _utc(reuse_doc(K47)["timestamps"]["running"])
     assert round(apart.total_seconds() / 3600) == 15
     assert "finding 14 fitted it again, about 15 hours later and across one day boundary" in flat
-    assert "ran under, over about 22 hours. Whether it lasts longer, and why it is there, are not known" in flat
+    assert "ran under, over about 22 hours. Finding 15 saw it again on 13 October 2026" in flat  # A22, ruling R1, Q3
+    assert "finding 14's calibration stamp. Whether it lasts longer, and why it is there, are not known" in flat
 
 
 def test_what_was_known_before_findings_13_and_14():
@@ -2043,6 +2044,24 @@ def test_findings_15_to_19_beside_the_findings():
         f"the wait test on a second day, DISAGREE ({d144} on 144); the neighbour test, NOT SUPPORTED (Kickoff 49's gap "
         f"not present today); the known offset, SUPPORTED (A {a144} on 144); the phase sweep, DIFFERENT on both "
         f"({deg[0]}° and {deg[1]}°); the revised check, AGREE, and the original DISAGREE on the same cells" in index
+    )
+
+
+def test_finding_15_in_the_persistence_bullet():
+    """A22, ruling R1, Q3: the bullet on how long 143's offset persists says, as a lived fact, that finding 15 saw it
+    again on 13 October 2026, REFOCUSABLE at 3.4 µs, about 2.6 days after finding 14's calibration stamp."""
+    from _reproduce import K48, K49, k49_recomputed, reuse_doc
+
+    stamps = [reuse_doc(f)["meta"]["calibration_last_update_utc"] for f in (K48, K49)]
+    assert stamps == ["2026-10-11T01:35:00Z", "2026-10-13T16:08:33Z"]
+    days = (_utc(stamps[1]) - _utc(stamps[0])).total_seconds() / 86400
+    assert r(days, 1) == 2.6 and reuse_doc(K49)["meta"]["utc"].startswith("2026-10-13")
+    assert k49_recomputed()["part_B"]["143"]["kind_of_loss"] == "REFOCUSABLE"
+    flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    bullet = flat.split("- **How long the offset persists.**", 1)[1].split(" - **", 1)[0]
+    assert (
+        "Finding 15 saw it again on 13 October 2026, REFOCUSABLE at 3.4 µs, about 2.6 days after finding 14's "
+        "calibration stamp." in bullet
     )
 
 

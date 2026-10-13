@@ -3229,3 +3229,20 @@ archive. Four retired phrases are added.
 - **`data/SHA256SUMS`:** gains the eleven files. The signing workflow signs them, `data/README.md` and
   `data/SHA256SUMS` on `main` after a merge.
 - **CI:** runs on the draft pull request. It must pass before any merge, and no merge is part of this amendment.
+
+**Ruling R1 (13 October 2026, the author's go given in chat).** Prepared with Mantri; it answers the packet's six
+questions.
+- **Kept as drafted:**
+  - the runs' code in each record's `source_code` (Q1);
+  - `phase` on `build_wait_test` (Q2);
+  - finding 19's wording at φ = 0 (Q4);
+  - the README's limit line (Q5);
+  - the inventory's margin (Q6).
+- **Q3, applied:** the bullet on how long the offset persists gains "Finding 15 saw it again on 13 October 2026,
+  REFOCUSABLE at 3.4 µs, about 2.6 days after finding 14's calibration stamp." The stamps are 01:35:00 UTC on 11
+  October and 16:08:33 UTC on 13 October, 225,213 s or 2.61 days apart; `test_finding_15_in_the_persistence_bullet`
+  checks the sentence.
+- **A1, applied:** `test_the_unplaced_wait_test_takes_its_phase_right_after_ms_first_h`. Built without a backend, the
+  wait test with a phase carries one RZ on M directly after M's first H, the circuit's first instruction, and its exact
+  F is cos²(φ/2) at 0, +90, −90 and 180 degrees. The insertion was already right, and no code changed.
+- **The head:** these are one further commit, and the second day pins to it, not to `6b06e6f`.
