@@ -8,6 +8,8 @@
   to the comparisons not yet run. `docs/index.md` section 9 says when a version is released, and its release steps
   verify the tree's signed files before tagging. The build report records that check for v0.5.0, run after the release.
   No finding and no behaviour of the package changed.
+- Amendment A21: `docs/findings.md`, in what was known before findings 13 and 14, cites a mid-circuit reset experiment
+  on ibm_fez (Nature Physics, 2026) as context. No finding and no behaviour of the package changed.
 
 ## 0.5.0 (11 October 2026)
 

@@ -3083,3 +3083,36 @@ paper says it does not study. Ruling R1 restored it under its own lead-in.
 **Checks.** On the branch, after R1, these pass: the full suite, ruff, `tools/scan_secrets.py` (tree, `--staged`,
 `--git`), `tools/check_dco.py` and `tools/sha256sums.py --check`. No data file changed, and `tools/sign_targets.py`
 lists none. CI runs on pull request 27 and must pass before any merge.
+
+## 38. Amendment A21: a reset-heavy experiment on ibm_fez, cited as context (13 October 2026)
+
+**Why.** A large experiment with mid-circuit resets has run on ibm_fez, the processor of findings 11 to 14 (Pokharel,
+Pan and others, Nature Physics, 2026, doi 10.1038/s41567-026-03470-6). By the author's ruling of 13 October (in chat),
+`docs/findings.md` cites it in what was known before findings 13 and 14, as context, neither evidence for nor against
+the findings. Draft first: a draft pull request, for the author's review. Under C3 no release follows A21.
+
+**The change.** One paragraph in `docs/findings.md`, after the one on Niu and Todri-Sanial and before "These are
+established findings, cited and not tested here.", which now covers this citation too. `CHANGELOG.md` has a line under
+`## Unreleased`. The README is unchanged.
+
+**The source.** Each fact in the paragraph was checked against the article and its Supplementary Information, read in
+full from the author's copies. Neither they nor any figure or table from them is in the repository. Three clauses of
+the kickoff's text did not hold and were dropped, with no source substituted:
+- "two-qubit gates", in "up to nearly 5,000 two-qubit gates and 5,000 measurement-and-reset operations". The abstract
+  gives that pair, but Supplementary Section II and Supplementary Fig. 2 put the most two-qubit gates at about 8,000
+  (p = 0.2, L = 100). Nearly 5,000 resets holds.
+- "the published", before "T1, T2, readout and gate errors". The Methods say the qubits were chosen by the device
+  parameters and do not say where the figures came from. In this repository "published" means the provider's
+  calibration figures.
+- "and averaged over many random circuits". The paper's fluctuation quantities are a variance and a distribution over
+  its 50 circuits per setting, and one panel shows a single circuit.
+
+That neither the article nor the supplement describes refocusing during idle time, or lists the qubits of each chain,
+was confirmed by reading both.
+
+**The test.** `test_what_was_known_before_findings_13_and_14` also checks the paper's DOI and the sentence "not as
+evidence for or against findings 13 and 14".
+
+**Checks.** On the branch these pass: the full suite, ruff, `tools/scan_secrets.py` (tree, `--staged`, `--git`),
+`tools/scan_patterns.py`, `tools/check_dco.py` and `tools/sha256sums.py --check`. No data file changed, and
+`tools/sign_targets.py` lists none. CI must pass before any merge.
