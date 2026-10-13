@@ -3116,3 +3116,8 @@ evidence for or against findings 13 and 14".
 **Checks.** On the branch these pass: the full suite, ruff, `tools/scan_secrets.py` (tree, `--staged`, `--git`),
 `tools/scan_patterns.py`, `tools/check_dco.py` and `tools/sha256sums.py --check`. No data file changed, and
 `tools/sign_targets.py` lists none. CI must pass before any merge.
+
+**Ruling R1 (13 October 2026, the author's go given in chat).** The three dropped clauses stay dropped. "Their circuits
+lasted up to about 2 ms" now reads "were estimated to last", as Supplementary Fig. 2's caption has it. The sentence "The
+quantities they report are read in the computational basis." is deleted: beside the closing sentence it invited a
+reading the paragraph keeps out. This section stays. The tests and checks are unchanged.
