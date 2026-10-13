@@ -1323,7 +1323,8 @@ def test_finding_14_beside_the_findings():
 
 def test_what_was_known_before_findings_13_and_14():
     """Amendment A20: the findings page says what was known before findings 13 and 14, with each source it cites, just
-    before what has not been shown, and says plainly that the check has not been tested against those methods."""
+    before what has not been shown, and says plainly that the check has not been tested against those methods. Amendment
+    A21: it also cites a reset-heavy experiment on ibm_fez, as context only."""
     findings = (ROOT / "docs" / "findings.md").read_text()
     head = "\n## What was known before these findings\n"
     assert head in findings
@@ -1344,6 +1345,9 @@ def test_what_was_known_before_findings_13_and_14():
         "(arXiv:2204.14251) used Ramsey experiments on IBM's 7-qubit Lagos to explain why one insertion strategy beat "
         "another for a qubit beside a two-qubit gate." in section
     )
+    # Amendment A21: Pokharel, Pan and others, cited as context, neither for nor against the findings
+    assert "10.1038/s41567-026-03470-6" in section
+    assert "not as evidence for or against findings 13 and 14" in section
     assert "These are established findings, cited and not tested here." in section
     # ruling R1, Q3: finding 13 (10 October) and finding 14 (11 October) each add their own part
     assert (
