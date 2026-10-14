@@ -2065,6 +2065,65 @@ def test_finding_15_in_the_persistence_bullet():
     )
 
 
+def test_the_readme_opens_with_the_new_default():
+    """A22, ruling R1, Q7: a short section at the top of the README, after the opening description and before what it
+    does, the findings table and installation, says what this branch changes, in terms that hold before a second day:
+    its numbers are the findings', each checked here, and one line per finding 15 to 19 carries that finding's own
+    headline. It names no chooser and carries none of the words the release waits for."""
+    import inspect
+    import re
+
+    from _reproduce import K49, K50, K51, K52, K53, k50_recomputed, k52_recomputed, k53_recomputed, reuse_doc
+
+    front = (ROOT / "README.md").read_text()
+    head = "\n## New on this branch: the check runs with the neighbours active\n"
+    assert head in front
+    before, rest = front.split(head, 1)
+    section = rest.split("\n## ", 1)[0]
+    assert "**Manacitra makes a map of a quantum processor's qubit pairs" in before
+    assert not any(h in before for h in ("\n## What it does", "\n## Findings", "\n## Install and try it"))
+    assert "[New on this branch](#new-on-this-branch-the-check-runs-with-the-neighbours-active)" in before
+    flat = " ".join(section.split())
+    # five runs on one day
+    assert all(reuse_doc(f)["meta"]["utc"].startswith("2026-10-13") for f in (K49, K50, K51, K52, K53))
+    assert "Five runs on ibm_fez on 13 October 2026 found" in flat
+    # the neighbours shift the waiting qubit's phase (findings 16 to 18)
+    assert all(m["state_split_ci90"][1] < 0 for m in k50_recomputed()["per_M"].values())
+    assert all(m["R1_minus_R0"]["ci90"][1] < 0 for m in k52_recomputed()["per_M"].values())
+    assert "what the neighbours do during the wait shifts the waiting qubit's phase (findings 16 to 18)" in flat
+    # finding 19: every informative cell inside the margin; the idle-neighbour Ramsey's three misses
+    k = k53_recomputed()
+    arch = {c["cell"]: c for c in reuse_doc(K53)["archived"]["analysis"]["cells"]}
+    assert reuse_doc(K53)["fixed_before_the_data"]["margin"] == 0.15 and k["H53"] == "AGREE"
+    assert all(-0.15 < arch[c]["d1_ci90"][0] and arch[c]["d1_ci90"][1] < 0.15 for c in k["informative_cells"])
+    misses = [c for c in k["cells"] if c["informative_R0"] and arch[c["cell"]]["d0_ci90"][0] > 0.15]
+    assert len(misses) == 3 and {_q(c["d0"], 2) for c in misses} == {"0.17"}
+    assert (
+        "predicted the wait test within ±0.15 on every informative cell of four chains it had never run on, where "
+        "the idle-neighbour Ramsey missed by about 0.17 on three cells (finding 19)." in flat
+    )
+    # the default, and 0.5.0's instrument
+    from manacitra import wait as w
+
+    assert inspect.signature(w.build_wait_ramsey).parameters["neighbours"].default == "active"
+    assert "The active-neighbour Ramsey is now the default (`build_wait_ramsey`)." in flat
+    assert '0.5.0\'s instrument remains, with `neighbours="idle"`.' in flat
+    # the scope
+    drawn = reuse_doc(K53)["chain_draw"]["drawn"]
+    assert len({143, 144} | {c["chain"][1] for c in drawn}) == 6
+    assert "This rests on six waiting qubits on one processor, with one day on new chains." in flat
+    assert "It has not been released: a second day on this code comes first." in flat
+    # one line per finding, each with its own headline
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    full = dict(re.findall(r'^(\d+)\. <a id="finding-\d+"></a>\*\*(.+?)\*\*', findings, re.M))
+    for n in range(15, 20):
+        assert f"- [{n}](docs/findings.md#finding-{n}): {full[str(n)]}." in section, n
+    # no chooser, and none of the release's words
+    assert "choos" not in flat and "placement" not in flat
+    for word in ("veri" + "fied", "valid" + "ated", "prov" + "en"):
+        assert word not in flat.lower(), word
+
+
 def test_the_phase_sweep_picture():
     """Finding 18's picture: made from the data by docs/make_diagrams.py, referenced from finding 18, and its alt text
     carries the fitted offsets of the data."""

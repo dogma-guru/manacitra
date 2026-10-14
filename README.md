@@ -4,7 +4,21 @@
 
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
-**Contents:** [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+**Contents:** [New on this branch](#new-on-this-branch-the-check-runs-with-the-neighbours-active) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+
+## New on this branch: the check runs with the neighbours active
+
+Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's Ramsey loss over the circuit's own wait. Through 0.5.0 that Ramsey ran with the qubit's neighbours idle. Five runs on ibm_fez on 13 October 2026 found that what the neighbours do during the wait shifts the waiting qubit's phase (findings 16 to 18). They also found that a Ramsey in which the neighbours do what they do in the circuit, at the same times, predicted the wait test within ±0.15 on every informative cell of four chains it had never run on, where the idle-neighbour Ramsey missed by about 0.17 on three cells (finding 19).
+
+The active-neighbour Ramsey is now the default (`build_wait_ramsey`). 0.5.0's instrument remains, with `neighbours="idle"`.
+
+This rests on six waiting qubits on one processor, with one day on new chains. It has not been released: a second day on this code comes first.
+
+- [15](docs/findings.md#finding-15): On a second day, the rule fixed in finding 14 held on three of four informative chains and failed on one, where the circuit did better than predicted.
+- [16](docs/findings.md#finding-16): What a waiting qubit's neighbours do changed how much phase it lost: held in the excited state during the wait they added 0.25 to 0.35 of loss on both qubits tested, their readout alone added none, and finding 15's gap on 144 was gone 33 minutes later.
+- [17](docs/findings.md#finding-17): With a known phase added to the waiting qubit, the wait test on 144 answered as if its offset differed from an idle-neighbour Ramsey's; on 143 the design was nearly blind.
+- [18](docs/findings.md#finding-18): A full sweep of the known phase measured the difference: the wait test's offset differed from an idle-neighbour Ramsey's by −7.2° on 143 and −21.6° on 144, and an active-neighbour Ramsey sat closer to it on both.
+- [19](docs/findings.md#finding-19): The revised check, with an active-neighbour Ramsey, predicted the wait test within ±0.15 on all five informative cells of four chains it had never run on, where the original check would have returned DISAGREE.
 
 ## What it does
 

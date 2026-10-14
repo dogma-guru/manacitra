@@ -3245,4 +3245,11 @@ questions.
 - **A1, applied:** `test_the_unplaced_wait_test_takes_its_phase_right_after_ms_first_h`. Built without a backend, the
   wait test with a phase carries one RZ on M directly after M's first H, the circuit's first instruction, and its exact
   F is cos²(φ/2) at 0, +90, −90 and 180 degrees. The insertion was already right, and no code changed.
-- **The head:** these are one further commit, and the second day pins to it, not to `6b06e6f`.
+- **Q7, added by the author's ruling, applied:** a short section at the top of the README, "New on this branch: the
+  check runs with the neighbours active", after the opening description and before what it does, the findings table
+  and installation. It says what the branch changes in terms that hold before a second day, with a line per finding 15
+  to 19 carrying its own headline; `test_the_readme_opens_with_the_new_default` checks each number against the data.
+  One phrase of the proposed text was changed: the neighbours "do what they do in the circuit, at the same times", not
+  "exactly", since R1 leaves out M's CZs with them (finding 18).
+- **The head moved twice.** Q3 and A1 were applied on the author's first go, as `9d07fef`. Q7 came with the ruled
+  version and is one more signed-off commit. The second day pins to that head, not to `6b06e6f` or `9d07fef`.
