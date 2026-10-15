@@ -3531,3 +3531,42 @@ retired list.
 **Ruling R1 (15 October 2026, the author's go given in chat: "I accept the recommendations in the A24 review packet as drafted").** It answers the packet's ten questions, every one as drafted: the README's eight rows, finding 26 with finding 5 (Q1); the +90° check's cells that were not informative, in findings 24, 25 and 27 (Q2); the record on residual size, finding by finding (Q3); alone and together within 0.004 (Q4); the qubit that missed in all three runs on its chain (Q5); `peak_check`'s zero-wait baseline on M alone (Q6); the limit line and the sentence on the new functions (Q7); both bullets on the neighbour shift (Q8); the method's dated sentence left as written (Q9); and the pull request's title, "Findings 22 to 27, and the check at the peak phase", applied with the push (Q10). Every correction of the packet's section 3a stands. Nothing else changed on the branch; then the push.
 
 **CI on the first push.** One test failed on Linux, on both Python versions: `test_the_leftover_picture` read 7's leftover interval from the recompute, whose bootstrap draws differ there, so its upper end rounded to −34.3° against the archive's −34.2° (A17's lesson). The figure and the finding's text quote the archived interval; the test now reads it from the archive too, and the other A24 text tests were checked under another random stream. 944 of the 945 tests passed there.
+
+## 43. Release v0.7.0 (15 October 2026)
+
+**What it carries.** Amendment A24 (pull request 47): the check at the peak phase (`manacitra.wait.phase_sweep`,
+`sweep_fit`, `peak_phase`, `leftover` and `peak_check`) and the readout survey (`readout_survey`, `readout_errors`), with
+findings 22 to 27 and their data, and Kickoff 60's record (section 42). Pull request 47 was merged as `a07acad` with a
+merge commit, on the author's go after every check had passed on its head, `8063610`, and its fifteen new data files,
+`data/README.md` and `data/SHA256SUMS` were signed on `main` in the bundle commit `fcd4126`.
+
+**The version, by the author's rulings** (15 October: two releases, 0.6.0 the instrument and 0.7.0 the placement, on
+the condition of the ibm_fez leg of the peak check reviewed by the author; A24's ruling R1, the review; and the go for
+this step, given in chat on 15 October), is 0.7.0. The release condition is met: Kickoff 62 returned AGREE (finding
+27), and the author reviewed it in A24's packet.
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (its `date-released`, 2026-10-15, is already
+  the day) and the README's citation; the changelog heading `## 0.7.0 (unreleased)` becomes `## 0.7.0 (15 October
+  2026)`, and the README's "To be released as 0.7.0." becomes "Released as 0.7.0 on 15 October 2026.". The changelog's
+  lead is the one the kickoff fixed.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`;
+  the README's sentence and the changelog heading are checked by `test_the_readme_opens_with_the_latest_findings` and
+  `test_findings_22_to_27_beside_the_findings`, and "To be released as 0.7.0" joins the retired phrases.
+- **The package.** Since 0.6.0, `src/` changes in `manacitra.wait` (A24's seven public functions, two private helpers
+  and two constants, and its module docstring) and in the version line; nothing existing in the package changes. The packages build as
+  `manacitra-0.7.0`; neither the wheel nor the sdist contains `data/`.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.6.0's DOI until Zenodo has minted v0.7.0's (release
+step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+
+**The release path** is the release steps in `docs/index.md` section 9, each on the author's go:
+1. the merge of this pull request with a merge commit, then signing on `main`;
+2. the tree check against `…/sign.yml@refs/heads/main` and the git identity scan, then the annotated tag, on the bundle
+   commit if there is one, otherwise on the merge commit;
+3. the release, with its assets' signatures checked from a fresh download against `@refs/tags/v0.7.0`, and the
+   negative control against `@refs/tags/v0.6.0`;
+4. the version DOI, once Zenodo has minted it.
+
+The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.

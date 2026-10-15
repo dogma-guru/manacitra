@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.0 (unreleased)
+## 0.7.0 (15 October 2026)
 
 The check can now be placed at the active-neighbour Ramsey's loss maximum: a six-phase sweep fixes each chain's peak phase, and the check runs there, where every cell is informative by construction. `manacitra.wait` gains the sweep, the fit, the peak phase and a readout survey with a per-qubit readout error from measured counts; the 0.6.0 check at +90° is unchanged. Findings 22 to 27, from four runs on ibm_kingston on 14 and 15 October 2026 and two on ibm_fez on 15 October, with their data, and the record of a draw on ibm_fez that found no chain on the published readout table. At the peak phase the check predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains on two processors (findings 23, 25 and 27). On ibm_fez a direct measurement found readout errors of 0.004 to 0.021 on sixteen qubits the published table put at up to 0.44, and a survey of all 156 qubits a median of 0.0098 against a published 0.166 (findings 26 and 27).
 

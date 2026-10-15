@@ -8,7 +8,7 @@
 
 ## Latest findings: the check at the peak phase
 
-Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's Ramsey loss over the circuit's own wait, and it can now be read at the peak phase: one sweep of six known phases fixes each chain's φ* = 180° − θ_R1, θ_R1 being the active-neighbour Ramsey's offset, and the check then runs at φ*, where that Ramsey's loss is greatest (`phase_sweep` and `peak_check`). There it predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two processors, each cell informative by construction, since the design places it at the loss maximum (findings 23, 25 and 27). The 0.6.0 check at +90° remains the cheaper form for a chain whose leftover between the wait test and the Ramsey is small. On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table gave 0.166 (finding 27). To be released as 0.7.0.
+Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's Ramsey loss over the circuit's own wait, and it can now be read at the peak phase: one sweep of six known phases fixes each chain's φ* = 180° − θ_R1, θ_R1 being the active-neighbour Ramsey's offset, and the check then runs at φ*, where that Ramsey's loss is greatest (`phase_sweep` and `peak_check`). There it predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two processors, each cell informative by construction, since the design places it at the loss maximum (findings 23, 25 and 27). The 0.6.0 check at +90° remains the cheaper form for a chain whose leftover between the wait test and the Ramsey is small. On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table gave 0.166 (finding 27). Released as 0.7.0 on 15 October 2026.
 
 ## What it does
 
@@ -122,7 +122,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.6.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.7.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.6.0: [10.5281/zenodo.23403048](https://doi.org/10.5281/zenodo.23403048)).
 
