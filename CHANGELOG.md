@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 (unreleased)
+## 0.6.0 (15 October 2026)
 
 The check's default Ramsey now runs with the waiting qubit's neighbours active, as they are in the circuit; the 0.5.0 instrument remains available as `neighbours="idle"`. Findings 15 to 21, from six runs on ibm_fez on 13 and 15 October 2026 and one on ibm_kingston on 14 October, with their data. The revised check predicted the wait test within ±0.15 on all informative cells on ibm_fez on two days, across a maintenance (findings 19 and 21), and missed on one of four cells on ibm_kingston (finding 20); the original check would have returned DISAGREE in all three runs, and on each of the eight cells where it missed, the active-neighbour Ramsey was the closer instrument.
 
