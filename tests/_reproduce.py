@@ -280,6 +280,8 @@ def clear_caches() -> None:
         k51_recomputed,
         k52_recomputed,
         k53_recomputed,
+        k54_recomputed,
+        k55_recomputed,
     ):
         fn.cache_clear()
 
@@ -1683,6 +1685,52 @@ def k53():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- Kickoffs 54 and 55 (Amendment A23)
+K54 = "ibm_fez/k54-revised-check-day-2.json"
+K55 = "ibm_kingston/k55-revised-check.json"
+
+
+def _revised_rows(a: dict, r: dict, verdict: str) -> list:
+    return _rows(
+        lambda: [
+            ("verdict", a[verdict], r[verdict]),
+            ("informative cells", ", ".join(a["informative_cells"]), ", ".join(r["informative_cells"])),
+            (
+                "the original rule, beside",
+                a["original_rule_and_comparison"]["original_rule_verdict"],
+                r["original_rule_and_comparison"]["original_rule_verdict"],
+            ),
+            *((f"d1, cell {c['cell']}", c["d1"], d["d1"]) for c, d in zip(a["cells"], r["cells"])),
+        ]
+    )
+
+
+@cache
+def k54_recomputed() -> dict:
+    return reuse.k54_day_two(reuse_doc(K54))
+
+
+def k54():
+    """Kickoff 54, Day 2: Kickoff 53's analysis on the six fixed chains; H54, the original rule beside it and the lean;
+    and, from their own bootstrap, P(0|1), the pulses' cost, the R1 fits and the single-neighbour shifts."""
+    doc, r = reuse_doc(K54), k54_recomputed()
+    leaves = compare("Kickoff 54, the revised check on a second day", {K54: {"archived": {"analysis": r}}}, {K54: doc})
+    return _revised_rows(doc["archived"]["analysis"], r, "H54"), leaves
+
+
+@cache
+def k55_recomputed() -> dict:
+    return reuse.k55_kingston(reuse_doc(K55))
+
+
+def k55():
+    """Kickoff 55, ibm_kingston: Kickoff 53's analysis on the four drawn chains; H55, the original rule beside it and
+    the lean; and, from their own bootstrap, P(0|1) and the R1 fits."""
+    doc, r = reuse_doc(K55), k55_recomputed()
+    leaves = compare("Kickoff 55, the revised check on ibm_kingston", {K55: {"archived": {"analysis": r}}}, {K55: doc})
+    return _revised_rows(doc["archived"]["analysis"], r, "H55"), leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1733,6 +1781,8 @@ CASES = {
     "Kickoff 51, a known offset": k51,
     "Kickoff 52, the phase sweep": k52,
     "Kickoff 53, the revised check on new chains": k53,
+    "Kickoff 54, the revised check on a second day": k54,
+    "Kickoff 55, the revised check on ibm_kingston": k55,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1766,4 +1816,6 @@ REQUIRED = {
     "Kickoff 51, a known offset": "SUPPORTED",
     "Kickoff 52, the phase sweep": "DIFFERENT on 143, DIFFERENT on 144",
     "Kickoff 53, the revised check on new chains": "AGREE",
+    "Kickoff 54, the revised check on a second day": "AGREE",
+    "Kickoff 55, the revised check on ibm_kingston": "DISAGREE",
 }

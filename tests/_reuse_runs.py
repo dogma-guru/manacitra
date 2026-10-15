@@ -1724,16 +1724,15 @@ def k52_phase_sweep(rec: dict) -> dict:
     }
 
 
-def k53_revised_check(rec: dict) -> dict:
-    """Kickoff 53, the revised check on new chains, as its analysis fixed it before the data: per chain in the drawn
-    order and phi in {0, +90}, F_no(phi), F_ref and M's losses in R0 and R1; the revised residual d1 with R1's loss and
-    the original d0 with R0's; one joint bootstrap (seed bootstrap). H53 on the cells informative by R1, and the
-    original rule's verdict beside it."""
+def _revised_check(rec: dict, order, labels=None, counts=None) -> tuple[dict, list]:
+    """Kickoff 53's analysis, as fixed before its data and reused unchanged by Kickoffs 54 and 55 (analyse_53.py): per
+    chain in the given order and phi in {0, +90}, F_no(phi), F_ref and M's losses in R0 and R1; the revised residual d1
+    with R1's loss and the original d0 with R0's; one joint bootstrap (seed bootstrap). The verdict on the cells
+    informative by R1, and the original rule's verdict beside it. Returns the analysis and its cells."""
     m, fixed = rec["meta"], rec["fixed_before_the_data"]
     seeds = m["seeds"]
-    labels, counts = rec["labels"], rec["counts"]
+    labels, counts = (rec["labels"], rec["counts"]) if labels is None else (labels, counts)
     margin, floor = fixed["margin"], fixed["informative_floor"]
-    order = [str(c["chain"][1]) for c in rec["chain_draw"]["drawn"]]
     phis = (0, 90)
 
     def rule(cs, d_key, loss_key):
@@ -1792,9 +1791,8 @@ def k53_revised_check(rec: dict) -> dict:
     verdict, informative = rule(per_cell, "d1", "loss_R1")
     v0, inf0 = rule(per_cell, "d0", "loss_R0")
     inf_cells = [c for c in per_cell if c["informative_R1"]]
-    run = rec["run"]
-    return {
-        "H53": verdict,
+    out = {
+        "verdict": verdict,
         "informative_cells": informative,
         "cells": per_cell,
         "chains": per_chain,
@@ -1810,6 +1808,24 @@ def k53_revised_check(rec: dict) -> dict:
                 c["cell"] for c in per_cell if c["phi_deg"] == 0 and c["informative_R1"]
             ],
         },
+    }
+    return out, per_cell
+
+
+def k53_revised_check(rec: dict) -> dict:
+    """Kickoff 53, the revised check on new chains, as its analysis fixed it before the data: per chain in the drawn
+    order and phi in {0, +90}, F_no(phi), F_ref and M's losses in R0 and R1; the revised residual d1 with R1's loss and
+    the original d0 with R0's; one joint bootstrap (seed bootstrap). H53 on the cells informative by R1, and the
+    original rule's verdict beside it."""
+    order = [str(c["chain"][1]) for c in rec["chain_draw"]["drawn"]]
+    r, _ = _revised_check(rec, order)
+    run = rec["run"]
+    return {
+        "H53": r["verdict"],
+        "informative_cells": r["informative_cells"],
+        "cells": r["cells"],
+        "chains": r["chains"],
+        "beside": r["beside"],
         "chain_order": order,
         "calibration_stamps": {
             "at_build": run["calibration_at_build"],
@@ -1817,5 +1833,218 @@ def k53_revised_check(rec: dict) -> dict:
             "after_fetch": run["calibration_after_fetch"],
             "chains_drawn_under": rec["chain_draw"]["calibration_stamp"],
             "k52_after_fetch": "2026-10-13 18:56:54 UTC",
+        },
+    }
+
+
+# --------------------------------------------------------------------------- Kickoffs 54 and 55 (Amendment A23)
+PHIS4 = (0, 90, 180, 270)
+_X4 = np.column_stack([np.ones(4), np.cos(np.radians(PHIS4)), np.sin(np.radians(PHIS4))])
+_P4 = np.linalg.pinv(_X4)
+
+
+def _fit4(y):
+    """Kickoffs 54 and 55's fit, fixed before their data: OLS of the loss c + b cos(phi) + s sin(phi) over 0, 90, 180
+    and 270 degrees (on the last axis); theta = atan2(s, -b) in degrees, and the amplitude."""
+    coef = np.asarray(y, float) @ _P4.T
+    c, b, s = coef[..., 0], coef[..., 1], coef[..., 2]
+    return np.degrees(np.arctan2(s, -b)), np.hypot(b, s), c, b, s
+
+
+def _beside_tallies(labels, counts):
+    """M's bit per (M, circuit, phi) over the circuits that are not wait tests, by copy; and, where a label names them,
+    the neighbours' bits (Kickoff 54's single-neighbour Ramseys measure L1 and L3)."""
+    m_bits, n_bits = defaultdict(list), defaultdict(list)
+    for lab, cts in zip(labels, counts):
+        if lab["part"] == "W":
+            continue
+        key = (str(lab["M"]), lab["circuit"], lab["phi_deg"])
+
+        def bit(i, cts=cts):
+            return sum(n for k, n in cts.items() if k.replace(" ", "")[::-1][i] == "1")
+
+        tot = sum(cts.values())
+        m_bits[key].append((lab["copy"], bit(lab["m_clbit"]), tot))
+        if "l1_clbit" in lab:
+            n_bits[key].append((lab["copy"], bit(lab["l1_clbit"]), bit(lab["l3_clbit"]), tot))
+    for d in (m_bits, n_bits):
+        for k in d:
+            d[k].sort(key=lambda x: x[0])
+    return m_bits, n_bits
+
+
+def _lean(cells) -> dict:
+    d1 = [c["d1"] for c in cells]
+    inf = [c["d1"] for c in cells if c["informative_R1"]]
+    return {
+        "d1": {c["cell"]: c["d1"] for c in cells},
+        "mean_d1": float(np.mean(d1)),
+        "n_d1_above_zero": int(sum(x > 0 for x in d1)),
+        "n_cells": len(d1),
+        "mean_d1_informative": float(np.mean(inf)) if inf else None,
+    }
+
+
+def _beside_r1_fits(rec: dict, order, pulses: bool, with_bs: bool, neighbour_ms=()) -> dict:
+    """Beside the verdict of Kickoffs 54 and 55, from their own bootstrap (seed bootstrap_beside), in the order their
+    analyses fixed: per M, P(1) of Z, X1 (and Kickoff 54's XY4), R1 at 0, 90, 180 and 270 (the copies with
+    replacement, each redrawn binomially), refitting on every resample; then Kickoff 54's single-neighbour Ramseys on
+    144 and 143. P(0|1) = 1 - P(1) after X; the pulses' cost, P(1) after H, XY4, H, and minus Z's; the R1 fit; and, on
+    each neighbour qubit, the shifts of the single-neighbour fits from the both-idle one, their sum against the joint
+    shift, and the 143-144 pair seen from each end."""
+    seeds = rec["meta"]["seeds"]
+    n_boot = seeds["n_boot"]
+    m_bits, n_bits = _beside_tallies(rec["labels"], rec["counts"])
+    rng = np.random.default_rng(seeds["bootstrap_beside"])
+
+    def draw(key):
+        o = np.array([x[1] for x in m_bits[key]])
+        t = np.array([x[2] for x in m_bits[key]])
+        acc1, accn = np.zeros(n_boot), np.zeros(n_boot)
+        for _ in range(len(o)):
+            pick = rng.integers(0, len(o), size=n_boot)
+            acc1 += rng.binomial(t[pick], o[pick] / t[pick])
+            accn += t[pick]
+        return acc1 / accn
+
+    P = {k: sum(x[1] for x in v) / sum(x[2] for x in v) for k, v in m_bits.items()}
+    out: dict = {"readout_P0_given_1": {}, **({"pulse_cost": {}} if pulses else {}), "R1_fit": {}}
+    Pb = {}
+    for M in order:
+        keys = [(M, "Z", 0), (M, "X1", 0)] + ([(M, "XY4", 0)] if pulses else []) + [(M, "R1", p) for p in PHIS4]
+        for k in keys:
+            Pb[k] = draw(k)
+        z, zb = P[(M, "Z", 0)], Pb[(M, "Z", 0)]
+        out["readout_P0_given_1"][M] = {"P0_given_1": 1 - P[(M, "X1", 0)], "ci90": pct(1 - Pb[(M, "X1", 0)])}
+        if pulses:
+            x = (M, "XY4", 0)
+            out["pulse_cost"][M] = {
+                "P1": P[x],
+                "P1_ci90": pct(Pb[x]),
+                "P1_minus_Z": P[x] - z,
+                "P1_minus_Z_ci90": pct(Pb[x] - zb),
+            }
+        y = np.array([P[(M, "R1", p)] - z for p in PHIS4])
+        yb = np.stack([Pb[(M, "R1", p)] - zb for p in PHIS4], -1)
+        th, amp, c, b, s = _fit4(y)
+        thb, ampb, *_ = _fit4(yb)
+        fit = {
+            "loss": dict(zip(map(str, PHIS4), y.tolist())),
+            "theta_deg": float(th),
+            "theta_ci90": pct(th + _wrap(thb - th)),
+            "amplitude": float(amp),
+            "amplitude_ci90": pct(ampb),
+            "c": float(c),
+        }
+        if with_bs:
+            fit |= {"b": float(b), "s": float(s)}
+        fit["residuals"] = (y - _X4 @ np.array([c, b, s])).tolist()
+        fit["label"] = "a fit (OLS over the four phases), fixed before the data"
+        out["R1_fit"][M] = fit
+    if not neighbour_ms:
+        return out
+    out["neighbours"] = {}
+    draws_l1 = {}
+    for M in neighbour_ms:
+        z, zb = P[(M, "Z", 0)], Pb[(M, "Z", 0)]
+        th, thb, fits = {}, {}, {}
+        for v in ("idle", "L1", "L3", "both"):
+            ks = [(M, f"N-{v}", p) for p in PHIS4]
+            for k in ks:
+                Pb[k] = draw(k)
+            y = np.array([P[k] - z for k in ks])
+            yb = np.stack([Pb[k] - zb for k in ks], -1)
+            t_, amp, c, b, s = _fit4(y)
+            tb, ampb, *_ = _fit4(yb)
+            th[v], thb[v] = float(t_), tb
+
+            def nb(p, i, v=v, M=M):
+                rows = n_bits[(M, f"N-{v}", p)]
+                return sum(x[i] for x in rows) / sum(x[3] for x in rows)
+
+            fits[v] = {
+                "loss": dict(zip(map(str, PHIS4), y.tolist())),
+                "theta_deg": float(t_),
+                "theta_ci90": pct(t_ + _wrap(tb - t_)),
+                "amplitude": float(amp),
+                "amplitude_ci90": pct(ampb),
+                "residuals": (y - _X4 @ np.array([c, b, s])).tolist(),
+                "neighbour_bits_P1": {str(p): {"L1_P1": nb(p, 1), "L3_P1": nb(p, 2)} for p in PHIS4},
+            }
+        shift = {v: float(_wrap(th[v] - th["idle"])) for v in ("L1", "L3", "both")}
+        shift_b = {v: shift[v] + _wrap(_wrap(thb[v] - thb["idle"]) - shift[v]) for v in ("L1", "L3", "both")}
+        ssum = float(_wrap(shift["L1"] + shift["L3"]))
+        ssum_b = ssum + _wrap(_wrap(shift_b["L1"] + shift_b["L3"]) - ssum)
+        smb = float(_wrap(ssum - shift["both"]))
+        out["neighbours"][M] = {
+            "fits": fits,
+            "shift_deg": shift,
+            "shift_ci90": {v: pct(shift_b[v]) for v in shift},
+            "sum_of_singles_deg": ssum,
+            "sum_of_singles_ci90": pct(ssum_b),
+            "sum_minus_both_deg": smb,
+            "sum_minus_both_ci90": pct(smb + _wrap((ssum_b - shift_b["both"]) - smb)),
+        }
+        draws_l1[M] = shift_b["L1"]
+    a, b_ = out["neighbours"]["144"], out["neighbours"]["143"]
+    d = float(_wrap(a["shift_deg"]["L1"] - b_["shift_deg"]["L1"]))
+    out["pair_143_144"] = {
+        "from_144_only_143_in_1": a["shift_deg"]["L1"],
+        "from_144_ci90": a["shift_ci90"]["L1"],
+        "from_143_only_144_in_1": b_["shift_deg"]["L1"],
+        "from_143_ci90": b_["shift_ci90"]["L1"],
+        "difference_deg": d,
+        "difference_ci90": pct(d + _wrap((draws_l1["144"] - draws_l1["143"]) - d)),
+    }
+    return out
+
+
+def _verdict_positions(rec: dict):
+    """The positions Kickoffs 54 and 55 passed to Kickoff 53's analysis: the verdict's (parts W and R) only."""
+    vl = [(lab, c) for lab, c in zip(rec["labels"], rec["counts"]) if lab["part"] in ("W", "R")]
+    return [lab for lab, _ in vl], [c for _, c in vl]
+
+
+def k54_day_two(rec: dict) -> dict:
+    """Kickoff 54, Day 2: Kickoff 53's analysis, unchanged, on the six fixed chains in the rule's order, with its seed
+    (bootstrap, 54); H54 on the cells informative by R1, the original rule beside it, the lean; and, from their own
+    bootstrap (bootstrap_beside), P(0|1), the pulses' cost, the R1 fits over four phases and the single-neighbour
+    shifts on 144 and 143."""
+    order = [str(c[1]) for c in rec["meta"]["chains"]]
+    labels, counts = _verdict_positions(rec)
+    r, cells = _revised_check(rec, order, labels, counts)
+    return {
+        "H54": r["verdict"],
+        "informative_cells": r["informative_cells"],
+        "cells": r["cells"],
+        "chains": r["chains"],
+        "original_rule_and_comparison": r["beside"],
+        "lean": _lean(cells),
+        "beside": _beside_r1_fits(rec, order, pulses=True, with_bs=False, neighbour_ms=("144", "143")),
+    }
+
+
+def k55_kingston(rec: dict) -> dict:
+    """Kickoff 55, the revised check on ibm_kingston: Kickoff 53's analysis, unchanged, on the four chains drawn at
+    build, in the drawn order, with its seed (bootstrap, 55); H55, the original rule beside it, the lean; and, from
+    their own bootstrap (bootstrap_beside), P(0|1) and the R1 fits over four phases."""
+    order = [str(c["chain"][1]) for c in rec["chain_draw"]["drawn"]]
+    labels, counts = _verdict_positions(rec)
+    r, cells = _revised_check(rec, order, labels, counts)
+    run = rec["run"]
+    return {
+        "H55": r["verdict"],
+        "informative_cells": r["informative_cells"],
+        "cells": r["cells"],
+        "chains": r["chains"],
+        "original_rule_and_comparison": r["beside"],
+        "lean": _lean(cells),
+        "beside": _beside_r1_fits(rec, order, pulses=False, with_bs=True),
+        "n_positions_to_verdict": len(labels),
+        "calibration_stamps": {
+            "chains_drawn_under": rec["chain_draw"]["calibration_stamp"],
+            "at_build": run["calibration_at_build"],
+            "at_submission": run["calibration_at_submission"],
+            "after_fetch": run["calibration_after_fetch"],
         },
     }

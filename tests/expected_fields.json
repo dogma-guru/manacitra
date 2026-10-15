@@ -9160,6 +9160,1144 @@
      "archived/analysis/calibration_stamps/k52_after_fetch": {}
     }
    }
+  ],
+  "Kickoff 54, the revised check on a second day": [
+   {
+    "file": "ibm_fez/k54-revised-check-day-2.json",
+    "fields": {
+     "archived/analysis/H54": {},
+     "archived/analysis/informative_cells/[0]": {},
+     "archived/analysis/informative_cells/[1]": {},
+     "archived/analysis/informative_cells/[2]": {},
+     "archived/analysis/informative_cells/[3]": {},
+     "archived/analysis/informative_cells/[4]": {},
+     "archived/analysis/informative_cells/[5]": {},
+     "archived/analysis/informative_cells/[6]": {},
+     "archived/analysis/cells/[0]/cell": {},
+     "archived/analysis/cells/[0]/M": {},
+     "archived/analysis/cells/[0]/phi_deg": {},
+     "archived/analysis/cells/[0]/F_no": {},
+     "archived/analysis/cells/[0]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_ref": {},
+     "archived/analysis/cells/[0]/loss_R0": {},
+     "archived/analysis/cells/[0]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/loss_R1": {},
+     "archived/analysis/cells/[0]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred1": {},
+     "archived/analysis/cells/[0]/d1": {},
+     "archived/analysis/cells/[0]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred0": {},
+     "archived/analysis/cells/[0]/d0": {},
+     "archived/analysis/cells/[0]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/informative_R1": {},
+     "archived/analysis/cells/[0]/informative_R0": {},
+     "archived/analysis/cells/[0]/d1_inside": {},
+     "archived/analysis/cells/[0]/d1_outside": {},
+     "archived/analysis/cells/[0]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[1]/cell": {},
+     "archived/analysis/cells/[1]/M": {},
+     "archived/analysis/cells/[1]/phi_deg": {},
+     "archived/analysis/cells/[1]/F_no": {},
+     "archived/analysis/cells/[1]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_ref": {},
+     "archived/analysis/cells/[1]/loss_R0": {},
+     "archived/analysis/cells/[1]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/loss_R1": {},
+     "archived/analysis/cells/[1]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred1": {},
+     "archived/analysis/cells/[1]/d1": {},
+     "archived/analysis/cells/[1]/F_pred0": {},
+     "archived/analysis/cells/[1]/d0": {},
+     "archived/analysis/cells/[1]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/informative_R1": {},
+     "archived/analysis/cells/[1]/informative_R0": {},
+     "archived/analysis/cells/[1]/d1_inside": {},
+     "archived/analysis/cells/[1]/d1_outside": {},
+     "archived/analysis/cells/[1]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[2]/cell": {},
+     "archived/analysis/cells/[2]/M": {},
+     "archived/analysis/cells/[2]/phi_deg": {},
+     "archived/analysis/cells/[2]/F_no": {},
+     "archived/analysis/cells/[2]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_ref": {},
+     "archived/analysis/cells/[2]/loss_R0": {},
+     "archived/analysis/cells/[2]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/loss_R1": {},
+     "archived/analysis/cells/[2]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred1": {},
+     "archived/analysis/cells/[2]/d1": {},
+     "archived/analysis/cells/[2]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred0": {},
+     "archived/analysis/cells/[2]/d0": {},
+     "archived/analysis/cells/[2]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/informative_R1": {},
+     "archived/analysis/cells/[2]/informative_R0": {},
+     "archived/analysis/cells/[2]/d1_inside": {},
+     "archived/analysis/cells/[2]/d1_outside": {},
+     "archived/analysis/cells/[2]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[3]/cell": {},
+     "archived/analysis/cells/[3]/M": {},
+     "archived/analysis/cells/[3]/phi_deg": {},
+     "archived/analysis/cells/[3]/F_no": {},
+     "archived/analysis/cells/[3]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_ref": {},
+     "archived/analysis/cells/[3]/loss_R0": {},
+     "archived/analysis/cells/[3]/loss_R1": {},
+     "archived/analysis/cells/[3]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred1": {},
+     "archived/analysis/cells/[3]/d1": {},
+     "archived/analysis/cells/[3]/F_pred0": {},
+     "archived/analysis/cells/[3]/d0": {},
+     "archived/analysis/cells/[3]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/informative_R1": {},
+     "archived/analysis/cells/[3]/informative_R0": {},
+     "archived/analysis/cells/[3]/d1_inside": {},
+     "archived/analysis/cells/[3]/d1_outside": {},
+     "archived/analysis/cells/[3]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[4]/cell": {},
+     "archived/analysis/cells/[4]/M": {},
+     "archived/analysis/cells/[4]/phi_deg": {},
+     "archived/analysis/cells/[4]/F_no": {},
+     "archived/analysis/cells/[4]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_ref": {},
+     "archived/analysis/cells/[4]/loss_R0": {},
+     "archived/analysis/cells/[4]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/loss_R1": {},
+     "archived/analysis/cells/[4]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred1": {},
+     "archived/analysis/cells/[4]/d1": {},
+     "archived/analysis/cells/[4]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred0": {},
+     "archived/analysis/cells/[4]/d0": {},
+     "archived/analysis/cells/[4]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/informative_R1": {},
+     "archived/analysis/cells/[4]/informative_R0": {},
+     "archived/analysis/cells/[4]/d1_inside": {},
+     "archived/analysis/cells/[4]/d1_outside": {},
+     "archived/analysis/cells/[4]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[5]/cell": {},
+     "archived/analysis/cells/[5]/M": {},
+     "archived/analysis/cells/[5]/phi_deg": {},
+     "archived/analysis/cells/[5]/F_no": {},
+     "archived/analysis/cells/[5]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_ref": {},
+     "archived/analysis/cells/[5]/loss_R0": {},
+     "archived/analysis/cells/[5]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/loss_R1": {},
+     "archived/analysis/cells/[5]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred1": {},
+     "archived/analysis/cells/[5]/d1": {},
+     "archived/analysis/cells/[5]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred0": {},
+     "archived/analysis/cells/[5]/d0": {},
+     "archived/analysis/cells/[5]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/informative_R1": {},
+     "archived/analysis/cells/[5]/informative_R0": {},
+     "archived/analysis/cells/[5]/d1_inside": {},
+     "archived/analysis/cells/[5]/d1_outside": {},
+     "archived/analysis/cells/[5]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[6]/cell": {},
+     "archived/analysis/cells/[6]/M": {},
+     "archived/analysis/cells/[6]/phi_deg": {},
+     "archived/analysis/cells/[6]/F_no": {},
+     "archived/analysis/cells/[6]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_ref": {},
+     "archived/analysis/cells/[6]/loss_R0": {},
+     "archived/analysis/cells/[6]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/loss_R1": {},
+     "archived/analysis/cells/[6]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred1": {},
+     "archived/analysis/cells/[6]/d1": {},
+     "archived/analysis/cells/[6]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred0": {},
+     "archived/analysis/cells/[6]/d0": {},
+     "archived/analysis/cells/[6]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/informative_R1": {},
+     "archived/analysis/cells/[6]/informative_R0": {},
+     "archived/analysis/cells/[6]/d1_inside": {},
+     "archived/analysis/cells/[6]/d1_outside": {},
+     "archived/analysis/cells/[6]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[7]/cell": {},
+     "archived/analysis/cells/[7]/M": {},
+     "archived/analysis/cells/[7]/phi_deg": {},
+     "archived/analysis/cells/[7]/F_no": {},
+     "archived/analysis/cells/[7]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_ref": {},
+     "archived/analysis/cells/[7]/loss_R0": {},
+     "archived/analysis/cells/[7]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/loss_R1": {},
+     "archived/analysis/cells/[7]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred1": {},
+     "archived/analysis/cells/[7]/d1": {},
+     "archived/analysis/cells/[7]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred0": {},
+     "archived/analysis/cells/[7]/d0": {},
+     "archived/analysis/cells/[7]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/informative_R1": {},
+     "archived/analysis/cells/[7]/informative_R0": {},
+     "archived/analysis/cells/[7]/d1_inside": {},
+     "archived/analysis/cells/[7]/d1_outside": {},
+     "archived/analysis/cells/[7]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[8]/cell": {},
+     "archived/analysis/cells/[8]/M": {},
+     "archived/analysis/cells/[8]/phi_deg": {},
+     "archived/analysis/cells/[8]/F_no": {},
+     "archived/analysis/cells/[8]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_ref": {},
+     "archived/analysis/cells/[8]/loss_R0": {},
+     "archived/analysis/cells/[8]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/loss_R1": {},
+     "archived/analysis/cells/[8]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_pred1": {},
+     "archived/analysis/cells/[8]/d1": {},
+     "archived/analysis/cells/[8]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_pred0": {},
+     "archived/analysis/cells/[8]/d0": {},
+     "archived/analysis/cells/[8]/informative_R1": {},
+     "archived/analysis/cells/[8]/informative_R0": {},
+     "archived/analysis/cells/[8]/d1_inside": {},
+     "archived/analysis/cells/[8]/d1_outside": {},
+     "archived/analysis/cells/[8]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[9]/cell": {},
+     "archived/analysis/cells/[9]/M": {},
+     "archived/analysis/cells/[9]/phi_deg": {},
+     "archived/analysis/cells/[9]/F_no": {},
+     "archived/analysis/cells/[9]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/F_ref": {},
+     "archived/analysis/cells/[9]/loss_R0": {},
+     "archived/analysis/cells/[9]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/loss_R1": {},
+     "archived/analysis/cells/[9]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/F_pred1": {},
+     "archived/analysis/cells/[9]/d1": {},
+     "archived/analysis/cells/[9]/F_pred0": {},
+     "archived/analysis/cells/[9]/d0": {},
+     "archived/analysis/cells/[9]/informative_R1": {},
+     "archived/analysis/cells/[9]/informative_R0": {},
+     "archived/analysis/cells/[9]/d1_inside": {},
+     "archived/analysis/cells/[9]/d1_outside": {},
+     "archived/analysis/cells/[9]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[10]/cell": {},
+     "archived/analysis/cells/[10]/M": {},
+     "archived/analysis/cells/[10]/phi_deg": {},
+     "archived/analysis/cells/[10]/F_no": {},
+     "archived/analysis/cells/[10]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_ref": {},
+     "archived/analysis/cells/[10]/loss_R0": {},
+     "archived/analysis/cells/[10]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/loss_R1": {},
+     "archived/analysis/cells/[10]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_pred1": {},
+     "archived/analysis/cells/[10]/d1": {},
+     "archived/analysis/cells/[10]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_pred0": {},
+     "archived/analysis/cells/[10]/d0": {},
+     "archived/analysis/cells/[10]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/informative_R1": {},
+     "archived/analysis/cells/[10]/informative_R0": {},
+     "archived/analysis/cells/[10]/d1_inside": {},
+     "archived/analysis/cells/[10]/d1_outside": {},
+     "archived/analysis/cells/[10]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[11]/cell": {},
+     "archived/analysis/cells/[11]/M": {},
+     "archived/analysis/cells/[11]/phi_deg": {},
+     "archived/analysis/cells/[11]/F_no": {},
+     "archived/analysis/cells/[11]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/F_ref": {},
+     "archived/analysis/cells/[11]/loss_R0": {},
+     "archived/analysis/cells/[11]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/loss_R1": {},
+     "archived/analysis/cells/[11]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/F_pred1": {},
+     "archived/analysis/cells/[11]/d1": {},
+     "archived/analysis/cells/[11]/F_pred0": {},
+     "archived/analysis/cells/[11]/d0": {},
+     "archived/analysis/cells/[11]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/informative_R1": {},
+     "archived/analysis/cells/[11]/informative_R0": {},
+     "archived/analysis/cells/[11]/d1_inside": {},
+     "archived/analysis/cells/[11]/d1_outside": {},
+     "archived/analysis/cells/[11]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/chains/30/F_ref": {},
+     "archived/analysis/chains/30/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/30/P1_Z": {},
+     "archived/analysis/chains/30/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/F_ref": {},
+     "archived/analysis/chains/74/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/P1_Z": {},
+     "archived/analysis/chains/74/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/F_ref": {},
+     "archived/analysis/chains/121/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/P1_Z": {},
+     "archived/analysis/chains/121/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/F_ref": {},
+     "archived/analysis/chains/103/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/P1_Z": {},
+     "archived/analysis/chains/103/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/144/F_ref": {},
+     "archived/analysis/chains/144/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/144/P1_Z": {},
+     "archived/analysis/chains/144/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/143/F_ref": {},
+     "archived/analysis/chains/143/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/143/P1_Z": {},
+     "archived/analysis/chains/143/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/original_rule_and_comparison/original_rule_verdict": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[0]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[1]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[2]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[3]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[4]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[5]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[6]": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_all": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_all": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/30|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/30|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/74|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/74|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/121|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/121|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/103|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/103|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/144|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/144|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/143|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/143|+90": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own/[0]": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own/[1]": {},
+     "archived/analysis/lean/d1/30|+0": {},
+     "archived/analysis/lean/d1/30|+90": {},
+     "archived/analysis/lean/d1/74|+0": {},
+     "archived/analysis/lean/d1/74|+90": {},
+     "archived/analysis/lean/d1/121|+0": {},
+     "archived/analysis/lean/d1/121|+90": {},
+     "archived/analysis/lean/d1/103|+0": {},
+     "archived/analysis/lean/d1/103|+90": {},
+     "archived/analysis/lean/d1/144|+0": {},
+     "archived/analysis/lean/d1/144|+90": {},
+     "archived/analysis/lean/d1/143|+0": {},
+     "archived/analysis/lean/d1/143|+90": {},
+     "archived/analysis/lean/mean_d1": {},
+     "archived/analysis/lean/n_d1_above_zero": {},
+     "archived/analysis/lean/n_cells": {},
+     "archived/analysis/lean/mean_d1_informative": {},
+     "archived/analysis/beside/readout_P0_given_1/30/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/30/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/74/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/74/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/121/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/121/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/103/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/103/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/144/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/144/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/143/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/143/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/30/P1": {},
+     "archived/analysis/beside/pulse_cost/30/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/30/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/30/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/74/P1": {},
+     "archived/analysis/beside/pulse_cost/74/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/74/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/74/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/121/P1": {},
+     "archived/analysis/beside/pulse_cost/121/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/121/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/121/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/103/P1": {},
+     "archived/analysis/beside/pulse_cost/103/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/103/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/103/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/144/P1": {},
+     "archived/analysis/beside/pulse_cost/144/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/144/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/144/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/143/P1": {},
+     "archived/analysis/beside/pulse_cost/143/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/143/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/143/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/30/loss/0": {},
+     "archived/analysis/beside/R1_fit/30/loss/90": {},
+     "archived/analysis/beside/R1_fit/30/loss/180": {},
+     "archived/analysis/beside/R1_fit/30/loss/270": {},
+     "archived/analysis/beside/R1_fit/30/theta_deg": {},
+     "archived/analysis/beside/R1_fit/30/amplitude": {},
+     "archived/analysis/beside/R1_fit/30/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/30/c": {},
+     "archived/analysis/beside/R1_fit/30/residuals": {},
+     "archived/analysis/beside/R1_fit/30/label": {},
+     "archived/analysis/beside/R1_fit/74/loss/0": {},
+     "archived/analysis/beside/R1_fit/74/loss/90": {},
+     "archived/analysis/beside/R1_fit/74/loss/180": {},
+     "archived/analysis/beside/R1_fit/74/loss/270": {},
+     "archived/analysis/beside/R1_fit/74/theta_deg": {},
+     "archived/analysis/beside/R1_fit/74/amplitude": {},
+     "archived/analysis/beside/R1_fit/74/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/74/c": {},
+     "archived/analysis/beside/R1_fit/74/residuals": {},
+     "archived/analysis/beside/R1_fit/74/label": {},
+     "archived/analysis/beside/R1_fit/121/loss/0": {},
+     "archived/analysis/beside/R1_fit/121/loss/90": {},
+     "archived/analysis/beside/R1_fit/121/loss/180": {},
+     "archived/analysis/beside/R1_fit/121/loss/270": {},
+     "archived/analysis/beside/R1_fit/121/theta_deg": {},
+     "archived/analysis/beside/R1_fit/121/amplitude": {},
+     "archived/analysis/beside/R1_fit/121/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/121/c": {},
+     "archived/analysis/beside/R1_fit/121/residuals": {},
+     "archived/analysis/beside/R1_fit/121/label": {},
+     "archived/analysis/beside/R1_fit/103/loss/0": {},
+     "archived/analysis/beside/R1_fit/103/loss/90": {},
+     "archived/analysis/beside/R1_fit/103/loss/180": {},
+     "archived/analysis/beside/R1_fit/103/loss/270": {},
+     "archived/analysis/beside/R1_fit/103/theta_deg": {},
+     "archived/analysis/beside/R1_fit/103/amplitude": {},
+     "archived/analysis/beside/R1_fit/103/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/103/c": {},
+     "archived/analysis/beside/R1_fit/103/residuals": {},
+     "archived/analysis/beside/R1_fit/103/label": {},
+     "archived/analysis/beside/R1_fit/144/loss/0": {},
+     "archived/analysis/beside/R1_fit/144/loss/90": {},
+     "archived/analysis/beside/R1_fit/144/loss/180": {},
+     "archived/analysis/beside/R1_fit/144/loss/270": {},
+     "archived/analysis/beside/R1_fit/144/theta_deg": {},
+     "archived/analysis/beside/R1_fit/144/amplitude": {},
+     "archived/analysis/beside/R1_fit/144/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/144/c": {},
+     "archived/analysis/beside/R1_fit/144/residuals": {},
+     "archived/analysis/beside/R1_fit/144/label": {},
+     "archived/analysis/beside/R1_fit/143/loss/0": {},
+     "archived/analysis/beside/R1_fit/143/loss/90": {},
+     "archived/analysis/beside/R1_fit/143/loss/180": {},
+     "archived/analysis/beside/R1_fit/143/loss/270": {},
+     "archived/analysis/beside/R1_fit/143/theta_deg": {},
+     "archived/analysis/beside/R1_fit/143/amplitude": {},
+     "archived/analysis/beside/R1_fit/143/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/143/c": {},
+     "archived/analysis/beside/R1_fit/143/residuals": {},
+     "archived/analysis/beside/R1_fit/143/label": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/idle/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/L1/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/L3/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/both/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/both/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/both/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/both/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/L1": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/L3": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/both": {},
+     "archived/analysis/beside/neighbours/144/sum_of_singles_deg": {},
+     "archived/analysis/beside/neighbours/144/sum_minus_both_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/idle/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/L3/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/both/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/both/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/both/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/both/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/L1": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/L3": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/both": {},
+     "archived/analysis/beside/neighbours/143/sum_of_singles_deg": {},
+     "archived/analysis/beside/neighbours/143/sum_minus_both_deg": {},
+     "archived/analysis/beside/pair_143_144/from_144_only_143_in_1": {},
+     "archived/analysis/beside/pair_143_144/from_143_only_144_in_1": {},
+     "archived/analysis/beside/pair_143_144/difference_deg": {}
+    }
+   }
+  ],
+  "Kickoff 55, the revised check on ibm_kingston": [
+   {
+    "file": "ibm_kingston/k55-revised-check.json",
+    "fields": {
+     "archived/analysis/H55": {},
+     "archived/analysis/informative_cells/[0]": {},
+     "archived/analysis/informative_cells/[1]": {},
+     "archived/analysis/informative_cells/[2]": {},
+     "archived/analysis/informative_cells/[3]": {},
+     "archived/analysis/cells/[0]/cell": {},
+     "archived/analysis/cells/[0]/M": {},
+     "archived/analysis/cells/[0]/phi_deg": {},
+     "archived/analysis/cells/[0]/F_no": {},
+     "archived/analysis/cells/[0]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_ref": {},
+     "archived/analysis/cells/[0]/loss_R0": {},
+     "archived/analysis/cells/[0]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/loss_R1": {},
+     "archived/analysis/cells/[0]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred1": {},
+     "archived/analysis/cells/[0]/d1": {},
+     "archived/analysis/cells/[0]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred0": {},
+     "archived/analysis/cells/[0]/d0": {},
+     "archived/analysis/cells/[0]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/informative_R1": {},
+     "archived/analysis/cells/[0]/informative_R0": {},
+     "archived/analysis/cells/[0]/d1_inside": {},
+     "archived/analysis/cells/[0]/d1_outside": {},
+     "archived/analysis/cells/[0]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[1]/cell": {},
+     "archived/analysis/cells/[1]/M": {},
+     "archived/analysis/cells/[1]/phi_deg": {},
+     "archived/analysis/cells/[1]/F_no": {},
+     "archived/analysis/cells/[1]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_ref": {},
+     "archived/analysis/cells/[1]/loss_R0": {},
+     "archived/analysis/cells/[1]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/loss_R1": {},
+     "archived/analysis/cells/[1]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred1": {},
+     "archived/analysis/cells/[1]/d1": {},
+     "archived/analysis/cells/[1]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred0": {},
+     "archived/analysis/cells/[1]/d0": {},
+     "archived/analysis/cells/[1]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/informative_R1": {},
+     "archived/analysis/cells/[1]/informative_R0": {},
+     "archived/analysis/cells/[1]/d1_inside": {},
+     "archived/analysis/cells/[1]/d1_outside": {},
+     "archived/analysis/cells/[1]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[2]/cell": {},
+     "archived/analysis/cells/[2]/M": {},
+     "archived/analysis/cells/[2]/phi_deg": {},
+     "archived/analysis/cells/[2]/F_no": {},
+     "archived/analysis/cells/[2]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_ref": {},
+     "archived/analysis/cells/[2]/loss_R0": {},
+     "archived/analysis/cells/[2]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/loss_R1": {},
+     "archived/analysis/cells/[2]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred1": {},
+     "archived/analysis/cells/[2]/d1": {},
+     "archived/analysis/cells/[2]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred0": {},
+     "archived/analysis/cells/[2]/d0": {},
+     "archived/analysis/cells/[2]/informative_R1": {},
+     "archived/analysis/cells/[2]/informative_R0": {},
+     "archived/analysis/cells/[2]/d1_inside": {},
+     "archived/analysis/cells/[2]/d1_outside": {},
+     "archived/analysis/cells/[2]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[3]/cell": {},
+     "archived/analysis/cells/[3]/M": {},
+     "archived/analysis/cells/[3]/phi_deg": {},
+     "archived/analysis/cells/[3]/F_no": {},
+     "archived/analysis/cells/[3]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_ref": {},
+     "archived/analysis/cells/[3]/loss_R0": {},
+     "archived/analysis/cells/[3]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/loss_R1": {},
+     "archived/analysis/cells/[3]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred1": {},
+     "archived/analysis/cells/[3]/d1": {},
+     "archived/analysis/cells/[3]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred0": {},
+     "archived/analysis/cells/[3]/d0": {},
+     "archived/analysis/cells/[3]/informative_R1": {},
+     "archived/analysis/cells/[3]/informative_R0": {},
+     "archived/analysis/cells/[3]/d1_inside": {},
+     "archived/analysis/cells/[3]/d1_outside": {},
+     "archived/analysis/cells/[3]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[4]/cell": {},
+     "archived/analysis/cells/[4]/M": {},
+     "archived/analysis/cells/[4]/phi_deg": {},
+     "archived/analysis/cells/[4]/F_no": {},
+     "archived/analysis/cells/[4]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_ref": {},
+     "archived/analysis/cells/[4]/loss_R0": {},
+     "archived/analysis/cells/[4]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/loss_R1": {},
+     "archived/analysis/cells/[4]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred1": {},
+     "archived/analysis/cells/[4]/d1": {},
+     "archived/analysis/cells/[4]/F_pred0": {},
+     "archived/analysis/cells/[4]/d0": {},
+     "archived/analysis/cells/[4]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/informative_R1": {},
+     "archived/analysis/cells/[4]/informative_R0": {},
+     "archived/analysis/cells/[4]/d1_inside": {},
+     "archived/analysis/cells/[4]/d1_outside": {},
+     "archived/analysis/cells/[4]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[5]/cell": {},
+     "archived/analysis/cells/[5]/M": {},
+     "archived/analysis/cells/[5]/phi_deg": {},
+     "archived/analysis/cells/[5]/F_no": {},
+     "archived/analysis/cells/[5]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_ref": {},
+     "archived/analysis/cells/[5]/loss_R0": {},
+     "archived/analysis/cells/[5]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/loss_R1": {},
+     "archived/analysis/cells/[5]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred1": {},
+     "archived/analysis/cells/[5]/d1": {},
+     "archived/analysis/cells/[5]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred0": {},
+     "archived/analysis/cells/[5]/d0": {},
+     "archived/analysis/cells/[5]/informative_R1": {},
+     "archived/analysis/cells/[5]/informative_R0": {},
+     "archived/analysis/cells/[5]/d1_inside": {},
+     "archived/analysis/cells/[5]/d1_outside": {},
+     "archived/analysis/cells/[5]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[6]/cell": {},
+     "archived/analysis/cells/[6]/M": {},
+     "archived/analysis/cells/[6]/phi_deg": {},
+     "archived/analysis/cells/[6]/F_no": {},
+     "archived/analysis/cells/[6]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_ref": {},
+     "archived/analysis/cells/[6]/loss_R0": {},
+     "archived/analysis/cells/[6]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/loss_R1": {},
+     "archived/analysis/cells/[6]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred1": {},
+     "archived/analysis/cells/[6]/d1": {},
+     "archived/analysis/cells/[6]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred0": {},
+     "archived/analysis/cells/[6]/d0": {},
+     "archived/analysis/cells/[6]/informative_R1": {},
+     "archived/analysis/cells/[6]/informative_R0": {},
+     "archived/analysis/cells/[6]/d1_inside": {},
+     "archived/analysis/cells/[6]/d1_outside": {},
+     "archived/analysis/cells/[6]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[7]/cell": {},
+     "archived/analysis/cells/[7]/M": {},
+     "archived/analysis/cells/[7]/phi_deg": {},
+     "archived/analysis/cells/[7]/F_no": {},
+     "archived/analysis/cells/[7]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_ref": {},
+     "archived/analysis/cells/[7]/loss_R0": {},
+     "archived/analysis/cells/[7]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/loss_R1": {},
+     "archived/analysis/cells/[7]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred1": {},
+     "archived/analysis/cells/[7]/d1": {},
+     "archived/analysis/cells/[7]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred0": {},
+     "archived/analysis/cells/[7]/d0": {},
+     "archived/analysis/cells/[7]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/informative_R1": {},
+     "archived/analysis/cells/[7]/informative_R0": {},
+     "archived/analysis/cells/[7]/d1_inside": {},
+     "archived/analysis/cells/[7]/d1_outside": {},
+     "archived/analysis/cells/[7]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/chains/155/F_ref": {},
+     "archived/analysis/chains/155/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/155/P1_Z": {},
+     "archived/analysis/chains/155/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/18/F_ref": {},
+     "archived/analysis/chains/18/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/18/P1_Z": {},
+     "archived/analysis/chains/18/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/7/F_ref": {},
+     "archived/analysis/chains/7/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/7/P1_Z": {},
+     "archived/analysis/chains/7/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/43/F_ref": {},
+     "archived/analysis/chains/43/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/43/P1_Z": {},
+     "archived/analysis/chains/43/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/original_rule_and_comparison/original_rule_verdict": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[0]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[1]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[2]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[3]": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_all": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_all": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/155|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/155|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/18|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/18|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/7|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/7|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/43|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/43|+90": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own": {},
+     "archived/analysis/lean/d1/155|+0": {},
+     "archived/analysis/lean/d1/155|+90": {},
+     "archived/analysis/lean/d1/18|+0": {},
+     "archived/analysis/lean/d1/18|+90": {},
+     "archived/analysis/lean/d1/7|+0": {},
+     "archived/analysis/lean/d1/7|+90": {},
+     "archived/analysis/lean/d1/43|+0": {},
+     "archived/analysis/lean/d1/43|+90": {},
+     "archived/analysis/lean/mean_d1": {},
+     "archived/analysis/lean/n_d1_above_zero": {},
+     "archived/analysis/lean/n_cells": {},
+     "archived/analysis/lean/mean_d1_informative": {},
+     "archived/analysis/beside/readout_P0_given_1/155/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/155/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/18/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/18/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/7/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/7/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/43/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/43/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/155/loss/0": {},
+     "archived/analysis/beside/R1_fit/155/loss/90": {},
+     "archived/analysis/beside/R1_fit/155/loss/180": {},
+     "archived/analysis/beside/R1_fit/155/loss/270": {},
+     "archived/analysis/beside/R1_fit/155/theta_deg": {},
+     "archived/analysis/beside/R1_fit/155/amplitude": {},
+     "archived/analysis/beside/R1_fit/155/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/155/c": {},
+     "archived/analysis/beside/R1_fit/155/b": {},
+     "archived/analysis/beside/R1_fit/155/s": {},
+     "archived/analysis/beside/R1_fit/155/residuals": {},
+     "archived/analysis/beside/R1_fit/155/label": {},
+     "archived/analysis/beside/R1_fit/18/loss/0": {},
+     "archived/analysis/beside/R1_fit/18/loss/90": {},
+     "archived/analysis/beside/R1_fit/18/loss/180": {},
+     "archived/analysis/beside/R1_fit/18/loss/270": {},
+     "archived/analysis/beside/R1_fit/18/theta_deg": {},
+     "archived/analysis/beside/R1_fit/18/amplitude": {},
+     "archived/analysis/beside/R1_fit/18/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/18/c": {},
+     "archived/analysis/beside/R1_fit/18/b": {},
+     "archived/analysis/beside/R1_fit/18/s": {},
+     "archived/analysis/beside/R1_fit/18/residuals": {},
+     "archived/analysis/beside/R1_fit/18/label": {},
+     "archived/analysis/beside/R1_fit/7/loss/0": {},
+     "archived/analysis/beside/R1_fit/7/loss/90": {},
+     "archived/analysis/beside/R1_fit/7/loss/180": {},
+     "archived/analysis/beside/R1_fit/7/loss/270": {},
+     "archived/analysis/beside/R1_fit/7/theta_deg": {},
+     "archived/analysis/beside/R1_fit/7/amplitude": {},
+     "archived/analysis/beside/R1_fit/7/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/7/c": {},
+     "archived/analysis/beside/R1_fit/7/b": {},
+     "archived/analysis/beside/R1_fit/7/s": {},
+     "archived/analysis/beside/R1_fit/7/residuals": {},
+     "archived/analysis/beside/R1_fit/7/label": {},
+     "archived/analysis/beside/R1_fit/43/loss/0": {},
+     "archived/analysis/beside/R1_fit/43/loss/90": {},
+     "archived/analysis/beside/R1_fit/43/loss/180": {},
+     "archived/analysis/beside/R1_fit/43/loss/270": {},
+     "archived/analysis/beside/R1_fit/43/theta_deg": {},
+     "archived/analysis/beside/R1_fit/43/amplitude": {},
+     "archived/analysis/beside/R1_fit/43/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/43/c": {},
+     "archived/analysis/beside/R1_fit/43/b": {},
+     "archived/analysis/beside/R1_fit/43/s": {},
+     "archived/analysis/beside/R1_fit/43/residuals": {},
+     "archived/analysis/beside/R1_fit/43/label": {},
+     "archived/analysis/n_positions_to_verdict": {},
+     "archived/analysis/calibration_stamps/chains_drawn_under": {},
+     "archived/analysis/calibration_stamps/at_build": {},
+     "archived/analysis/calibration_stamps/at_submission": {},
+     "archived/analysis/calibration_stamps/after_fetch": {}
+    }
+   }
   ]
  }
 }

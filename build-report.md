@@ -3253,3 +3253,86 @@ questions.
   "exactly", since R1 leaves out M's CZs with them (finding 18).
 - **The head moved twice.** Q3 and A1 were applied on the author's first go, as `9d07fef`. Q7 came with the ruled
   version and is one more signed-off commit. The second day pins to that head, not to `6b06e6f` or `9d07fef`.
+
+## 40. Amendment A23: findings 20 and 21, and the calibration history (15 October 2026)
+
+**Why.** By the author's rulings of 13, 14 and 15 October 2026, in chat: Kickoff 54 (Day 2 on ibm_fez, on the head of
+pull request 34) returned AGREE, so 0.6.0 carries the active-neighbour Ramsey as the check's default, on Kickoffs 53
+and 54; Kickoff 55 (ibm_kingston) goes in beside it. Finding numbers follow the order findings reach `main`: Kickoff 55
+is finding 20 and Kickoff 54 finding 21. The calibration wording of findings 15 to 19 is corrected from calibration
+history 01, as ruled on 14 October. The merge and the release each wait for their own go after the author's review.
+
+**Order.** A new signed-off commit on `findings/k49-k53-active-neighbour-check` (pull request 34), on top of
+`e45f15d`, the commit Kickoff 54 ran; no rebase, and nothing pushed before the author's go. `src/` is unchanged. No hardware, no provider job and no contact with anyone.
+
+**Sources.** Kickoffs 54 and 55's hand-backs (`hardware-54/`, `hardware-55/`), their reports, Mantri's scorecards, the
+rule files, calibration history 01 and the rulings. Nothing whose name contains "SEALED" was read. Both hand-backs
+match their checksum lists and their archives' published SHA-256; Kickoff 55's 48-hour snapshots stay out of its
+hand-back copy, as its report says, and none is needed. The two rule files hash to the values posted in issues 35 and
+36 of this repository (14 October 2026, 16:51 and 22:25 UTC), neither edited, each posted before its job's first
+submission.
+
+**The data: three files and two rules (1.7 MB in all).**
+- `ibm_fez/k54-revised-check-day-2.json` and `ibm_kingston/k55-revised-check.json`, in Kickoff 53's layout, with
+  `meta.shots_by_part`; Kickoff 54's adds `first_submission` (the job cancelled in the queue on 14 October, its build
+  and the cancellation), `calibration_record` (every stamp read, what changed at each, the walk over the job's time,
+  and the published values of the chains' qubits at the build's stamp) and `maintenance` (the record between the two
+  submissions); Kickoff 55's adds `chain_draw`, `window` (the rule's 'When' window with the 48-hour stamp table) and
+  `calibration_record`.
+- `ibm_fez/calibration-history-01.json`: every distinct stamp of ibm_fez from 9 to 14 October 2026 and what changed at
+  each, by value, as calibration history 01 tabulated it, without the snapshots' file names.
+- `ibm_fez/k54-rule.md` and `ibm_kingston/k55-rule.md`, byte for byte.
+- **Each run's code**, in `source_code`, as for Kickoffs 49 to 53; Kickoff 55's builder also without the two functions
+  that read the account.
+- **Dropped:** as for Kickoffs 49 to 53, and also the instance's name in Kickoff 55's window record and Kickoff 54's
+  cancellation record, the cancellation's usage block and its seconds used and remaining, the snapshots and the walks'
+  call logs. The converter, a scratch tool outside the repository, refused to write a file if a check record and its
+  submission record carried different builds, or if a record or its kept code carried the instance's name, a dollar
+  sign, a path or an email address. The identifier scan passed on every file.
+
+**The recompute.** `tests/_reuse_runs.py` gains `k54_day_two` and `k55_kingston`. Both reuse Kickoff 53's analysis,
+which their runs reused unchanged: it moves into `_revised_check`, shared with `k53_revised_check`, whose output is
+unchanged. The quantities beside the verdict come from each run's own bootstrap (`meta.seeds.bootstrap_beside`).
+`tests/_reproduce.py` gains two cases, required to give AGREE and DISAGREE.
+- **Under numpy 2.5.3:** every archived number of the two files reproduces, intervals included: 1,118 leaves (763 and
+  355), the largest difference 0.
+- **Other random streams.** Both bootstraps were rerun under 200 other seeds. No verdict, flag or label changed. The
+  fitted angles' intervals move by up to 0.64° and are excluded, and so are the intervals that move by 8·10⁻⁴ or more;
+  the other 147 intervals are compared at 10⁻³.
+- **The inventory:** 830 fields compared, 147 of them at 10⁻³; the rest excluded with reasons, and calibration history
+  01's three blocks excluded as a record, not a statistic.
+
+**The text.**
+- **`docs/findings.md`:** findings 20 and 21; the opening's dates; the calibration sentences of findings 16, 18 and 19,
+  from the history; in what has not been shown, the bullet on one processor replaced by the margin's record, and the
+  lean bullet extended with ibm_kingston's lean.
+- **`README.md`:** the opening section retitled "Latest findings", with the second day's result, lines for findings 20
+  and 21 and the "Why the default changed" spotlight; rows 20 and 21; "Twenty-one findings, from runs on 5 to 15
+  October 2026"; the calibration limit line rewritten and one limit line added for the two processors.
+- **Elsewhere:** `docs/method.md`, a paragraph on the margin's record; `docs/reproduce.md`, a pointer for each run,
+  naming `e45f15d`; `docs/kickoffs.md`, rows 54 and 55; `docs/index.md`, the reproduction row and the run dates;
+  `data/README.md`, the files, their formats, their recompute, what was left out, and twenty-five IBM job IDs;
+  `CHANGELOG.md`, the heading `## 0.6.0 (unreleased)`, its lead and the A23 entry.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A23-review-packet.md`),
+with its reason. Among them: on ibm_fez the active-neighbour Ramsey was not the closer of the two on every informative
+cell (two of five in finding 19, six of seven in finding 21), so the spotlight and the changelog's lead say what the
+data carry instead: on each of the eight cells where the original check missed, it was the closer; the changelog's
+lead counts six runs on ibm_fez, not seven; 143's joint shift on the second day is −40.5° (−40.48), not −41°; 103's
+largest R1 fit residual is the second largest, after 143's; and of the stamps findings 15 to 19 cite, four changed no
+published value, not five.
+
+**The tests:** 857 pass, against 829 at `e45f15d` (28 new). New: `test_finding_20`, `test_finding_21`, `test_findings_20_and_21_beside_the_findings`,
+the two reproduction cases and their verdict mutations, the inventory's marks, the kept code of both runs, and
+`test_kickoffs_54_and_55_are_rebuilt_by_the_package`, which rebuilds both runs' circuits for the snapshots their dry
+runs used. Changed: the calibration checks of findings 16, 18 and 19, now against the history; the dates and the
+README's table; the posted rules; and `test_the_readme_opens_with_the_new_default`, renamed
+`test_the_readme_opens_with_the_latest_findings`. Seven superseded phrases join the retired list.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the five files. The signing workflow signs them, `data/README.md` and `data/SHA256SUMS`
+  on `main` after a merge.
+- **CI:** runs on the draft pull request after a push, which waits for the author's go.

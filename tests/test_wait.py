@@ -1089,7 +1089,11 @@ RUNS_A22 = (
 )
 
 
-@pytest.mark.parametrize("path", RUNS_A22)
+#: Amendment A23: Kickoffs 54 and 55, built by this package at e45f15d
+RUNS_A23 = ("ibm_fez/k54-revised-check-day-2.json", "ibm_kingston/k55-revised-check.json")
+
+
+@pytest.mark.parametrize("path", RUNS_A22 + RUNS_A23)
 def test_the_runs_code_is_kept_as_verbatim_lines(path):
     """Amendment A22, 2a: each run's analysis and circuit-building code is in its data record, as verbatim line
     ranges of the script as run (named by its SHA-256): each kept text has its recorded SHA-256 and line count,
@@ -1111,3 +1115,34 @@ def test_the_runs_code_is_kept_as_verbatim_lines(path):
             re.I,
         )
         assert not bad, (file, sorted(set(bad)))
+
+
+@pytest.mark.parametrize("path", RUNS_A23)
+def test_kickoffs_54_and_55_are_rebuilt_by_the_package(path):
+    """Amendment A23: Kickoffs 54 and 55 built the verdict's circuits with this package at e45f15d, unedited
+    (build_wait_test, and build_wait_ramsey with its default and with neighbours="idle"), and R1 at 180 and 270 degrees
+    beside it. Built again here, for the offline snapshot each run's dry run used, every one of those circuits has the
+    operation counts that dry run recorded, and M's wait T_M is as it recorded."""
+    pytest.importorskip("qiskit_ibm_runtime")
+    from qiskit_ibm_runtime import fake_provider
+
+    rec = archive.load(path)
+    m, off = rec["meta"], rec["offline_build"]
+    assert m["built_from"]["commit"].startswith("e45f15d") and m["built_from"]["pull_request"] == 34
+    backend = getattr(fake_provider, off["snapshot"]["class"])()
+    drawn = off.get("draw_on_snapshot", {}).get("drawn")
+    chains = [c["chain"] for c in drawn] if drawn else m["chains"]
+    assert {str(c[1]) for c in chains} == set(off["checks"])
+    for chain in chains:
+        M, checks = chain[1], off["checks"][str(chain[1])]
+        built = {
+            "W-ref|0": wait.build_wait_test(chain, True, backend),
+            **{f"W-no|{p}": wait.build_wait_test(chain, False, backend, math.radians(p)) for p in (0, 90)},
+            **{f"R0|{p}": wait.build_wait_ramsey(chain, backend, "idle", math.radians(p)) for p in (0, 90)},
+            **{f"R1|{p}": wait.build_wait_ramsey(chain, backend, phase=math.radians(p)) for p in (0, 90, 180, 270)},
+        }
+        for name, c in built.items():
+            recorded = checks[name]["count_ops"]  # as the dry run wrote it: a dictionary, or its JSON text
+            recorded = json.loads(recorded) if isinstance(recorded, str) else recorded
+            assert {k: int(n) for k, n in c.count_ops().items()} == recorded, (path, M, name)
+        assert _t_m(built["W-no|0"], backend, M)["T_M_dt"] == off["T_M"][str(M)]["T_dt"], (path, M)
