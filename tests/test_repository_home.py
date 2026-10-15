@@ -100,6 +100,7 @@ VERSION_DOIS = {
     "0.3.0": "10.5281/zenodo.23284875",
     "0.4.0": "10.5281/zenodo.23289535",
     "0.5.0": "10.5281/zenodo.23300255",
+    "0.6.0": "10.5281/zenodo.23403048",
 }
 V010_DOI = VERSION_DOIS["0.1.0"]
 
@@ -135,13 +136,21 @@ def test_the_citation_uses_the_concept_doi():
     doi = VERSION_DOIS[latest]
     assert f"(version {latest}: [{doi}](https://doi.org/{doi}))" in readme, "the latest published version's own DOI"
     assert readme.count("10.5281/zenodo.") == 4, "the badge, the citation, and one version DOI (twice: text and link)"
+    # A23, step 5.5: CITATION.cff lists the concept DOI and the latest published version's own DOI as identifiers
+    cff = _read("CITATION.cff")
+    ids = re.findall(r"^  - type: doi\n    value: (\S+)\n    description: (.+)$", cff, re.M)
+    assert ids == [
+        (CONCEPT_DOI, "The concept DOI, which always resolves to the latest version."),
+        (doi, f"The DOI of version {latest}."),
+    ]
     changelog = _read("CHANGELOG.md")
     assert f"https://doi.org/{V010_DOI}" in changelog and f"https://doi.org/{CONCEPT_DOI}" in changelog
 
 
 def test_the_release_steps_carry_the_doi_line():
-    """Amendment A12: docs/index.md section 9's release steps include the one line each release updates after Zenodo
-    mints its DOI, beside the version bump."""
+    """Amendment A12: docs/index.md section 9's release steps include the lines each release updates after Zenodo
+    mints its DOI (A23: the README's parenthetical, `VERSION_DOIS` and CITATION.cff's identifiers), beside the version
+    bump."""
     steps = " ".join(
         _read("docs/index.md").split("**Releasing.**", 1)[1].split("**Plain SHA-256 stays**", 1)[0].split()
     )

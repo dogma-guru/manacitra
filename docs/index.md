@@ -467,8 +467,9 @@ step 2 was written down after v0.5.0, which ran it afterwards (build report sect
 3. **The release.** Publish it with the changelog entry as its notes. Watch `gate`, `build-release` and
    `sign-release`, then verify one asset from a fresh download with the `@refs/tags/vX.Y.Z` identity.
 4. **The version DOI, once Zenodo has minted it.** The README's citation paragraph names the new version's own DOI
-   (its parenthetical, "version X.Y.Z: <DOI>"), and `VERSION_DOIS` in `tests/test_repository_home.py` gains the
-   version's line. This is the one line each release updates after the fact.
+   (its parenthetical, "version X.Y.Z: <DOI>"), `CITATION.cff` lists it among its `identifiers`, beside the concept
+   DOI, and `VERSION_DOIS` in `tests/test_repository_home.py` gains the version's line. These are the lines each
+   release updates after the fact.
 
 **Plain SHA-256 stays** for catching corrupted files: `data/SHA256SUMS` (checked by `python tools/sha256sums.py
 --check` and by the tests) and the `sources` hashes in every data file's `meta` block.

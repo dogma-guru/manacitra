@@ -3388,6 +3388,48 @@ version-DOI parenthetical names v0.5.0's DOI until Zenodo has minted v0.6.0's (r
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.
 
+**The release (15 October 2026), each step by the author's go given in chat on 15 October.**
+- **The merge of the amendment.** Pull request 34 (A22 and A23) was marked ready and merged as `63508fc` with a merge
+  commit, at 17:44:01 UTC, after every check had passed on its head, `7b8308e`. Signing on `main` wrote the bundles of
+  its sixteen new data files, `data/README.md` and `data/SHA256SUMS` in `0479083`.
+- **The merge of the release.** Pull request 45 (this release) was merged as `a6e75fc` with a merge commit, at
+  18:18:26 UTC, after every check had passed on its head, `f8f642b`, whose tree `a6e75fc` carries unchanged. No signed
+  file changed (`tools/sign_targets.py` lists none between `0479083` and `a6e75fc`), the signing run on `a6e75fc`
+  committed nothing, and the tag is on the merge commit.
+- **The tree check, before tagging,** at 18:27:37 UTC, on `a6e75fc`: all 257 files in the tree with a `.sigstore.json`
+  bundle, every one in `data/`, gave `OK:` offline against `…/sign.yml@refs/heads/main`, one line each and no
+  failure; the tree holds no `*.commit.json` file and no data file without a bundle. The negative control:
+  `data/ibm_fez/k54-revised-check-day-2.json` against `…/sign.yml@refs/tags/v0.5.0` fails (exit status 1), its
+  certificate naming `…/sign.yml@refs/heads/main`. The tool was `sigstore` 4.5.0 (wheel SHA-256
+  `f045b207f2e12605cf775ec38e89c5eda625d71ffa7830477db65e47ec2bc8b2`), with Python 3.14.8 and pip 26.2.1 on macOS 26.6.2
+  (arm64), installed by the author's standing leave (A20, C2) into a throwaway environment outside the repository: its
+  31 wheels downloaded first, then installed from that folder alone, `pip check` clean, no credentials, and the
+  environment deleted afterwards. The git identity scan was clean (141 reachable commits).
+- **The tag and the release.** `v0.6.0` is annotated and unsigned, as every earlier tag (tag object `9f60d54`, message
+  "Manacitra 0.6.0"), on `a6e75fc`. The release is at <https://github.com/dogma-guru/manacitra/releases/tag/v0.6.0>,
+  published at 18:33:46 UTC, with the changelog's 0.6.0 entry as its notes (its wrapped lines joined, the words
+  unchanged).
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 18:36 UTC, with `sigstore` 4.5.0 in a second throwaway environment set up
+  the same way and deleted afterwards, with the downloads:
+
+  ```
+  $ sigstore verify identity --offline manacitra-0.6.0-py3-none-any.whl manacitra-0.6.0.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.6.0 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.6.0-py3-none-any.whl
+  OK: manacitra-0.6.0.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages, and both source archives give `OK:` against the same identity.
+  The negative control: against `…@refs/tags/v0.5.0`, the wheel fails (exit status 1). The wheel carries version 0.6.0;
+  neither package contains `data/`.
+- **Zenodo.** It archived v0.6.0 with its own DOI, `10.5281/zenodo.23403048` (record created 18:34:00 UTC, linked to
+  the `v0.6.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it.
+- **Step 4.** The README's version-DOI parenthetical names v0.6.0's DOI, `CITATION.cff` lists it among its
+  `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line. Release
+  step 4 in `docs/index.md` section 9 now names `CITATION.cff`'s identifiers among the lines each release updates.
+
 ## 42. Amendment A24: findings 22 to 27, and the check at the peak phase (15 October 2026)
 
 **Why.** By the author's rulings of 14 and 15 October 2026, in chat: two releases, each with its own claim and its own
