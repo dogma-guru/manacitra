@@ -3527,3 +3527,5 @@ retired list.
 - **`data/SHA256SUMS`:** gains the fifteen files. The signing workflow signs them, `data/README.md` and
   `data/SHA256SUMS` on `main` after a merge.
 - **CI:** runs on the draft pull request after a push, which waits for the author's go.
+
+**Ruling R1 (15 October 2026, the author's go given in chat: "I accept the recommendations in the A24 review packet as drafted").** It answers the packet's ten questions, every one as drafted: the README's eight rows, finding 26 with finding 5 (Q1); the +90° check's cells that were not informative, in findings 24, 25 and 27 (Q2); the record on residual size, finding by finding (Q3); alone and together within 0.004 (Q4); the qubit that missed in all three runs on its chain (Q5); `peak_check`'s zero-wait baseline on M alone (Q6); the limit line and the sentence on the new functions (Q7); both bullets on the neighbour shift (Q8); the method's dated sentence left as written (Q9); and the pull request's title, "Findings 22 to 27, and the check at the peak phase", applied with the push (Q10). Every correction of the packet's section 3a stands. Nothing else changed on the branch; then the push.
