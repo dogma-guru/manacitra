@@ -148,6 +148,15 @@ MUTATED = {
     "Kickoff 47, the wait": ("ibm_fez/k47-wait.json", "archived/analysis/part_A/H_phase"),
     # Amendment A19: the verdict of Kickoff 48
     "Kickoff 48, the wait test on hardware": ("ibm_fez/k48-wait-test.json", "archived/analysis/H48"),
+    # Amendment A22: the verdicts of Kickoffs 49 to 53
+    "Kickoff 49, the wait test on a second day": ("ibm_fez/k49-wait-test.json", "archived/analysis/H48"),
+    "Kickoff 50, the neighbour test": ("ibm_fez/k50-neighbour-test.json", "archived/analysis/H50"),
+    "Kickoff 51, a known offset": ("ibm_fez/k51-known-offset.json", "archived/analysis/verdict"),
+    "Kickoff 52, the phase sweep": ("ibm_fez/k52-phase-sweep.json", "archived/analysis/H52b"),
+    "Kickoff 53, the revised check on new chains": ("ibm_fez/k53-revised-check.json", "archived/analysis/H53"),
+    # Amendment A23: the verdicts of Kickoffs 54 and 55
+    "Kickoff 54, the revised check on a second day": ("ibm_fez/k54-revised-check-day-2.json", "archived/analysis/H54"),
+    "Kickoff 55, the revised check on ibm_kingston": ("ibm_kingston/k55-revised-check.json", "archived/analysis/H55"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 
@@ -266,7 +275,8 @@ def test_the_resampling_rule():
 def test_the_marked_fields_are_exactly_the_intended_ones():
     """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
     on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, (Amendment A17) the
-    283 interval fields of Kickoffs 43 to 47 and (Amendment A19) Kickoff 48's 75, enumerated below."""
+    283 interval fields of Kickoffs 43 to 47, (Amendment A19) Kickoff 48's 75, (Amendment A22) Kickoffs 49 to 53's
+    336 and (Amendment A23) Kickoffs 54 and 55's 147, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -293,8 +303,9 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED
+    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
+    assert (len(A22_MARKED), len(A23_MARKED)) == (336, 147)
 
 
 def _reuse_marked() -> set:
@@ -365,6 +376,162 @@ def _wait_test_marked() -> set:
     return out
 
 
+def _a22_marked() -> set:
+    """Amendment A22: Kickoffs 49 to 53's 90% bootstrap intervals, each compared at 10⁻³: every interval of each run's
+    analysis, less those named in NOT_MARKED, which move by 8·10⁻⁴ or more over 200 other seeds (within reach of 10⁻³ on
+    another platform's random stream, A17) or are fitted angles in degrees. Those are in tests/excluded_fields.json,
+    with the measured movement. The copies of Kickoff 48's intervals beside Kickoff 49's verdict are compared
+    exactly."""
+    rs, a = "resampled-shots", "archived/analysis"
+    out = set()
+    f = "ibm_fez/k49-wait-test.json"
+    chains, qubits = ("143", "144", "142", "131", "124"), ("143", "131", "124", "142", "144", "125")
+    waits = (0, 250, 500, 850, 1000, 2000, 2612, 4000)
+    k49 = {f"{a}/part_A/{c}/{v}/ci90" for c in chains for v in ("no", "refocus")}
+    k49 |= {f"{a}/prediction/{c}/{x}" for c in chains for x in ("gain_ci90", "dP_R_TM_ci90", "d_M_ci90")}
+    k49 |= {f"{a}/part_B/{q}/{v}_ci90/{w}" for q in qubits for v in ("ramsey", "echo") for w in waits}
+    k49 |= {f"{a}/part_B/{q}/{x}" for q in qubits for x in ("r_ci90", "e_ci90", "r_minus_ke_ci90", "ke_minus_jr_ci90")}
+    k49 |= {f"{a}/beside/q143_r_ci90"} | {f"{a}/beside/d_M_beside_k48/{c}/d_M_ci90_k49" for c in chains}
+    out |= {(f, x, rs) for x in k49}
+    f = "ibm_fez/k50-neighbour-test.json"
+    for q in ("144", "143"):
+        b = f"{a}/per_M/{q}"
+        out |= {(f, f"{b}/{x}_ci90", rs) for x in ("F_no", "F_ref", "d0", "d1", "delta_active", "echo_active")}
+        out |= {(f, f"{b}/{x}_ci90", rs) for x in ("readout_split", "state_split")}
+        out |= {(f, f"{b}/P1_ci90/{c}", rs) for c in ("Z", "R0", "R1", "R2", "R3", "E0", "E1")}
+        out |= {(f, f"{b}/loss_ci90/{c}", rs) for c in ("R0", "R1", "R2", "R3", "E0", "E1")}
+        out.add((f, f"{a}/beside/d1/{q}/[1]", rs))
+    out.add((f, f"{a}/beside/delta_active_143_ci90", rs))
+    f = "ibm_fez/k51-known-offset.json"
+    for q in ("144", "143"):
+        b = f"{a}/per_M/{q}"
+        out |= {(f, f"{b}/{x}_ci90", rs) for x in ("A", "A1", "A2", "F_ref", "P1_Z")}
+        out |= {(f, f"{b}/{x}_ci90/{p}", rs) for x in ("F_no", "d0", "d1", "d2") for p in ("-90", "0", "90")}
+        out |= {(f, f"{b}/loss_ci90/{c}|{p}", rs) for c in ("R0", "R1", "R2") for p in ("-90", "+0", "+90")}
+        out |= {(f, f"{b}/fit_{c}/theta_ci90", rs) for c in ("R0", "R2")}
+    f = "ibm_fez/k52-phase-sweep.json"
+    phases = ("0", "60", "120", "180", "240", "300")
+    for q in ("143", "144"):
+        b = f"{a}/per_M/{q}"
+        out |= {(f, f"{b}/{x}_ci90", rs) for x in ("F_ref", "P1_Z")}
+        out |= {(f, f"{b}/{x}_ci90/{p}", rs) for x in ("F_no", "d0", "d1") for p in phases}
+        out |= {(f, f"{b}/loss_ci90/{c}|{p}", rs) for c in ("R0", "R1") for p in phases}
+        out |= {(f, f"{b}/fits/{c}/theta_ci90", rs) for c in ("W", "R0", "R1")}
+        out |= {(f, f"{b}/{d}/ci90", rs) for d in ("Delta_W_minus_R0", "W_minus_R1", "R1_minus_R0")}
+    f = "ibm_fez/k53-revised-check.json"
+    out |= {(f, f"{a}/cells/[{i}]/{x}_ci90", rs) for i in range(8) for x in ("F_no", "loss_R0", "loss_R1", "d1", "d0")}
+    out |= {(f, f"{a}/chains/{c}/{x}_ci90", rs) for c in ("30", "74", "121", "103") for x in ("F_ref", "P1_Z")}
+    return out - {(f, x, rs) for f, xs in A22_NOT_MARKED.items() for x in xs}
+
+
+#: The intervals of Kickoffs 49 to 53 that are excluded, not marked: the fitted angles in degrees, and those that move
+#: by 8·10⁻⁴ or more over 200 other seeds (each with its measured movement in tests/excluded_fields.json)
+A22_NOT_MARKED = {
+    "ibm_fez/k49-wait-test.json": {
+        f"archived/analysis/{x}"
+        for x in (
+            "prediction/144/d_M_ci90",
+            "prediction/142/d_M_ci90",
+            "beside/d_M_beside_k48/144/d_M_ci90_k49",
+            "beside/d_M_beside_k48/142/d_M_ci90_k49",
+            "part_B/124/ramsey_ci90/2612",
+            "part_B/142/ramsey_ci90/2000",
+            "part_B/142/ke_minus_jr_ci90",
+            *(f"part_B/{q}/{x}" for q in ("143", "131", "144", "125") for x in ("r_minus_ke_ci90", "ke_minus_jr_ci90")),
+        )
+    },
+    "ibm_fez/k51-known-offset.json": {
+        f"archived/analysis/per_M/{x}"
+        for x in (
+            "144/d0_ci90/0",
+            "144/d0_ci90/90",
+            "144/d2_ci90/90",
+            *(f"{q}/fit_{c}/theta_ci90" for q in ("144", "143") for c in ("R0", "R2")),
+        )
+    },
+    "ibm_fez/k52-phase-sweep.json": {
+        f"archived/analysis/per_M/{x}"
+        for x in (
+            "143/d0_ci90/240",
+            "144/d1_ci90/120",
+            "144/d1_ci90/240",
+            *(f"{q}/fits/{c}/theta_ci90" for q in ("143", "144") for c in ("W", "R0", "R1")),
+            *(f"{q}/{d}/ci90" for q in ("143", "144") for d in ("Delta_W_minus_R0", "W_minus_R1", "R1_minus_R0")),
+        )
+    },
+    "ibm_fez/k53-revised-check.json": {
+        "archived/analysis/cells/[2]/d1_ci90",
+        "archived/analysis/cells/[5]/d1_ci90",
+        "archived/analysis/cells/[6]/d0_ci90",
+    },
+}
+
+
+def _a23_marked() -> set:
+    """Amendment A23: Kickoffs 54 and 55's 90% bootstrap intervals, each compared at 10⁻³: the verdict's (each cell's
+    F_no, losses, d1 and d0, and each chain's F_ref and P(1) of Z) and those beside it (P(0|1), the R1 fits', and
+    Kickoff 54's pulse costs, single-neighbour fits, shifts and pair), less those named in A23_NOT_MARKED, which move by
+    8·10⁻⁴ or more over 200 other seeds or are fitted angles in degrees, as A22's."""
+    rs, a = "resampled-shots", "archived/analysis"
+    out = set()
+    for f, chains, neighbours in (
+        ("ibm_fez/k54-revised-check-day-2.json", ("30", "74", "121", "103", "144", "143"), True),
+        ("ibm_kingston/k55-revised-check.json", ("155", "18", "7", "43"), False),
+    ):
+        x5 = ("F_no", "loss_R0", "loss_R1", "d1", "d0")
+        out |= {(f, f"{a}/cells/[{i}]/{x}_ci90", rs) for i in range(2 * len(chains)) for x in x5}
+        out |= {(f, f"{a}/chains/{c}/{x}_ci90", rs) for c in chains for x in ("F_ref", "P1_Z")}
+        out |= {(f, f"{a}/beside/readout_P0_given_1/{c}/ci90", rs) for c in chains}
+        out |= {(f, f"{a}/beside/R1_fit/{c}/{x}_ci90", rs) for c in chains for x in ("theta", "amplitude")}
+        if neighbours:
+            out |= {(f, f"{a}/beside/pulse_cost/{c}/{x}_ci90", rs) for c in chains for x in ("P1", "P1_minus_Z")}
+            for q in ("144", "143"):
+                b = f"{a}/beside/neighbours/{q}"
+                out |= {
+                    (f, f"{b}/fits/{v}/{x}_ci90", rs)
+                    for v in ("idle", "L1", "L3", "both")
+                    for x in ("theta", "amplitude")
+                }
+                out |= {(f, f"{b}/shift_ci90/{v}", rs) for v in ("L1", "L3", "both")}
+                out |= {(f, f"{b}/{x}_ci90", rs) for x in ("sum_of_singles", "sum_minus_both")}
+            out |= {(f, f"{a}/beside/pair_143_144/{x}_ci90", rs) for x in ("from_144", "from_143", "difference")}
+    return out - {(f, x, rs) for f, xs in A23_NOT_MARKED.items() for x in xs}
+
+
+#: The intervals of Kickoffs 54 and 55 that are excluded, not marked: the fitted angles in degrees, and those that move
+#: by 8·10⁻⁴ or more over 200 other seeds (each with its measured movement in tests/excluded_fields.json)
+A23_NOT_MARKED = {
+    "ibm_fez/k54-revised-check-day-2.json": {
+        f"archived/analysis/{x}"
+        for x in (
+            *(f"cells/[{i}]/d1_ci90" for i in (1, 3, 9, 11)),
+            *(f"cells/[{i}]/d0_ci90" for i in (8, 9)),
+            "cells/[3]/loss_R0_ci90",
+            *(f"beside/R1_fit/{c}/theta_ci90" for c in ("30", "74", "121", "103", "144", "143")),
+            *(
+                f"beside/neighbours/{q}/fits/{v}/theta_ci90"
+                for q in ("144", "143")
+                for v in ("idle", "L1", "L3", "both")
+            ),
+            "beside/neighbours/143/fits/L1/amplitude_ci90",
+            *(f"beside/neighbours/{q}/shift_ci90/{v}" for q in ("144", "143") for v in ("L1", "L3", "both")),
+            *(f"beside/neighbours/{q}/{x}_ci90" for q in ("144", "143") for x in ("sum_of_singles", "sum_minus_both")),
+            *(f"beside/pair_143_144/{x}_ci90" for x in ("from_144", "from_143", "difference")),
+        )
+    },
+    "ibm_kingston/k55-revised-check.json": {
+        f"archived/analysis/{x}"
+        for x in (
+            *(f"cells/[{i}]/d0_ci90" for i in (2, 3, 5, 6)),
+            "cells/[4]/d1_ci90",
+            *(f"beside/R1_fit/{c}/theta_ci90" for c in ("155", "18", "7", "43")),
+        )
+    },
+}
+
+
 REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")
 REUSE_MARKED = _reuse_marked()
 WAIT_TEST_MARKED = _wait_test_marked()
+A22_MARKED = _a22_marked()
+A23_MARKED = _a23_marked()

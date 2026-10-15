@@ -46,6 +46,9 @@ def test_run_records_name_a_kickoff_and_a_time(path):
         "2026-10-07",
         "2026-10-10",
         "2026-10-11",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
     )
     assert m["shots_per_circuit"] == NA or isinstance(m["shots_per_circuit"], int)
 

@@ -1,0 +1,4741 @@
+{
+  "meta": {
+    "bit_reading": "qiskit-adjacent",
+    "bit_reading_note": "every circuit has six classical bits. In the wait test (circuit W-no, W-ref; part W) c0 to c4 are the end lines' results (manacitra.wait.WAIT_TEST_ROUNDS) and c5 is M's; in the Ramsey circuits and the zero-wait baseline (part R) only M is measured, into c5 (the label's m_clbit), and the other bits read 0",
+    "processor": "ibm_fez",
+    "provider": "IBM Quantum",
+    "kickoff": "Kickoff 50",
+    "utc": "2026-10-13T18:00:40.415676Z",
+    "shots_per_circuit": 5000,
+    "sources": [
+      {
+        "file": "submit-50.json",
+        "sha256": "e343724a7f5fffbe45f8bacf6d16d3a3afeac803963f1216df12fae14d660b3f"
+      },
+      {
+        "file": "results-50-counts.json",
+        "sha256": "0e888f988057a70a136bd192eb4736cc34291d5f76102027c564fb2cb82ed801"
+      },
+      {
+        "file": "results-50.json",
+        "sha256": "2f5ffd4e4a45ad4236fd988d6759850fdc4e43a7d89f237434482202c0d51e73"
+      },
+      {
+        "file": "check-50.json",
+        "sha256": "c12d627ec44683651df72122be4eb49d5276fc542113af13af93857c574de04f"
+      },
+      {
+        "file": "dryrun-50.json",
+        "sha256": "478073ed550a4aef36824aa89b8c653db9ec037fc3e8d7b4cc6c26c87d99119a"
+      },
+      {
+        "file": "inputs.json",
+        "sha256": "b25d9310e03ebbb75e9b8f2be4fc846b97d79a53b4ffaccee268f3f7ab70630d"
+      },
+      {
+        "file": "timing-50.json",
+        "sha256": "761f53ca821036137aa7534c79bb5700e8c1261bcb686d9e8bc94a22166d4012"
+      }
+    ],
+    "source_archive_sha256": "fc3446369d7b291916a2ae108b6de244f2ba9c720bcfb54156b8cefbc25839e3",
+    "source_scripts": [
+      {
+        "file": "hw_50.py",
+        "sha256": "f6ed4e35ff8f03554586e81ddd06582f6d219f4a33b0c4dbe6773747b4e578ef"
+      },
+      {
+        "file": "analyse_50.py",
+        "sha256": "36311098ad66ac5ab6148da260945bc14d350420712fb984f2b64991dd006d06"
+      }
+    ],
+    "submitted_utc": "2026-10-13T18:00:39Z",
+    "job_id": "db773hmil99s73fnf3k0",
+    "calibration_last_update_utc": "2026-10-13T17:32:21Z",
+    "description": "Kickoff 50, the neighbour test. Two waiting qubits M, each on its chain L1-M-L3: 144 on 143-144-145, and 143 on 144-143-142 as the control. Per M: the wait test without and with XY4 refocusing (W-no, W-ref; manacitra.wait.build_wait_test, unedited); and seven Ramsey-type circuits over the wait test's own wait T_M (2611 dt) on M: R0, a plain Ramsey with the neighbours idle in |0>; R1, the wait test with every CZ touching M replaced by a delay of the same length, so the neighbours do what they do in the wait test; R2, R0 with both neighbours put in |1> before the wait; R3, R1 with the neighbours' operations other than measure and reset replaced by delays; E0 and E1, R0 and R1 with one refocusing pulse at the middle of the wait; and Z, M's zero-wait baseline. 36 circuits (2 M x 9 circuits x 2 copies) in one random order, 5000 shots each; the sampler's own dynamical decoupling and twirling off, as IBM recorded them.",
+    "bit_order": "Qiskit bitstrings, rightmost character = classical bit 0",
+    "built_from": {
+      "package": "manacitra",
+      "version": "0.5.0",
+      "commit": "a55354d0d4903d5d624c6cf946b8130d0ccc4b57",
+      "wait_py_sha256": "ead255a4be1d0e1ae9cffbc6d266cc70fe9a6534c685bd18e2772a1f7b69a2a8",
+      "how": "W-no and W-ref by manacitra.wait.build_wait_test at this commit, unedited, submitted as built; R0, R2 and Z written on the wait test's three lines (M into c5), translated by manacitra.wait.to_backend and scheduled by manacitra.wait.scheduled; R1, R3, E0 and E1 by the transformations in hw_50.py (source_code), applied to W-no as scheduled; against the live ibm_fez target at build (dt 4 ns)",
+      "qiskit": "2.5.2",
+      "qiskit_ibm_runtime": "0.49.0",
+      "numpy": "2.5.3"
+    },
+    "rule": {
+      "file": "k50-rule.md",
+      "sha256": "8a3228b03e89fca5a81e101f59d9d65757a74a6c06f2b0205f158770b85da039",
+      "posted": {
+        "issue": 31,
+        "url": "https://github.com/dogma-guru/manacitra/issues/31",
+        "created_utc": "2026-10-13T17:48:42Z"
+      }
+    },
+    "chains": {
+      "144": [
+        143,
+        144,
+        145
+      ],
+      "143": [
+        144,
+        143,
+        142
+      ]
+    },
+    "copies": 2,
+    "T_M": {
+      "definition": "from the end of M's first H (its first sx) to the start of its last H (its last sx), in the wait test without refocusing (W-no) as scheduled by manacitra.wait.scheduled on the live target",
+      "per_chain": {
+        "144": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "143": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        }
+      },
+      "dt_s": 4e-09,
+      "recorded_utc": "2026-10-13T17:59:50Z"
+    },
+    "seeds": {
+      "order": 5050,
+      "bootstrap": 50,
+      "n_boot": 10000
+    }
+  },
+  "fixed_before_the_data": {
+    "rule": "H50, on 144: the gap is REPRODUCED if 144's d0 interval lies entirely above reproduced_floor, otherwise the verdict carries \"(Kickoff 49's gap not present today)\"; SUPPORTED if Delta_active = loss(R0) - loss(R1) has its interval entirely above supported; OPPOSITE if entirely below -supported; NOT SUPPORTED if entirely inside [-not_supported_band, +not_supported_band]; NOT SETTLED otherwise. loss = M's P(1) minus its P(1) in Z; d0 = F_no - F_ref (1 - loss(R0)), d1 the same with R1",
+    "reproduced_floor": 0.1,
+    "supported": 0.1,
+    "not_supported_band": 0.05,
+    "d1_margin_beside": 0.15,
+    "bootstraps": "90% intervals (5th and 95th percentiles) from one joint bootstrap (seed bootstrap, n_boot draws), in a fixed order: M by M (144, then 143): F_no, F_ref, then Z, R0, R1, R2, R3, E0, E1; for each, the wait test's F (the copies with replacement, each redrawn from a multinomial), then M's P(1) (the copies with replacement, each redrawn binomially)"
+  },
+  "circuits": {
+    "144": {
+      "W-no": {
+        "count_ops": {
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "cz": 5,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_F": 0.9999999999999987,
+        "exact_F_1": true,
+        "structure_5cz_6meas_3reset": true
+      },
+      "W-ref": {
+        "count_ops": {
+          "delay": 192,
+          "rz": 26,
+          "x": 24,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "cz": 5,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_F": 0.9999999999999987,
+        "exact_F_1": true,
+        "structure_5cz_6meas_3reset": true,
+        "pulses_on_M": true
+      },
+      "R0": {
+        "count_ops": {
+          "rz": 4,
+          "delay": 3,
+          "sx": 2,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R1": {
+        "count_ops": {
+          "delay": 25,
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R2": {
+        "count_ops": {
+          "delay": 4,
+          "rz": 4,
+          "x": 2,
+          "sx": 2,
+          "barrier": 1,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 12,
+          "end_dt": 2623,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R3": {
+        "count_ops": {
+          "delay": 30,
+          "barrier": 6,
+          "measure": 6,
+          "rz": 4,
+          "reset": 3,
+          "sx": 2
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "E0": {
+        "count_ops": {
+          "delay": 4,
+          "rz": 4,
+          "sx": 2,
+          "x": 1,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay",
+          "x"
+        ],
+        "M_window_ops_ok": true
+      },
+      "E1": {
+        "count_ops": {
+          "delay": 26,
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "reset": 3,
+          "x": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay",
+          "x"
+        ],
+        "M_window_ops_ok": true
+      },
+      "Z": {
+        "count_ops": {
+          "rz": 4,
+          "delay": 2,
+          "sx": 2,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 6,
+          "T_dt": 0,
+          "n_sx": 2
+        },
+        "zero_wait": true,
+        "M_ops_in_window": [],
+        "M_window_ops_ok": true
+      },
+      "_neighbours": {
+        "measure_reset_times": {
+          "143": {
+            "W-no": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "R1": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "R3": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "E1": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ]
+          },
+          "145": {
+            "W-no": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "R1": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "R3": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "E1": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ]
+          }
+        },
+        "R1_R3_E1_same_as_W_no": true,
+        "R1_neighbour_timeline_same_as_W_no": true,
+        "R2_x_before_M_first_H": true,
+        "R3_neighbours_only_measure_reset_delay_barrier": true
+      },
+      "_check3": {
+        "M_ops_between_first_and_last_sx": [
+          "rz",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "cz",
+          "rz"
+        ],
+        "cz_only": true
+      },
+      "_echo_x": {
+        "E0": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        },
+        "E1": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        }
+      }
+    },
+    "143": {
+      "W-no": {
+        "count_ops": {
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "cz": 5,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_F": 0.9999999999999987,
+        "exact_F_1": true,
+        "structure_5cz_6meas_3reset": true
+      },
+      "W-ref": {
+        "count_ops": {
+          "delay": 192,
+          "rz": 26,
+          "x": 24,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "cz": 5,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_F": 0.9999999999999987,
+        "exact_F_1": true,
+        "structure_5cz_6meas_3reset": true,
+        "pulses_on_M": true
+      },
+      "R0": {
+        "count_ops": {
+          "rz": 4,
+          "delay": 3,
+          "sx": 2,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R1": {
+        "count_ops": {
+          "delay": 25,
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "reset": 3
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R2": {
+        "count_ops": {
+          "delay": 4,
+          "rz": 4,
+          "x": 2,
+          "sx": 2,
+          "barrier": 1,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 12,
+          "end_dt": 2623,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "R3": {
+        "count_ops": {
+          "delay": 30,
+          "barrier": 6,
+          "measure": 6,
+          "rz": 4,
+          "reset": 3,
+          "sx": 2
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay"
+        ],
+        "M_window_ops_ok": true
+      },
+      "E0": {
+        "count_ops": {
+          "delay": 4,
+          "rz": 4,
+          "sx": 2,
+          "x": 1,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "delay",
+          "x"
+        ],
+        "M_window_ops_ok": true
+      },
+      "E1": {
+        "count_ops": {
+          "delay": 26,
+          "rz": 14,
+          "sx": 7,
+          "barrier": 6,
+          "measure": 6,
+          "reset": 3,
+          "x": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "window_is_T_M": true,
+        "M_ops_in_window": [
+          "barrier",
+          "delay",
+          "x"
+        ],
+        "M_window_ops_ok": true
+      },
+      "Z": {
+        "count_ops": {
+          "rz": 4,
+          "delay": 2,
+          "sx": 2,
+          "measure": 1
+        },
+        "no_swap": true,
+        "layout_as_named": true,
+        "non_delay_ops_only_on_chain": true,
+        "exact_P1_M": 0,
+        "M_reads_0": true,
+        "M_window": {
+          "start_dt": 6,
+          "end_dt": 6,
+          "T_dt": 0,
+          "n_sx": 2
+        },
+        "zero_wait": true,
+        "M_ops_in_window": [],
+        "M_window_ops_ok": true
+      },
+      "_neighbours": {
+        "measure_reset_times": {
+          "144": {
+            "W-no": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "R1": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "R3": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ],
+            "E1": [
+              {
+                "op": "measure",
+                "start_dt": 23,
+                "duration_dt": 415,
+                "clbit": 0
+              },
+              {
+                "op": "reset",
+                "start_dt": 438,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 1741,
+                "duration_dt": 415,
+                "clbit": 2
+              },
+              {
+                "op": "reset",
+                "start_dt": 2156,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 4
+              }
+            ]
+          },
+          "142": {
+            "W-no": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "R1": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "R3": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ],
+            "E1": [
+              {
+                "op": "measure",
+                "start_dt": 882,
+                "duration_dt": 415,
+                "clbit": 1
+              },
+              {
+                "op": "reset",
+                "start_dt": 1297,
+                "duration_dt": 421,
+                "clbit": null
+              },
+              {
+                "op": "measure",
+                "start_dt": 2623,
+                "duration_dt": 415,
+                "clbit": 3
+              }
+            ]
+          }
+        },
+        "R1_R3_E1_same_as_W_no": true,
+        "R1_neighbour_timeline_same_as_W_no": true,
+        "R2_x_before_M_first_H": true,
+        "R3_neighbours_only_measure_reset_delay_barrier": true
+      },
+      "_check3": {
+        "M_ops_between_first_and_last_sx": [
+          "rz",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "cz",
+          "rz"
+        ],
+        "cz_only": true
+      },
+      "_echo_x": {
+        "E0": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        },
+        "E1": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        }
+      }
+    }
+  },
+  "offline_build": {
+    "what": "the dry run before the go: the same circuits built for qiskit-ibm-runtime's offline ibm_fez snapshot, whose durations differ from the live target's, so its T_M and timings differ; not sent",
+    "snapshot": {
+      "package": "qiskit-ibm-runtime",
+      "version": "0.49.0",
+      "class": "FakeFez"
+    },
+    "checks": {
+      "144": {
+        "W-no": {
+          "count_ops": {
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "cz": 5,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_F": 0.9999999999999987,
+          "exact_F_1": true,
+          "structure_5cz_6meas_3reset": true
+        },
+        "W-ref": {
+          "count_ops": {
+            "delay": 192,
+            "x": 40,
+            "rz": 34,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "cz": 5,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_F": 0.9999999999999987,
+          "exact_F_1": true,
+          "structure_5cz_6meas_3reset": true,
+          "pulses_on_M": true
+        },
+        "R0": {
+          "count_ops": {
+            "rz": 4,
+            "delay": 3,
+            "sx": 2,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R1": {
+          "count_ops": {
+            "delay": 25,
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R2": {
+          "count_ops": {
+            "delay": 4,
+            "rz": 4,
+            "x": 2,
+            "sx": 2,
+            "barrier": 1,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 12,
+            "end_dt": 2493,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R3": {
+          "count_ops": {
+            "delay": 30,
+            "barrier": 6,
+            "measure": 6,
+            "rz": 4,
+            "reset": 3,
+            "sx": 2
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "E0": {
+          "count_ops": {
+            "delay": 4,
+            "rz": 4,
+            "sx": 2,
+            "x": 1,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay",
+            "x"
+          ],
+          "M_window_ops_ok": true
+        },
+        "E1": {
+          "count_ops": {
+            "delay": 26,
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "reset": 3,
+            "x": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay",
+            "x"
+          ],
+          "M_window_ops_ok": true
+        },
+        "Z": {
+          "count_ops": {
+            "rz": 4,
+            "delay": 2,
+            "sx": 2,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 6,
+            "T_dt": 0,
+            "n_sx": 2
+          },
+          "zero_wait": true,
+          "M_ops_in_window": [],
+          "M_window_ops_ok": true
+        },
+        "_neighbours": {
+          "measure_reset_times": {
+            "143": {
+              "W-no": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "R1": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "R3": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "E1": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ]
+            },
+            "145": {
+              "W-no": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "R1": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "R3": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "E1": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ]
+            }
+          },
+          "R1_R3_E1_same_as_W_no": true,
+          "R1_neighbour_timeline_same_as_W_no": true,
+          "R2_x_before_M_first_H": true,
+          "R3_neighbours_only_measure_reset_delay_barrier": true
+        },
+        "_check3": {
+          "M_ops_between_first_and_last_sx": [
+            "rz",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "cz",
+            "rz"
+          ],
+          "cz_only": true
+        },
+        "_echo_x": {
+          "E0": {
+            "x_start_dt": 1243,
+            "x_duration_dt": 6,
+            "centre_offset_dt": -0.5
+          },
+          "E1": {
+            "x_start_dt": 1243,
+            "x_duration_dt": 6,
+            "centre_offset_dt": -0.5
+          }
+        }
+      },
+      "143": {
+        "W-no": {
+          "count_ops": {
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "cz": 5,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_F": 0.9999999999999987,
+          "exact_F_1": true,
+          "structure_5cz_6meas_3reset": true
+        },
+        "W-ref": {
+          "count_ops": {
+            "delay": 192,
+            "x": 40,
+            "rz": 34,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "cz": 5,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_F": 0.9999999999999987,
+          "exact_F_1": true,
+          "structure_5cz_6meas_3reset": true,
+          "pulses_on_M": true
+        },
+        "R0": {
+          "count_ops": {
+            "rz": 4,
+            "delay": 3,
+            "sx": 2,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R1": {
+          "count_ops": {
+            "delay": 25,
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "reset": 3
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R2": {
+          "count_ops": {
+            "delay": 4,
+            "rz": 4,
+            "x": 2,
+            "sx": 2,
+            "barrier": 1,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 12,
+            "end_dt": 2493,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "R3": {
+          "count_ops": {
+            "delay": 30,
+            "barrier": 6,
+            "measure": 6,
+            "rz": 4,
+            "reset": 3,
+            "sx": 2
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay"
+          ],
+          "M_window_ops_ok": true
+        },
+        "E0": {
+          "count_ops": {
+            "delay": 4,
+            "rz": 4,
+            "sx": 2,
+            "x": 1,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "delay",
+            "x"
+          ],
+          "M_window_ops_ok": true
+        },
+        "E1": {
+          "count_ops": {
+            "delay": 26,
+            "rz": 14,
+            "sx": 7,
+            "barrier": 6,
+            "measure": 6,
+            "reset": 3,
+            "x": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 2487,
+            "T_dt": 2481,
+            "n_sx": 2
+          },
+          "window_is_T_M": true,
+          "M_ops_in_window": [
+            "barrier",
+            "delay",
+            "x"
+          ],
+          "M_window_ops_ok": true
+        },
+        "Z": {
+          "count_ops": {
+            "rz": 4,
+            "delay": 2,
+            "sx": 2,
+            "measure": 1
+          },
+          "no_swap": true,
+          "layout_as_named": true,
+          "non_delay_ops_only_on_chain": true,
+          "exact_P1_M": 0,
+          "M_reads_0": true,
+          "M_window": {
+            "start_dt": 6,
+            "end_dt": 6,
+            "T_dt": 0,
+            "n_sx": 2
+          },
+          "zero_wait": true,
+          "M_ops_in_window": [],
+          "M_window_ops_ok": true
+        },
+        "_neighbours": {
+          "measure_reset_times": {
+            "144": {
+              "W-no": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "R1": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "R3": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ],
+              "E1": [
+                {
+                  "op": "measure",
+                  "start_dt": 27,
+                  "duration_dt": 390,
+                  "clbit": 0
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 417,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 1653,
+                  "duration_dt": 390,
+                  "clbit": 2
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 2043,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 4
+                }
+              ]
+            },
+            "142": {
+              "W-no": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "R1": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "R3": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ],
+              "E1": [
+                {
+                  "op": "measure",
+                  "start_dt": 840,
+                  "duration_dt": 390,
+                  "clbit": 1
+                },
+                {
+                  "op": "reset",
+                  "start_dt": 1230,
+                  "duration_dt": 396,
+                  "clbit": null
+                },
+                {
+                  "op": "measure",
+                  "start_dt": 2493,
+                  "duration_dt": 390,
+                  "clbit": 3
+                }
+              ]
+            }
+          },
+          "R1_R3_E1_same_as_W_no": true,
+          "R1_neighbour_timeline_same_as_W_no": true,
+          "R2_x_before_M_first_H": true,
+          "R3_neighbours_only_measure_reset_delay_barrier": true
+        },
+        "_check3": {
+          "M_ops_between_first_and_last_sx": [
+            "rz",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "barrier",
+            "barrier",
+            "cz",
+            "cz",
+            "rz"
+          ],
+          "cz_only": true
+        },
+        "_echo_x": {
+          "E0": {
+            "x_start_dt": 1243,
+            "x_duration_dt": 6,
+            "centre_offset_dt": -0.5
+          },
+          "E1": {
+            "x_start_dt": 1243,
+            "x_duration_dt": 6,
+            "centre_offset_dt": -0.5
+          }
+        }
+      }
+    },
+    "T_M": {
+      "144": {
+        "start_dt": 6,
+        "end_dt": 2487,
+        "T_dt": 2481,
+        "n_sx": 2
+      },
+      "143": {
+        "start_dt": 6,
+        "end_dt": 2487,
+        "T_dt": 2481,
+        "n_sx": 2
+      }
+    }
+  },
+  "published_at_build": {
+    "142": {
+      "readout_error": 0.00341796875,
+      "T1": 0.00021252740573460727,
+      "T2": 0.00023509596505780195
+    },
+    "143": {
+      "readout_error": 0.00439453125,
+      "T1": 0.00013064431643658607,
+      "T2": 0.0001423239549008882
+    },
+    "144": {
+      "readout_error": 0.0050048828125,
+      "T1": 0.00015670773873310294,
+      "T2": 0.00018423415134632696
+    },
+    "145": {
+      "readout_error": 0.0179443359375,
+      "T1": 0.00019179633087758894,
+      "T2": 0.00013446461496475427
+    }
+  },
+  "limits": {
+    "max_shots": 100000,
+    "max_experiments": 300,
+    "n_circuits": 36,
+    "within": true,
+    "instructions_not_in_target": [],
+    "delay_supported": true
+  },
+  "sampler_options": {
+    "dynamical_decoupling_enable": false,
+    "twirling_enable_gates": false,
+    "twirling_enable_measure": false,
+    "job_tags": [
+      "kept-share-50-neighbour-test"
+    ]
+  },
+  "job_options_as_recorded_by_ibm": {
+    "dynamical_decoupling": {
+      "enable": false
+    },
+    "twirling": {
+      "enable_measure": false,
+      "enable_gates": false
+    }
+  },
+  "run": {
+    "calibration_at_build": "2026-10-13 13:32:21-04:00",
+    "calibration_at_submission": "2026-10-13 13:32:21-04:00",
+    "calibration_after_fetch": "2026-10-13 13:32:21-04:00",
+    "calibration_at_build_utc": "2026-10-13T17:32:21Z",
+    "calibration_at_submission_utc": "2026-10-13T17:32:21Z",
+    "calibration_after_fetch_utc": "2026-10-13T17:32:21Z"
+  },
+  "labels": [
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R0",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "W-ref",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "refocus"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "Z",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R3",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R1",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R2",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R1",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "E1",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "W-no",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "no"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "W-ref",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "refocus"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "E1",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "W-no",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "no"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R0",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "Z",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "E0",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "E1",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R1",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "Z",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R3",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R2",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R2",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "E0",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R1",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "W-no",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "no"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "E1",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "Z",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R2",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R3",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R0",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "R3",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "E0",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "E0",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 144,
+      "chain": [
+        143,
+        144,
+        145
+      ],
+      "circuit": "W-no",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "no"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "W-ref",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "refocus"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "R0",
+      "copy": 2,
+      "m_clbit": 5,
+      "part": "R"
+    },
+    {
+      "M": 143,
+      "chain": [
+        144,
+        143,
+        142
+      ],
+      "circuit": "W-ref",
+      "copy": 1,
+      "m_clbit": 5,
+      "part": "W",
+      "variant": "refocus"
+    }
+  ],
+  "timestamps": {
+    "created": "2026-10-13T18:00:39.048746Z",
+    "finished": "2026-10-13T18:01:47.152548Z",
+    "running": "2026-10-13T18:00:40.415676Z"
+  },
+  "counts": [
+    {
+      "000000": 4778,
+      "100000": 222
+    },
+    {
+      "101101": 158,
+      "111001": 149,
+      "010111": 113,
+      "111101": 22,
+      "001100": 135,
+      "011111": 12,
+      "100001": 160,
+      "001001": 132,
+      "000110": 135,
+      "010100": 144,
+      "101110": 135,
+      "110000": 153,
+      "111100": 145,
+      "100100": 163,
+      "110011": 134,
+      "011011": 137,
+      "000011": 155,
+      "101000": 134,
+      "100110": 21,
+      "101011": 142,
+      "111010": 138,
+      "001010": 143,
+      "010010": 148,
+      "110010": 13,
+      "000101": 145,
+      "100010": 145,
+      "010001": 150,
+      "110110": 120,
+      "011101": 118,
+      "011110": 141,
+      "111111": 116,
+      "100111": 144,
+      "011100": 20,
+      "011000": 146,
+      "111000": 17,
+      "000000": 160,
+      "001111": 114,
+      "101010": 15,
+      "010011": 18,
+      "000010": 14,
+      "001110": 19,
+      "000100": 18,
+      "000001": 25,
+      "110100": 20,
+      "010101": 23,
+      "010110": 19,
+      "101001": 18,
+      "110101": 123,
+      "111011": 20,
+      "100101": 13,
+      "000111": 24,
+      "100011": 13,
+      "100000": 14,
+      "101111": 8,
+      "011001": 15,
+      "101100": 13,
+      "110111": 8,
+      "001000": 17,
+      "111110": 20,
+      "011010": 15,
+      "001101": 14,
+      "001011": 10,
+      "110001": 17,
+      "010000": 10
+    },
+    {
+      "000000": 4963,
+      "100000": 37
+    },
+    {
+      "000000": 2213,
+      "100000": 2739,
+      "100001": 4,
+      "000100": 3,
+      "010000": 6,
+      "001000": 3,
+      "100100": 12,
+      "110101": 1,
+      "000001": 4,
+      "101000": 4,
+      "000010": 4,
+      "100010": 2,
+      "110000": 3,
+      "100110": 1,
+      "110100": 1
+    },
+    {
+      "101101": 100,
+      "010001": 57,
+      "110100": 112,
+      "110000": 85,
+      "000011": 57,
+      "001001": 63,
+      "010011": 48,
+      "111111": 109,
+      "011110": 50,
+      "100111": 108,
+      "011010": 58,
+      "001110": 66,
+      "111001": 87,
+      "001101": 40,
+      "111011": 81,
+      "001011": 47,
+      "110001": 122,
+      "010101": 42,
+      "110111": 110,
+      "100000": 93,
+      "100001": 100,
+      "101011": 104,
+      "110010": 103,
+      "111100": 98,
+      "100110": 106,
+      "001010": 68,
+      "011101": 40,
+      "001000": 78,
+      "000000": 83,
+      "010010": 62,
+      "101000": 80,
+      "101100": 95,
+      "001111": 39,
+      "010000": 81,
+      "100011": 101,
+      "100101": 101,
+      "101110": 110,
+      "110011": 93,
+      "111010": 85,
+      "000010": 73,
+      "101111": 107,
+      "100100": 109,
+      "111000": 105,
+      "011000": 72,
+      "010110": 50,
+      "110101": 108,
+      "001100": 54,
+      "000111": 34,
+      "111110": 100,
+      "000100": 61,
+      "100010": 109,
+      "110110": 97,
+      "010111": 58,
+      "111101": 105,
+      "011001": 54,
+      "000110": 56,
+      "000001": 59,
+      "010100": 53,
+      "011100": 46,
+      "101001": 95,
+      "101010": 98,
+      "000101": 55,
+      "011011": 48,
+      "011111": 32
+    },
+    {
+      "000000": 3029,
+      "100000": 1971
+    },
+    {
+      "000110": 178,
+      "001010": 155,
+      "011000": 169,
+      "000011": 138,
+      "011101": 122,
+      "000101": 142,
+      "000001": 152,
+      "010001": 131,
+      "101001": 7,
+      "100111": 19,
+      "011111": 141,
+      "000111": 138,
+      "011010": 146,
+      "001011": 140,
+      "011001": 146,
+      "011100": 146,
+      "010110": 145,
+      "000100": 124,
+      "011011": 136,
+      "000000": 169,
+      "000010": 169,
+      "001001": 147,
+      "001000": 128,
+      "010000": 148,
+      "110001": 11,
+      "010011": 141,
+      "010101": 145,
+      "001101": 156,
+      "010010": 137,
+      "110110": 14,
+      "010111": 145,
+      "101011": 14,
+      "001100": 152,
+      "011110": 134,
+      "010100": 155,
+      "101000": 8,
+      "001111": 131,
+      "110100": 9,
+      "001110": 134,
+      "111011": 18,
+      "111001": 12,
+      "110101": 9,
+      "100010": 11,
+      "110011": 17,
+      "111000": 11,
+      "111010": 6,
+      "111111": 16,
+      "100011": 9,
+      "110111": 20,
+      "101101": 13,
+      "100101": 9,
+      "100100": 8,
+      "110000": 8,
+      "110010": 14,
+      "101100": 9,
+      "101111": 15,
+      "100000": 7,
+      "111101": 11,
+      "111110": 20,
+      "100110": 9,
+      "101110": 12,
+      "101010": 8,
+      "100001": 4,
+      "111100": 2
+    },
+    {
+      "001101": 178,
+      "011101": 130,
+      "011001": 137,
+      "010010": 151,
+      "010101": 126,
+      "011000": 148,
+      "000010": 150,
+      "001011": 143,
+      "001010": 163,
+      "010011": 147,
+      "000111": 144,
+      "110001": 4,
+      "001001": 150,
+      "011110": 146,
+      "001000": 148,
+      "010001": 145,
+      "000000": 177,
+      "000110": 139,
+      "000101": 149,
+      "011100": 143,
+      "000011": 145,
+      "001100": 154,
+      "000100": 168,
+      "001111": 142,
+      "001110": 166,
+      "010111": 154,
+      "010100": 173,
+      "011111": 146,
+      "011011": 123,
+      "000001": 159,
+      "011010": 166,
+      "010000": 163,
+      "110011": 10,
+      "101001": 6,
+      "101100": 10,
+      "010110": 122,
+      "100000": 9,
+      "110111": 10,
+      "110000": 8,
+      "100010": 5,
+      "100001": 9,
+      "101010": 9,
+      "111010": 5,
+      "101101": 6,
+      "101000": 3,
+      "101111": 9,
+      "100110": 9,
+      "111001": 2,
+      "111000": 8,
+      "111011": 5,
+      "110101": 4,
+      "110110": 10,
+      "100111": 5,
+      "110010": 3,
+      "100100": 6,
+      "100011": 6,
+      "101011": 3,
+      "101110": 5,
+      "100101": 7,
+      "110100": 10,
+      "111101": 5,
+      "111100": 7,
+      "111110": 6,
+      "111111": 1
+    },
+    {
+      "000100": 103,
+      "111111": 45,
+      "110011": 57,
+      "101010": 82,
+      "000010": 97,
+      "001011": 79,
+      "000101": 43,
+      "100011": 97,
+      "101100": 95,
+      "111011": 91,
+      "101011": 41,
+      "010101": 101,
+      "010100": 61,
+      "110000": 91,
+      "011111": 88,
+      "100000": 103,
+      "001110": 103,
+      "001101": 99,
+      "010110": 84,
+      "011001": 97,
+      "111100": 69,
+      "100101": 102,
+      "110100": 96,
+      "011101": 59,
+      "110110": 65,
+      "000001": 90,
+      "101111": 105,
+      "001001": 73,
+      "100010": 78,
+      "111110": 100,
+      "101001": 79,
+      "110010": 72,
+      "000110": 71,
+      "011010": 84,
+      "010010": 75,
+      "010111": 43,
+      "100001": 85,
+      "011000": 76,
+      "111001": 70,
+      "011100": 87,
+      "000000": 80,
+      "111000": 85,
+      "110111": 97,
+      "011011": 57,
+      "000111": 114,
+      "101000": 91,
+      "110001": 92,
+      "110101": 63,
+      "111010": 60,
+      "010000": 83,
+      "111101": 88,
+      "100100": 68,
+      "001010": 63,
+      "100111": 41,
+      "000011": 64,
+      "100110": 88,
+      "001000": 86,
+      "101110": 57,
+      "010011": 99,
+      "001100": 64,
+      "010001": 76,
+      "101101": 56,
+      "001111": 38,
+      "011110": 54
+    },
+    {
+      "001010": 132,
+      "100001": 168,
+      "110000": 147,
+      "100011": 14,
+      "010101": 11,
+      "001001": 119,
+      "001111": 110,
+      "111100": 153,
+      "000110": 158,
+      "100111": 164,
+      "011000": 127,
+      "011110": 117,
+      "111110": 17,
+      "010111": 131,
+      "000010": 17,
+      "011101": 129,
+      "000011": 151,
+      "110101": 142,
+      "011011": 134,
+      "101010": 20,
+      "010110": 20,
+      "010001": 133,
+      "110110": 126,
+      "010100": 155,
+      "001011": 17,
+      "011001": 25,
+      "111001": 156,
+      "101100": 23,
+      "001100": 142,
+      "111111": 134,
+      "010010": 163,
+      "000000": 140,
+      "100010": 129,
+      "111010": 119,
+      "110011": 144,
+      "000101": 138,
+      "010000": 16,
+      "101000": 148,
+      "001000": 19,
+      "000100": 28,
+      "001101": 12,
+      "000001": 14,
+      "111000": 20,
+      "000111": 15,
+      "100100": 132,
+      "101110": 147,
+      "101011": 133,
+      "101101": 139,
+      "010011": 24,
+      "011100": 17,
+      "100110": 14,
+      "100101": 9,
+      "110010": 15,
+      "111101": 14,
+      "111011": 17,
+      "011111": 11,
+      "110111": 19,
+      "001110": 12,
+      "110001": 18,
+      "110100": 10,
+      "100000": 24,
+      "011010": 10,
+      "101001": 20,
+      "101111": 18
+    },
+    {
+      "001001": 145,
+      "011010": 125,
+      "001110": 155,
+      "100010": 8,
+      "001000": 162,
+      "010100": 161,
+      "011001": 125,
+      "010001": 151,
+      "000110": 172,
+      "011101": 143,
+      "010111": 156,
+      "011000": 138,
+      "010101": 174,
+      "011111": 135,
+      "101010": 8,
+      "111110": 11,
+      "000011": 162,
+      "010011": 148,
+      "011110": 133,
+      "011100": 145,
+      "000001": 164,
+      "000111": 154,
+      "010000": 153,
+      "001011": 138,
+      "001010": 133,
+      "000101": 153,
+      "010110": 155,
+      "001101": 143,
+      "110001": 14,
+      "100110": 10,
+      "111011": 6,
+      "011011": 132,
+      "000000": 178,
+      "010010": 147,
+      "000010": 143,
+      "111100": 14,
+      "001100": 150,
+      "100001": 6,
+      "110110": 7,
+      "000100": 139,
+      "001111": 145,
+      "101101": 12,
+      "110000": 6,
+      "100100": 8,
+      "100111": 8,
+      "100000": 5,
+      "101000": 7,
+      "110011": 7,
+      "111001": 2,
+      "101100": 11,
+      "111010": 6,
+      "101011": 7,
+      "110111": 9,
+      "100011": 8,
+      "101111": 7,
+      "111000": 9,
+      "110101": 6,
+      "111111": 3,
+      "110100": 9,
+      "110010": 7,
+      "111101": 6,
+      "101110": 5,
+      "100101": 6,
+      "101001": 5
+    },
+    {
+      "010001": 143,
+      "110110": 125,
+      "010100": 167,
+      "101101": 151,
+      "000011": 141,
+      "110000": 170,
+      "111111": 130,
+      "001010": 127,
+      "010110": 18,
+      "100001": 134,
+      "001001": 133,
+      "111101": 14,
+      "110100": 16,
+      "111010": 143,
+      "100111": 125,
+      "001100": 131,
+      "101011": 137,
+      "100100": 144,
+      "101000": 158,
+      "000101": 143,
+      "110011": 145,
+      "101001": 14,
+      "100010": 140,
+      "011101": 130,
+      "110101": 129,
+      "001111": 125,
+      "010111": 126,
+      "011000": 166,
+      "000110": 140,
+      "110111": 20,
+      "001011": 18,
+      "011011": 135,
+      "011001": 15,
+      "011110": 128,
+      "010011": 18,
+      "101110": 122,
+      "010101": 14,
+      "010010": 125,
+      "111110": 20,
+      "000000": 153,
+      "011010": 14,
+      "011111": 25,
+      "100011": 22,
+      "111001": 144,
+      "111100": 150,
+      "111011": 20,
+      "101100": 16,
+      "000010": 23,
+      "100000": 15,
+      "100110": 32,
+      "001110": 20,
+      "000001": 15,
+      "110001": 10,
+      "010000": 12,
+      "001000": 13,
+      "101111": 16,
+      "000111": 18,
+      "100101": 19,
+      "000100": 18,
+      "011100": 15,
+      "110010": 11,
+      "101010": 14,
+      "111000": 10,
+      "001101": 15
+    },
+    {
+      "000000": 4727,
+      "100000": 273
+    },
+    {
+      "000000": 4970,
+      "100000": 30
+    },
+    {
+      "000000": 4819,
+      "100000": 181
+    },
+    {
+      "011010": 151,
+      "011011": 132,
+      "011110": 143,
+      "011101": 145,
+      "000010": 164,
+      "010010": 158,
+      "000101": 171,
+      "010110": 143,
+      "001100": 151,
+      "000011": 146,
+      "001101": 140,
+      "010000": 158,
+      "010011": 137,
+      "010001": 136,
+      "001001": 136,
+      "010100": 169,
+      "000000": 183,
+      "010111": 153,
+      "011111": 127,
+      "110011": 6,
+      "011001": 159,
+      "001110": 135,
+      "010101": 143,
+      "100001": 8,
+      "001010": 154,
+      "001011": 148,
+      "001111": 139,
+      "011100": 144,
+      "000100": 156,
+      "000001": 175,
+      "101010": 8,
+      "001000": 157,
+      "101011": 8,
+      "000110": 154,
+      "101001": 3,
+      "111011": 7,
+      "111001": 9,
+      "100010": 7,
+      "011000": 150,
+      "101110": 7,
+      "101000": 6,
+      "000111": 138,
+      "110111": 5,
+      "111110": 14,
+      "100100": 9,
+      "100101": 4,
+      "100011": 8,
+      "101111": 8,
+      "111000": 5,
+      "111010": 6,
+      "110001": 8,
+      "101100": 9,
+      "101101": 6,
+      "100111": 4,
+      "111111": 3,
+      "100000": 5,
+      "111101": 7,
+      "110101": 6,
+      "111100": 5,
+      "110100": 6,
+      "110010": 4,
+      "100110": 4,
+      "110110": 5,
+      "110000": 5
+    },
+    {
+      "001011": 132,
+      "011001": 142,
+      "110111": 27,
+      "001111": 144,
+      "000000": 176,
+      "011100": 156,
+      "001010": 155,
+      "011010": 133,
+      "000100": 177,
+      "001001": 147,
+      "000110": 127,
+      "010000": 134,
+      "010010": 161,
+      "000011": 137,
+      "011011": 135,
+      "001110": 137,
+      "001000": 148,
+      "000101": 152,
+      "000111": 130,
+      "011101": 131,
+      "110001": 9,
+      "010101": 141,
+      "001101": 144,
+      "000001": 173,
+      "101011": 13,
+      "000010": 154,
+      "111011": 16,
+      "010110": 150,
+      "010100": 141,
+      "010111": 157,
+      "100111": 17,
+      "011111": 126,
+      "101100": 7,
+      "010011": 155,
+      "010001": 134,
+      "011000": 155,
+      "100101": 10,
+      "100110": 15,
+      "001100": 159,
+      "011110": 111,
+      "111110": 12,
+      "110101": 10,
+      "101010": 9,
+      "110110": 11,
+      "110000": 13,
+      "101001": 10,
+      "110010": 6,
+      "100011": 18,
+      "100010": 8,
+      "110011": 18,
+      "111000": 7,
+      "100001": 11,
+      "111100": 5,
+      "110100": 7,
+      "111010": 6,
+      "101000": 7,
+      "101101": 10,
+      "111001": 11,
+      "111111": 10,
+      "100100": 4,
+      "101111": 19,
+      "101110": 11,
+      "111101": 4,
+      "100000": 5
+    },
+    {
+      "000000": 4983,
+      "100000": 17
+    },
+    {
+      "000000": 2176,
+      "100000": 2790,
+      "100001": 4,
+      "110000": 5,
+      "100100": 6,
+      "010000": 2,
+      "100010": 2,
+      "101000": 7,
+      "001000": 5,
+      "000100": 1,
+      "000010": 1,
+      "000001": 1
+    },
+    {
+      "100000": 4064,
+      "000000": 936
+    },
+    {
+      "100000": 4097,
+      "000000": 903
+    },
+    {
+      "000000": 4811,
+      "100000": 189
+    },
+    {
+      "111101": 120,
+      "100000": 80,
+      "111111": 95,
+      "001010": 65,
+      "001011": 54,
+      "000110": 62,
+      "011001": 57,
+      "110011": 100,
+      "010100": 52,
+      "010001": 56,
+      "101100": 104,
+      "011011": 47,
+      "110000": 79,
+      "011111": 45,
+      "101000": 103,
+      "000101": 38,
+      "101010": 93,
+      "111011": 98,
+      "100010": 94,
+      "110110": 93,
+      "100101": 91,
+      "100111": 106,
+      "111110": 103,
+      "100001": 111,
+      "110101": 108,
+      "101110": 109,
+      "101011": 98,
+      "100011": 103,
+      "001001": 64,
+      "011010": 59,
+      "011000": 66,
+      "110001": 97,
+      "001000": 71,
+      "000010": 69,
+      "000001": 52,
+      "011110": 56,
+      "111100": 101,
+      "101101": 103,
+      "110010": 105,
+      "000000": 63,
+      "001111": 38,
+      "000111": 43,
+      "011100": 61,
+      "010000": 63,
+      "100110": 102,
+      "001101": 52,
+      "110111": 108,
+      "101111": 112,
+      "111001": 112,
+      "110100": 134,
+      "010110": 46,
+      "010111": 43,
+      "010010": 63,
+      "101001": 88,
+      "111010": 98,
+      "000100": 64,
+      "100100": 107,
+      "111000": 92,
+      "010011": 54,
+      "001110": 38,
+      "011101": 39,
+      "001100": 55,
+      "010101": 52,
+      "000011": 66
+    },
+    {
+      "001000": 107,
+      "001001": 56,
+      "000001": 101,
+      "101101": 51,
+      "011011": 56,
+      "101000": 97,
+      "100101": 108,
+      "001010": 77,
+      "111010": 78,
+      "100011": 93,
+      "011010": 90,
+      "010100": 73,
+      "100001": 68,
+      "110110": 65,
+      "110001": 105,
+      "111101": 109,
+      "000010": 75,
+      "101100": 82,
+      "111110": 97,
+      "111000": 80,
+      "010110": 105,
+      "010000": 77,
+      "110111": 102,
+      "011101": 54,
+      "011001": 90,
+      "101111": 92,
+      "110100": 100,
+      "100111": 52,
+      "100010": 92,
+      "111001": 42,
+      "000110": 64,
+      "111100": 57,
+      "010001": 49,
+      "101010": 91,
+      "001111": 51,
+      "010101": 107,
+      "000100": 106,
+      "001101": 93,
+      "010111": 56,
+      "111011": 86,
+      "010011": 100,
+      "011111": 89,
+      "110011": 55,
+      "110010": 94,
+      "001110": 104,
+      "100110": 79,
+      "000000": 69,
+      "011000": 62,
+      "011100": 95,
+      "001100": 62,
+      "011110": 52,
+      "110101": 43,
+      "101011": 64,
+      "110000": 79,
+      "000111": 96,
+      "101001": 98,
+      "111111": 44,
+      "001011": 88,
+      "000101": 56,
+      "010010": 71,
+      "100000": 98,
+      "101110": 50,
+      "100100": 58,
+      "000011": 60
+    },
+    {
+      "011111": 141,
+      "001110": 153,
+      "000111": 149,
+      "000010": 146,
+      "000001": 135,
+      "000000": 180,
+      "101101": 7,
+      "001111": 131,
+      "010010": 128,
+      "010100": 143,
+      "001001": 166,
+      "001010": 151,
+      "001011": 148,
+      "110010": 10,
+      "001000": 150,
+      "001100": 153,
+      "011001": 142,
+      "001101": 149,
+      "011100": 143,
+      "000011": 157,
+      "011011": 140,
+      "000110": 145,
+      "010011": 127,
+      "010000": 158,
+      "011110": 139,
+      "000100": 157,
+      "000101": 165,
+      "011101": 148,
+      "010110": 163,
+      "010001": 145,
+      "011010": 127,
+      "010101": 173,
+      "101111": 9,
+      "011000": 159,
+      "010111": 163,
+      "110110": 6,
+      "111110": 5,
+      "111100": 13,
+      "101011": 2,
+      "100010": 7,
+      "100110": 13,
+      "111011": 11,
+      "101001": 7,
+      "100101": 7,
+      "111111": 11,
+      "110100": 7,
+      "111001": 5,
+      "100111": 9,
+      "101110": 6,
+      "110001": 10,
+      "100001": 8,
+      "100000": 8,
+      "101100": 3,
+      "100100": 8,
+      "111101": 6,
+      "100011": 7,
+      "111000": 9,
+      "110011": 6,
+      "111010": 5,
+      "101010": 5,
+      "101000": 4,
+      "110000": 4,
+      "110101": 5,
+      "110111": 3
+    },
+    {
+      "000000": 4991,
+      "100000": 9
+    },
+    {
+      "000000": 3001,
+      "100000": 1999
+    },
+    {
+      "000000": 4636,
+      "001000": 44,
+      "010000": 20,
+      "100000": 213,
+      "100010": 7,
+      "000010": 37,
+      "101000": 2,
+      "000001": 21,
+      "000100": 16,
+      "001010": 2,
+      "110000": 1,
+      "100001": 1
+    },
+    {
+      "000000": 2172,
+      "100000": 2828
+    },
+    {
+      "000000": 4621,
+      "100000": 219,
+      "000001": 20,
+      "101000": 5,
+      "010000": 24,
+      "000010": 35,
+      "001000": 51,
+      "000100": 15,
+      "100001": 2,
+      "100100": 4,
+      "100010": 1,
+      "101010": 1,
+      "001011": 1,
+      "110000": 1
+    },
+    {
+      "000000": 4801,
+      "100000": 199
+    },
+    {
+      "000000": 4819,
+      "100000": 181
+    },
+    {
+      "000110": 135,
+      "001001": 123,
+      "110101": 132,
+      "001100": 138,
+      "010001": 164,
+      "110000": 157,
+      "110010": 16,
+      "101000": 147,
+      "000101": 147,
+      "100001": 152,
+      "011101": 154,
+      "010111": 119,
+      "001000": 15,
+      "101011": 133,
+      "100111": 140,
+      "010100": 147,
+      "101110": 133,
+      "011011": 127,
+      "100100": 175,
+      "100101": 22,
+      "111001": 152,
+      "110110": 133,
+      "010011": 19,
+      "001010": 124,
+      "110111": 21,
+      "111100": 143,
+      "000000": 140,
+      "000011": 144,
+      "011001": 10,
+      "011100": 12,
+      "101101": 131,
+      "111111": 132,
+      "001111": 124,
+      "011110": 112,
+      "100010": 148,
+      "000001": 11,
+      "010101": 18,
+      "010010": 159,
+      "111000": 7,
+      "101001": 14,
+      "110011": 162,
+      "011000": 142,
+      "101010": 11,
+      "111010": 128,
+      "000100": 17,
+      "000010": 22,
+      "001011": 18,
+      "001101": 19,
+      "011111": 17,
+      "110100": 22,
+      "101111": 14,
+      "011010": 12,
+      "100110": 20,
+      "000111": 20,
+      "111110": 18,
+      "100011": 20,
+      "100000": 22,
+      "010110": 11,
+      "111011": 12,
+      "001110": 20,
+      "110001": 9,
+      "111101": 12,
+      "101100": 12,
+      "010000": 10
+    },
+    {
+      "001001": 145,
+      "110100": 18,
+      "011100": 14,
+      "010010": 153,
+      "001111": 164,
+      "101011": 116,
+      "111111": 133,
+      "001010": 145,
+      "100001": 136,
+      "100111": 149,
+      "101101": 174,
+      "100011": 9,
+      "001100": 127,
+      "010001": 138,
+      "101000": 147,
+      "000011": 124,
+      "111001": 136,
+      "000000": 144,
+      "111010": 138,
+      "111100": 159,
+      "100100": 167,
+      "001011": 5,
+      "011101": 155,
+      "010110": 12,
+      "011000": 156,
+      "110000": 137,
+      "100010": 160,
+      "101110": 136,
+      "010100": 137,
+      "011011": 142,
+      "000110": 174,
+      "110110": 150,
+      "011110": 129,
+      "000101": 147,
+      "010111": 145,
+      "110101": 151,
+      "110011": 133,
+      "101001": 12,
+      "010000": 15,
+      "110111": 10,
+      "101100": 16,
+      "010011": 7,
+      "001000": 12,
+      "111101": 10,
+      "111000": 16,
+      "000100": 14,
+      "000010": 18,
+      "100000": 12,
+      "111110": 7,
+      "110001": 10,
+      "000111": 16,
+      "101010": 14,
+      "001110": 8,
+      "000001": 14,
+      "011111": 9,
+      "100110": 13,
+      "100101": 6,
+      "001101": 10,
+      "101111": 10,
+      "110010": 10,
+      "010101": 5,
+      "011010": 9,
+      "011001": 7,
+      "111011": 5
+    },
+    {
+      "100000": 2808,
+      "000000": 2192
+    },
+    {
+      "101101": 137,
+      "110011": 150,
+      "001010": 164,
+      "011011": 149,
+      "010010": 129,
+      "100101": 14,
+      "100010": 149,
+      "011101": 163,
+      "110110": 147,
+      "010111": 142,
+      "000011": 145,
+      "100001": 138,
+      "001111": 129,
+      "000110": 158,
+      "100100": 130,
+      "110000": 156,
+      "111001": 117,
+      "111010": 146,
+      "000000": 155,
+      "010100": 163,
+      "101000": 147,
+      "000010": 15,
+      "101110": 162,
+      "010001": 124,
+      "111111": 145,
+      "110101": 152,
+      "011110": 148,
+      "101011": 137,
+      "001100": 147,
+      "101010": 14,
+      "001001": 145,
+      "000101": 133,
+      "010000": 13,
+      "011100": 18,
+      "100111": 116,
+      "110100": 14,
+      "011000": 154,
+      "110111": 7,
+      "111100": 148,
+      "100000": 9,
+      "000111": 14,
+      "010110": 10,
+      "001101": 11,
+      "101001": 8,
+      "001110": 17,
+      "111000": 10,
+      "110010": 12,
+      "101111": 8,
+      "111011": 9,
+      "011001": 10,
+      "110001": 7,
+      "001000": 21,
+      "011010": 10,
+      "000001": 18,
+      "011111": 15,
+      "001011": 8,
+      "100110": 20,
+      "010101": 10,
+      "000100": 14,
+      "111101": 5,
+      "100011": 11,
+      "101100": 10,
+      "111110": 6,
+      "010011": 7
+    }
+  ],
+  "archived": {
+    "analysis": {
+      "verdict": "NOT SUPPORTED (Kickoff 49's gap not present today)",
+      "H50": "NOT SUPPORTED",
+      "reproduced": false,
+      "per_M": {
+        "144": {
+          "F_no": 0.8942332710126165,
+          "F_no_ci90": [
+            0.8865637215517962,
+            0.8995813872555818
+          ],
+          "F_ref": 0.8919166396088539,
+          "F_ref_ci90": [
+            0.8851319037485262,
+            0.8961881189140384
+          ],
+          "F_per_copy": {
+            "no": [
+              0.890139851776193,
+              0.8971475247415995
+            ],
+            "refocus": [
+              0.8928631121846423,
+              0.8896789832276861
+            ]
+          },
+          "P1": {
+            "Z": 0.0026,
+            "R0": 0.0495,
+            "R1": 0.0706,
+            "R2": 0.397,
+            "R3": 0.0457,
+            "E0": 0.038,
+            "E1": 0.0469
+          },
+          "P1_ci90": {
+            "Z": [
+              0.0014,
+              0.0039
+            ],
+            "R0": [
+              0.0426,
+              0.0565
+            ],
+            "R1": [
+              0.0661,
+              0.0751
+            ],
+            "R2": [
+              0.3883,
+              0.4057
+            ],
+            "R3": [
+              0.0421,
+              0.0493
+            ],
+            "E0": [
+              0.0343,
+              0.0418
+            ],
+            "E1": [
+              0.043,
+              0.051
+            ]
+          },
+          "shots": {
+            "Z": [
+              5000,
+              5000
+            ],
+            "R0": [
+              5000,
+              5000
+            ],
+            "R1": [
+              5000,
+              5000
+            ],
+            "R2": [
+              5000,
+              5000
+            ],
+            "R3": [
+              5000,
+              5000
+            ],
+            "E0": [
+              5000,
+              5000
+            ],
+            "E1": [
+              5000,
+              5000
+            ]
+          },
+          "loss": {
+            "R0": 0.046900000000000004,
+            "R1": 0.06799999999999999,
+            "R2": 0.39440000000000003,
+            "R3": 0.0431,
+            "E0": 0.0354,
+            "E1": 0.0443
+          },
+          "loss_ci90": {
+            "R0": [
+              0.0399,
+              0.054099999999999995
+            ],
+            "R1": [
+              0.0632,
+              0.0727
+            ],
+            "R2": [
+              0.3857,
+              0.4032
+            ],
+            "R3": [
+              0.0393,
+              0.046900000000000004
+            ],
+            "E0": [
+              0.0315,
+              0.039400000000000004
+            ],
+            "E1": [
+              0.0402,
+              0.0485
+            ]
+          },
+          "delta_active": -0.021099999999999987,
+          "delta_active_ci90": [
+            -0.029399999999999996,
+            -0.012800000000000006
+          ],
+          "d0": 0.0441475218014179,
+          "d0_ci90": [
+            0.03367193144827467,
+            0.05464020672028627
+          ],
+          "d1": 0.06296696289716464,
+          "d1_ci90": [
+            0.05361837798785597,
+            0.07232618997603954
+          ],
+          "state_split_R0_minus_R2": -0.34750000000000003,
+          "state_split_ci90": [
+            -0.3587,
+            -0.33649999999999997
+          ],
+          "readout_split_R0_minus_R3": 0.0038000000000000048,
+          "readout_split_ci90": [
+            -0.0040999999999999995,
+            0.011799999999999998
+          ],
+          "echo_active_E0_minus_E1": -0.008899999999999998,
+          "echo_active_ci90": [
+            -0.014399999999999996,
+            -0.003499999999999996
+          ],
+          "d1_vs_0p15": "inside"
+        },
+        "143": {
+          "F_no": 0.3962348208807722,
+          "F_no_ci90": [
+            0.3832921047115338,
+            0.40545127790058044
+          ],
+          "F_ref": 0.9262785950104251,
+          "F_ref_ci90": [
+            0.9198593642719959,
+            0.9298920079176826
+          ],
+          "F_per_copy": {
+            "no": [
+              0.4016674501517458,
+              0.38852084830901473
+            ],
+            "refocus": [
+              0.9273634695816707,
+              0.9232074903042374
+            ]
+          },
+          "P1": {
+            "Z": 0.0067,
+            "R0": 0.5636,
+            "R1": 0.6463,
+            "R2": 0.8161,
+            "R3": 0.5581,
+            "E0": 0.037,
+            "E1": 0.041
+          },
+          "P1_ci90": {
+            "Z": [
+              0.0052,
+              0.0083
+            ],
+            "R0": [
+              0.5553,
+              0.5723
+            ],
+            "R1": [
+              0.6377,
+              0.6551
+            ],
+            "R2": [
+              0.8085,
+              0.8234
+            ],
+            "R3": [
+              0.5481,
+              0.5679
+            ],
+            "E0": [
+              0.0338,
+              0.0403
+            ],
+            "E1": [
+              0.0378,
+              0.0443
+            ]
+          },
+          "shots": {
+            "Z": [
+              5000,
+              5000
+            ],
+            "R0": [
+              5000,
+              5000
+            ],
+            "R1": [
+              5000,
+              5000
+            ],
+            "R2": [
+              5000,
+              5000
+            ],
+            "R3": [
+              5000,
+              5000
+            ],
+            "E0": [
+              5000,
+              5000
+            ],
+            "E1": [
+              5000,
+              5000
+            ]
+          },
+          "loss": {
+            "R0": 0.5569,
+            "R1": 0.6396,
+            "R2": 0.8094,
+            "R3": 0.5514,
+            "E0": 0.030299999999999997,
+            "E1": 0.034300000000000004
+          },
+          "loss_ci90": {
+            "R0": [
+              0.5483,
+              0.5658000000000001
+            ],
+            "R1": [
+              0.6309,
+              0.6484000000000001
+            ],
+            "R2": [
+              0.8017,
+              0.8168
+            ],
+            "R3": [
+              0.5414,
+              0.5613
+            ],
+            "E0": [
+              0.0267,
+              0.033999999999999996
+            ],
+            "E1": [
+              0.030799999999999998,
+              0.0379
+            ]
+          },
+          "delta_active": -0.0827,
+          "delta_active_ci90": [
+            -0.09460000000000002,
+            -0.07060000000000011
+          ],
+          "d0": -0.014199224568347157,
+          "d0_ci90": [
+            -0.02884965966486968,
+            -0.0013683925409772332
+          ],
+          "d1": 0.062404015239014954,
+          "d1_ci90": [
+            0.04753970701544066,
+            0.07513273270724334
+          ],
+          "state_split_R0_minus_R2": -0.25250000000000006,
+          "state_split_ci90": [
+            -0.26360000000000006,
+            -0.241
+          ],
+          "readout_split_R0_minus_R3": 0.005499999999999949,
+          "readout_split_ci90": [
+            -0.007199999999999984,
+            0.018299999999999983
+          ],
+          "echo_active_E0_minus_E1": -0.004000000000000007,
+          "echo_active_ci90": [
+            -0.008599999999999993,
+            0.0005000000000000004
+          ],
+          "d1_vs_0p15": "inside"
+        }
+      },
+      "beside": {
+        "delta_active_143": -0.0827,
+        "delta_active_143_ci90": [
+          -0.09460000000000002,
+          -0.07060000000000011
+        ],
+        "d1": {
+          "144": [
+            0.06296696289716464,
+            [
+              0.05361837798785597,
+              0.07232618997603954
+            ],
+            "inside"
+          ],
+          "143": [
+            0.062404015239014954,
+            [
+              0.04753970701544066,
+              0.07513273270724334
+            ],
+            "inside"
+          ]
+        },
+        "calibration_stamps": {
+          "at_build": "2026-10-13 13:32:21-04:00",
+          "at_submission": "2026-10-13 13:32:21-04:00",
+          "after_fetch": "2026-10-13 13:32:21-04:00",
+          "k49": "2026-10-13 16:08:33 UTC"
+        },
+        "hours_since_k49_stamp": {
+          "at_build": 1.3966666666666667,
+          "at_submission": 1.3966666666666667,
+          "after_fetch": 1.3966666666666667
+        },
+        "k49_144": {
+          "F_no": 0.786,
+          "F_ref": 0.896,
+          "dP_R_TM": 0.326,
+          "d_M": 0.182
+        }
+      }
+    }
+  },
+  "design": {
+    "translation": "manacitra.wait.to_backend / build_wait_test: Qiskit preset pass manager, optimization_level 0, initial layout the chain, seed_transpiler 47; schedule: manacitra.wait.scheduled (ALAPScheduleAnalysis + PadDelay with the live target)",
+    "m_clbit": 5,
+    "circuits": [
+      "W-no",
+      "W-ref",
+      "R0",
+      "R1",
+      "R2",
+      "R3",
+      "E0",
+      "E1",
+      "Z"
+    ],
+    "verdict": {
+      "reproduced_floor": 0.1,
+      "supported": 0.1,
+      "not_supported_band": 0.05,
+      "d1_margin_beside": 0.15
+    }
+  },
+  "timing": {
+    "what": "Kickoff 50, section 1's timing tables, from the live build (manacitra.wait.scheduled against ibm_fez at build; dt = 4 ns)",
+    "calibration_at_build": "2026-10-13 13:32:21-04:00",
+    "T_M": {
+      "144": {
+        "start_dt": 6,
+        "end_dt": 2617,
+        "T_dt": 2611,
+        "n_sx": 2
+      },
+      "143": {
+        "start_dt": 6,
+        "end_dt": 2617,
+        "T_dt": 2611,
+        "n_sx": 2
+      }
+    },
+    "T_M_k49": {
+      "scheduled_dt": 2611,
+      "part_b_even_dt": 2612
+    },
+    "144": {
+      "M_window_dt": {
+        "R0": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R1": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R2": {
+          "start_dt": 12,
+          "end_dt": 2623,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R3": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "E0": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "E1": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "Z": {
+          "start_dt": 6,
+          "end_dt": 6,
+          "T_dt": 0,
+          "n_sx": 2
+        }
+      },
+      "neighbour_measure_reset": {
+        "143": {
+          "W-no": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "R1": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "R3": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "E1": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ]
+        },
+        "145": {
+          "W-no": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "R1": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "R3": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "E1": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ]
+        }
+      },
+      "same_in_R1_R3_E1_as_W_no": true,
+      "M_ops_in_W_no_between_its_H": {
+        "M_ops_between_first_and_last_sx": [
+          "rz",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "cz",
+          "rz"
+        ],
+        "cz_only": true
+      },
+      "echo_pulse": {
+        "E0": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        },
+        "E1": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        }
+      }
+    },
+    "143": {
+      "M_window_dt": {
+        "R0": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R1": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R2": {
+          "start_dt": 12,
+          "end_dt": 2623,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "R3": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "E0": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "E1": {
+          "start_dt": 6,
+          "end_dt": 2617,
+          "T_dt": 2611,
+          "n_sx": 2
+        },
+        "Z": {
+          "start_dt": 6,
+          "end_dt": 6,
+          "T_dt": 0,
+          "n_sx": 2
+        }
+      },
+      "neighbour_measure_reset": {
+        "144": {
+          "W-no": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "R1": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "R3": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ],
+          "E1": [
+            {
+              "op": "measure",
+              "start_dt": 23,
+              "duration_dt": 415,
+              "clbit": 0
+            },
+            {
+              "op": "reset",
+              "start_dt": 438,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 1741,
+              "duration_dt": 415,
+              "clbit": 2
+            },
+            {
+              "op": "reset",
+              "start_dt": 2156,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 4
+            }
+          ]
+        },
+        "142": {
+          "W-no": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "R1": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "R3": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ],
+          "E1": [
+            {
+              "op": "measure",
+              "start_dt": 882,
+              "duration_dt": 415,
+              "clbit": 1
+            },
+            {
+              "op": "reset",
+              "start_dt": 1297,
+              "duration_dt": 421,
+              "clbit": null
+            },
+            {
+              "op": "measure",
+              "start_dt": 2623,
+              "duration_dt": 415,
+              "clbit": 3
+            }
+          ]
+        }
+      },
+      "same_in_R1_R3_E1_as_W_no": true,
+      "M_ops_in_W_no_between_its_H": {
+        "M_ops_between_first_and_last_sx": [
+          "rz",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "barrier",
+          "barrier",
+          "cz",
+          "cz",
+          "rz"
+        ],
+        "cz_only": true
+      },
+      "echo_pulse": {
+        "E0": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        },
+        "E1": {
+          "x_start_dt": 1308,
+          "x_duration_dt": 6,
+          "centre_offset_dt": -0.5
+        }
+      }
+    }
+  },
+  "source_code": {
+    "hw_50.py": {
+      "file": "hw_50.py",
+      "sha256_as_run": "f6ed4e35ff8f03554586e81ddd06582f6d219f4a33b0c4dbe6773747b4e578ef",
+      "lines_as_run": 485,
+      "kept_lines": [
+        [
+          29,
+          46
+        ],
+        [
+          48,
+          51
+        ],
+        [
+          53,
+          57
+        ],
+        [
+          60,
+          321
+        ]
+      ],
+      "dropped_inside_kept_span": [
+        47,
+        52,
+        58,
+        59
+      ],
+      "how": "verbatim lines of the script as run; nothing inside a kept line is edited. Kept: from its first import to the line before `def estimate(`, without the lines that set the instance, the rule's folder path, the cap and the charge rate (`dropped_inside_kept_span`). Not kept: the module docstring (it names the instance), and from `def estimate(` to the end (the estimate in money, the remaining-time read, the inputs record with folder names, the sampler, the submission and the fetch, which reach the account)",
+      "text": "from __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport subprocess\nimport sys\nimport time\nfrom collections import defaultdict\nfrom pathlib import Path\n\nimport numpy as np\n\nHERE = Path(__file__).resolve().parent\nsys.path.insert(0, str(HERE / \"site\"))\nimport manacitra  # noqa: E402\nfrom manacitra import wait as W  # noqa: E402\n\nCOMMIT, TAG_NAME = \"a55354d0d4903d5d624c6cf946b8130d0ccc4b57\", \"v0.5.0\"\nK49_SHA = {\"wait.py\": \"ead255a4be1d0e1ae9cffbc6d266cc70fe9a6534c685bd18e2772a1f7b69a2a8\",\n           \"workload.py\": \"ad24c80ca4f6cba7f19940dd15c6cc5ec9d18ebfeba503eff225d57cd52dd02b\"}   # hardware-49/inputs.json\nRULE_SHA_GIVEN = \"8a3228b03e89fca5a81e101f59d9d65757a74a6c06f2b0205f158770b85da039\"   # the author, in chat, 13 October\nCHAINS = {\"144\": [143, 144, 145], \"143\": [144, 143, 142]}\nCIRCUITS = (\"W-no\", \"W-ref\", \"R0\", \"R1\", \"R2\", \"R3\", \"E0\", \"E1\", \"Z\")\nCOPIES, SHOTS = 2, 5_000\nSEEDS = {\"order\": 5050, \"bootstrap\": 50, \"n_boot\": 10_000}\nM_CLBIT = W.WAIT_TEST_CLBITS - 1        # M is measured into c5 in every circuit\nT_M_K49 = {\"scheduled_dt\": 2611, \"part_b_even_dt\": 2612}\nCAL_K49 = \"2026-10-13 16:08:33 UTC\"\n\n\ndef sha(p):\n    return hashlib.sha256(Path(p).read_bytes()).hexdigest()\n\n\ndef now():\n    return time.strftime(\"%Y-%m-%dT%H:%M:%SZ\", time.gmtime())\n\n\ndef log(msg):\n    line = f\"{now()} {msg}\"\n    print(line, flush=True)\n    with (HERE / \"run.log\").open(\"a\") as f:\n        f.write(line + \"\\n\")\n\n\n# --------------------------------------------------------------------------- instructions and timelines\ndef instructions(c):\n    \"\"\"A circuit as a list of (operation, physical qubits, clbits).\"\"\"\n    return [(i.operation, [c.find_bit(q).index for q in i.qubits], [c.find_bit(x).index for x in i.clbits]) for i in c.data]\n\n\ndef rebuild(src, ins, name):\n    \"\"\"A circuit with src's qubits, clbits, registers and layout record, holding these instructions.\"\"\"\n    out = src.copy_empty_like(name=name)\n    for op, qs, cs in ins:\n        out.append(op, [out.qubits[i] for i in qs], [out.clbits[j] for j in cs])\n    out._layout = src.layout\n    return out\n\n\ndef duration(op, qs, target, dt):\n    nm = op.name\n    if nm == \"delay\":\n        if op.unit != \"dt\":\n            raise RuntimeError(f\"a delay in {op.unit}, not dt\")\n        return int(op.duration)\n    if nm in (\"barrier\", \"rz\"):\n        return 0\n    return int(round(target[nm][tuple(qs)].duration / dt))\n\n\ndef timed(ins, target, dt, qubits):\n    \"\"\"Start times of a padded instruction list on these qubits: each qubit's instructions tile time, and every\n    multi-qubit instruction (CZ, barrier) starts when all its qubits are free at the same moment. Refuses a list that\n    is not padded. Returns [(index, name, qubits, clbits, start, duration)] for instructions on these qubits.\"\"\"\n    clock = defaultdict(int)\n    out = []\n    for k, (op, qs, cs) in enumerate(ins):\n        if not set(qs) & set(qubits):\n            continue\n        d = duration(op, qs, target, dt)\n        starts = {clock[q] for q in qs}\n        if len(starts) != 1:\n            raise RuntimeError(f\"not padded at {op.name} on {qs}: clocks {sorted(starts)}\")\n        s = starts.pop()\n        for q in qs:\n            clock[q] = s + d\n        out.append((k, op.name, qs, cs, s, d))\n    return out\n\n\ndef schedule(c, backend, chain):\n    \"\"\"manacitra.wait.scheduled, keeping only the chain's instructions.\"\"\"\n    sch = W.scheduled(c, backend.target)\n    return [x for x in instructions(sch) if set(x[1]) <= set(chain)], sch\n\n\ndef window(tl, M):\n    \"\"\"M's window: the end of its first sx to the start of its last sx.\"\"\"\n    sx = [(s, d) for _, nm, qs, _, s, d in tl if nm == \"sx\" and qs == [M]]\n    return {\"start_dt\": sx[0][0] + sx[0][1], \"end_dt\": sx[-1][0], \"T_dt\": sx[-1][0] - (sx[0][0] + sx[0][1]), \"n_sx\": len(sx)}\n\n\ndef events(tl, q, names=(\"measure\", \"reset\")):\n    return [{\"op\": nm, \"start_dt\": s, \"duration_dt\": d, \"clbit\": (cs[0] if cs else None)} for _, nm, qs, cs, s, d in tl if q in qs and nm in names]\n\n\n# --------------------------------------------------------------------------- the transformations\ndef cz_to_delays(ins, M, target, dt):\n    from qiskit.circuit import Delay\n    out = []\n    for op, qs, cs in ins:\n        if op.name == \"cz\" and M in qs:\n            d = duration(op, qs, target, dt)\n            out += [(Delay(d, unit=\"dt\"), [q], []) for q in qs]\n        else:\n            out.append((op, qs, cs))\n    return out\n\n\ndef neighbours_quiet(ins, ends, target, dt):\n    from qiskit.circuit import Delay\n    out = []\n    for op, qs, cs in ins:\n        if len(qs) == 1 and qs[0] in ends and op.name not in (\"measure\", \"reset\", \"delay\", \"barrier\"):\n            if op.name not in (\"rz\", \"sx\", \"x\"):\n                raise RuntimeError(f\"unexpected {op.name} on a neighbour\")\n            d = duration(op, qs, target, dt)\n            if d:\n                out.append((Delay(d, unit=\"dt\"), qs, []))\n        else:\n            out.append((op, qs, cs))\n    return out\n\n\ndef insert_echo(ins, M, target, dt, chain):\n    \"\"\"One X on M at the middle of M's window, splitting the delay on M that holds it.\"\"\"\n    from qiskit.circuit import Delay\n    from qiskit.circuit.library import XGate\n    tl = timed(ins, target, dt, chain)\n    w = window(tl, M)\n    dx = int(round(target[\"x\"][(M,)].duration / dt))\n    p = w[\"start_dt\"] + (w[\"T_dt\"] - dx) // 2\n    hold = [(k, s, d) for k, nm, qs, _, s, d in tl if nm == \"delay\" and qs == [M] and s <= p and p + dx <= s + d]\n    if len(hold) != 1:\n        raise RuntimeError(\"no single delay on M holds the window's middle\")\n    k, s, d = hold[0]\n    new = [(Delay(p - s, unit=\"dt\"), [M], [])] if p > s else []\n    new.append((XGate(), [M], []))\n    if s + d - p - dx > 0:\n        new.append((Delay(s + d - p - dx, unit=\"dt\"), [M], []))\n    out = ins[:k] + new + ins[k + 1:]\n    return out, {\"x_start_dt\": p, \"x_duration_dt\": dx, \"centre_offset_dt\": (p + dx / 2) - (w[\"start_dt\"] + w[\"T_dt\"] / 2)}\n\n\ndef logical(kind, T):\n    \"\"\"R0, R2 or Z on the wait test's three lines (L1 = 0, M = 1, L3 = 2), M measured into c5.\"\"\"\n    from qiskit import QuantumCircuit\n    qc = QuantumCircuit(3, W.WAIT_TEST_CLBITS, name=kind)\n    if kind == \"R2\":\n        qc.x(W.L1)\n        qc.x(W.L3)\n        qc.barrier()\n    qc.h(W.M)\n    if kind in (\"R0\", \"R2\"):\n        qc.delay(T, W.M, unit=\"dt\")\n    qc.h(W.M)\n    qc.measure(W.M, M_CLBIT)\n    return qc\n\n\ndef build_chain(name, chain, backend):\n    t, dt = backend.target, backend.dt\n    L1, M, L3 = chain\n    no = W.build_wait_test(chain, False, backend)\n    ref = W.build_wait_test(chain, True, backend)\n    no_ins, _ = schedule(no, backend, chain)\n    tl_no = timed(no_ins, t, dt, chain)\n    w_no = window(tl_no, M)\n    T = w_no[\"T_dt\"]\n    # check 3: in W-no, M's instructions between its first and last H (rz, sx, rz each) are CZs (and barriers) only\n    m_ops = [nm for op, qs, _ in instructions(no) if M in qs for nm in [op.name]]\n    i0, i1 = m_ops.index(\"sx\"), len(m_ops) - 1 - m_ops[::-1].index(\"sx\")\n    between = m_ops[i0 + 1:i1]\n    inner = between[1:-1] if between[:1] == [\"rz\"] and between[-1:] == [\"rz\"] else between\n    check3 = {\"M_ops_between_first_and_last_sx\": between, \"cz_only\": set(inner) <= {\"cz\", \"barrier\"} and inner.count(\"cz\") == 5}\n    r1_ins = cz_to_delays(no_ins, M, t, dt)\n    r3_ins = neighbours_quiet(r1_ins, (L1, L3), t, dt)\n    e1_ins, e1_x = insert_echo(r1_ins, M, t, dt, chain)\n    made = {}\n    for kind in (\"R0\", \"R2\", \"Z\"):\n        isa = W.to_backend(logical(kind, T), chain, backend)\n        made[kind] = schedule(isa, backend, chain)[0], isa\n    e0_ins, e0_x = insert_echo(made[\"R0\"][0], M, t, dt, chain)\n    circ = {\"W-no\": no, \"W-ref\": ref,\n            \"R0\": rebuild(made[\"R0\"][1], made[\"R0\"][0], f\"R0-{name}\"), \"R1\": rebuild(no, r1_ins, f\"R1-{name}\"),\n            \"R2\": rebuild(made[\"R2\"][1], made[\"R2\"][0], f\"R2-{name}\"), \"R3\": rebuild(no, r3_ins, f\"R3-{name}\"),\n            \"E0\": rebuild(made[\"R0\"][1], e0_ins, f\"E0-{name}\"), \"E1\": rebuild(no, e1_ins, f\"E1-{name}\"),\n            \"Z\": rebuild(made[\"Z\"][1], made[\"Z\"][0], f\"Z-{name}\")}\n    return circ, {\"T_M\": w_no, \"check3\": check3, \"echo_x\": {\"E0\": e0_x, \"E1\": e1_x}, \"tl_no\": tl_no}\n\n\ndef x_on(c, q):\n    return sum(1 for i in c.data if i.operation.name == \"x\" and c.find_bit(i.qubits[0]).index == q)\n\n\ndef checks(name, chain, circ, info, backend):\n    t, dt = backend.target, backend.dt\n    L1, M, L3 = chain\n    ideal = W.wait_test_ideal()\n    T = info[\"T_M\"][\"T_dt\"]\n    rec = {}\n    tls = {}\n    for k, c in circ.items():\n        ins, _ = schedule(c, backend, chain)\n        tl = timed(ins, t, dt, chain)\n        tls[k] = tl\n        ops = {a: int(b) for a, b in c.count_ops().items()}\n        init = list(c.layout.initial_index_layout(filter_ancillas=True))\n        p = W.exact_distribution(c)\n        r = {\"count_ops\": ops, \"no_swap\": ops.get(\"swap\", 0) == 0, \"layout_as_named\": init == chain,\n             \"non_delay_ops_only_on_chain\": {c.find_bit(q).index for i in c.data if i.operation.name != \"delay\" for q in i.qubits} <= set(chain)}\n        if k.startswith(\"W\"):\n            r[\"exact_F\"] = W.fidelity(p, ideal)\n            r[\"exact_F_1\"] = abs(r[\"exact_F\"] - 1) < 1e-6\n            r[\"structure_5cz_6meas_3reset\"] = ops.get(\"cz\") == 5 and ops.get(\"measure\") == 6 and ops.get(\"reset\") == 3\n        else:\n            r[\"exact_P1_M\"] = sum(v for key, v in p.items() if key[0] == \"1\")\n            r[\"M_reads_0\"] = r[\"exact_P1_M\"] < 1e-9\n            if k != \"Z\":\n                w = window(tl, M)\n                r[\"M_window\"] = w\n                r[\"window_is_T_M\"] = w[\"T_dt\"] == T and w[\"n_sx\"] == 2\n            else:\n                r[\"M_window\"] = window(tl, M)\n                r[\"zero_wait\"] = r[\"M_window\"][\"T_dt\"] == 0\n            m_between = [nm for _, nm, qs, _, s, d in tl if M in qs and r[\"M_window\"][\"start_dt\"] <= s < r[\"M_window\"][\"end_dt\"] and nm not in (\"rz\",)]\n            r[\"M_ops_in_window\"] = sorted(set(m_between))\n            r[\"M_window_ops_ok\"] = set(m_between) <= ({\"delay\", \"barrier\", \"x\"} if k.startswith(\"E\") else {\"delay\", \"barrier\"}) and (m_between.count(\"x\") == (1 if k.startswith(\"E\") else 0))\n        if k == \"W-ref\":\n            r[\"pulses_on_M\"] = x_on(c, M) > x_on(circ[\"W-no\"], M)\n        rec[k] = r\n    # check 2: in R1 and R3 every measure and reset on L1 and L3 starts and lasts as in W-no, to the dt\n    tab = {str(q): {\"W-no\": events(info[\"tl_no\"], q), \"R1\": events(tls[\"R1\"], q), \"R3\": events(tls[\"R3\"], q), \"E1\": events(tls[\"E1\"], q)} for q in (L1, L3)}\n    same = all(tab[str(q)][k] == tab[str(q)][\"W-no\"] for q in (L1, L3) for k in (\"R1\", \"R3\", \"E1\"))\n    # R1's neighbours: every operation other than a delay or barrier at the same start and length as in W-no, the CZs\n    # with M gone (they are idle time now; re-scheduling may join adjacent delays, which changes no start time)\n    keep = lambda tl, q: [(nm, s, d) for _, nm, qs, _, s, d in tl if q in qs and nm not in (\"barrier\", \"delay\", \"cz\")]\n    r1_same = all(keep(info[\"tl_no\"], q) == keep(tls[\"R1\"], q) for q in (L1, L3))\n    m_r2 = window(tls[\"R2\"], M)\n    x_r2 = [(s, d) for _, nm, qs, _, s, d in tls[\"R2\"] if nm == \"x\" and qs[0] in (L1, L3)]\n    rec[\"_neighbours\"] = {\"measure_reset_times\": tab, \"R1_R3_E1_same_as_W_no\": same, \"R1_neighbour_timeline_same_as_W_no\": r1_same,\n                          \"R2_x_before_M_first_H\": all(s + d <= m_r2[\"start_dt\"] for s, d in x_r2) and len(x_r2) == 2,\n                          \"R3_neighbours_only_measure_reset_delay_barrier\": all(nm in (\"measure\", \"reset\", \"delay\", \"barrier\") for _, nm, qs, _, s, d in tls[\"R3\"] if qs == [L1] or qs == [L3])}\n    rec[\"_check3\"] = info[\"check3\"]\n    rec[\"_echo_x\"] = info[\"echo_x\"]\n    ok = (all(all(v for kk, v in r.items() if isinstance(v, bool)) for kk_, r in rec.items() if not kk_.startswith(\"_\"))\n          and same and r1_same and rec[\"_neighbours\"][\"R2_x_before_M_first_H\"] and rec[\"_neighbours\"][\"R3_neighbours_only_measure_reset_delay_barrier\"]\n          and info[\"check3\"][\"cz_only\"])\n    return rec, ok\n\n\ndef build(backend):\n    circ, recs, infos, ok = {}, {}, {}, True\n    for name, chain in CHAINS.items():\n        c, info = build_chain(name, chain, backend)\n        r, good = checks(name, chain, c, info, backend)\n        ok = ok and good\n        circ[name] = c\n        recs[name] = r\n        infos[name] = {\"T_M\": info[\"T_M\"], \"check3\": info[\"check3\"], \"echo_x\": info[\"echo_x\"]}\n    return circ, recs, infos, ok\n\n\ndef assemble(circ, seed=SEEDS[\"order\"]):\n    items = [(n, k, cp) for n in CHAINS for k in CIRCUITS for cp in range(1, COPIES + 1)]\n    perm = np.random.default_rng(seed).permutation(len(items))\n    circs, labels = [], []\n    for i in perm:\n        n, k, cp = items[i]\n        lab = {\"M\": int(n), \"chain\": CHAINS[n], \"circuit\": k, \"copy\": cp, \"m_clbit\": M_CLBIT}\n        if k.startswith(\"W\"):\n            lab.update({\"part\": \"W\", \"variant\": \"no\" if k == \"W-no\" else \"refocus\"})\n        else:\n            lab[\"part\"] = \"R\"\n        circs.append(circ[n][k])\n        labels.append(lab)\n    return circs, labels, [SHOTS] * len(circs)\n",
+      "text_sha256": "5cfdbbc7cd4ca1eed81125395984ef39aaffbb0974853c83110637224e901aa7"
+    },
+    "analyse_50.py": {
+      "file": "analyse_50.py",
+      "sha256_as_run": "36311098ad66ac5ab6148da260945bc14d350420712fb984f2b64991dd006d06",
+      "lines_as_run": 215,
+      "kept_lines": [
+        [
+          1,
+          174
+        ]
+      ],
+      "dropped_inside_kept_span": [],
+      "how": "verbatim lines of the script as run; nothing inside a kept line is edited. Kept: from line 1 to the line before `def main(`. Not kept: `main` and the command line (they read and write the run's files by path and copy the usage block)",
+      "text": "\"\"\"Kickoff 50 analysis, fixed before the data (section 3 of the kickoff; k50-rule.md).\n\nPer M (144, then 143), from the counts of the 36 circuits:\n- The wait test: F_no and F_ref, the squared Hellinger overlap with the exact ideal, pooled over the two copies, by the\n  package's analysis (manacitra.wait.analyse_wait_run, as the repository's Kickoff 48 recompute uses it), the outcome\n  keys in the recompute's order (tests/_reuse_runs.py, _wait_test_keys).\n- M's P(1) in R0, R1, R2, R3, E0, E1 and Z from M's own bit (c5), pooled over the two copies; loss = P(1) - P(1) of Z.\n- Delta_active = loss(R0) - loss(R1); d0 = F_no - F_ref (1 - loss(R0)); d1 = F_no - F_ref (1 - loss(R1)); beside:\n  loss(R0) - loss(R2), loss(R0) - loss(R3), the echo losses.\n- 90% intervals (5th and 95th percentiles) from one joint bootstrap, seed 50, 10,000 draws, in a fixed order: M by M;\n  F_no then F_ref (Kickoffs 45 to 49's draw: the copies with replacement, each redrawn from a multinomial); then Z,\n  R0, R1, R2, R3, E0, E1 (Kickoff 48's draw for a qubit's P(1): the copies with replacement, each redrawn binomially).\n\nThe verdict (H50, on 144): the gap is REPRODUCED if 144's d0 interval lies entirely above +0.10; otherwise the verdict\ncarries \"(Kickoff 49's gap not present today)\". SUPPORTED if Delta_active's interval lies entirely above +0.10; OPPOSITE\nif entirely below -0.10; NOT SUPPORTED if entirely inside [-0.05, +0.05]; NOT SETTLED otherwise.\nBeside, not used: Delta_active on 143; d1 on both, against +-0.15; the state and readout split; the echo losses; the\ncalibration stamps beside Kickoff 49's.\n\nUsage: python analyse_50.py                 (Kickoff 50's files)\n       python analyse_50.py --synthetic     (counts drawn from stated distributions, to exercise the code before data)\"\"\"\nfrom __future__ import annotations\n\nimport hashlib\nimport json\nimport sys\nimport time\nfrom collections import defaultdict\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\nimport numpy as np\n\nHERE = Path(__file__).resolve().parent\nsys.path.insert(0, str(HERE / \"site\"))\nsys.path.insert(0, str(HERE / \"src-a55354d\" / \"tests\"))\nfrom manacitra import wait as W  # noqa: E402\nimport _reuse_runs as reuse  # noqa: E402\n\nORDER_M = (\"144\", \"143\")\nRAMSEY = (\"Z\", \"R0\", \"R1\", \"R2\", \"R3\", \"E0\", \"E1\")\nSEED, N_BOOT = 50, 10_000\nREPRODUCED_FLOOR, SUPPORTED, BAND, D1_MARGIN = 0.10, 0.10, 0.05, 0.15\nCAL_K49_UTC = datetime(2026, 10, 13, 16, 8, 33, tzinfo=timezone.utc)\nK49_144 = {\"F_no\": 0.786, \"F_ref\": 0.896, \"dP_R_TM\": 0.326, \"d_M\": 0.182}\n\n\ndef sha(p):\n    return hashlib.sha256(Path(p).read_bytes()).hexdigest()\n\n\ndef pct(a):\n    return reuse.pct(a)\n\n\ndef analyse(labels, counts, dt):\n    keys, q = reuse._wait_test_keys()\n\n    def F(V):\n        return np.sqrt(V / V.sum(-1, keepdims=True) * q).sum(-1) ** 2\n\n    cells, bits = defaultdict(list), defaultdict(list)\n    for lab, cts in zip(labels, counts):\n        M = str(lab[\"M\"])\n        if lab[\"part\"] == \"W\":\n            d = defaultdict(int)\n            for k, n in cts.items():\n                d[k.replace(\" \", \"\")[-W.WAIT_TEST_CLBITS:]] += n\n            cells[(M, lab[\"variant\"])].append((lab[\"copy\"], [d.get(k, 0) for k in keys]))\n        else:\n            i = lab[\"m_clbit\"]\n            ones = sum(n for k, n in cts.items() if k.replace(\" \", \"\")[::-1][i] == \"1\")\n            bits[(M, lab[\"circuit\"])].append((lab[\"copy\"], ones, sum(cts.values())))\n    for d in (cells, bits):\n        for k in d:\n            d[k].sort(key=lambda x: x[0])\n\n    rng = np.random.default_rng(SEED)\n\n    def draw_F(M, v):\n        V = np.array([x[1] for x in cells[(M, v)]], float)\n        freq = V / V.sum(1, keepdims=True)\n        idx = rng.integers(0, V.shape[0], size=(N_BOOT, V.shape[0]))\n        return F(rng.multinomial(int(V[0].sum()), freq[idx]).sum(1))\n\n    def draw_P(M, c):\n        o = np.array([x[1] for x in bits[(M, c)]])\n        t = np.array([x[2] for x in bits[(M, c)]])\n        acc1, accn = np.zeros(N_BOOT), np.zeros(N_BOOT)\n        for _ in range(len(o)):\n            pick = rng.integers(0, len(o), size=N_BOOT)\n            acc1 += rng.binomial(t[pick], o[pick] / t[pick])\n            accn += t[pick]\n        return acc1 / accn\n\n    out = {}\n    for M in ORDER_M:\n        mine = [(lab, cts) for lab, cts in zip(labels, counts) if str(lab[\"M\"]) == M and lab[\"part\"] == \"W\"]\n        wt = W.analyse_wait_run([lab for lab, _ in mine], [c for _, c in mine], dt)[\"wait_test\"]\n        Fb = {\"no\": draw_F(M, \"no\"), \"refocus\": draw_F(M, \"refocus\")}\n        Pb = {c: draw_P(M, c) for c in RAMSEY}\n        P = {c: sum(x[1] for x in bits[(M, c)]) / sum(x[2] for x in bits[(M, c)]) for c in RAMSEY}\n        loss = {c: P[c] - P[\"Z\"] for c in RAMSEY if c != \"Z\"}\n        loss_b = {c: Pb[c] - Pb[\"Z\"] for c in RAMSEY if c != \"Z\"}\n        f_no, f_ref = wt[\"F_no\"], wt[\"F_refocus\"]\n        q_ = {\n            \"F_no\": f_no, \"F_no_ci90\": pct(Fb[\"no\"]), \"F_ref\": f_ref, \"F_ref_ci90\": pct(Fb[\"refocus\"]),\n            \"F_per_copy\": wt[\"F_per_copy\"],\n            \"P1\": P, \"P1_ci90\": {c: pct(Pb[c]) for c in RAMSEY},\n            \"shots\": {c: [x[2] for x in bits[(M, c)]] for c in RAMSEY},\n            \"loss\": loss, \"loss_ci90\": {c: pct(v) for c, v in loss_b.items()},\n            \"delta_active\": loss[\"R0\"] - loss[\"R1\"], \"delta_active_ci90\": pct(loss_b[\"R0\"] - loss_b[\"R1\"]),\n            \"d0\": f_no - f_ref * (1 - loss[\"R0\"]), \"d0_ci90\": pct(Fb[\"no\"] - Fb[\"refocus\"] * (1 - loss_b[\"R0\"])),\n            \"d1\": f_no - f_ref * (1 - loss[\"R1\"]), \"d1_ci90\": pct(Fb[\"no\"] - Fb[\"refocus\"] * (1 - loss_b[\"R1\"])),\n            \"state_split_R0_minus_R2\": loss[\"R0\"] - loss[\"R2\"], \"state_split_ci90\": pct(loss_b[\"R0\"] - loss_b[\"R2\"]),\n            \"readout_split_R0_minus_R3\": loss[\"R0\"] - loss[\"R3\"], \"readout_split_ci90\": pct(loss_b[\"R0\"] - loss_b[\"R3\"]),\n            \"echo_active_E0_minus_E1\": loss[\"E0\"] - loss[\"E1\"], \"echo_active_ci90\": pct(loss_b[\"E0\"] - loss_b[\"E1\"]),\n        }\n        lo, hi = q_[\"d1_ci90\"]\n        q_[\"d1_vs_0p15\"] = \"inside\" if (lo > -D1_MARGIN and hi < D1_MARGIN) else (\"outside\" if (lo > D1_MARGIN or hi < -D1_MARGIN) else \"neither\")\n        out[M] = q_\n\n    m = out[\"144\"]\n    reproduced = m[\"d0_ci90\"][0] > REPRODUCED_FLOOR\n    lo, hi = m[\"delta_active_ci90\"]\n    if lo > SUPPORTED:\n        h50 = \"SUPPORTED\"\n    elif hi < -SUPPORTED:\n        h50 = \"OPPOSITE\"\n    elif lo > -BAND and hi < BAND:\n        h50 = \"NOT SUPPORTED\"\n    else:\n        h50 = \"NOT SETTLED\"\n    verdict = f\"{h50}, REPRODUCED\" if reproduced else f\"{h50} (Kickoff 49's gap not present today)\"\n    return {\"verdict\": verdict, \"H50\": h50, \"reproduced\": reproduced, \"per_M\": out}\n\n\ndef synthetic():\n    \"\"\"Counts drawn from stated distributions through the same code: case 1, no loss anywhere (expect NOT SUPPORTED, gap\n    not present); case 2, 144 with loss(R0) 0.33 and loss(R1) 0.13, F_no 0.79, F_ref 0.90 (expect SUPPORTED, REPRODUCED).\"\"\"\n    ideal = W.wait_test_ideal()\n    keys = sorted(ideal)\n    rng = np.random.default_rng(7)\n\n    def w_counts(f):\n        # F = (sum sqrt(p q))^2 with q uniform over the 32 ideal keys: put mass a on them and 1 - a on one other key\n        a = f\n        p = {k: a / 32 for k in keys}\n        p[\"111111\" if \"111111\" not in ideal else \"000001\"] = 1 - a\n        ks = list(p)\n        n = rng.multinomial(5000, [p[k] for k in ks])\n        return {k: int(v) for k, v in zip(ks, n) if v}\n\n    def r_counts(p1):\n        o = int(rng.binomial(5000, p1))\n        return {\"000000\": 5000 - o, \"100000\": o}\n\n    out = []\n    for case, spec in ((1, {\"144\": (1.0, 1.0, {})}), (2, {\"144\": (0.79, 0.90, {\"R0\": 0.33, \"R1\": 0.13, \"R2\": 0.30, \"R3\": 0.25, \"E0\": 0.03, \"E1\": 0.03})})):\n        labels, counts = [], []\n        for M in ORDER_M:\n            fno, fref, losses = spec.get(M, (1.0, 1.0, {}))\n            for cp in (1, 2):\n                for v, f in ((\"no\", fno), (\"refocus\", fref)):\n                    labels.append({\"M\": int(M), \"part\": \"W\", \"variant\": v, \"copy\": cp, \"circuit\": \"W-\" + (\"no\" if v == \"no\" else \"ref\")})\n                    counts.append(w_counts(f))\n                for c in RAMSEY:\n                    labels.append({\"M\": int(M), \"part\": \"R\", \"circuit\": c, \"copy\": cp, \"m_clbit\": 5})\n                    counts.append(r_counts(0.01 + losses.get(c, 0.0)))\n        r = analyse(labels, counts, 4e-9)\n        m = r[\"per_M\"][\"144\"]\n        out.append((case, r[\"verdict\"], round(m[\"d0\"], 3), [round(x, 3) for x in m[\"d0_ci90\"]], round(m[\"delta_active\"], 3), [round(x, 3) for x in m[\"delta_active_ci90\"]]))\n    for o in out:\n        print(\"synthetic case\", *o)\n",
+      "text_sha256": "539c32e715df88f8af19a870364e04e90e947d36b21f2cd046f0da0a5360400b"
+    }
+  }
+}

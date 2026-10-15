@@ -7221,6 +7221,3083 @@
      "archived/analysis/beside/kinds": {}
     }
    }
+  ],
+  "Kickoff 49, the wait test on a second day": [
+   {
+    "file": "ibm_fez/k49-wait-test.json",
+    "fields": {
+     "archived/analysis/verdict": {},
+     "archived/analysis/H48": {},
+     "archived/analysis/informative_chains/[0]": {},
+     "archived/analysis/informative_chains/[1]": {},
+     "archived/analysis/informative_chains/[2]": {},
+     "archived/analysis/informative_chains/[3]": {},
+     "archived/analysis/prediction/143/chain": {},
+     "archived/analysis/prediction/143/M": {},
+     "archived/analysis/prediction/143/T_M_dt": {},
+     "archived/analysis/prediction/143/T_M_us": {},
+     "archived/analysis/prediction/143/dP_R_TM": {},
+     "archived/analysis/prediction/143/dP_R_TM_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/143/F_no": {},
+     "archived/analysis/prediction/143/F_ref": {},
+     "archived/analysis/prediction/143/F_pred": {},
+     "archived/analysis/prediction/143/d_M": {},
+     "archived/analysis/prediction/143/d_M_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/143/informative": {},
+     "archived/analysis/prediction/143/inside_margin": {},
+     "archived/analysis/prediction/143/outside_margin": {},
+     "archived/analysis/prediction/143/gain": {},
+     "archived/analysis/prediction/143/gain_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/143/gain_class": {},
+     "archived/analysis/prediction/144/chain": {},
+     "archived/analysis/prediction/144/M": {},
+     "archived/analysis/prediction/144/T_M_dt": {},
+     "archived/analysis/prediction/144/T_M_us": {},
+     "archived/analysis/prediction/144/dP_R_TM": {},
+     "archived/analysis/prediction/144/dP_R_TM_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/144/F_no": {},
+     "archived/analysis/prediction/144/F_ref": {},
+     "archived/analysis/prediction/144/F_pred": {},
+     "archived/analysis/prediction/144/d_M": {},
+     "archived/analysis/prediction/144/informative": {},
+     "archived/analysis/prediction/144/inside_margin": {},
+     "archived/analysis/prediction/144/outside_margin": {},
+     "archived/analysis/prediction/144/gain": {},
+     "archived/analysis/prediction/144/gain_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/144/gain_class": {},
+     "archived/analysis/prediction/142/chain": {},
+     "archived/analysis/prediction/142/M": {},
+     "archived/analysis/prediction/142/T_M_dt": {},
+     "archived/analysis/prediction/142/T_M_us": {},
+     "archived/analysis/prediction/142/dP_R_TM": {},
+     "archived/analysis/prediction/142/dP_R_TM_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/142/F_no": {},
+     "archived/analysis/prediction/142/F_ref": {},
+     "archived/analysis/prediction/142/F_pred": {},
+     "archived/analysis/prediction/142/d_M": {},
+     "archived/analysis/prediction/142/informative": {},
+     "archived/analysis/prediction/142/inside_margin": {},
+     "archived/analysis/prediction/142/outside_margin": {},
+     "archived/analysis/prediction/142/gain": {},
+     "archived/analysis/prediction/142/gain_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/142/gain_class": {},
+     "archived/analysis/prediction/131/chain": {},
+     "archived/analysis/prediction/131/M": {},
+     "archived/analysis/prediction/131/T_M_dt": {},
+     "archived/analysis/prediction/131/T_M_us": {},
+     "archived/analysis/prediction/131/dP_R_TM": {},
+     "archived/analysis/prediction/131/dP_R_TM_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/131/F_no": {},
+     "archived/analysis/prediction/131/F_ref": {},
+     "archived/analysis/prediction/131/F_pred": {},
+     "archived/analysis/prediction/131/d_M": {},
+     "archived/analysis/prediction/131/d_M_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/131/informative": {},
+     "archived/analysis/prediction/131/inside_margin": {},
+     "archived/analysis/prediction/131/outside_margin": {},
+     "archived/analysis/prediction/131/gain": {},
+     "archived/analysis/prediction/131/gain_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/131/gain_class": {},
+     "archived/analysis/prediction/124/chain": {},
+     "archived/analysis/prediction/124/M": {},
+     "archived/analysis/prediction/124/T_M_dt": {},
+     "archived/analysis/prediction/124/T_M_us": {},
+     "archived/analysis/prediction/124/dP_R_TM": {},
+     "archived/analysis/prediction/124/dP_R_TM_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/124/F_no": {},
+     "archived/analysis/prediction/124/F_ref": {},
+     "archived/analysis/prediction/124/F_pred": {},
+     "archived/analysis/prediction/124/d_M": {},
+     "archived/analysis/prediction/124/d_M_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/124/informative": {},
+     "archived/analysis/prediction/124/inside_margin": {},
+     "archived/analysis/prediction/124/outside_margin": {},
+     "archived/analysis/prediction/124/gain": {},
+     "archived/analysis/prediction/124/gain_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/prediction/124/gain_class": {},
+     "archived/analysis/part_A/143/no/F": {},
+     "archived/analysis/part_A/143/no/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/143/no/class": {},
+     "archived/analysis/part_A/143/no/F_per_copy": {},
+     "archived/analysis/part_A/143/no/copies": {},
+     "archived/analysis/part_A/143/no/shots": {},
+     "archived/analysis/part_A/143/refocus/F": {},
+     "archived/analysis/part_A/143/refocus/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/143/refocus/class": {},
+     "archived/analysis/part_A/143/refocus/F_per_copy": {},
+     "archived/analysis/part_A/143/refocus/copies": {},
+     "archived/analysis/part_A/143/refocus/shots": {},
+     "archived/analysis/part_A/144/no/F": {},
+     "archived/analysis/part_A/144/no/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/144/no/class": {},
+     "archived/analysis/part_A/144/no/F_per_copy": {},
+     "archived/analysis/part_A/144/no/copies": {},
+     "archived/analysis/part_A/144/no/shots": {},
+     "archived/analysis/part_A/144/refocus/F": {},
+     "archived/analysis/part_A/144/refocus/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/144/refocus/class": {},
+     "archived/analysis/part_A/144/refocus/F_per_copy": {},
+     "archived/analysis/part_A/144/refocus/copies": {},
+     "archived/analysis/part_A/144/refocus/shots": {},
+     "archived/analysis/part_A/142/no/F": {},
+     "archived/analysis/part_A/142/no/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/142/no/class": {},
+     "archived/analysis/part_A/142/no/F_per_copy": {},
+     "archived/analysis/part_A/142/no/copies": {},
+     "archived/analysis/part_A/142/no/shots": {},
+     "archived/analysis/part_A/142/refocus/F": {},
+     "archived/analysis/part_A/142/refocus/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/142/refocus/class": {},
+     "archived/analysis/part_A/142/refocus/F_per_copy": {},
+     "archived/analysis/part_A/142/refocus/copies": {},
+     "archived/analysis/part_A/142/refocus/shots": {},
+     "archived/analysis/part_A/131/no/F": {},
+     "archived/analysis/part_A/131/no/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/131/no/class": {},
+     "archived/analysis/part_A/131/no/F_per_copy": {},
+     "archived/analysis/part_A/131/no/copies": {},
+     "archived/analysis/part_A/131/no/shots": {},
+     "archived/analysis/part_A/131/refocus/F": {},
+     "archived/analysis/part_A/131/refocus/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/131/refocus/class": {},
+     "archived/analysis/part_A/131/refocus/F_per_copy": {},
+     "archived/analysis/part_A/131/refocus/copies": {},
+     "archived/analysis/part_A/131/refocus/shots": {},
+     "archived/analysis/part_A/124/no/F": {},
+     "archived/analysis/part_A/124/no/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/124/no/class": {},
+     "archived/analysis/part_A/124/no/F_per_copy": {},
+     "archived/analysis/part_A/124/no/copies": {},
+     "archived/analysis/part_A/124/no/shots": {},
+     "archived/analysis/part_A/124/refocus/F": {},
+     "archived/analysis/part_A/124/refocus/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_A/124/refocus/class": {},
+     "archived/analysis/part_A/124/refocus/F_per_copy": {},
+     "archived/analysis/part_A/124/refocus/copies": {},
+     "archived/analysis/part_A/124/refocus/shots": {},
+     "archived/analysis/part_B/143/group": {},
+     "archived/analysis/part_B/143/ramsey_P1/0": {},
+     "archived/analysis/part_B/143/ramsey_P1/250": {},
+     "archived/analysis/part_B/143/ramsey_P1/500": {},
+     "archived/analysis/part_B/143/ramsey_P1/850": {},
+     "archived/analysis/part_B/143/ramsey_P1/1000": {},
+     "archived/analysis/part_B/143/ramsey_P1/2000": {},
+     "archived/analysis/part_B/143/ramsey_P1/2612": {},
+     "archived/analysis/part_B/143/ramsey_P1/4000": {},
+     "archived/analysis/part_B/143/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_P1/0": {},
+     "archived/analysis/part_B/143/echo_P1/250": {},
+     "archived/analysis/part_B/143/echo_P1/500": {},
+     "archived/analysis/part_B/143/echo_P1/850": {},
+     "archived/analysis/part_B/143/echo_P1/1000": {},
+     "archived/analysis/part_B/143/echo_P1/2000": {},
+     "archived/analysis/part_B/143/echo_P1/2612": {},
+     "archived/analysis/part_B/143/echo_P1/4000": {},
+     "archived/analysis/part_B/143/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/ramsey_loss/0": {},
+     "archived/analysis/part_B/143/ramsey_loss/250": {},
+     "archived/analysis/part_B/143/ramsey_loss/500": {},
+     "archived/analysis/part_B/143/ramsey_loss/850": {},
+     "archived/analysis/part_B/143/ramsey_loss/1000": {},
+     "archived/analysis/part_B/143/ramsey_loss/2000": {},
+     "archived/analysis/part_B/143/ramsey_loss/2612": {},
+     "archived/analysis/part_B/143/ramsey_loss/4000": {},
+     "archived/analysis/part_B/143/echo_loss/0": {},
+     "archived/analysis/part_B/143/echo_loss/250": {},
+     "archived/analysis/part_B/143/echo_loss/500": {},
+     "archived/analysis/part_B/143/echo_loss/850": {},
+     "archived/analysis/part_B/143/echo_loss/1000": {},
+     "archived/analysis/part_B/143/echo_loss/2000": {},
+     "archived/analysis/part_B/143/echo_loss/2612": {},
+     "archived/analysis/part_B/143/echo_loss/4000": {},
+     "archived/analysis/part_B/143/r": {},
+     "archived/analysis/part_B/143/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/e": {},
+     "archived/analysis/part_B/143/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/143/kind_of_loss": {},
+     "archived/analysis/part_B/143/ramsey_fit/a": {},
+     "archived/analysis/part_B/143/ramsey_fit/f_MHz": {},
+     "archived/analysis/part_B/143/ramsey_fit/a_err": {},
+     "archived/analysis/part_B/143/ramsey_fit/f_err": {},
+     "archived/analysis/part_B/143/ramsey_fit/sse": {},
+     "archived/analysis/part_B/143/oscillation_pairs": {},
+     "archived/analysis/part_B/131/group": {},
+     "archived/analysis/part_B/131/ramsey_P1/0": {},
+     "archived/analysis/part_B/131/ramsey_P1/250": {},
+     "archived/analysis/part_B/131/ramsey_P1/500": {},
+     "archived/analysis/part_B/131/ramsey_P1/850": {},
+     "archived/analysis/part_B/131/ramsey_P1/1000": {},
+     "archived/analysis/part_B/131/ramsey_P1/2000": {},
+     "archived/analysis/part_B/131/ramsey_P1/2612": {},
+     "archived/analysis/part_B/131/ramsey_P1/4000": {},
+     "archived/analysis/part_B/131/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_P1/0": {},
+     "archived/analysis/part_B/131/echo_P1/250": {},
+     "archived/analysis/part_B/131/echo_P1/500": {},
+     "archived/analysis/part_B/131/echo_P1/850": {},
+     "archived/analysis/part_B/131/echo_P1/1000": {},
+     "archived/analysis/part_B/131/echo_P1/2000": {},
+     "archived/analysis/part_B/131/echo_P1/2612": {},
+     "archived/analysis/part_B/131/echo_P1/4000": {},
+     "archived/analysis/part_B/131/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/ramsey_loss/0": {},
+     "archived/analysis/part_B/131/ramsey_loss/250": {},
+     "archived/analysis/part_B/131/ramsey_loss/500": {},
+     "archived/analysis/part_B/131/ramsey_loss/850": {},
+     "archived/analysis/part_B/131/ramsey_loss/1000": {},
+     "archived/analysis/part_B/131/ramsey_loss/2000": {},
+     "archived/analysis/part_B/131/ramsey_loss/2612": {},
+     "archived/analysis/part_B/131/ramsey_loss/4000": {},
+     "archived/analysis/part_B/131/echo_loss/0": {},
+     "archived/analysis/part_B/131/echo_loss/250": {},
+     "archived/analysis/part_B/131/echo_loss/500": {},
+     "archived/analysis/part_B/131/echo_loss/850": {},
+     "archived/analysis/part_B/131/echo_loss/1000": {},
+     "archived/analysis/part_B/131/echo_loss/2000": {},
+     "archived/analysis/part_B/131/echo_loss/2612": {},
+     "archived/analysis/part_B/131/echo_loss/4000": {},
+     "archived/analysis/part_B/131/r": {},
+     "archived/analysis/part_B/131/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/e": {},
+     "archived/analysis/part_B/131/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/131/kind_of_loss": {},
+     "archived/analysis/part_B/131/oscillation_pairs": {},
+     "archived/analysis/part_B/124/group": {},
+     "archived/analysis/part_B/124/ramsey_P1/0": {},
+     "archived/analysis/part_B/124/ramsey_P1/250": {},
+     "archived/analysis/part_B/124/ramsey_P1/500": {},
+     "archived/analysis/part_B/124/ramsey_P1/850": {},
+     "archived/analysis/part_B/124/ramsey_P1/1000": {},
+     "archived/analysis/part_B/124/ramsey_P1/2000": {},
+     "archived/analysis/part_B/124/ramsey_P1/2612": {},
+     "archived/analysis/part_B/124/ramsey_P1/4000": {},
+     "archived/analysis/part_B/124/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_P1/0": {},
+     "archived/analysis/part_B/124/echo_P1/250": {},
+     "archived/analysis/part_B/124/echo_P1/500": {},
+     "archived/analysis/part_B/124/echo_P1/850": {},
+     "archived/analysis/part_B/124/echo_P1/1000": {},
+     "archived/analysis/part_B/124/echo_P1/2000": {},
+     "archived/analysis/part_B/124/echo_P1/2612": {},
+     "archived/analysis/part_B/124/echo_P1/4000": {},
+     "archived/analysis/part_B/124/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ramsey_loss/0": {},
+     "archived/analysis/part_B/124/ramsey_loss/250": {},
+     "archived/analysis/part_B/124/ramsey_loss/500": {},
+     "archived/analysis/part_B/124/ramsey_loss/850": {},
+     "archived/analysis/part_B/124/ramsey_loss/1000": {},
+     "archived/analysis/part_B/124/ramsey_loss/2000": {},
+     "archived/analysis/part_B/124/ramsey_loss/2612": {},
+     "archived/analysis/part_B/124/ramsey_loss/4000": {},
+     "archived/analysis/part_B/124/echo_loss/0": {},
+     "archived/analysis/part_B/124/echo_loss/250": {},
+     "archived/analysis/part_B/124/echo_loss/500": {},
+     "archived/analysis/part_B/124/echo_loss/850": {},
+     "archived/analysis/part_B/124/echo_loss/1000": {},
+     "archived/analysis/part_B/124/echo_loss/2000": {},
+     "archived/analysis/part_B/124/echo_loss/2612": {},
+     "archived/analysis/part_B/124/echo_loss/4000": {},
+     "archived/analysis/part_B/124/r": {},
+     "archived/analysis/part_B/124/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/e": {},
+     "archived/analysis/part_B/124/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/r_minus_ke_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/ke_minus_jr_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/124/kind_of_loss": {},
+     "archived/analysis/part_B/124/oscillation_pairs": {},
+     "archived/analysis/part_B/142/group": {},
+     "archived/analysis/part_B/142/ramsey_P1/0": {},
+     "archived/analysis/part_B/142/ramsey_P1/250": {},
+     "archived/analysis/part_B/142/ramsey_P1/500": {},
+     "archived/analysis/part_B/142/ramsey_P1/850": {},
+     "archived/analysis/part_B/142/ramsey_P1/1000": {},
+     "archived/analysis/part_B/142/ramsey_P1/2000": {},
+     "archived/analysis/part_B/142/ramsey_P1/2612": {},
+     "archived/analysis/part_B/142/ramsey_P1/4000": {},
+     "archived/analysis/part_B/142/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_P1/0": {},
+     "archived/analysis/part_B/142/echo_P1/250": {},
+     "archived/analysis/part_B/142/echo_P1/500": {},
+     "archived/analysis/part_B/142/echo_P1/850": {},
+     "archived/analysis/part_B/142/echo_P1/1000": {},
+     "archived/analysis/part_B/142/echo_P1/2000": {},
+     "archived/analysis/part_B/142/echo_P1/2612": {},
+     "archived/analysis/part_B/142/echo_P1/4000": {},
+     "archived/analysis/part_B/142/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/ramsey_loss/0": {},
+     "archived/analysis/part_B/142/ramsey_loss/250": {},
+     "archived/analysis/part_B/142/ramsey_loss/500": {},
+     "archived/analysis/part_B/142/ramsey_loss/850": {},
+     "archived/analysis/part_B/142/ramsey_loss/1000": {},
+     "archived/analysis/part_B/142/ramsey_loss/2000": {},
+     "archived/analysis/part_B/142/ramsey_loss/2612": {},
+     "archived/analysis/part_B/142/ramsey_loss/4000": {},
+     "archived/analysis/part_B/142/echo_loss/0": {},
+     "archived/analysis/part_B/142/echo_loss/250": {},
+     "archived/analysis/part_B/142/echo_loss/500": {},
+     "archived/analysis/part_B/142/echo_loss/850": {},
+     "archived/analysis/part_B/142/echo_loss/1000": {},
+     "archived/analysis/part_B/142/echo_loss/2000": {},
+     "archived/analysis/part_B/142/echo_loss/2612": {},
+     "archived/analysis/part_B/142/echo_loss/4000": {},
+     "archived/analysis/part_B/142/r": {},
+     "archived/analysis/part_B/142/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/e": {},
+     "archived/analysis/part_B/142/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/r_minus_ke_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/142/kind_of_loss": {},
+     "archived/analysis/part_B/142/oscillation_pairs": {},
+     "archived/analysis/part_B/144/group": {},
+     "archived/analysis/part_B/144/ramsey_P1/0": {},
+     "archived/analysis/part_B/144/ramsey_P1/250": {},
+     "archived/analysis/part_B/144/ramsey_P1/500": {},
+     "archived/analysis/part_B/144/ramsey_P1/850": {},
+     "archived/analysis/part_B/144/ramsey_P1/1000": {},
+     "archived/analysis/part_B/144/ramsey_P1/2000": {},
+     "archived/analysis/part_B/144/ramsey_P1/2612": {},
+     "archived/analysis/part_B/144/ramsey_P1/4000": {},
+     "archived/analysis/part_B/144/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_P1/0": {},
+     "archived/analysis/part_B/144/echo_P1/250": {},
+     "archived/analysis/part_B/144/echo_P1/500": {},
+     "archived/analysis/part_B/144/echo_P1/850": {},
+     "archived/analysis/part_B/144/echo_P1/1000": {},
+     "archived/analysis/part_B/144/echo_P1/2000": {},
+     "archived/analysis/part_B/144/echo_P1/2612": {},
+     "archived/analysis/part_B/144/echo_P1/4000": {},
+     "archived/analysis/part_B/144/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/ramsey_loss/0": {},
+     "archived/analysis/part_B/144/ramsey_loss/250": {},
+     "archived/analysis/part_B/144/ramsey_loss/500": {},
+     "archived/analysis/part_B/144/ramsey_loss/850": {},
+     "archived/analysis/part_B/144/ramsey_loss/1000": {},
+     "archived/analysis/part_B/144/ramsey_loss/2000": {},
+     "archived/analysis/part_B/144/ramsey_loss/2612": {},
+     "archived/analysis/part_B/144/ramsey_loss/4000": {},
+     "archived/analysis/part_B/144/echo_loss/0": {},
+     "archived/analysis/part_B/144/echo_loss/250": {},
+     "archived/analysis/part_B/144/echo_loss/500": {},
+     "archived/analysis/part_B/144/echo_loss/850": {},
+     "archived/analysis/part_B/144/echo_loss/1000": {},
+     "archived/analysis/part_B/144/echo_loss/2000": {},
+     "archived/analysis/part_B/144/echo_loss/2612": {},
+     "archived/analysis/part_B/144/echo_loss/4000": {},
+     "archived/analysis/part_B/144/r": {},
+     "archived/analysis/part_B/144/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/e": {},
+     "archived/analysis/part_B/144/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/144/kind_of_loss": {},
+     "archived/analysis/part_B/144/oscillation_pairs": {},
+     "archived/analysis/part_B/125/group": {},
+     "archived/analysis/part_B/125/ramsey_P1/0": {},
+     "archived/analysis/part_B/125/ramsey_P1/250": {},
+     "archived/analysis/part_B/125/ramsey_P1/500": {},
+     "archived/analysis/part_B/125/ramsey_P1/850": {},
+     "archived/analysis/part_B/125/ramsey_P1/1000": {},
+     "archived/analysis/part_B/125/ramsey_P1/2000": {},
+     "archived/analysis/part_B/125/ramsey_P1/2612": {},
+     "archived/analysis/part_B/125/ramsey_P1/4000": {},
+     "archived/analysis/part_B/125/ramsey_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_P1/0": {},
+     "archived/analysis/part_B/125/echo_P1/250": {},
+     "archived/analysis/part_B/125/echo_P1/500": {},
+     "archived/analysis/part_B/125/echo_P1/850": {},
+     "archived/analysis/part_B/125/echo_P1/1000": {},
+     "archived/analysis/part_B/125/echo_P1/2000": {},
+     "archived/analysis/part_B/125/echo_P1/2612": {},
+     "archived/analysis/part_B/125/echo_P1/4000": {},
+     "archived/analysis/part_B/125/echo_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/250": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/500": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/850": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/1000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/2000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/2612": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/echo_ci90/4000": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/ramsey_loss/0": {},
+     "archived/analysis/part_B/125/ramsey_loss/250": {},
+     "archived/analysis/part_B/125/ramsey_loss/500": {},
+     "archived/analysis/part_B/125/ramsey_loss/850": {},
+     "archived/analysis/part_B/125/ramsey_loss/1000": {},
+     "archived/analysis/part_B/125/ramsey_loss/2000": {},
+     "archived/analysis/part_B/125/ramsey_loss/2612": {},
+     "archived/analysis/part_B/125/ramsey_loss/4000": {},
+     "archived/analysis/part_B/125/echo_loss/0": {},
+     "archived/analysis/part_B/125/echo_loss/250": {},
+     "archived/analysis/part_B/125/echo_loss/500": {},
+     "archived/analysis/part_B/125/echo_loss/850": {},
+     "archived/analysis/part_B/125/echo_loss/1000": {},
+     "archived/analysis/part_B/125/echo_loss/2000": {},
+     "archived/analysis/part_B/125/echo_loss/2612": {},
+     "archived/analysis/part_B/125/echo_loss/4000": {},
+     "archived/analysis/part_B/125/r": {},
+     "archived/analysis/part_B/125/r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/e": {},
+     "archived/analysis/part_B/125/e_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/part_B/125/kind_of_loss": {},
+     "archived/analysis/part_B/125/oscillation_pairs": {},
+     "archived/analysis/waits_dt": {},
+     "archived/analysis/beside/q143_kind_of_loss_3p4us": {},
+     "archived/analysis/beside/q143_r_3p4": {},
+     "archived/analysis/beside/offset_still_there": {},
+     "archived/analysis/beside/oscillation_143_8_or_TM_to_16us": {},
+     "archived/analysis/beside/kinds/143": {},
+     "archived/analysis/beside/kinds/131": {},
+     "archived/analysis/beside/kinds/124": {},
+     "archived/analysis/beside/kinds/142": {},
+     "archived/analysis/beside/kinds/144": {},
+     "archived/analysis/beside/kinds/125": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/143": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/131": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/124": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/142": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/144": {},
+     "archived/analysis/beside/kinds_k47_rule_3p4us/125": {},
+     "archived/analysis/beside/kinds_k48/143": {},
+     "archived/analysis/beside/kinds_k48/131": {},
+     "archived/analysis/beside/kinds_k48/124": {},
+     "archived/analysis/beside/kinds_k48/142": {},
+     "archived/analysis/beside/kinds_k48/144": {},
+     "archived/analysis/beside/kinds_k48/125": {},
+     "archived/analysis/beside/q143_r_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/q143_r_k48": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/143": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/131": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/124": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/142": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/144": {},
+     "archived/analysis/beside/ramsey_fits_k48_kHz/125": {},
+     "archived/analysis/beside/d_M_beside_k48/143/d_M_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/143/d_M_ci90_k49": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d_M_beside_k48/143/d_M_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/143/d_M_ci90_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/143/dP_R_TM_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/143/dP_R_TM_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/143/informative_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/143/informative_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/144/d_M_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/144/d_M_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/144/d_M_ci90_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/144/dP_R_TM_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/144/dP_R_TM_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/144/informative_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/144/informative_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/142/d_M_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/142/d_M_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/142/d_M_ci90_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/142/dP_R_TM_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/142/dP_R_TM_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/142/informative_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/142/informative_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/131/d_M_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/131/d_M_ci90_k49": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d_M_beside_k48/131/d_M_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/131/d_M_ci90_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/131/dP_R_TM_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/131/dP_R_TM_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/131/informative_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/131/informative_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/124/d_M_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/124/d_M_ci90_k49": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d_M_beside_k48/124/d_M_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/124/d_M_ci90_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/124/dP_R_TM_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/124/dP_R_TM_k48": {},
+     "archived/analysis/beside/d_M_beside_k48/124/informative_k49": {},
+     "archived/analysis/beside/d_M_beside_k48/124/informative_k48": {},
+     "archived/analysis/beside/calibration_stamps/at_build": {},
+     "archived/analysis/beside/calibration_stamps/at_submission": {},
+     "archived/analysis/beside/calibration_stamps/after_fetch": {},
+     "archived/analysis/beside/calibration_stamps/k48": {},
+     "archived/analysis/beside/days_since_k48_stamp/at_build": {},
+     "archived/analysis/beside/days_since_k48_stamp/at_submission": {},
+     "archived/analysis/beside/days_since_k48_stamp/after_fetch": {}
+    }
+   }
+  ],
+  "Kickoff 50, the neighbour test": [
+   {
+    "file": "ibm_fez/k50-neighbour-test.json",
+    "fields": {
+     "archived/analysis/verdict": {},
+     "archived/analysis/H50": {},
+     "archived/analysis/reproduced": {},
+     "archived/analysis/per_M/144/F_no": {},
+     "archived/analysis/per_M/144/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_ref": {},
+     "archived/analysis/per_M/144/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_per_copy/no": {},
+     "archived/analysis/per_M/144/F_per_copy/refocus": {},
+     "archived/analysis/per_M/144/P1/Z": {},
+     "archived/analysis/per_M/144/P1/R0": {},
+     "archived/analysis/per_M/144/P1/R1": {},
+     "archived/analysis/per_M/144/P1/R2": {},
+     "archived/analysis/per_M/144/P1/R3": {},
+     "archived/analysis/per_M/144/P1/E0": {},
+     "archived/analysis/per_M/144/P1/E1": {},
+     "archived/analysis/per_M/144/P1_ci90/Z": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/R0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/R1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/R2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/R3": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/E0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_ci90/E1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/shots/Z": {},
+     "archived/analysis/per_M/144/shots/R0": {},
+     "archived/analysis/per_M/144/shots/R1": {},
+     "archived/analysis/per_M/144/shots/R2": {},
+     "archived/analysis/per_M/144/shots/R3": {},
+     "archived/analysis/per_M/144/shots/E0": {},
+     "archived/analysis/per_M/144/shots/E1": {},
+     "archived/analysis/per_M/144/loss/R0": {},
+     "archived/analysis/per_M/144/loss/R1": {},
+     "archived/analysis/per_M/144/loss/R2": {},
+     "archived/analysis/per_M/144/loss/R3": {},
+     "archived/analysis/per_M/144/loss/E0": {},
+     "archived/analysis/per_M/144/loss/E1": {},
+     "archived/analysis/per_M/144/loss_ci90/R0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R3": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/E0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/E1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/delta_active": {},
+     "archived/analysis/per_M/144/delta_active_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0": {},
+     "archived/analysis/per_M/144/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1": {},
+     "archived/analysis/per_M/144/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/state_split_R0_minus_R2": {},
+     "archived/analysis/per_M/144/state_split_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/readout_split_R0_minus_R3": {},
+     "archived/analysis/per_M/144/readout_split_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/echo_active_E0_minus_E1": {},
+     "archived/analysis/per_M/144/echo_active_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_vs_0p15": {},
+     "archived/analysis/per_M/143/F_no": {},
+     "archived/analysis/per_M/143/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_ref": {},
+     "archived/analysis/per_M/143/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_per_copy/no": {},
+     "archived/analysis/per_M/143/F_per_copy/refocus": {},
+     "archived/analysis/per_M/143/P1/Z": {},
+     "archived/analysis/per_M/143/P1/R0": {},
+     "archived/analysis/per_M/143/P1/R1": {},
+     "archived/analysis/per_M/143/P1/R2": {},
+     "archived/analysis/per_M/143/P1/R3": {},
+     "archived/analysis/per_M/143/P1/E0": {},
+     "archived/analysis/per_M/143/P1/E1": {},
+     "archived/analysis/per_M/143/P1_ci90/Z": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/R0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/R1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/R2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/R3": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/E0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_ci90/E1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/shots/Z": {},
+     "archived/analysis/per_M/143/shots/R0": {},
+     "archived/analysis/per_M/143/shots/R1": {},
+     "archived/analysis/per_M/143/shots/R2": {},
+     "archived/analysis/per_M/143/shots/R3": {},
+     "archived/analysis/per_M/143/shots/E0": {},
+     "archived/analysis/per_M/143/shots/E1": {},
+     "archived/analysis/per_M/143/loss/R0": {},
+     "archived/analysis/per_M/143/loss/R1": {},
+     "archived/analysis/per_M/143/loss/R2": {},
+     "archived/analysis/per_M/143/loss/R3": {},
+     "archived/analysis/per_M/143/loss/E0": {},
+     "archived/analysis/per_M/143/loss/E1": {},
+     "archived/analysis/per_M/143/loss_ci90/R0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R2": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R3": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/E0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/E1": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/delta_active": {},
+     "archived/analysis/per_M/143/delta_active_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0": {},
+     "archived/analysis/per_M/143/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1": {},
+     "archived/analysis/per_M/143/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/state_split_R0_minus_R2": {},
+     "archived/analysis/per_M/143/state_split_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/readout_split_R0_minus_R3": {},
+     "archived/analysis/per_M/143/readout_split_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/echo_active_E0_minus_E1": {},
+     "archived/analysis/per_M/143/echo_active_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_vs_0p15": {},
+     "archived/analysis/beside/delta_active_143": {},
+     "archived/analysis/beside/delta_active_143_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d1/144/[0]": {},
+     "archived/analysis/beside/d1/144/[1]": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d1/144/[2]": {},
+     "archived/analysis/beside/d1/143/[0]": {},
+     "archived/analysis/beside/d1/143/[1]": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/d1/143/[2]": {},
+     "archived/analysis/beside/calibration_stamps/at_build": {},
+     "archived/analysis/beside/calibration_stamps/at_submission": {},
+     "archived/analysis/beside/calibration_stamps/after_fetch": {},
+     "archived/analysis/beside/calibration_stamps/k49": {},
+     "archived/analysis/beside/hours_since_k49_stamp/at_build": {},
+     "archived/analysis/beside/hours_since_k49_stamp/at_submission": {},
+     "archived/analysis/beside/hours_since_k49_stamp/after_fetch": {}
+    }
+   }
+  ],
+  "Kickoff 51, a known offset": [
+   {
+    "file": "ibm_fez/k51-known-offset.json",
+    "fields": {
+     "archived/analysis/verdict": {},
+     "archived/analysis/per_M/144/F_no/-90": {},
+     "archived/analysis/per_M/144/F_no/0": {},
+     "archived/analysis/per_M/144/F_no/90": {},
+     "archived/analysis/per_M/144/F_no_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_ref": {},
+     "archived/analysis/per_M/144/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_Z": {},
+     "archived/analysis/per_M/144/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss/R0|-90": {},
+     "archived/analysis/per_M/144/loss/R0|+0": {},
+     "archived/analysis/per_M/144/loss/R0|+90": {},
+     "archived/analysis/per_M/144/loss/R1|-90": {},
+     "archived/analysis/per_M/144/loss/R1|+0": {},
+     "archived/analysis/per_M/144/loss/R1|+90": {},
+     "archived/analysis/per_M/144/loss/R2|-90": {},
+     "archived/analysis/per_M/144/loss/R2|+0": {},
+     "archived/analysis/per_M/144/loss/R2|+90": {},
+     "archived/analysis/per_M/144/loss_ci90/R0|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R2|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R2|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R2|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0/-90": {},
+     "archived/analysis/per_M/144/d0/0": {},
+     "archived/analysis/per_M/144/d0/90": {},
+     "archived/analysis/per_M/144/d0_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/A": {},
+     "archived/analysis/per_M/144/A_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/mean_abs_d0": {},
+     "archived/analysis/per_M/144/d1/-90": {},
+     "archived/analysis/per_M/144/d1/0": {},
+     "archived/analysis/per_M/144/d1/90": {},
+     "archived/analysis/per_M/144/d1_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/A1": {},
+     "archived/analysis/per_M/144/A1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/mean_abs_d1": {},
+     "archived/analysis/per_M/144/d2/-90": {},
+     "archived/analysis/per_M/144/d2/0": {},
+     "archived/analysis/per_M/144/d2/90": {},
+     "archived/analysis/per_M/144/d2_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d2_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/A2": {},
+     "archived/analysis/per_M/144/A2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/mean_abs_d2": {},
+     "archived/analysis/per_M/144/fit_R0/theta_deg": {},
+     "archived/analysis/per_M/144/fit_R0/a": {},
+     "archived/analysis/per_M/144/fit_R0/b": {},
+     "archived/analysis/per_M/144/fit_R0/label": {},
+     "archived/analysis/per_M/144/fit_R2/theta_deg": {},
+     "archived/analysis/per_M/144/fit_R2/a": {},
+     "archived/analysis/per_M/144/fit_R2/b": {},
+     "archived/analysis/per_M/144/fit_R2/label": {},
+     "archived/analysis/per_M/144/R1_tracks_better_than_R0": {},
+     "archived/analysis/per_M/144/A_outside_0p05": {},
+     "archived/analysis/per_M/144/A_inside_0p03": {},
+     "archived/analysis/per_M/143/F_no/-90": {},
+     "archived/analysis/per_M/143/F_no/0": {},
+     "archived/analysis/per_M/143/F_no/90": {},
+     "archived/analysis/per_M/143/F_no_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_ref": {},
+     "archived/analysis/per_M/143/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_Z": {},
+     "archived/analysis/per_M/143/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss/R0|-90": {},
+     "archived/analysis/per_M/143/loss/R0|+0": {},
+     "archived/analysis/per_M/143/loss/R0|+90": {},
+     "archived/analysis/per_M/143/loss/R1|-90": {},
+     "archived/analysis/per_M/143/loss/R1|+0": {},
+     "archived/analysis/per_M/143/loss/R1|+90": {},
+     "archived/analysis/per_M/143/loss/R2|-90": {},
+     "archived/analysis/per_M/143/loss/R2|+0": {},
+     "archived/analysis/per_M/143/loss/R2|+90": {},
+     "archived/analysis/per_M/143/loss_ci90/R0|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R2|-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R2|+0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R2|+90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0/-90": {},
+     "archived/analysis/per_M/143/d0/0": {},
+     "archived/analysis/per_M/143/d0/90": {},
+     "archived/analysis/per_M/143/d0_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/A": {},
+     "archived/analysis/per_M/143/A_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/mean_abs_d0": {},
+     "archived/analysis/per_M/143/d1/-90": {},
+     "archived/analysis/per_M/143/d1/0": {},
+     "archived/analysis/per_M/143/d1/90": {},
+     "archived/analysis/per_M/143/d1_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/A1": {},
+     "archived/analysis/per_M/143/A1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/mean_abs_d1": {},
+     "archived/analysis/per_M/143/d2/-90": {},
+     "archived/analysis/per_M/143/d2/0": {},
+     "archived/analysis/per_M/143/d2/90": {},
+     "archived/analysis/per_M/143/d2_ci90/-90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d2_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d2_ci90/90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/A2": {},
+     "archived/analysis/per_M/143/A2_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/mean_abs_d2": {},
+     "archived/analysis/per_M/143/fit_R0/theta_deg": {},
+     "archived/analysis/per_M/143/fit_R0/a": {},
+     "archived/analysis/per_M/143/fit_R0/b": {},
+     "archived/analysis/per_M/143/fit_R0/label": {},
+     "archived/analysis/per_M/143/fit_R2/theta_deg": {},
+     "archived/analysis/per_M/143/fit_R2/a": {},
+     "archived/analysis/per_M/143/fit_R2/b": {},
+     "archived/analysis/per_M/143/fit_R2/label": {},
+     "archived/analysis/per_M/143/R1_tracks_better_than_R0": {},
+     "archived/analysis/per_M/143/A_outside_0p05": {},
+     "archived/analysis/per_M/143/A_inside_0p03": {},
+     "archived/analysis/beside/d_at_0_k51/144": {},
+     "archived/analysis/beside/d_at_0_k51/143": {},
+     "archived/analysis/beside/calibration_stamps/at_build": {},
+     "archived/analysis/beside/calibration_stamps/at_submission": {},
+     "archived/analysis/beside/calibration_stamps/after_fetch": {},
+     "archived/analysis/beside/calibration_stamps/k50": {},
+     "archived/analysis/beside/hours_since_k50_stamp/at_build": {},
+     "archived/analysis/beside/hours_since_k50_stamp/at_submission": {},
+     "archived/analysis/beside/hours_since_k50_stamp/after_fetch": {}
+    }
+   }
+  ],
+  "Kickoff 52, the phase sweep": [
+   {
+    "file": "ibm_fez/k52-phase-sweep.json",
+    "fields": {
+     "archived/analysis/H52a": {},
+     "archived/analysis/H52b": {},
+     "archived/analysis/per_M/143/verdict_name": {},
+     "archived/analysis/per_M/143/verdict": {},
+     "archived/analysis/per_M/143/Delta_W_minus_R0/deg": {},
+     "archived/analysis/per_M/143/W_minus_R1/deg": {},
+     "archived/analysis/per_M/143/R1_minus_R0/deg": {},
+     "archived/analysis/per_M/143/fits/W/theta_deg": {},
+     "archived/analysis/per_M/143/fits/W/c": {},
+     "archived/analysis/per_M/143/fits/W/b": {},
+     "archived/analysis/per_M/143/fits/W/s": {},
+     "archived/analysis/per_M/143/fits/W/amplitude": {},
+     "archived/analysis/per_M/143/fits/W/residuals": {},
+     "archived/analysis/per_M/143/fits/W/y": {},
+     "archived/analysis/per_M/143/fits/W/label": {},
+     "archived/analysis/per_M/143/fits/R0/theta_deg": {},
+     "archived/analysis/per_M/143/fits/R0/c": {},
+     "archived/analysis/per_M/143/fits/R0/b": {},
+     "archived/analysis/per_M/143/fits/R0/s": {},
+     "archived/analysis/per_M/143/fits/R0/amplitude": {},
+     "archived/analysis/per_M/143/fits/R0/residuals": {},
+     "archived/analysis/per_M/143/fits/R0/y": {},
+     "archived/analysis/per_M/143/fits/R0/label": {},
+     "archived/analysis/per_M/143/fits/R1/theta_deg": {},
+     "archived/analysis/per_M/143/fits/R1/c": {},
+     "archived/analysis/per_M/143/fits/R1/b": {},
+     "archived/analysis/per_M/143/fits/R1/s": {},
+     "archived/analysis/per_M/143/fits/R1/amplitude": {},
+     "archived/analysis/per_M/143/fits/R1/residuals": {},
+     "archived/analysis/per_M/143/fits/R1/y": {},
+     "archived/analysis/per_M/143/fits/R1/label": {},
+     "archived/analysis/per_M/143/R1_closer_than_R0": {},
+     "archived/analysis/per_M/143/F_no/0": {},
+     "archived/analysis/per_M/143/F_no/60": {},
+     "archived/analysis/per_M/143/F_no/120": {},
+     "archived/analysis/per_M/143/F_no/180": {},
+     "archived/analysis/per_M/143/F_no/240": {},
+     "archived/analysis/per_M/143/F_no/300": {},
+     "archived/analysis/per_M/143/F_no_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_no_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/F_ref": {},
+     "archived/analysis/per_M/143/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/P1_Z": {},
+     "archived/analysis/per_M/143/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss/R0|0": {},
+     "archived/analysis/per_M/143/loss/R0|60": {},
+     "archived/analysis/per_M/143/loss/R0|120": {},
+     "archived/analysis/per_M/143/loss/R0|180": {},
+     "archived/analysis/per_M/143/loss/R0|240": {},
+     "archived/analysis/per_M/143/loss/R0|300": {},
+     "archived/analysis/per_M/143/loss/R1|0": {},
+     "archived/analysis/per_M/143/loss/R1|60": {},
+     "archived/analysis/per_M/143/loss/R1|120": {},
+     "archived/analysis/per_M/143/loss/R1|180": {},
+     "archived/analysis/per_M/143/loss/R1|240": {},
+     "archived/analysis/per_M/143/loss/R1|300": {},
+     "archived/analysis/per_M/143/loss_ci90/R0|0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R0|300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/loss_ci90/R1|300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0/0": {},
+     "archived/analysis/per_M/143/d0/60": {},
+     "archived/analysis/per_M/143/d0/120": {},
+     "archived/analysis/per_M/143/d0/180": {},
+     "archived/analysis/per_M/143/d0/240": {},
+     "archived/analysis/per_M/143/d0/300": {},
+     "archived/analysis/per_M/143/d0_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d0_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1/0": {},
+     "archived/analysis/per_M/143/d1/60": {},
+     "archived/analysis/per_M/143/d1/120": {},
+     "archived/analysis/per_M/143/d1/180": {},
+     "archived/analysis/per_M/143/d1/240": {},
+     "archived/analysis/per_M/143/d1/300": {},
+     "archived/analysis/per_M/143/d1_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/143/d1_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/verdict_name": {},
+     "archived/analysis/per_M/144/verdict": {},
+     "archived/analysis/per_M/144/Delta_W_minus_R0/deg": {},
+     "archived/analysis/per_M/144/W_minus_R1/deg": {},
+     "archived/analysis/per_M/144/R1_minus_R0/deg": {},
+     "archived/analysis/per_M/144/fits/W/theta_deg": {},
+     "archived/analysis/per_M/144/fits/W/c": {},
+     "archived/analysis/per_M/144/fits/W/b": {},
+     "archived/analysis/per_M/144/fits/W/s": {},
+     "archived/analysis/per_M/144/fits/W/amplitude": {},
+     "archived/analysis/per_M/144/fits/W/residuals": {},
+     "archived/analysis/per_M/144/fits/W/y": {},
+     "archived/analysis/per_M/144/fits/W/label": {},
+     "archived/analysis/per_M/144/fits/R0/theta_deg": {},
+     "archived/analysis/per_M/144/fits/R0/c": {},
+     "archived/analysis/per_M/144/fits/R0/b": {},
+     "archived/analysis/per_M/144/fits/R0/s": {},
+     "archived/analysis/per_M/144/fits/R0/amplitude": {},
+     "archived/analysis/per_M/144/fits/R0/residuals": {},
+     "archived/analysis/per_M/144/fits/R0/y": {},
+     "archived/analysis/per_M/144/fits/R0/label": {},
+     "archived/analysis/per_M/144/fits/R1/theta_deg": {},
+     "archived/analysis/per_M/144/fits/R1/c": {},
+     "archived/analysis/per_M/144/fits/R1/b": {},
+     "archived/analysis/per_M/144/fits/R1/s": {},
+     "archived/analysis/per_M/144/fits/R1/amplitude": {},
+     "archived/analysis/per_M/144/fits/R1/residuals": {},
+     "archived/analysis/per_M/144/fits/R1/y": {},
+     "archived/analysis/per_M/144/fits/R1/label": {},
+     "archived/analysis/per_M/144/R1_closer_than_R0": {},
+     "archived/analysis/per_M/144/F_no/0": {},
+     "archived/analysis/per_M/144/F_no/60": {},
+     "archived/analysis/per_M/144/F_no/120": {},
+     "archived/analysis/per_M/144/F_no/180": {},
+     "archived/analysis/per_M/144/F_no/240": {},
+     "archived/analysis/per_M/144/F_no/300": {},
+     "archived/analysis/per_M/144/F_no_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_no_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/F_ref": {},
+     "archived/analysis/per_M/144/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/P1_Z": {},
+     "archived/analysis/per_M/144/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss/R0|0": {},
+     "archived/analysis/per_M/144/loss/R0|60": {},
+     "archived/analysis/per_M/144/loss/R0|120": {},
+     "archived/analysis/per_M/144/loss/R0|180": {},
+     "archived/analysis/per_M/144/loss/R0|240": {},
+     "archived/analysis/per_M/144/loss/R0|300": {},
+     "archived/analysis/per_M/144/loss/R1|0": {},
+     "archived/analysis/per_M/144/loss/R1|60": {},
+     "archived/analysis/per_M/144/loss/R1|120": {},
+     "archived/analysis/per_M/144/loss/R1|180": {},
+     "archived/analysis/per_M/144/loss/R1|240": {},
+     "archived/analysis/per_M/144/loss/R1|300": {},
+     "archived/analysis/per_M/144/loss_ci90/R0|0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R0|300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/loss_ci90/R1|300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0/0": {},
+     "archived/analysis/per_M/144/d0/60": {},
+     "archived/analysis/per_M/144/d0/120": {},
+     "archived/analysis/per_M/144/d0/180": {},
+     "archived/analysis/per_M/144/d0/240": {},
+     "archived/analysis/per_M/144/d0/300": {},
+     "archived/analysis/per_M/144/d0_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0_ci90/120": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0_ci90/240": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d0_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1/0": {},
+     "archived/analysis/per_M/144/d1/60": {},
+     "archived/analysis/per_M/144/d1/120": {},
+     "archived/analysis/per_M/144/d1/180": {},
+     "archived/analysis/per_M/144/d1/240": {},
+     "archived/analysis/per_M/144/d1/300": {},
+     "archived/analysis/per_M/144/d1_ci90/0": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_ci90/60": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_ci90/180": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/per_M/144/d1_ci90/300": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/calibration_stamps/at_build": {},
+     "archived/analysis/beside/calibration_stamps/at_submission": {},
+     "archived/analysis/beside/calibration_stamps/after_fetch": {},
+     "archived/analysis/beside/calibration_stamps/k51": {},
+     "archived/analysis/beside/hours_since_k51_stamp/at_build": {},
+     "archived/analysis/beside/hours_since_k51_stamp/at_submission": {},
+     "archived/analysis/beside/hours_since_k51_stamp/after_fetch": {}
+    }
+   }
+  ],
+  "Kickoff 53, the revised check on new chains": [
+   {
+    "file": "ibm_fez/k53-revised-check.json",
+    "fields": {
+     "archived/analysis/H53": {},
+     "archived/analysis/informative_cells/[0]": {},
+     "archived/analysis/informative_cells/[1]": {},
+     "archived/analysis/informative_cells/[2]": {},
+     "archived/analysis/informative_cells/[3]": {},
+     "archived/analysis/informative_cells/[4]": {},
+     "archived/analysis/cells/[0]/cell": {},
+     "archived/analysis/cells/[0]/M": {},
+     "archived/analysis/cells/[0]/phi_deg": {},
+     "archived/analysis/cells/[0]/F_no": {},
+     "archived/analysis/cells/[0]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_ref": {},
+     "archived/analysis/cells/[0]/loss_R0": {},
+     "archived/analysis/cells/[0]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/loss_R1": {},
+     "archived/analysis/cells/[0]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred1": {},
+     "archived/analysis/cells/[0]/d1": {},
+     "archived/analysis/cells/[0]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred0": {},
+     "archived/analysis/cells/[0]/d0": {},
+     "archived/analysis/cells/[0]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/informative_R1": {},
+     "archived/analysis/cells/[0]/informative_R0": {},
+     "archived/analysis/cells/[0]/d1_inside": {},
+     "archived/analysis/cells/[0]/d1_outside": {},
+     "archived/analysis/cells/[0]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[1]/cell": {},
+     "archived/analysis/cells/[1]/M": {},
+     "archived/analysis/cells/[1]/phi_deg": {},
+     "archived/analysis/cells/[1]/F_no": {},
+     "archived/analysis/cells/[1]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_ref": {},
+     "archived/analysis/cells/[1]/loss_R0": {},
+     "archived/analysis/cells/[1]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/loss_R1": {},
+     "archived/analysis/cells/[1]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred1": {},
+     "archived/analysis/cells/[1]/d1": {},
+     "archived/analysis/cells/[1]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred0": {},
+     "archived/analysis/cells/[1]/d0": {},
+     "archived/analysis/cells/[1]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/informative_R1": {},
+     "archived/analysis/cells/[1]/informative_R0": {},
+     "archived/analysis/cells/[1]/d1_inside": {},
+     "archived/analysis/cells/[1]/d1_outside": {},
+     "archived/analysis/cells/[1]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[2]/cell": {},
+     "archived/analysis/cells/[2]/M": {},
+     "archived/analysis/cells/[2]/phi_deg": {},
+     "archived/analysis/cells/[2]/F_no": {},
+     "archived/analysis/cells/[2]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_ref": {},
+     "archived/analysis/cells/[2]/loss_R0": {},
+     "archived/analysis/cells/[2]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/loss_R1": {},
+     "archived/analysis/cells/[2]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred1": {},
+     "archived/analysis/cells/[2]/d1": {},
+     "archived/analysis/cells/[2]/F_pred0": {},
+     "archived/analysis/cells/[2]/d0": {},
+     "archived/analysis/cells/[2]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/informative_R1": {},
+     "archived/analysis/cells/[2]/informative_R0": {},
+     "archived/analysis/cells/[2]/d1_inside": {},
+     "archived/analysis/cells/[2]/d1_outside": {},
+     "archived/analysis/cells/[2]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[3]/cell": {},
+     "archived/analysis/cells/[3]/M": {},
+     "archived/analysis/cells/[3]/phi_deg": {},
+     "archived/analysis/cells/[3]/F_no": {},
+     "archived/analysis/cells/[3]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_ref": {},
+     "archived/analysis/cells/[3]/loss_R0": {},
+     "archived/analysis/cells/[3]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/loss_R1": {},
+     "archived/analysis/cells/[3]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred1": {},
+     "archived/analysis/cells/[3]/d1": {},
+     "archived/analysis/cells/[3]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred0": {},
+     "archived/analysis/cells/[3]/d0": {},
+     "archived/analysis/cells/[3]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/informative_R1": {},
+     "archived/analysis/cells/[3]/informative_R0": {},
+     "archived/analysis/cells/[3]/d1_inside": {},
+     "archived/analysis/cells/[3]/d1_outside": {},
+     "archived/analysis/cells/[3]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[4]/cell": {},
+     "archived/analysis/cells/[4]/M": {},
+     "archived/analysis/cells/[4]/phi_deg": {},
+     "archived/analysis/cells/[4]/F_no": {},
+     "archived/analysis/cells/[4]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_ref": {},
+     "archived/analysis/cells/[4]/loss_R0": {},
+     "archived/analysis/cells/[4]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/loss_R1": {},
+     "archived/analysis/cells/[4]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred1": {},
+     "archived/analysis/cells/[4]/d1": {},
+     "archived/analysis/cells/[4]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred0": {},
+     "archived/analysis/cells/[4]/d0": {},
+     "archived/analysis/cells/[4]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/informative_R1": {},
+     "archived/analysis/cells/[4]/informative_R0": {},
+     "archived/analysis/cells/[4]/d1_inside": {},
+     "archived/analysis/cells/[4]/d1_outside": {},
+     "archived/analysis/cells/[4]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[5]/cell": {},
+     "archived/analysis/cells/[5]/M": {},
+     "archived/analysis/cells/[5]/phi_deg": {},
+     "archived/analysis/cells/[5]/F_no": {},
+     "archived/analysis/cells/[5]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_ref": {},
+     "archived/analysis/cells/[5]/loss_R0": {},
+     "archived/analysis/cells/[5]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/loss_R1": {},
+     "archived/analysis/cells/[5]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred1": {},
+     "archived/analysis/cells/[5]/d1": {},
+     "archived/analysis/cells/[5]/F_pred0": {},
+     "archived/analysis/cells/[5]/d0": {},
+     "archived/analysis/cells/[5]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/informative_R1": {},
+     "archived/analysis/cells/[5]/informative_R0": {},
+     "archived/analysis/cells/[5]/d1_inside": {},
+     "archived/analysis/cells/[5]/d1_outside": {},
+     "archived/analysis/cells/[5]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[6]/cell": {},
+     "archived/analysis/cells/[6]/M": {},
+     "archived/analysis/cells/[6]/phi_deg": {},
+     "archived/analysis/cells/[6]/F_no": {},
+     "archived/analysis/cells/[6]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_ref": {},
+     "archived/analysis/cells/[6]/loss_R0": {},
+     "archived/analysis/cells/[6]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/loss_R1": {},
+     "archived/analysis/cells/[6]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred1": {},
+     "archived/analysis/cells/[6]/d1": {},
+     "archived/analysis/cells/[6]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred0": {},
+     "archived/analysis/cells/[6]/d0": {},
+     "archived/analysis/cells/[6]/informative_R1": {},
+     "archived/analysis/cells/[6]/informative_R0": {},
+     "archived/analysis/cells/[6]/d1_inside": {},
+     "archived/analysis/cells/[6]/d1_outside": {},
+     "archived/analysis/cells/[6]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[7]/cell": {},
+     "archived/analysis/cells/[7]/M": {},
+     "archived/analysis/cells/[7]/phi_deg": {},
+     "archived/analysis/cells/[7]/F_no": {},
+     "archived/analysis/cells/[7]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_ref": {},
+     "archived/analysis/cells/[7]/loss_R0": {},
+     "archived/analysis/cells/[7]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/loss_R1": {},
+     "archived/analysis/cells/[7]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred1": {},
+     "archived/analysis/cells/[7]/d1": {},
+     "archived/analysis/cells/[7]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred0": {},
+     "archived/analysis/cells/[7]/d0": {},
+     "archived/analysis/cells/[7]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/informative_R1": {},
+     "archived/analysis/cells/[7]/informative_R0": {},
+     "archived/analysis/cells/[7]/d1_inside": {},
+     "archived/analysis/cells/[7]/d1_outside": {},
+     "archived/analysis/cells/[7]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/chains/30/F_ref": {},
+     "archived/analysis/chains/30/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/30/P1_Z": {},
+     "archived/analysis/chains/30/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/F_ref": {},
+     "archived/analysis/chains/74/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/P1_Z": {},
+     "archived/analysis/chains/74/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/F_ref": {},
+     "archived/analysis/chains/121/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/P1_Z": {},
+     "archived/analysis/chains/121/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/F_ref": {},
+     "archived/analysis/chains/103/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/P1_Z": {},
+     "archived/analysis/chains/103/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/original_rule_verdict": {},
+     "archived/analysis/beside/original_rule_informative_cells/[0]": {},
+     "archived/analysis/beside/original_rule_informative_cells/[1]": {},
+     "archived/analysis/beside/original_rule_informative_cells/[2]": {},
+     "archived/analysis/beside/original_rule_informative_cells/[3]": {},
+     "archived/analysis/beside/original_rule_informative_cells/[4]": {},
+     "archived/analysis/beside/mean_abs_d1_informative": {},
+     "archived/analysis/beside/mean_abs_d0_informative": {},
+     "archived/analysis/beside/mean_abs_d1_all": {},
+     "archived/analysis/beside/mean_abs_d0_all": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/30|+0": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/30|+90": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/74|+0": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/74|+90": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/121|+0": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/121|+90": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/103|+0": {},
+     "archived/analysis/beside/abs_d1_lt_abs_d0/103|+90": {},
+     "archived/analysis/beside/phi0_cells_informative_on_their_own/[0]": {},
+     "archived/analysis/beside/phi0_cells_informative_on_their_own/[1]": {},
+     "archived/analysis/chain_order/[0]": {},
+     "archived/analysis/chain_order/[1]": {},
+     "archived/analysis/chain_order/[2]": {},
+     "archived/analysis/chain_order/[3]": {},
+     "archived/analysis/calibration_stamps/at_build": {},
+     "archived/analysis/calibration_stamps/at_submission": {},
+     "archived/analysis/calibration_stamps/after_fetch": {},
+     "archived/analysis/calibration_stamps/chains_drawn_under": {},
+     "archived/analysis/calibration_stamps/k52_after_fetch": {}
+    }
+   }
+  ],
+  "Kickoff 54, the revised check on a second day": [
+   {
+    "file": "ibm_fez/k54-revised-check-day-2.json",
+    "fields": {
+     "archived/analysis/H54": {},
+     "archived/analysis/informative_cells/[0]": {},
+     "archived/analysis/informative_cells/[1]": {},
+     "archived/analysis/informative_cells/[2]": {},
+     "archived/analysis/informative_cells/[3]": {},
+     "archived/analysis/informative_cells/[4]": {},
+     "archived/analysis/informative_cells/[5]": {},
+     "archived/analysis/informative_cells/[6]": {},
+     "archived/analysis/cells/[0]/cell": {},
+     "archived/analysis/cells/[0]/M": {},
+     "archived/analysis/cells/[0]/phi_deg": {},
+     "archived/analysis/cells/[0]/F_no": {},
+     "archived/analysis/cells/[0]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_ref": {},
+     "archived/analysis/cells/[0]/loss_R0": {},
+     "archived/analysis/cells/[0]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/loss_R1": {},
+     "archived/analysis/cells/[0]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred1": {},
+     "archived/analysis/cells/[0]/d1": {},
+     "archived/analysis/cells/[0]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred0": {},
+     "archived/analysis/cells/[0]/d0": {},
+     "archived/analysis/cells/[0]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/informative_R1": {},
+     "archived/analysis/cells/[0]/informative_R0": {},
+     "archived/analysis/cells/[0]/d1_inside": {},
+     "archived/analysis/cells/[0]/d1_outside": {},
+     "archived/analysis/cells/[0]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[1]/cell": {},
+     "archived/analysis/cells/[1]/M": {},
+     "archived/analysis/cells/[1]/phi_deg": {},
+     "archived/analysis/cells/[1]/F_no": {},
+     "archived/analysis/cells/[1]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_ref": {},
+     "archived/analysis/cells/[1]/loss_R0": {},
+     "archived/analysis/cells/[1]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/loss_R1": {},
+     "archived/analysis/cells/[1]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred1": {},
+     "archived/analysis/cells/[1]/d1": {},
+     "archived/analysis/cells/[1]/F_pred0": {},
+     "archived/analysis/cells/[1]/d0": {},
+     "archived/analysis/cells/[1]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/informative_R1": {},
+     "archived/analysis/cells/[1]/informative_R0": {},
+     "archived/analysis/cells/[1]/d1_inside": {},
+     "archived/analysis/cells/[1]/d1_outside": {},
+     "archived/analysis/cells/[1]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[2]/cell": {},
+     "archived/analysis/cells/[2]/M": {},
+     "archived/analysis/cells/[2]/phi_deg": {},
+     "archived/analysis/cells/[2]/F_no": {},
+     "archived/analysis/cells/[2]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_ref": {},
+     "archived/analysis/cells/[2]/loss_R0": {},
+     "archived/analysis/cells/[2]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/loss_R1": {},
+     "archived/analysis/cells/[2]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred1": {},
+     "archived/analysis/cells/[2]/d1": {},
+     "archived/analysis/cells/[2]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred0": {},
+     "archived/analysis/cells/[2]/d0": {},
+     "archived/analysis/cells/[2]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/informative_R1": {},
+     "archived/analysis/cells/[2]/informative_R0": {},
+     "archived/analysis/cells/[2]/d1_inside": {},
+     "archived/analysis/cells/[2]/d1_outside": {},
+     "archived/analysis/cells/[2]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[3]/cell": {},
+     "archived/analysis/cells/[3]/M": {},
+     "archived/analysis/cells/[3]/phi_deg": {},
+     "archived/analysis/cells/[3]/F_no": {},
+     "archived/analysis/cells/[3]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_ref": {},
+     "archived/analysis/cells/[3]/loss_R0": {},
+     "archived/analysis/cells/[3]/loss_R1": {},
+     "archived/analysis/cells/[3]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred1": {},
+     "archived/analysis/cells/[3]/d1": {},
+     "archived/analysis/cells/[3]/F_pred0": {},
+     "archived/analysis/cells/[3]/d0": {},
+     "archived/analysis/cells/[3]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/informative_R1": {},
+     "archived/analysis/cells/[3]/informative_R0": {},
+     "archived/analysis/cells/[3]/d1_inside": {},
+     "archived/analysis/cells/[3]/d1_outside": {},
+     "archived/analysis/cells/[3]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[4]/cell": {},
+     "archived/analysis/cells/[4]/M": {},
+     "archived/analysis/cells/[4]/phi_deg": {},
+     "archived/analysis/cells/[4]/F_no": {},
+     "archived/analysis/cells/[4]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_ref": {},
+     "archived/analysis/cells/[4]/loss_R0": {},
+     "archived/analysis/cells/[4]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/loss_R1": {},
+     "archived/analysis/cells/[4]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred1": {},
+     "archived/analysis/cells/[4]/d1": {},
+     "archived/analysis/cells/[4]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred0": {},
+     "archived/analysis/cells/[4]/d0": {},
+     "archived/analysis/cells/[4]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/informative_R1": {},
+     "archived/analysis/cells/[4]/informative_R0": {},
+     "archived/analysis/cells/[4]/d1_inside": {},
+     "archived/analysis/cells/[4]/d1_outside": {},
+     "archived/analysis/cells/[4]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[5]/cell": {},
+     "archived/analysis/cells/[5]/M": {},
+     "archived/analysis/cells/[5]/phi_deg": {},
+     "archived/analysis/cells/[5]/F_no": {},
+     "archived/analysis/cells/[5]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_ref": {},
+     "archived/analysis/cells/[5]/loss_R0": {},
+     "archived/analysis/cells/[5]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/loss_R1": {},
+     "archived/analysis/cells/[5]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred1": {},
+     "archived/analysis/cells/[5]/d1": {},
+     "archived/analysis/cells/[5]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred0": {},
+     "archived/analysis/cells/[5]/d0": {},
+     "archived/analysis/cells/[5]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/informative_R1": {},
+     "archived/analysis/cells/[5]/informative_R0": {},
+     "archived/analysis/cells/[5]/d1_inside": {},
+     "archived/analysis/cells/[5]/d1_outside": {},
+     "archived/analysis/cells/[5]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[6]/cell": {},
+     "archived/analysis/cells/[6]/M": {},
+     "archived/analysis/cells/[6]/phi_deg": {},
+     "archived/analysis/cells/[6]/F_no": {},
+     "archived/analysis/cells/[6]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_ref": {},
+     "archived/analysis/cells/[6]/loss_R0": {},
+     "archived/analysis/cells/[6]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/loss_R1": {},
+     "archived/analysis/cells/[6]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred1": {},
+     "archived/analysis/cells/[6]/d1": {},
+     "archived/analysis/cells/[6]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred0": {},
+     "archived/analysis/cells/[6]/d0": {},
+     "archived/analysis/cells/[6]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/informative_R1": {},
+     "archived/analysis/cells/[6]/informative_R0": {},
+     "archived/analysis/cells/[6]/d1_inside": {},
+     "archived/analysis/cells/[6]/d1_outside": {},
+     "archived/analysis/cells/[6]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[7]/cell": {},
+     "archived/analysis/cells/[7]/M": {},
+     "archived/analysis/cells/[7]/phi_deg": {},
+     "archived/analysis/cells/[7]/F_no": {},
+     "archived/analysis/cells/[7]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_ref": {},
+     "archived/analysis/cells/[7]/loss_R0": {},
+     "archived/analysis/cells/[7]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/loss_R1": {},
+     "archived/analysis/cells/[7]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred1": {},
+     "archived/analysis/cells/[7]/d1": {},
+     "archived/analysis/cells/[7]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred0": {},
+     "archived/analysis/cells/[7]/d0": {},
+     "archived/analysis/cells/[7]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/informative_R1": {},
+     "archived/analysis/cells/[7]/informative_R0": {},
+     "archived/analysis/cells/[7]/d1_inside": {},
+     "archived/analysis/cells/[7]/d1_outside": {},
+     "archived/analysis/cells/[7]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[8]/cell": {},
+     "archived/analysis/cells/[8]/M": {},
+     "archived/analysis/cells/[8]/phi_deg": {},
+     "archived/analysis/cells/[8]/F_no": {},
+     "archived/analysis/cells/[8]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_ref": {},
+     "archived/analysis/cells/[8]/loss_R0": {},
+     "archived/analysis/cells/[8]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/loss_R1": {},
+     "archived/analysis/cells/[8]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_pred1": {},
+     "archived/analysis/cells/[8]/d1": {},
+     "archived/analysis/cells/[8]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[8]/F_pred0": {},
+     "archived/analysis/cells/[8]/d0": {},
+     "archived/analysis/cells/[8]/informative_R1": {},
+     "archived/analysis/cells/[8]/informative_R0": {},
+     "archived/analysis/cells/[8]/d1_inside": {},
+     "archived/analysis/cells/[8]/d1_outside": {},
+     "archived/analysis/cells/[8]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[9]/cell": {},
+     "archived/analysis/cells/[9]/M": {},
+     "archived/analysis/cells/[9]/phi_deg": {},
+     "archived/analysis/cells/[9]/F_no": {},
+     "archived/analysis/cells/[9]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/F_ref": {},
+     "archived/analysis/cells/[9]/loss_R0": {},
+     "archived/analysis/cells/[9]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/loss_R1": {},
+     "archived/analysis/cells/[9]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[9]/F_pred1": {},
+     "archived/analysis/cells/[9]/d1": {},
+     "archived/analysis/cells/[9]/F_pred0": {},
+     "archived/analysis/cells/[9]/d0": {},
+     "archived/analysis/cells/[9]/informative_R1": {},
+     "archived/analysis/cells/[9]/informative_R0": {},
+     "archived/analysis/cells/[9]/d1_inside": {},
+     "archived/analysis/cells/[9]/d1_outside": {},
+     "archived/analysis/cells/[9]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[10]/cell": {},
+     "archived/analysis/cells/[10]/M": {},
+     "archived/analysis/cells/[10]/phi_deg": {},
+     "archived/analysis/cells/[10]/F_no": {},
+     "archived/analysis/cells/[10]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_ref": {},
+     "archived/analysis/cells/[10]/loss_R0": {},
+     "archived/analysis/cells/[10]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/loss_R1": {},
+     "archived/analysis/cells/[10]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_pred1": {},
+     "archived/analysis/cells/[10]/d1": {},
+     "archived/analysis/cells/[10]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/F_pred0": {},
+     "archived/analysis/cells/[10]/d0": {},
+     "archived/analysis/cells/[10]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[10]/informative_R1": {},
+     "archived/analysis/cells/[10]/informative_R0": {},
+     "archived/analysis/cells/[10]/d1_inside": {},
+     "archived/analysis/cells/[10]/d1_outside": {},
+     "archived/analysis/cells/[10]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[11]/cell": {},
+     "archived/analysis/cells/[11]/M": {},
+     "archived/analysis/cells/[11]/phi_deg": {},
+     "archived/analysis/cells/[11]/F_no": {},
+     "archived/analysis/cells/[11]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/F_ref": {},
+     "archived/analysis/cells/[11]/loss_R0": {},
+     "archived/analysis/cells/[11]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/loss_R1": {},
+     "archived/analysis/cells/[11]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/F_pred1": {},
+     "archived/analysis/cells/[11]/d1": {},
+     "archived/analysis/cells/[11]/F_pred0": {},
+     "archived/analysis/cells/[11]/d0": {},
+     "archived/analysis/cells/[11]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[11]/informative_R1": {},
+     "archived/analysis/cells/[11]/informative_R0": {},
+     "archived/analysis/cells/[11]/d1_inside": {},
+     "archived/analysis/cells/[11]/d1_outside": {},
+     "archived/analysis/cells/[11]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/chains/30/F_ref": {},
+     "archived/analysis/chains/30/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/30/P1_Z": {},
+     "archived/analysis/chains/30/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/F_ref": {},
+     "archived/analysis/chains/74/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/74/P1_Z": {},
+     "archived/analysis/chains/74/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/F_ref": {},
+     "archived/analysis/chains/121/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/121/P1_Z": {},
+     "archived/analysis/chains/121/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/F_ref": {},
+     "archived/analysis/chains/103/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/103/P1_Z": {},
+     "archived/analysis/chains/103/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/144/F_ref": {},
+     "archived/analysis/chains/144/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/144/P1_Z": {},
+     "archived/analysis/chains/144/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/143/F_ref": {},
+     "archived/analysis/chains/143/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/143/P1_Z": {},
+     "archived/analysis/chains/143/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/original_rule_and_comparison/original_rule_verdict": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[0]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[1]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[2]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[3]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[4]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[5]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[6]": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_all": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_all": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/30|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/30|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/74|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/74|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/121|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/121|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/103|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/103|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/144|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/144|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/143|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/143|+90": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own/[0]": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own/[1]": {},
+     "archived/analysis/lean/d1/30|+0": {},
+     "archived/analysis/lean/d1/30|+90": {},
+     "archived/analysis/lean/d1/74|+0": {},
+     "archived/analysis/lean/d1/74|+90": {},
+     "archived/analysis/lean/d1/121|+0": {},
+     "archived/analysis/lean/d1/121|+90": {},
+     "archived/analysis/lean/d1/103|+0": {},
+     "archived/analysis/lean/d1/103|+90": {},
+     "archived/analysis/lean/d1/144|+0": {},
+     "archived/analysis/lean/d1/144|+90": {},
+     "archived/analysis/lean/d1/143|+0": {},
+     "archived/analysis/lean/d1/143|+90": {},
+     "archived/analysis/lean/mean_d1": {},
+     "archived/analysis/lean/n_d1_above_zero": {},
+     "archived/analysis/lean/n_cells": {},
+     "archived/analysis/lean/mean_d1_informative": {},
+     "archived/analysis/beside/readout_P0_given_1/30/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/30/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/74/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/74/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/121/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/121/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/103/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/103/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/144/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/144/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/143/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/143/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/30/P1": {},
+     "archived/analysis/beside/pulse_cost/30/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/30/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/30/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/74/P1": {},
+     "archived/analysis/beside/pulse_cost/74/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/74/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/74/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/121/P1": {},
+     "archived/analysis/beside/pulse_cost/121/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/121/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/121/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/103/P1": {},
+     "archived/analysis/beside/pulse_cost/103/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/103/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/103/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/144/P1": {},
+     "archived/analysis/beside/pulse_cost/144/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/144/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/144/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/143/P1": {},
+     "archived/analysis/beside/pulse_cost/143/P1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/pulse_cost/143/P1_minus_Z": {},
+     "archived/analysis/beside/pulse_cost/143/P1_minus_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/30/loss/0": {},
+     "archived/analysis/beside/R1_fit/30/loss/90": {},
+     "archived/analysis/beside/R1_fit/30/loss/180": {},
+     "archived/analysis/beside/R1_fit/30/loss/270": {},
+     "archived/analysis/beside/R1_fit/30/theta_deg": {},
+     "archived/analysis/beside/R1_fit/30/amplitude": {},
+     "archived/analysis/beside/R1_fit/30/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/30/c": {},
+     "archived/analysis/beside/R1_fit/30/residuals": {},
+     "archived/analysis/beside/R1_fit/30/label": {},
+     "archived/analysis/beside/R1_fit/74/loss/0": {},
+     "archived/analysis/beside/R1_fit/74/loss/90": {},
+     "archived/analysis/beside/R1_fit/74/loss/180": {},
+     "archived/analysis/beside/R1_fit/74/loss/270": {},
+     "archived/analysis/beside/R1_fit/74/theta_deg": {},
+     "archived/analysis/beside/R1_fit/74/amplitude": {},
+     "archived/analysis/beside/R1_fit/74/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/74/c": {},
+     "archived/analysis/beside/R1_fit/74/residuals": {},
+     "archived/analysis/beside/R1_fit/74/label": {},
+     "archived/analysis/beside/R1_fit/121/loss/0": {},
+     "archived/analysis/beside/R1_fit/121/loss/90": {},
+     "archived/analysis/beside/R1_fit/121/loss/180": {},
+     "archived/analysis/beside/R1_fit/121/loss/270": {},
+     "archived/analysis/beside/R1_fit/121/theta_deg": {},
+     "archived/analysis/beside/R1_fit/121/amplitude": {},
+     "archived/analysis/beside/R1_fit/121/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/121/c": {},
+     "archived/analysis/beside/R1_fit/121/residuals": {},
+     "archived/analysis/beside/R1_fit/121/label": {},
+     "archived/analysis/beside/R1_fit/103/loss/0": {},
+     "archived/analysis/beside/R1_fit/103/loss/90": {},
+     "archived/analysis/beside/R1_fit/103/loss/180": {},
+     "archived/analysis/beside/R1_fit/103/loss/270": {},
+     "archived/analysis/beside/R1_fit/103/theta_deg": {},
+     "archived/analysis/beside/R1_fit/103/amplitude": {},
+     "archived/analysis/beside/R1_fit/103/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/103/c": {},
+     "archived/analysis/beside/R1_fit/103/residuals": {},
+     "archived/analysis/beside/R1_fit/103/label": {},
+     "archived/analysis/beside/R1_fit/144/loss/0": {},
+     "archived/analysis/beside/R1_fit/144/loss/90": {},
+     "archived/analysis/beside/R1_fit/144/loss/180": {},
+     "archived/analysis/beside/R1_fit/144/loss/270": {},
+     "archived/analysis/beside/R1_fit/144/theta_deg": {},
+     "archived/analysis/beside/R1_fit/144/amplitude": {},
+     "archived/analysis/beside/R1_fit/144/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/144/c": {},
+     "archived/analysis/beside/R1_fit/144/residuals": {},
+     "archived/analysis/beside/R1_fit/144/label": {},
+     "archived/analysis/beside/R1_fit/143/loss/0": {},
+     "archived/analysis/beside/R1_fit/143/loss/90": {},
+     "archived/analysis/beside/R1_fit/143/loss/180": {},
+     "archived/analysis/beside/R1_fit/143/loss/270": {},
+     "archived/analysis/beside/R1_fit/143/theta_deg": {},
+     "archived/analysis/beside/R1_fit/143/amplitude": {},
+     "archived/analysis/beside/R1_fit/143/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/143/c": {},
+     "archived/analysis/beside/R1_fit/143/residuals": {},
+     "archived/analysis/beside/R1_fit/143/label": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/idle/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/idle/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/L1/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L1/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/L3/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/L3/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/0": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/90": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/180": {},
+     "archived/analysis/beside/neighbours/144/fits/both/loss/270": {},
+     "archived/analysis/beside/neighbours/144/fits/both/theta_deg": {},
+     "archived/analysis/beside/neighbours/144/fits/both/amplitude": {},
+     "archived/analysis/beside/neighbours/144/fits/both/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/144/fits/both/residuals": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/144/fits/both/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/L1": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/L3": {},
+     "archived/analysis/beside/neighbours/144/shift_deg/both": {},
+     "archived/analysis/beside/neighbours/144/sum_of_singles_deg": {},
+     "archived/analysis/beside/neighbours/144/sum_minus_both_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/idle/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/idle/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L1/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/L3/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/L3/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/0": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/90": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/180": {},
+     "archived/analysis/beside/neighbours/143/fits/both/loss/270": {},
+     "archived/analysis/beside/neighbours/143/fits/both/theta_deg": {},
+     "archived/analysis/beside/neighbours/143/fits/both/amplitude": {},
+     "archived/analysis/beside/neighbours/143/fits/both/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/neighbours/143/fits/both/residuals": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/0/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/0/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/90/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/90/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/180/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/180/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/270/L1_P1": {},
+     "archived/analysis/beside/neighbours/143/fits/both/neighbour_bits_P1/270/L3_P1": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/L1": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/L3": {},
+     "archived/analysis/beside/neighbours/143/shift_deg/both": {},
+     "archived/analysis/beside/neighbours/143/sum_of_singles_deg": {},
+     "archived/analysis/beside/neighbours/143/sum_minus_both_deg": {},
+     "archived/analysis/beside/pair_143_144/from_144_only_143_in_1": {},
+     "archived/analysis/beside/pair_143_144/from_143_only_144_in_1": {},
+     "archived/analysis/beside/pair_143_144/difference_deg": {}
+    }
+   }
+  ],
+  "Kickoff 55, the revised check on ibm_kingston": [
+   {
+    "file": "ibm_kingston/k55-revised-check.json",
+    "fields": {
+     "archived/analysis/H55": {},
+     "archived/analysis/informative_cells/[0]": {},
+     "archived/analysis/informative_cells/[1]": {},
+     "archived/analysis/informative_cells/[2]": {},
+     "archived/analysis/informative_cells/[3]": {},
+     "archived/analysis/cells/[0]/cell": {},
+     "archived/analysis/cells/[0]/M": {},
+     "archived/analysis/cells/[0]/phi_deg": {},
+     "archived/analysis/cells/[0]/F_no": {},
+     "archived/analysis/cells/[0]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_ref": {},
+     "archived/analysis/cells/[0]/loss_R0": {},
+     "archived/analysis/cells/[0]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/loss_R1": {},
+     "archived/analysis/cells/[0]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred1": {},
+     "archived/analysis/cells/[0]/d1": {},
+     "archived/analysis/cells/[0]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/F_pred0": {},
+     "archived/analysis/cells/[0]/d0": {},
+     "archived/analysis/cells/[0]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[0]/informative_R1": {},
+     "archived/analysis/cells/[0]/informative_R0": {},
+     "archived/analysis/cells/[0]/d1_inside": {},
+     "archived/analysis/cells/[0]/d1_outside": {},
+     "archived/analysis/cells/[0]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[1]/cell": {},
+     "archived/analysis/cells/[1]/M": {},
+     "archived/analysis/cells/[1]/phi_deg": {},
+     "archived/analysis/cells/[1]/F_no": {},
+     "archived/analysis/cells/[1]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_ref": {},
+     "archived/analysis/cells/[1]/loss_R0": {},
+     "archived/analysis/cells/[1]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/loss_R1": {},
+     "archived/analysis/cells/[1]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred1": {},
+     "archived/analysis/cells/[1]/d1": {},
+     "archived/analysis/cells/[1]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/F_pred0": {},
+     "archived/analysis/cells/[1]/d0": {},
+     "archived/analysis/cells/[1]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[1]/informative_R1": {},
+     "archived/analysis/cells/[1]/informative_R0": {},
+     "archived/analysis/cells/[1]/d1_inside": {},
+     "archived/analysis/cells/[1]/d1_outside": {},
+     "archived/analysis/cells/[1]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[2]/cell": {},
+     "archived/analysis/cells/[2]/M": {},
+     "archived/analysis/cells/[2]/phi_deg": {},
+     "archived/analysis/cells/[2]/F_no": {},
+     "archived/analysis/cells/[2]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_ref": {},
+     "archived/analysis/cells/[2]/loss_R0": {},
+     "archived/analysis/cells/[2]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/loss_R1": {},
+     "archived/analysis/cells/[2]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred1": {},
+     "archived/analysis/cells/[2]/d1": {},
+     "archived/analysis/cells/[2]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[2]/F_pred0": {},
+     "archived/analysis/cells/[2]/d0": {},
+     "archived/analysis/cells/[2]/informative_R1": {},
+     "archived/analysis/cells/[2]/informative_R0": {},
+     "archived/analysis/cells/[2]/d1_inside": {},
+     "archived/analysis/cells/[2]/d1_outside": {},
+     "archived/analysis/cells/[2]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[3]/cell": {},
+     "archived/analysis/cells/[3]/M": {},
+     "archived/analysis/cells/[3]/phi_deg": {},
+     "archived/analysis/cells/[3]/F_no": {},
+     "archived/analysis/cells/[3]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_ref": {},
+     "archived/analysis/cells/[3]/loss_R0": {},
+     "archived/analysis/cells/[3]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/loss_R1": {},
+     "archived/analysis/cells/[3]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred1": {},
+     "archived/analysis/cells/[3]/d1": {},
+     "archived/analysis/cells/[3]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[3]/F_pred0": {},
+     "archived/analysis/cells/[3]/d0": {},
+     "archived/analysis/cells/[3]/informative_R1": {},
+     "archived/analysis/cells/[3]/informative_R0": {},
+     "archived/analysis/cells/[3]/d1_inside": {},
+     "archived/analysis/cells/[3]/d1_outside": {},
+     "archived/analysis/cells/[3]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[4]/cell": {},
+     "archived/analysis/cells/[4]/M": {},
+     "archived/analysis/cells/[4]/phi_deg": {},
+     "archived/analysis/cells/[4]/F_no": {},
+     "archived/analysis/cells/[4]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_ref": {},
+     "archived/analysis/cells/[4]/loss_R0": {},
+     "archived/analysis/cells/[4]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/loss_R1": {},
+     "archived/analysis/cells/[4]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/F_pred1": {},
+     "archived/analysis/cells/[4]/d1": {},
+     "archived/analysis/cells/[4]/F_pred0": {},
+     "archived/analysis/cells/[4]/d0": {},
+     "archived/analysis/cells/[4]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[4]/informative_R1": {},
+     "archived/analysis/cells/[4]/informative_R0": {},
+     "archived/analysis/cells/[4]/d1_inside": {},
+     "archived/analysis/cells/[4]/d1_outside": {},
+     "archived/analysis/cells/[4]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[5]/cell": {},
+     "archived/analysis/cells/[5]/M": {},
+     "archived/analysis/cells/[5]/phi_deg": {},
+     "archived/analysis/cells/[5]/F_no": {},
+     "archived/analysis/cells/[5]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_ref": {},
+     "archived/analysis/cells/[5]/loss_R0": {},
+     "archived/analysis/cells/[5]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/loss_R1": {},
+     "archived/analysis/cells/[5]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred1": {},
+     "archived/analysis/cells/[5]/d1": {},
+     "archived/analysis/cells/[5]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[5]/F_pred0": {},
+     "archived/analysis/cells/[5]/d0": {},
+     "archived/analysis/cells/[5]/informative_R1": {},
+     "archived/analysis/cells/[5]/informative_R0": {},
+     "archived/analysis/cells/[5]/d1_inside": {},
+     "archived/analysis/cells/[5]/d1_outside": {},
+     "archived/analysis/cells/[5]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[6]/cell": {},
+     "archived/analysis/cells/[6]/M": {},
+     "archived/analysis/cells/[6]/phi_deg": {},
+     "archived/analysis/cells/[6]/F_no": {},
+     "archived/analysis/cells/[6]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_ref": {},
+     "archived/analysis/cells/[6]/loss_R0": {},
+     "archived/analysis/cells/[6]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/loss_R1": {},
+     "archived/analysis/cells/[6]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred1": {},
+     "archived/analysis/cells/[6]/d1": {},
+     "archived/analysis/cells/[6]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[6]/F_pred0": {},
+     "archived/analysis/cells/[6]/d0": {},
+     "archived/analysis/cells/[6]/informative_R1": {},
+     "archived/analysis/cells/[6]/informative_R0": {},
+     "archived/analysis/cells/[6]/d1_inside": {},
+     "archived/analysis/cells/[6]/d1_outside": {},
+     "archived/analysis/cells/[6]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/cells/[7]/cell": {},
+     "archived/analysis/cells/[7]/M": {},
+     "archived/analysis/cells/[7]/phi_deg": {},
+     "archived/analysis/cells/[7]/F_no": {},
+     "archived/analysis/cells/[7]/F_no_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_ref": {},
+     "archived/analysis/cells/[7]/loss_R0": {},
+     "archived/analysis/cells/[7]/loss_R0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/loss_R1": {},
+     "archived/analysis/cells/[7]/loss_R1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred1": {},
+     "archived/analysis/cells/[7]/d1": {},
+     "archived/analysis/cells/[7]/d1_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/F_pred0": {},
+     "archived/analysis/cells/[7]/d0": {},
+     "archived/analysis/cells/[7]/d0_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/cells/[7]/informative_R1": {},
+     "archived/analysis/cells/[7]/informative_R0": {},
+     "archived/analysis/cells/[7]/d1_inside": {},
+     "archived/analysis/cells/[7]/d1_outside": {},
+     "archived/analysis/cells/[7]/abs_d1_lt_abs_d0": {},
+     "archived/analysis/chains/155/F_ref": {},
+     "archived/analysis/chains/155/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/155/P1_Z": {},
+     "archived/analysis/chains/155/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/18/F_ref": {},
+     "archived/analysis/chains/18/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/18/P1_Z": {},
+     "archived/analysis/chains/18/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/7/F_ref": {},
+     "archived/analysis/chains/7/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/7/P1_Z": {},
+     "archived/analysis/chains/7/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/43/F_ref": {},
+     "archived/analysis/chains/43/F_ref_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/chains/43/P1_Z": {},
+     "archived/analysis/chains/43/P1_Z_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/original_rule_and_comparison/original_rule_verdict": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[0]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[1]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[2]": {},
+     "archived/analysis/original_rule_and_comparison/original_rule_informative_cells/[3]": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_informative": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d1_all": {},
+     "archived/analysis/original_rule_and_comparison/mean_abs_d0_all": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/155|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/155|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/18|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/18|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/7|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/7|+90": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/43|+0": {},
+     "archived/analysis/original_rule_and_comparison/abs_d1_lt_abs_d0/43|+90": {},
+     "archived/analysis/original_rule_and_comparison/phi0_cells_informative_on_their_own": {},
+     "archived/analysis/lean/d1/155|+0": {},
+     "archived/analysis/lean/d1/155|+90": {},
+     "archived/analysis/lean/d1/18|+0": {},
+     "archived/analysis/lean/d1/18|+90": {},
+     "archived/analysis/lean/d1/7|+0": {},
+     "archived/analysis/lean/d1/7|+90": {},
+     "archived/analysis/lean/d1/43|+0": {},
+     "archived/analysis/lean/d1/43|+90": {},
+     "archived/analysis/lean/mean_d1": {},
+     "archived/analysis/lean/n_d1_above_zero": {},
+     "archived/analysis/lean/n_cells": {},
+     "archived/analysis/lean/mean_d1_informative": {},
+     "archived/analysis/beside/readout_P0_given_1/155/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/155/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/18/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/18/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/7/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/7/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/readout_P0_given_1/43/P0_given_1": {},
+     "archived/analysis/beside/readout_P0_given_1/43/ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/155/loss/0": {},
+     "archived/analysis/beside/R1_fit/155/loss/90": {},
+     "archived/analysis/beside/R1_fit/155/loss/180": {},
+     "archived/analysis/beside/R1_fit/155/loss/270": {},
+     "archived/analysis/beside/R1_fit/155/theta_deg": {},
+     "archived/analysis/beside/R1_fit/155/amplitude": {},
+     "archived/analysis/beside/R1_fit/155/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/155/c": {},
+     "archived/analysis/beside/R1_fit/155/b": {},
+     "archived/analysis/beside/R1_fit/155/s": {},
+     "archived/analysis/beside/R1_fit/155/residuals": {},
+     "archived/analysis/beside/R1_fit/155/label": {},
+     "archived/analysis/beside/R1_fit/18/loss/0": {},
+     "archived/analysis/beside/R1_fit/18/loss/90": {},
+     "archived/analysis/beside/R1_fit/18/loss/180": {},
+     "archived/analysis/beside/R1_fit/18/loss/270": {},
+     "archived/analysis/beside/R1_fit/18/theta_deg": {},
+     "archived/analysis/beside/R1_fit/18/amplitude": {},
+     "archived/analysis/beside/R1_fit/18/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/18/c": {},
+     "archived/analysis/beside/R1_fit/18/b": {},
+     "archived/analysis/beside/R1_fit/18/s": {},
+     "archived/analysis/beside/R1_fit/18/residuals": {},
+     "archived/analysis/beside/R1_fit/18/label": {},
+     "archived/analysis/beside/R1_fit/7/loss/0": {},
+     "archived/analysis/beside/R1_fit/7/loss/90": {},
+     "archived/analysis/beside/R1_fit/7/loss/180": {},
+     "archived/analysis/beside/R1_fit/7/loss/270": {},
+     "archived/analysis/beside/R1_fit/7/theta_deg": {},
+     "archived/analysis/beside/R1_fit/7/amplitude": {},
+     "archived/analysis/beside/R1_fit/7/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/7/c": {},
+     "archived/analysis/beside/R1_fit/7/b": {},
+     "archived/analysis/beside/R1_fit/7/s": {},
+     "archived/analysis/beside/R1_fit/7/residuals": {},
+     "archived/analysis/beside/R1_fit/7/label": {},
+     "archived/analysis/beside/R1_fit/43/loss/0": {},
+     "archived/analysis/beside/R1_fit/43/loss/90": {},
+     "archived/analysis/beside/R1_fit/43/loss/180": {},
+     "archived/analysis/beside/R1_fit/43/loss/270": {},
+     "archived/analysis/beside/R1_fit/43/theta_deg": {},
+     "archived/analysis/beside/R1_fit/43/amplitude": {},
+     "archived/analysis/beside/R1_fit/43/amplitude_ci90": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/beside/R1_fit/43/c": {},
+     "archived/analysis/beside/R1_fit/43/b": {},
+     "archived/analysis/beside/R1_fit/43/s": {},
+     "archived/analysis/beside/R1_fit/43/residuals": {},
+     "archived/analysis/beside/R1_fit/43/label": {},
+     "archived/analysis/n_positions_to_verdict": {},
+     "archived/analysis/calibration_stamps/chains_drawn_under": {},
+     "archived/analysis/calibration_stamps/at_build": {},
+     "archived/analysis/calibration_stamps/at_submission": {},
+     "archived/analysis/calibration_stamps/after_fetch": {}
+    }
+   }
   ]
  }
 }

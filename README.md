@@ -4,7 +4,27 @@
 
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
-**Contents:** [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+**Contents:** [Latest findings](#latest-findings-the-check-runs-with-the-neighbours-active) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+
+## Latest findings: the check runs with the neighbours active
+
+Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's Ramsey loss over the circuit's own wait. Through 0.5.0 that Ramsey ran with the qubit's neighbours idle. Five runs on ibm_fez on 13 October 2026 found that what the neighbours do during the wait shifts the waiting qubit's phase (findings 16 to 18). They also found that a Ramsey in which the neighbours do what they do in the circuit, at the same times, predicted the wait test within ±0.15 on every informative cell of four chains it had never run on, where the idle-neighbour Ramsey missed by about 0.17 on three cells (finding 19).
+
+The active-neighbour Ramsey is now the default (`build_wait_ramsey`). 0.5.0's instrument remains, with `neighbours="idle"`.
+
+On a second day on ibm_fez, 15 October 2026, across a maintenance, the revised check ran again on the six chains of findings 16 to 19 and predicted the wait test within ±0.15 on all seven informative cells, where the idle-neighbour Ramsey would have missed on one (finding 21). On a second processor, ibm_kingston, it missed the margin on one informative cell of four, where the idle-neighbour Ramsey would have missed on all four (finding 20). To be released as 0.6.0.
+
+- [15](docs/findings.md#finding-15): On a second day, the rule fixed in finding 14 held on three of four informative chains and failed on one, where the circuit did better than predicted.
+- [16](docs/findings.md#finding-16): What a waiting qubit's neighbours do changed how much phase it lost: held in the excited state during the wait they added 0.25 to 0.35 of loss on both qubits tested, their readout alone added none, and finding 15's gap on 144 was gone 33 minutes later.
+- [17](docs/findings.md#finding-17): With a known phase added to the waiting qubit, the wait test on 144 answered as if its offset differed from an idle-neighbour Ramsey's; on 143 the design was nearly blind.
+- [18](docs/findings.md#finding-18): A full sweep of the known phase measured the difference: the wait test's offset differed from an idle-neighbour Ramsey's by −7.2° on 143 and −21.6° on 144, and an active-neighbour Ramsey sat closer to it on both.
+- [19](docs/findings.md#finding-19): The revised check, with an active-neighbour Ramsey, predicted the wait test within ±0.15 on all five informative cells of four chains it had never run on, where the original check would have returned DISAGREE.
+- [20](docs/findings.md#finding-20): On a second processor, ibm_kingston, the revised check missed on one of four informative cells, where the original check would have missed on all four; the active-neighbour Ramsey was the closer of the two on every informative cell.
+- [21](docs/findings.md#finding-21): On a second day on ibm_fez, across a maintenance and under a new daily calibration, the revised check predicted the wait test within ±0.15 on all seven informative cells, where the original check would have missed on one.
+
+### Why the default changed
+
+In the circuit, the waiting qubit's neighbours are measured, reset and used again while it waits, and a Ramsey with them idle does not see what they do: held in |1⟩ they changed its loss by 0.25 to 0.35, and with a known phase added the circuit answered as if its offset differed from the idle-neighbour Ramsey's (findings 16 to 18). In findings 19 to 21 the idle-neighbour check would have missed the ±0.15 margin on eight cells, on both processors, and on every one of them the active-neighbour Ramsey sat closer to the circuit. The margin itself held on ibm_fez on two days, on twelve informative cells of twelve, and failed on ibm_kingston, on one cell of four (finding 20). The 0.5.0 instrument remains available, with `neighbours="idle"`.
 
 ## What it does
 
@@ -18,7 +38,7 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Findings
 
-Fourteen findings, from runs on 5 to 11 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
+Twenty-one findings, from runs on 5 to 15 October 2026. Each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md); the number links to it. What has *not* been shown is there too.
 
 | # | finding | where | kickoff, 2026 | verdict |
 |---|---|---|---|---|
@@ -36,6 +56,13 @@ Fourteen findings, from runs on 5 to 11 October 2026. Each is given in full, wit
 | [12](docs/findings.md#finding-12) | On ibm_fez, a reuse circuit collapsed on chains around qubits 143 and 144, and five explanations for it were tested and set aside | ibm_fez | 44, 45, 46, 10 Oct | NOT SUPPORTED for one retirement, repeated retirements and a neighbour's retirement; idle loss SUPPORTED by its rule but not tracking the collapse |
 | [13](docs/findings.md#finding-13) | Qubit 143 lost phase while it waited in superposition, IBM's echo-measured T2 does not show that kind of loss, and refocusing pulses restored the circuit | ibm_fez | 47, 10 Oct | H_phase SUPPORTED; the loss on 143 REFOCUSABLE |
 | [14](docs/findings.md#finding-14) | On ibm_fez, a qubit's Ramsey loss at the circuit's own wait length predicted how a reuse-shaped circuit fared when that qubit waited in it | ibm_fez | 48, 11 Oct | AGREE, informative (three of five chains) |
+| [15](docs/findings.md#finding-15) | On a second day, the rule fixed in finding 14 held on three of four informative chains and failed on one, where the circuit did better than predicted | ibm_fez | 49, 13 Oct | DISAGREE; held on three of four informative chains |
+| [16](docs/findings.md#finding-16) | What a waiting qubit's neighbours do changed how much phase it lost: held in the excited state during the wait they added 0.25 to 0.35 of loss on both qubits tested, their readout alone added none, and finding 15's gap on 144 was gone 33 minutes later | ibm_fez | 50, 13 Oct | NOT SUPPORTED (Kickoff 49's gap not present) |
+| [17](docs/findings.md#finding-17) | With a known phase added to the waiting qubit, the wait test on 144 answered as if its offset differed from an idle-neighbour Ramsey's; on 143 the design was nearly blind | ibm_fez | 51, 13 Oct | SUPPORTED on 144 |
+| [18](docs/findings.md#finding-18) | A full sweep of the known phase measured the difference: the wait test's offset differed from an idle-neighbour Ramsey's by −7.2° on 143 and −21.6° on 144, and an active-neighbour Ramsey sat closer to it on both | ibm_fez | 52, 13 Oct | DIFFERENT on 143 and on 144 |
+| [19](docs/findings.md#finding-19) | The revised check, with an active-neighbour Ramsey, predicted the wait test within ±0.15 on all five informative cells of four chains it had never run on, where the original check would have returned DISAGREE | ibm_fez | 53, 13 Oct | AGREE on five informative cells; the original check DISAGREE |
+| [20](docs/findings.md#finding-20) | On a second processor, ibm_kingston, the revised check missed on one of four informative cells, where the original check would have missed on all four; the active-neighbour Ramsey was the closer of the two on every informative cell | ibm_kingston | 55, 14 Oct | DISAGREE on one of four informative cells; the original check DISAGREE on all four |
+| [21](docs/findings.md#finding-21) | On a second day on ibm_fez, across a maintenance and under a new daily calibration, the revised check predicted the wait test within ±0.15 on all seven informative cells, where the original check would have missed on one | ibm_fez | 54, 15 Oct | AGREE on seven informative cells; the original check DISAGREE |
 
 What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
 
@@ -45,6 +72,8 @@ What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT 
 - **Three processors, three days.** The hardware results of findings 1 to 10 are from ibm_fez and ibm_kingston, and from Rigetti Cepheus-1-108Q through Open Quantum and through Amazon Braket, all on 5 to 7 October 2026.
 - **One processor, one day, for the reuse findings.** Findings 11 to 13 are from one processor on one day, across three published calibration stamps.
 - **One processor, one day, five qubits, for finding 14.** Finding 14 is from one job on ibm_fez on 11 October 2026, under one published calibration stamp.
+- **One processor, one day, six waiting qubits, for findings 15 to 19.** Findings 15 to 19 are from five jobs on ibm_fez on 13 October 2026. From finding 15's calibration stamp to finding 19's submission no published T1, T2, readout, gate or CZ value changed; during finding 19's job, at 20:29:58 UTC, IBM published new readout errors on 154 qubits.
+- **Two processors, three days, for the active-neighbour check.** On ibm_fez it has run on six waiting qubits, on 13 October 2026 (findings 16 to 19) and again on 15 October (finding 21); on ibm_kingston on four, on 14 October (finding 20). Which of two calibration stamps finding 20's job ran under is not known.
 - **Two routes to one processor.** The Rigetti findings through Open Quantum (2, 6) and through Amazon Braket (8 to 10) are from the same processor, but only the Braket route records where each pair ran. The difference between them is a difference between the two platforms' placement records, not between the vendors' machines.
 - **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
 - **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
@@ -94,7 +123,7 @@ print(result["verdict"]["verdict"], [pairs[i] for i in pick_pairs(result["kA"], 
 
 It prints `DIAGNOSTIC` and the eight pairs that kept the most. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
 
-A fourth, `examples/04_wait_test.py`, builds finding 13's Part B and the wait test for a backend and chain you name, as a dry run unless `--submit`; [`docs/reproduce.md`](docs/reproduce.md) says how to rerun them on hardware, and why a rerun is a new measurement.
+A fourth, `examples/04_wait_test.py`, builds finding 13's Part B and the wait test for a backend and chain you name, as a dry run unless `--submit`; [`docs/reproduce.md`](docs/reproduce.md) says how to rerun them on hardware, and why a rerun is a new measurement. The check of findings 14 to 19, which predicts the wait test from the waiting qubit's Ramsey loss over the circuit's own wait (`manacitra.wait.build_wait_ramsey` and `predicted_fidelity`), now runs that Ramsey with the qubit's neighbours active, as they are in the circuit, by default; the idle-neighbour Ramsey, the 0.5.0 behaviour, remains with `neighbours="idle"`.
 
 ## Reproducing the numbers
 
@@ -108,7 +137,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the fourteen findings in full, what was known before them, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the twenty-one findings in full, what was known before them, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.

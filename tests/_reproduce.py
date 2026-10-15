@@ -275,6 +275,13 @@ def clear_caches() -> None:
         k46_recomputed,
         k47_recomputed,
         k48_recomputed,
+        k49_recomputed,
+        k50_recomputed,
+        k51_recomputed,
+        k52_recomputed,
+        k53_recomputed,
+        k54_recomputed,
+        k55_recomputed,
     ):
         fn.cache_clear()
 
@@ -1554,6 +1561,176 @@ def k48():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- Kickoffs 49 to 53 (Amendment A22)
+K49 = "ibm_fez/k49-wait-test.json"
+K50 = "ibm_fez/k50-neighbour-test.json"
+K51 = "ibm_fez/k51-known-offset.json"
+K52 = "ibm_fez/k52-phase-sweep.json"
+K53 = "ibm_fez/k53-revised-check.json"
+
+
+@cache
+def k49_recomputed() -> dict:
+    return reuse.k49_wait_test(reuse_doc(K49), reuse_doc(K48))
+
+
+def k49():
+    """Kickoff 49: Kickoff 48's analysis, unchanged, on a second day's counts: F on five chains, Part B, the prediction,
+    d_M and H48, and what the run reported beside the verdict against Kickoff 48's archive."""
+    doc, r = reuse_doc(K49), k49_recomputed()
+    leaves = compare("Kickoff 49, the wait test on a second day", {K49: {"archived": {"analysis": r}}}, {K49: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["H48"], r["H48"]),
+            ("informative chains", ", ".join(a["informative_chains"]), ", ".join(r["informative_chains"])),
+            *((f"d_M, M = {n}", a["prediction"][n]["d_M"], r["prediction"][n]["d_M"]) for n in a["prediction"]),
+            ("143: kind of loss at 3.4 us", a["part_B"]["143"]["kind_of_loss"], r["part_B"]["143"]["kind_of_loss"]),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k50_recomputed() -> dict:
+    return reuse.k50_neighbour(reuse_doc(K50))
+
+
+def k50():
+    """Kickoff 50: per waiting qubit, F_no and F_ref, M's losses in R0 to R3, E0, E1; Delta_active, d0 and d1, with the
+    joint bootstrap; H50 on 144, the gap first."""
+    doc, r = reuse_doc(K50), k50_recomputed()
+    leaves = compare("Kickoff 50, the neighbour test", {K50: {"archived": {"analysis": r}}}, {K50: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["H50"], r["H50"]),
+            ("verdict, with the gap", a["verdict"], r["verdict"]),
+            *(
+                (f"Delta_active, M = {n}", a["per_M"][n]["delta_active"], r["per_M"][n]["delta_active"])
+                for n in a["per_M"]
+            ),
+            *((f"d1, M = {n}", a["per_M"][n]["d1"], r["per_M"][n]["d1"]) for n in a["per_M"]),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k51_recomputed() -> dict:
+    return reuse.k51_known_offset(reuse_doc(K51))
+
+
+def k51():
+    """Kickoff 51: per waiting qubit and known phase, F_no and the Ramseys' losses; the residuals, the swings A, A1 and
+    A2, the three-point fits; H51."""
+    doc, r = reuse_doc(K51), k51_recomputed()
+    leaves = compare("Kickoff 51, a known offset", {K51: {"archived": {"analysis": r}}}, {K51: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], r["verdict"]),
+            *((f"A, M = {n}", a["per_M"][n]["A"], r["per_M"][n]["A"]) for n in a["per_M"]),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k52_recomputed() -> dict:
+    return reuse.k52_phase_sweep(reuse_doc(K52))
+
+
+def k52():
+    """Kickoff 52: per waiting qubit, the six-phase fits of the wait test and both Ramseys, Delta = theta_W - theta_R0
+    and its two parts, the residuals, with the joint bootstrap refitted on every resample; H52a and H52b."""
+    doc, r = reuse_doc(K52), k52_recomputed()
+    leaves = compare("Kickoff 52, the phase sweep", {K52: {"archived": {"analysis": r}}}, {K52: doc})
+    a = doc["archived"]["analysis"]
+
+    def both(x):
+        return f"{x['H52a']} on 143, {x['H52b']} on 144"
+
+    rows = _rows(
+        lambda: [
+            ("verdict", both(a), both(r)),
+            *(
+                (f"Delta, M = {n}", a["per_M"][n]["Delta_W_minus_R0"]["deg"], r["per_M"][n]["Delta_W_minus_R0"]["deg"])
+                for n in a["per_M"]
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k53_recomputed() -> dict:
+    return reuse.k53_revised_check(reuse_doc(K53))
+
+
+def k53():
+    """Kickoff 53: on the four drawn chains at two phases, F_no, F_ref and both Ramseys' losses; the revised residual d1
+    and the original d0; H53 on the cells informative by R1, and the original rule's verdict beside it."""
+    doc, r = reuse_doc(K53), k53_recomputed()
+    leaves = compare("Kickoff 53, the revised check on new chains", {K53: {"archived": {"analysis": r}}}, {K53: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["H53"], r["H53"]),
+            ("informative cells", ", ".join(a["informative_cells"]), ", ".join(r["informative_cells"])),
+            ("the original rule, beside", a["beside"]["original_rule_verdict"], r["beside"]["original_rule_verdict"]),
+            *((f"d1, cell {c['cell']}", c["d1"], d["d1"]) for c, d in zip(a["cells"], r["cells"])),
+        ]
+    )
+    return rows, leaves
+
+
+# --------------------------------------------------------------------------- Kickoffs 54 and 55 (Amendment A23)
+K54 = "ibm_fez/k54-revised-check-day-2.json"
+K55 = "ibm_kingston/k55-revised-check.json"
+
+
+def _revised_rows(a: dict, r: dict, verdict: str) -> list:
+    return _rows(
+        lambda: [
+            ("verdict", a[verdict], r[verdict]),
+            ("informative cells", ", ".join(a["informative_cells"]), ", ".join(r["informative_cells"])),
+            (
+                "the original rule, beside",
+                a["original_rule_and_comparison"]["original_rule_verdict"],
+                r["original_rule_and_comparison"]["original_rule_verdict"],
+            ),
+            *((f"d1, cell {c['cell']}", c["d1"], d["d1"]) for c, d in zip(a["cells"], r["cells"])),
+        ]
+    )
+
+
+@cache
+def k54_recomputed() -> dict:
+    return reuse.k54_day_two(reuse_doc(K54))
+
+
+def k54():
+    """Kickoff 54, Day 2: Kickoff 53's analysis on the six fixed chains; H54, the original rule beside it and the lean;
+    and, from their own bootstrap, P(0|1), the pulses' cost, the R1 fits and the single-neighbour shifts."""
+    doc, r = reuse_doc(K54), k54_recomputed()
+    leaves = compare("Kickoff 54, the revised check on a second day", {K54: {"archived": {"analysis": r}}}, {K54: doc})
+    return _revised_rows(doc["archived"]["analysis"], r, "H54"), leaves
+
+
+@cache
+def k55_recomputed() -> dict:
+    return reuse.k55_kingston(reuse_doc(K55))
+
+
+def k55():
+    """Kickoff 55, ibm_kingston: Kickoff 53's analysis on the four drawn chains; H55, the original rule beside it and
+    the lean; and, from their own bootstrap, P(0|1) and the R1 fits."""
+    doc, r = reuse_doc(K55), k55_recomputed()
+    leaves = compare("Kickoff 55, the revised check on ibm_kingston", {K55: {"archived": {"analysis": r}}}, {K55: doc})
+    return _revised_rows(doc["archived"]["analysis"], r, "H55"), leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1599,6 +1776,13 @@ CASES = {
     "Kickoff 46, the middle line": k46,
     "Kickoff 47, the wait": k47,
     "Kickoff 48, the wait test on hardware": k48,
+    "Kickoff 49, the wait test on a second day": k49,
+    "Kickoff 50, the neighbour test": k50,
+    "Kickoff 51, a known offset": k51,
+    "Kickoff 52, the phase sweep": k52,
+    "Kickoff 53, the revised check on new chains": k53,
+    "Kickoff 54, the revised check on a second day": k54,
+    "Kickoff 55, the revised check on ibm_kingston": k55,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1627,4 +1811,11 @@ REQUIRED = {
     "Kickoff 46, the middle line": "NOT SUPPORTED",
     "Kickoff 47, the wait": "SUPPORTED",
     "Kickoff 48, the wait test on hardware": "AGREE",
+    "Kickoff 49, the wait test on a second day": "DISAGREE",
+    "Kickoff 50, the neighbour test": "NOT SUPPORTED",
+    "Kickoff 51, a known offset": "SUPPORTED",
+    "Kickoff 52, the phase sweep": "DIFFERENT on 143, DIFFERENT on 144",
+    "Kickoff 53, the revised check on new chains": "AGREE",
+    "Kickoff 54, the revised check on a second day": "AGREE",
+    "Kickoff 55, the revised check on ibm_kingston": "DISAGREE",
 }
