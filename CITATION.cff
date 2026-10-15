@@ -8,6 +8,13 @@ authors:
 version: 0.6.0
 date-released: 2026-10-15
 doi: 10.5281/zenodo.23228518
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23228518
+    description: The concept DOI, which always resolves to the latest version.
+  - type: doi
+    value: 10.5281/zenodo.23403048
+    description: The DOI of version 0.6.0.
 license: Apache-2.0
 repository-code: "https://github.com/dogma-guru/manacitra"
 abstract: >-
