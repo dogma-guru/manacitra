@@ -3336,3 +3336,17 @@ README's table; the posted rules; and `test_the_readme_opens_with_the_new_defaul
 - **`data/SHA256SUMS`:** gains the five files. The signing workflow signs them, `data/README.md` and `data/SHA256SUMS`
   on `main` after a merge.
 - **CI:** runs on the draft pull request after a push, which waits for the author's go.
+
+**Ruling R1 (15 October 2026, the author's go given in chat: "I agree with the recommendations").** Prepared with
+Mantri; it answers the packet's eight questions.
+- **Accepted as drafted:** the closer instrument, on the eight cells where the original check missed (Q1); six runs on
+  ibm_fez (Q2); "To be released as 0.6.0." and `## 0.6.0 (unreleased)`, which the release pull request dates (Q3); the
+  "not shown" bullet's leftover offset (Q4); the limit line for two processors (Q5); the pull request's title, applied
+  with the push (Q7); and every correction of the packet's section 2a. The word the author could have added at review
+  stays out, and the README test's list of withheld words is unchanged (Q8).
+- **Q4, a standing wording rule:** "the Ramsey's offset" is the fitted offset of the Ramsey itself, and "the leftover"
+  is the difference between the wait test's offset and the Ramsey's; "offset" alone is not used where either could be
+  read.
+- **Q6, applied:** finding 19 closes "It is the instrument that held in the cases tested; a second day on this code
+  followed (finding 21).", and `docs/method.md` says "…, on six waiting qubits of one processor (through finding 19;
+  findings 20 and 21 below)." Their tests follow them. One more signed-off commit; then the push.

@@ -2097,7 +2097,10 @@ def test_finding_19():
     # the scope
     assert len({143, 144} | {c["chain"][1] for c in draw["drawn"]}) == 6
     assert "The active-neighbour check now rests on six waiting qubits on one processor" in item
-    assert "It is the instrument that held in the cases tested; a second day on this code is planned." in item
+    # A23, ruling R1, Q6: the second day followed
+    assert (
+        "It is the instrument that held in the cases tested; a second day on this code followed (finding 21)." in item
+    )
     assert "Manacitra does not rank machines." in item
 
 
@@ -2130,7 +2133,10 @@ def test_findings_15_to_19_beside_the_findings():
         k53_recomputed()["H53"] == "AGREE"
         and "held within ±0.15, where the one with idle neighbours would have failed" in method
     )
-    assert "It is the instrument that held in the cases tested, on six waiting qubits of one processor." in method
+    assert (  # A23, ruling R1, Q6
+        "It is the instrument that held in the cases tested, on six waiting qubits of one processor (through finding "
+        "19; findings 20 and 21 below)." in method
+    )
     assert 'pass `neighbours="idle"`' in method
     page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
     for n in range(15, 20):
