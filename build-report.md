@@ -3429,3 +3429,105 @@ The merge, the tag, the release and its verification, and the DOI are recorded h
 - **Step 4.** The README's version-DOI parenthetical names v0.6.0's DOI, `CITATION.cff` lists it among its
   `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line. Release
   step 4 in `docs/index.md` section 9 now names `CITATION.cff`'s identifiers among the lines each release updates.
+
+## 42. Amendment A24: findings 22 to 27, and the check at the peak phase (15 October 2026)
+
+**Why.** By the author's rulings of 14 and 15 October 2026, in chat: two releases, each with its own claim and its own
+DOI (the reversal of 15 October). 0.6.0 is the instrument; 0.7.0 is the placement, the check read at the
+active-neighbour Ramsey's loss maximum, on the condition of the ibm_fez leg of the peak check (Kickoff 62), reviewed by
+the author. Finding numbers follow the order findings reach `main` (A23, ruling R1); "the Ramsey's offset" and "the
+leftover" are kept apart; and the README's table of findings has one row per thread, the full table moving to
+`docs/findings.md` (14 October). The merge and each release step wait for their own go after the author's review.
+
+**Order.** A new branch, `findings/k56-k62-peak-placement`, from `a6e75fc` (the merge of the 0.6.0 release pull
+request), worked in a git worktree of its own outside the shared checkout, after the 0.6.0 DOI pull request was
+started in that checkout (the two collided once; nothing was lost, and nothing of either reached the other's branch).
+`main`, with the 0.6.0 DOI pull request merged, is merged into the branch before its review. No hardware, no provider
+job and no contact with anyone.
+
+**Sources.** Kickoffs 56 to 62's hand-backs (`hardware-56/` to `hardware-62/`), their reports (Kickoff 60's a stop
+report), the eight rule files and the rulings. Nothing whose name contains "SEALED" was read, and no scorecard is in the
+repository. The eight rule files hash to the values posted in issues 37 to 44 of this repository (14 and 15 October
+2026), none edited, each posted before its job (Kickoff 60's before its draw); issue 42, version 1 of Kickoff 61's rule,
+was closed with a comment naming version 2 before anything was built.
+
+**The data: seven records and eight rules (5.9 MB in all).**
+- `ibm_kingston/k56-phase-sweep.json` to `k59-peak-check-day-2.json`, `ibm_fez/k61-readout-check.json` and
+  `k62-peak-check.json`, in Kickoffs 53 to 55's layout. Where a run had several jobs, one counts list holds them all and
+  every label names its job (`meta.job_ids`, `meta.shots_by_job_and_block`, per-job `run`, `timestamps`, `limits`,
+  `sampler_options` and `circuits`). Beside the counts: `chain_draw` or `chains_fixed`, `peaks` (recorded before each
+  job 2 was built, named by its SHA-256), Kickoff 62's `survey` (recorded before its draw), the windows and cycles,
+  the calibration records, and IBM's published values where the findings compare with them (`published_at_the_stamp`,
+  `published_at_three_stamps`).
+- `ibm_fez/k60-draw-stopped.json`: Kickoff 60's draw, which left no chain, with the published values it screened on, the
+  published readout over the previous 48 hours, its timing record and its stamp; no counts.
+- The eight rule files, byte for byte, in their processors' folders.
+- **Each run's code**, in `source_code`, as for Kickoffs 49 to 55, the builders also without the functions that read the
+  account. From Kickoff 56 on, each builder's table of reused files names the hand-back scanner `scan_handback.py` by its
+  SHA-256; that line is kept as run, and the code check allows that file name while refusing the folder's.
+- **Dropped:** as for Kickoffs 54 and 55; and the snapshot paths in Kickoff 62's archived analysis. The converter, a
+  scratch tool outside the repository, refused to write a file if a check record and its submission record carried
+  different builds, if a run's per-job counts file differed from its combined one, or if a record or its kept code
+  carried an instance's name, a dollar sign, a path or an email address.
+
+**The code.** `manacitra.wait` gains `phase_sweep`, `sweep_fit`, `peak_phase`, `leftover` and `peak_check` (the check at
+the peak phase, in two jobs, its job 2 built from job 1's counts with the peak to record before it runs), and
+`readout_survey` and `readout_errors` (the survey of every qubit, any screen's threshold the caller's). Nothing
+existing changes: `build_wait_test`, `build_wait_ramsey` and `predicted_fidelity` keep their signatures and defaults.
+`peak_check` builds M's zero-wait baseline on M alone (Part B's Ramsey at no wait), where the runs built it on the
+chain's three lines; M's instructions are the same.
+
+**The recompute.** `tests/_reuse_runs.py` gains `k56_phase_sweep`, `k57_peak_check`, `k58_placement`,
+`k59_peak_check_day_two`, `k61_readout` and `k62_peak_check_fez`. Kickoffs 57, 59 and 62 share Kickoff 57's analysis,
+which ran Kickoff 53's unchanged on the cells at the peak phase: `_revised_check` takes the phase list as an argument
+(Kickoffs 53 to 55's output unchanged, leaf for leaf), and Kickoff 53's rule is a function of its own. The peaks,
+Kickoff 62's survey and the fits' offsets come from the package, and the peaks must equal those each run recorded.
+`tests/_reproduce.py` gains six cases, each required to give its run's verdict.
+- **Under numpy 2.5.3:** every archived number of the six files with counts reproduces, intervals included: 3,284
+  leaves, the largest difference 0.
+- **Other random streams.** Each bootstrap was rerun under 200 other seeds. No verdict, flag or label changed. The
+  fitted angles' intervals move by up to 0.13° and are excluded, and so are the intervals that move by 8·10⁻⁴ or more;
+  the other 385 intervals are compared at 10⁻³.
+- **The inventory:** 2,278 fields compared, 385 of them at 10⁻³, and 114 of the analyses' fields excluded with their movement; the rest excluded with reasons, Kickoff 60's blocks
+  as records, not statistics.
+
+**The text.**
+- **`docs/findings.md`:** findings 22 to 27, with one figure (finding 22's sweep on qubit 7); the table of all
+  twenty-seven findings, moved from the README; in what has not been shown, the margin's bullet replaced by the margin at
+  the peak phase, the lean bullet extended with the peak-phase values, and three bullets added (what the placement buys,
+  the published readout table, a static shift per neighbour pair).
+- **`README.md`:** the opening section, "Latest findings: the check at the peak phase", in five sentences; the table of
+  findings with one row per thread; "Twenty-seven findings"; a limit line for the check at the peak phase; one sentence
+  on the new functions.
+- **Elsewhere:** `docs/method.md`, a subsection on the check at the peak phase, the survey and the draw;
+  `docs/reproduce.md`, a pointer for the seven runs, naming `e45f15d`; `docs/kickoffs.md`, rows 56 to 62;
+  `docs/index.md`, the reproduction row and the run dates; `data/README.md`, the files, their formats, their recompute
+  and the job IDs; `CHANGELOG.md`, the heading `## 0.7.0 (unreleased)`, the lead the kickoff fixed and the A24 entry.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A24-review-packet.md`), with
+its reason. Among them: finding 23's d1 on 89 is +0.043 (the kickoff's +0.034 transposes it); qubit 1's zero-wait P(1)
+is exactly 0.3025, a half case, quoted as 0.30; Kickoffs 57 and 58 ran on 15 October UTC; in finding 26 each qubit read
+alike alone and together within 0.004, not 0.001; in finding 27 the measured readout exceeded the published on four
+qubits, by more than 0.01 on one (72); the check at +90° landed cells that were not informative in findings 24, 25 and
+27, not 23; and the +90° miss on 7 was measured at +90° in findings 20 and 24, and at 60° and 120° in finding 22.
+
+**The tests:** 945 pass, against 857 at `a6e75fc` (88 new). New: the tests of findings 22 to 27 and of
+the text beside them, the README's opening section and its table by thread, the findings page's full table, the A24
+rules and their posts, the leftover picture; the fit at stated offsets and with draw noise, the peak's rounding, the
+survey and the readout errors; the equivalence test, which runs Kickoffs 57, 59 and 62's own builders from their
+records on the offline snapshots and finds the package's sweep, check and survey identical to theirs; the six
+reproduction cases with their verdict mutations; and the inventory's marks. Changed: the dates, the job IDs, the README
+table's test (now the findings page's), and the A23 tests whose text A24 rewrote. Five superseded phrases join the
+retired list.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the fifteen files. The signing workflow signs them, `data/README.md` and
+  `data/SHA256SUMS` on `main` after a merge.
+- **CI:** runs on the draft pull request after a push, which waits for the author's go.
+
+**Ruling R1 (15 October 2026, the author's go given in chat: "I accept the recommendations in the A24 review packet as drafted").** It answers the packet's ten questions, every one as drafted: the README's eight rows, finding 26 with finding 5 (Q1); the +90° check's cells that were not informative, in findings 24, 25 and 27 (Q2); the record on residual size, finding by finding (Q3); alone and together within 0.004 (Q4); the qubit that missed in all three runs on its chain (Q5); `peak_check`'s zero-wait baseline on M alone (Q6); the limit line and the sentence on the new functions (Q7); both bullets on the neighbour shift (Q8); the method's dated sentence left as written (Q9); and the pull request's title, "Findings 22 to 27, and the check at the peak phase", applied with the push (Q10). Every correction of the packet's section 3a stands. Nothing else changed on the branch; then the push.
+
+**CI on the first push.** One test failed on Linux, on both Python versions: `test_the_leftover_picture` read 7's leftover interval from the recompute, whose bootstrap draws differ there, so its upper end rounded to −34.3° against the archive's −34.2° (A17's lesson). The figure and the finding's text quote the archived interval; the test now reads it from the archive too, and the other A24 text tests were checked under another random stream. 944 of the 945 tests passed there.

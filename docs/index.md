@@ -315,7 +315,7 @@ pytest tests/test_readme_numbers.py   # the statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the twelve diagrams, from data/
+python docs/make_diagrams.py          # the thirteen diagrams, from data/
 ```
 
 (*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
@@ -355,6 +355,7 @@ Where each README number comes from:
 | ibm_fez, Kickoff 48: the wait test's F without and with refocusing on five chains; the Ramsey loss at T_M, F_pred and d_M (+0.003 on 143), AGREE, informative; 143 REFOCUSABLE, the fit, 47.1 ± 1.8 kHz | `ibm_fez/k48-wait-test.json` | `tests/_reuse_runs.py`: `k48_wait_test` (with `manacitra.wait.analyse_wait_run` and `part_b_losses`) |
 | ibm_fez, Kickoffs 49 to 53: the wait test on a second day, DISAGREE (+0.182 on 144); the neighbour test, NOT SUPPORTED (Kickoff 49's gap not present today); the known offset, SUPPORTED (A +0.159 on 144); the phase sweep, DIFFERENT on both (−7.2° and −21.6°); the revised check, AGREE, and the original DISAGREE on the same cells | `ibm_fez/k49-wait-test.json`, `k50-neighbour-test.json`, `k51-known-offset.json`, `k52-phase-sweep.json`, `k53-revised-check.json` | `tests/_reuse_runs.py`: `k49_wait_test` (with `k48_wait_test`), `k50_neighbour`, `k51_known_offset`, `k52_phase_sweep`, `k53_revised_check` |
 | ibm_kingston, Kickoff 55: the revised check on a second processor, DISAGREE (+0.257 on 7 at +90°), and the original DISAGREE on all four informative cells; ibm_fez, Kickoff 54: the revised check on a second day, AGREE on seven informative cells, and the original DISAGREE (+0.184 on 74); the single-neighbour shifts on 144 and 143 | `ibm_kingston/k55-revised-check.json`, `ibm_fez/k54-revised-check-day-2.json` | `tests/_reuse_runs.py`: `k55_kingston`, `k54_day_two` (Kickoff 53's analysis, shared with `k53_revised_check`) |
+| ibm_kingston, Kickoffs 56 to 59: the phase sweep, LARGE on 7 (L −36.7°), NOT SETTLED on 43, SMALL on 18; the check at the peak phase, AGREE on four cells, twice, on new chains; the placement comparison, PEAK SMALLER on 7 and 43 (D +0.170 and +0.108); ibm_fez, Kickoff 61: the readout check, PUBLISHED NOT READABLE (thirteen of sixteen qubits); Kickoff 62: the survey (median 0.0098 against 0.166 published) and the check at the peak phase, AGREE on four cells | `ibm_kingston/k56-phase-sweep.json`, `k57-peak-check.json`, `k58-placement-comparison.json`, `k59-peak-check-day-2.json`, `ibm_fez/k61-readout-check.json`, `k62-peak-check.json` | `tests/_reuse_runs.py`: `k56_phase_sweep`, `k57_peak_check`, `k58_placement`, `k59_peak_check_day_two`, `k61_readout`, `k62_peak_check_fez` (with `manacitra.wait.sweep_fit`, `peak_phase` and `readout_errors`) |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3
@@ -364,7 +365,7 @@ in Kickoff 36's own report.
 ## 8. What kind of claim each part is
 
 - **Lived facts**: the counts in `data/`, as two IBM processors and one Rigetti processor (through two routes) returned
-  them on 5 to 7 October 2026 (and ibm_fez again on 10, 11, 13 and 15 October, and ibm_kingston again on 14 October), and the simulation outputs, as run on the author's computer on 5 October.
+  them on 5 to 7 October 2026 (and ibm_fez again on 10, 11, 13 and 15 October, and ibm_kingston again on 14 and 15 October), and the simulation outputs, as run on the author's computer on 5 October.
 - **Established findings**: the model values (the ideal P(11) of each variant) and the published calibrations used
   (IBM's figures at submission; the QVM's median calibration).
 - **Falsifiable theory**: that the kept share is a per-pair property that published figures do not carry, that it

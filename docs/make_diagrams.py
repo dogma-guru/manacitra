@@ -1312,6 +1312,84 @@ def diagram_phase_sweep(out: Path):
     save(fig, out, "phase-sweep")
 
 
+def diagram_leftover(out: Path):
+    """Finding 22 on ibm_kingston's qubit 7: against a known phase phi on the waiting qubit, swept all the way round,
+    the wait test's F without refocusing and the active-neighbour Ramsey's kept share, 1 minus its loss, each with the
+    fit its rule fixed. Each fitted curve peaks at phi = -theta, so the gap between the two peaks is the leftover the
+    rule measured, L = theta_W - theta_R1. Points and fits are computed here from the counts; the 90% intervals are the
+    run's, as archived, which tests/test_reproduction.py recomputes."""
+    rec = archive.load("ibm_kingston/k56-phase-sweep.json")
+    an = rec["archived"]["analysis"]["per_M"]["7"]
+    pts = _sweep_points(rec, 7)
+    phis = pts["phis"]
+    xs = [p if p <= 180 else p - 360 for p in phis]
+    grid = np.linspace(-180, 180, 361)
+    series = (
+        ("W", SERIES_1, "o", "the wait test, F without refocusing", False),
+        ("R1", SERIES_2, "D", "Ramsey, neighbours active: 1 − loss", True),
+    )
+    fig, ax = plt.subplots(figsize=(8.6, 4.9))
+    peaks = {}
+    for name, colour, marker, label, flip in series:
+        y = pts[name]
+        c, b, s = _sweep_fit(phis, y)
+        curve = c + b * np.cos(np.radians(grid)) + s * np.sin(np.radians(grid))
+        theta = np.degrees(np.arctan2(-s, b)) if name == "W" else np.degrees(np.arctan2(s, -b))
+        peaks[name] = theta
+        ci = [an["F_no_ci90"][str(p)] for p in phis] if name == "W" else [an["loss_ci90"][f"R1|{p}"] for p in phis]
+        if flip:
+            y, curve = [1 - v for v in y], 1 - curve
+            ci = [[1 - hi, 1 - lo] for lo, hi in ci]
+        order = np.argsort(xs)
+        xo = [xs[i] for i in order]
+        yo = [y[i] for i in order]
+        err = [[yo[k] - ci[i][0] for k, i in enumerate(order)], [ci[i][1] - yo[k] for k, i in enumerate(order)]]
+        ax.plot(grid, curve, color=colour, lw=1.6, zorder=2)
+        ax.errorbar(xo, yo, yerr=err, fmt=marker, ms=6.5, color=colour, ecolor=colour, capsize=2.5, lw=1, zorder=3)
+        ax.plot([], [], color=colour, marker=marker, lw=1.6, label=label)
+    for name, y_txt in (("W", 1.17), ("R1", 1.105)):
+        x = -peaks[name]
+        colour = {"W": SERIES_1, "R1": SERIES_2}[name]
+        ax.axvline(x, color=colour, lw=1, ls=(0, (4, 3)), zorder=1)
+        sym = {"W": "θ_W", "R1": "θ_R1"}[name]
+        ax.text(x + 2.5, y_txt, f"{sym} = {_minus(f'{peaks[name]:+.1f}')}°", fontsize=8.5, color=INK, va="center")
+    L = an["L_W_minus_R1"]["deg"]
+    lo, hi = an["L_W_minus_R1"]["ci90"]
+    ax.text(
+        -174,
+        1.17,
+        f"the leftover L = θ_W − θ_R1 = {_minus(f'{L:+.1f}')}°\n90% interval {_minus(f'{lo:+.1f}')}° to "
+        f"{_minus(f'{hi:+.1f}')}°: LARGE",
+        fontsize=9,
+        color=INK,
+        va="top",
+    )
+    ax.set_xlim(-180, 180)
+    ax.set_xticks(range(-180, 181, 60))
+    ax.set_xticklabels([f"{_minus(str(v))}°" if v else "0°" for v in range(-180, 181, 60)])
+    ax.set_ylim(0, 1.22)
+    ax.set_xlabel("known phase φ added to the waiting qubit, 7 (each fitted curve peaks at φ = −θ)")
+    ax.set_ylabel("F, or 1 − loss (ideal 1 at φ = 0)")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.legend(loc="lower center", frameon=False, fontsize=8.5)
+    ax.set_title(
+        "Qubit 7: the wait test and the active-neighbour Ramsey against a known phase",
+        loc="left",
+        fontsize=10.5,
+        color=INK,
+    )
+    fig.text(
+        0.125,
+        0.995,
+        "ibm_kingston, Kickoff 56, 14 to 15 October 2026, one job. Points and fits from the counts; whiskers, 90% "
+        "bootstrap intervals.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "leftover-sweep")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1328,7 +1406,8 @@ def main(argv=None):
     diagram_reuse_wait(a.out)
     diagram_wait_test_hardware(a.out)
     diagram_phase_sweep(a.out)
-    print(f"wrote 12 diagrams (SVG and PNG) to {a.out}")
+    diagram_leftover(a.out)
+    print(f"wrote 13 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":
