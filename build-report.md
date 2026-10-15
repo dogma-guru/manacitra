@@ -3488,7 +3488,7 @@ Kickoff 62's survey and the fits' offsets come from the package, and the peaks m
 - **Other random streams.** Each bootstrap was rerun under 200 other seeds. No verdict, flag or label changed. The
   fitted angles' intervals move by up to 0.13° and are excluded, and so are the intervals that move by 8·10⁻⁴ or more;
   the other 385 intervals are compared at 10⁻³.
-- **The inventory:** 2,276 fields compared, 385 of them at 10⁻³; the rest excluded with reasons, Kickoff 60's blocks
+- **The inventory:** 2,278 fields compared, 385 of them at 10⁻³, and 114 of the analyses' fields excluded with their movement; the rest excluded with reasons, Kickoff 60's blocks
   as records, not statistics.
 
 **The text.**
