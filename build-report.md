@@ -3350,3 +3350,40 @@ Mantri; it answers the packet's eight questions.
 - **Q6, applied:** finding 19 closes "It is the instrument that held in the cases tested; a second day on this code
   followed (finding 21).", and `docs/method.md` says "…, on six waiting qubits of one processor (through finding 19;
   findings 20 and 21 below)." Their tests follow them. One more signed-off commit; then the push.
+
+## 41. Release v0.6.0 (15 October 2026)
+
+**What it carries.** Amendments A20 to A23 (pull requests 27, 28 and 34): the active-neighbour Ramsey as the check's
+default instrument (`manacitra.wait.build_wait_ramsey`, with `neighbours="idle"` for 0.5.0's instrument), and findings
+15 to 21 with their data; what was known before findings 13 and 14; and when and how to release (sections 37 to 40).
+Pull request 34 was merged as `63508fc`, and its new data files, `data/README.md` and `data/SHA256SUMS` were signed on
+`main` in the bundle commit `0479083`.
+
+**The version, by the author's rulings** (13 October: "Yes it's 0.6.0 if K53 comes back as agree. I want the new code to
+be the standard."; 15 October, the release plan restored as 0.6.0 and 0.7.0; and the go for this step, given in chat on
+15 October), is 0.6.0. The release condition, Kickoffs 53 and 54 AGREE on ibm_fez, is met (findings 19 and 21).
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (with `date-released: 2026-10-15`) and the
+  README's citation; the changelog heading `## 0.6.0 (unreleased)` becomes `## 0.6.0 (15 October 2026)`, and the
+  README's "To be released as 0.6.0." becomes "Released as 0.6.0 on 15 October 2026.", as ruling R1 (Q3) of A23 asked.
+  The changelog's lead is the one ruled in A23 R1.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`;
+  the README's sentence and the changelog heading are checked by `test_the_readme_opens_with_the_latest_findings` and
+  `test_findings_20_and_21_beside_the_findings`, and "To be released as 0.6.0" joins the retired phrases.
+- **The package.** Since 0.5.0, `src/` changes in `manacitra.wait` (A22's `build_wait_ramsey`, `predicted_fidelity`,
+  `NEIGHBOURS` and the `phase` argument) and in the version line. The packages build as `manacitra-0.6.0`; neither the
+  wheel nor the sdist contains `data/`.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical names v0.5.0's DOI until Zenodo has minted v0.6.0's (release step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+
+**The release path** is the release steps in `docs/index.md` section 9, each on the author's go:
+1. the merge of this pull request with a merge commit, then signing on `main`;
+2. the tree check against `…/sign.yml@refs/heads/main` and the git identity scan, then the annotated tag, on the bundle
+   commit if there is one, otherwise on the merge commit;
+3. the release, with its assets' signatures checked from a fresh download against `@refs/tags/v0.6.0`, and the
+   negative control against `@refs/tags/v0.5.0`;
+4. the version DOI, once Zenodo has minted it.
+
+The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.

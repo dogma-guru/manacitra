@@ -12,7 +12,7 @@ Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's
 
 The active-neighbour Ramsey is now the default (`build_wait_ramsey`). 0.5.0's instrument remains, with `neighbours="idle"`.
 
-On a second day on ibm_fez, 15 October 2026, across a maintenance, the revised check ran again on the six chains of findings 16 to 19 and predicted the wait test within ±0.15 on all seven informative cells, where the idle-neighbour Ramsey would have missed on one (finding 21). On a second processor, ibm_kingston, it missed the margin on one informative cell of four, where the idle-neighbour Ramsey would have missed on all four (finding 20). To be released as 0.6.0.
+On a second day on ibm_fez, 15 October 2026, across a maintenance, the revised check ran again on the six chains of findings 16 to 19 and predicted the wait test within ±0.15 on all seven informative cells, where the idle-neighbour Ramsey would have missed on one (finding 21). On a second processor, ibm_kingston, it missed the margin on one informative cell of four, where the idle-neighbour Ramsey would have missed on all four (finding 20). Released as 0.6.0 on 15 October 2026.
 
 - [15](docs/findings.md#finding-15): On a second day, the rule fixed in finding 14 held on three of four informative chains and failed on one, where the circuit did better than predicted.
 - [16](docs/findings.md#finding-16): What a waiting qubit's neighbours do changed how much phase it lost: held in the excited state during the wait they added 0.25 to 0.35 of loss on both qubits tested, their readout alone added none, and finding 15's gap on 144 was gone 33 minutes later.
@@ -150,7 +150,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.5.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.6.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.5.0: [10.5281/zenodo.23300255](https://doi.org/10.5281/zenodo.23300255)).
 

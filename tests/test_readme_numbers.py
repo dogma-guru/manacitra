@@ -742,6 +742,7 @@ RETIRED = [
     "The active-neighbour check has run on one processor",  # A23: the margin's record, on two processors
     "The run cannot separate the recalibration",  # A23, 1d: no published value changed at the new stamp
     "which published calibration they ran under is not known",  # A23, 1d: what the stamps changed, from the history
+    "To be released as 0.6.0",  # the 0.6.0 release: released, with its date (A23, ruling R1, Q3)
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -2270,7 +2271,8 @@ def test_the_readme_opens_with_the_latest_findings():
     assert r55["H55"] == "DISAGREE" and (len(out1), len(r55["informative_cells"]), len(out0)) == (1, 4, 4)
     assert (
         "On a second processor, ibm_kingston, it missed the margin on one informative cell of four, where the "
-        "idle-neighbour Ramsey would have missed on all four (finding 20). To be released as 0.6.0." in flat
+        "idle-neighbour Ramsey would have missed on all four (finding 20). Released as 0.6.0 on 15 October 2026."
+        in flat
     )
     # one line per finding, each with its own headline
     findings = (ROOT / "docs" / "findings.md").read_text()
@@ -2821,7 +2823,7 @@ def test_findings_20_and_21_beside_the_findings():
     assert sorted(ar.load(p)["meta"]["utc"][:10] for p in fez_runs) == ["2026-10-13"] * 5 + ["2026-10-15"]
     assert reuse_doc(K55)["meta"]["utc"].startswith("2026-10-14")
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
-    assert "## 0.6.0 (unreleased)" in log and "## Unreleased" not in log
+    assert "## 0.6.0 (15 October 2026)" in log and "(unreleased)" not in log and "## Unreleased" not in log
     assert (
         "Findings 15 to 21, from six runs on ibm_fez on 13 and 15 October 2026 and one on ibm_kingston on 14 October, "
         "with their data." in log

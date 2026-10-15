@@ -105,7 +105,7 @@ V010_DOI = VERSION_DOIS["0.1.0"]
 
 
 def test_the_version_is_the_same_everywhere():
-    """pyproject.toml, the package, CITATION.cff and the README's citation name one version (0.5.0 since 11 October)."""
+    """pyproject.toml, the package, CITATION.cff and the README's citation name one version (0.6.0 since 15 October)."""
     import manacitra
 
     version = tomllib.loads(_read("pyproject.toml"))["project"]["version"]
