@@ -282,6 +282,12 @@ def clear_caches() -> None:
         k53_recomputed,
         k54_recomputed,
         k55_recomputed,
+        k56_recomputed,
+        k57_recomputed,
+        k58_recomputed,
+        k59_recomputed,
+        k61_recomputed,
+        k62_recomputed,
     ):
         fn.cache_clear()
 
@@ -1731,6 +1737,148 @@ def k55():
     return _revised_rows(doc["archived"]["analysis"], r, "H55"), leaves
 
 
+# --------------------------------------------------------------------------- Kickoffs 56 to 62 (Amendment A24)
+K56 = "ibm_kingston/k56-phase-sweep.json"
+K57 = "ibm_kingston/k57-peak-check.json"
+K58 = "ibm_kingston/k58-placement-comparison.json"
+K59 = "ibm_kingston/k59-peak-check-day-2.json"
+K61 = "ibm_fez/k61-readout-check.json"
+K62 = "ibm_fez/k62-peak-check.json"
+
+
+@cache
+def k56_recomputed() -> dict:
+    return reuse.k56_phase_sweep(reuse_doc(K56))
+
+
+def k56():
+    """Kickoff 56: per waiting qubit, the six-phase fits of the wait test and both Ramseys, the leftover L = theta_W -
+    theta_R1 and the differences beside it, the residuals and the lean, the pulse cost; H56a to H56c."""
+    doc, r = reuse_doc(K56), k56_recomputed()
+    leaves = compare("Kickoff 56, the phase sweep on ibm_kingston", {K56: {"archived": {"analysis": r}}}, {K56: doc})
+    a = doc["archived"]["analysis"]
+
+    def three(x):
+        return f"{x['H56a']} on 7, {x['H56b']} on 43, {x['H56c']} on 18"
+
+    rows = _rows(
+        lambda: [
+            ("verdict", three(a), three(r)),
+            *(
+                (f"L, M = {n}", a["per_M"][n]["L_W_minus_R1"]["deg"], r["per_M"][n]["L_W_minus_R1"]["deg"])
+                for n in a["per_M"]
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def _peak_rows(a: dict, r: dict, verdict: str) -> list:
+    return _rows(
+        lambda: [
+            ("verdict", a[verdict], r[verdict]),
+            ("phi*", str(a["phi_star_deg"]), str(r["phi_star_deg"])),
+            ("informative cells", ", ".join(a["informative_cells"]), ", ".join(r["informative_cells"])),
+            ("the check at +90, beside", a["check_at_plus90"]["verdict"], r["check_at_plus90"]["verdict"]),
+            *(
+                (f"d1, cell {c['M']} at phi*", c["d1"], d["d1"])
+                for c, d in zip(a["cells_phi_star"], r["cells_phi_star"])
+            ),
+        ]
+    )
+
+
+@cache
+def k57_recomputed() -> dict:
+    return reuse.k57_peak_check(reuse_doc(K57))
+
+
+def k57():
+    """Kickoff 57: phi* from job 1's sweep; Kickoff 53's analysis on the four phi* cells; H57, and beside it the check
+    at +90, the original rule, job 1's fits and the drift."""
+    doc, r = reuse_doc(K57), k57_recomputed()
+    leaves = compare("Kickoff 57, the check at the peak phase", {K57: {"archived": {"analysis": r}}}, {K57: doc})
+    return _peak_rows(doc["archived"]["analysis"], r, "H57"), leaves
+
+
+@cache
+def k58_recomputed() -> dict:
+    return reuse.k58_placement(reuse_doc(K58))
+
+
+def k58():
+    """Kickoff 58: per chain, d1 at phi* and at +90 in one job and D = |d1(+90)| - |d1(phi*)|; H58a to H58c."""
+    doc, r = reuse_doc(K58), k58_recomputed()
+    leaves = compare("Kickoff 58, the placement comparison", {K58: {"archived": {"analysis": r}}}, {K58: doc})
+    a = doc["archived"]["analysis"]
+
+    def three(x):
+        return f"{x['H58a']} on 7, {x['H58b']} on 43, {x['H58c']} on 18"
+
+    rows = _rows(
+        lambda: [
+            ("verdict", three(a), three(r)),
+            *((f"D, M = {n}", a["per_chain"][n]["D"], r["per_chain"][n]["D"]) for n in a["per_chain"]),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k59_recomputed() -> dict:
+    return reuse.k59_peak_check_day_two(reuse_doc(K59))
+
+
+def k59():
+    """Kickoff 59: Kickoff 57's analysis on a second calibration day, with the zero-wait baselines; H59."""
+    doc, r = reuse_doc(K59), k59_recomputed()
+    leaves = compare(
+        "Kickoff 59, the check at the peak phase on a second day", {K59: {"archived": {"analysis": r}}}, {K59: doc}
+    )
+    return _peak_rows(doc["archived"]["analysis"], r, "H59"), leaves
+
+
+@cache
+def k61_recomputed() -> dict:
+    return reuse.k61_readout(reuse_doc(K61))
+
+
+def k61():
+    """Kickoff 61: per qubit of the sixteen, the measured readout error e with its interval, against the published
+    readout error at each stamp in force; H61; the qubits alone against together and the zero-wait baselines."""
+    doc, r = reuse_doc(K61), k61_recomputed()
+    leaves = compare("Kickoff 61, the readout check on ibm_fez", {K61: {"archived": {"analysis": r}}}, {K61: doc})
+    a = doc["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["H61"], r["H61"]),
+            (
+                "inconsistent qubits",
+                ", ".join(a["comparisons"]["at submission"]["inconsistent"]),
+                ", ".join(r["comparisons"]["at submission"]["inconsistent"]),
+            ),
+            *((f"e, qubit {q}", a["per_qubit"][q]["e"], r["per_qubit"][q]["e"]) for q in a["per_qubit"]),
+        ]
+    )
+    return rows, leaves
+
+
+@cache
+def k62_recomputed() -> dict:
+    return reuse.k62_peak_check_fez(reuse_doc(K62))
+
+
+def k62():
+    """Kickoff 62: the survey's measured readout against the published table; phi* from job 1; Kickoff 53's analysis on
+    the four phi* cells; H62, and beside it the check at +90, the original rule, job 1's fits, the drift and each M's
+    readout measured alone."""
+    doc, r = reuse_doc(K62), k62_recomputed()
+    leaves = compare(
+        "Kickoff 62, the check at the peak phase on ibm_fez", {K62: {"archived": {"analysis": r}}}, {K62: doc}
+    )
+    return _peak_rows(doc["archived"]["analysis"], r, "H62"), leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1783,6 +1931,12 @@ CASES = {
     "Kickoff 53, the revised check on new chains": k53,
     "Kickoff 54, the revised check on a second day": k54,
     "Kickoff 55, the revised check on ibm_kingston": k55,
+    "Kickoff 56, the phase sweep on ibm_kingston": k56,
+    "Kickoff 57, the check at the peak phase": k57,
+    "Kickoff 58, the placement comparison": k58,
+    "Kickoff 59, the check at the peak phase on a second day": k59,
+    "Kickoff 61, the readout check on ibm_fez": k61,
+    "Kickoff 62, the check at the peak phase on ibm_fez": k62,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1818,4 +1972,10 @@ REQUIRED = {
     "Kickoff 53, the revised check on new chains": "AGREE",
     "Kickoff 54, the revised check on a second day": "AGREE",
     "Kickoff 55, the revised check on ibm_kingston": "DISAGREE",
+    "Kickoff 56, the phase sweep on ibm_kingston": "LARGE on 7, NOT SETTLED on 43, SMALL on 18",
+    "Kickoff 57, the check at the peak phase": "AGREE",
+    "Kickoff 58, the placement comparison": "PEAK SMALLER on 7, PEAK SMALLER on 43, NOT SEPARATED on 18",
+    "Kickoff 59, the check at the peak phase on a second day": "AGREE",
+    "Kickoff 61, the readout check on ibm_fez": "PUBLISHED NOT READABLE",
+    "Kickoff 62, the check at the peak phase on ibm_fez": "AGREE",
 }

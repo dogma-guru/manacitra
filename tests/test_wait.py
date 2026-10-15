@@ -1093,11 +1093,25 @@ RUNS_A22 = (
 RUNS_A23 = ("ibm_fez/k54-revised-check-day-2.json", "ibm_kingston/k55-revised-check.json")
 
 
-@pytest.mark.parametrize("path", RUNS_A22 + RUNS_A23)
+#: Amendment A24: Kickoffs 56 to 62 (Kickoff 60 stopped at the draw: its record keeps its code and no counts)
+RUNS_A24 = (
+    "ibm_kingston/k56-phase-sweep.json",
+    "ibm_kingston/k57-peak-check.json",
+    "ibm_kingston/k58-placement-comparison.json",
+    "ibm_kingston/k59-peak-check-day-2.json",
+    "ibm_fez/k60-draw-stopped.json",
+    "ibm_fez/k61-readout-check.json",
+    "ibm_fez/k62-peak-check.json",
+)
+
+
+@pytest.mark.parametrize("path", RUNS_A22 + RUNS_A23 + RUNS_A24)
 def test_the_runs_code_is_kept_as_verbatim_lines(path):
     """Amendment A22, 2a: each run's analysis and circuit-building code is in its data record, as verbatim line
     ranges of the script as run (named by its SHA-256): each kept text has its recorded SHA-256 and line count,
-    compiles, and carries no instance or account name, dollar amount, charge, usage block or path."""
+    compiles, and carries no instance or account name, dollar amount, charge, usage block or path. (From Kickoff 56 on,
+    a script's table of reused files names the hand-back scanner, scan_handback.py, by its SHA-256: a file name, not a
+    path, kept as the line was run.)"""
     rec = archive.load(path)
     names = {s["file"]: s["sha256"] for s in rec["meta"]["source_scripts"]}
     assert rec["source_code"]
@@ -1110,7 +1124,7 @@ def test_the_runs_code_is_kept_as_verbatim_lines(path):
         compile(text, file, "exec")
         bad = re.findall(
             r"paid-|\bINSTANCE\b|instance_label|usd|\$|cap_|charge|\"usage\"|usage_remaining|QiskitRuntimeService"
-            r"|literature|preprint|handback|/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+",
+            r"|literature|preprint|(?<!scan_)handback|/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+",
             text,
             re.I,
         )
@@ -1146,3 +1160,243 @@ def test_kickoffs_54_and_55_are_rebuilt_by_the_package(path):
             recorded = json.loads(recorded) if isinstance(recorded, str) else recorded
             assert {k: int(n) for k, n in c.count_ops().items()} == recorded, (path, M, name)
         assert _t_m(built["W-no|0"], backend, M)["T_M_dt"] == off["T_M"][str(M)]["T_dt"], (path, M)
+
+
+# --------------------------------------------------------------------------- the check at the peak phase (A24)
+def _sweep_p1(theta_deg: float) -> list:
+    """M's exact P(1) in the sweep for a Ramsey whose offset is theta, the model of Kickoffs 57 to 62's code tests: a
+    loss 0.9 sin²((phi + theta) / 2) above a floor of 0.01."""
+    return [0.01 + 0.9 * math.sin(math.radians(p + theta_deg) / 2) ** 2 for p in wait.SWEEP_PHASES_DEG]
+
+
+@pytest.mark.parametrize("theta,peak", [(0, 180), (40, 140), (-100, 280), (162, 18)])
+def test_the_fit_and_the_peak_at_stated_offsets(theta, peak):
+    """Amendment A24, 1d: on exact values the fit returns the stated offset and the peak 180 - theta (0, +40, -100 and
+    +162 degrees give 180, 140, 280 and 18); on the wait test's series, F = 0.9 cos²((phi + theta) / 2), the wait test's
+    offset; and with binomial draws at the kickoffs' shot counts (two copies of 2,000 per phase), within 2 degrees of
+    the stated offset under every one of 50 seeds."""
+    f = wait.sweep_fit(_sweep_p1(theta))
+    assert f["theta_deg"] == pytest.approx(theta, abs=1e-9) and f["max_abs_residual"] < 1e-12
+    assert f["amplitude"] == pytest.approx(0.45, abs=1e-12) and wait.peak_phase(f["theta_deg"]) == peak
+    fw = wait.sweep_fit([0.9 * math.cos(math.radians(p + theta) / 2) ** 2 for p in wait.SWEEP_PHASES_DEG], "W-no")
+    assert fw["theta_deg"] == pytest.approx(theta, abs=1e-9)
+    assert wait.leftover(fw["theta_deg"], f["theta_deg"]) == pytest.approx(0.0, abs=1e-9)
+    for seed in range(50):
+        rng = np.random.default_rng(seed)
+        y = [rng.binomial(4000, p) / 4000 for p in _sweep_p1(theta)]
+        got = wait.sweep_fit(y)["theta_deg"]
+        assert abs(wait.leftover(got, theta)) < 2.0, (theta, seed, got)
+
+
+def test_the_peak_rounds_halves_up_and_wraps():
+    """Kickoff 57's procedure: phi* = 180 - theta_R1 wrapped to [0, 360) and rounded to the nearest whole degree,
+    halves up; the leftover wraps to (-180, +180]."""
+    assert [wait.peak_phase(t) for t in (0.5, -0.5, 180.0, -180.0, 179.6, 359.0, 16.44)] == [
+        180,
+        181,
+        0,
+        0,
+        0,
+        181,
+        164,
+    ]
+    assert wait.leftover(170, -170) == -20.0 and wait.leftover(-170, 10) == 180.0 and wait.leftover(10, -170) == 180.0
+    with pytest.raises(ValueError, match="one finite value per phase"):
+        wait.sweep_fit([0.1] * 5)
+    with pytest.raises(ValueError, match="one finite value per phase"):
+        wait.sweep_fit([0.1] * 5 + [float("nan")])
+    with pytest.raises(ValueError, match="series is"):
+        wait.sweep_fit([0.1] * 6, "W-ref")
+
+
+#: Amendment A24: the records whose circuits were built by Kickoff 57's builders, and the snapshot to rebuild them on
+PEAK_RUNS = {
+    "ibm_kingston/k57-peak-check.json": ("hw_57.py", "FakeKingston"),
+    "ibm_kingston/k59-peak-check-day-2.json": ("hw_59.py", "FakeKingston"),
+    "ibm_fez/k62-peak-check.json": ("hw_62.py", "FakeFez"),
+}
+
+
+@pytest.fixture(scope="module")
+def peak_code():
+    """The builders of Kickoffs 57, 59 and 62, run from their data records' copies, with the modules they import:
+    hw_50 and hw_51 (Kickoffs 50 and 51's records), analyse_52, analyse_53, analyse_57 and analyse_59 (their runs'
+    records). They also import history 01's tabulate_history, which this repository names by its SHA-256 and does not
+    keep; the builders do not use it, so an empty module stands in."""
+    import sys
+    import types
+
+    names = ("hw_50", "hw_51", "analyse_52", "analyse_53", "analyse_57", "analyse_59", "tabulate_history")
+    before = {k: sys.modules.get(k) for k in (*names, "hw_57", "hw_59", "hw_62")}
+    _run_code("ibm_fez/k50-neighbour-test.json", "hw_50.py")
+    _run_code("ibm_fez/k51-known-offset.json", "hw_51.py")
+    _run_code("ibm_fez/k52-phase-sweep.json", "analyse_52.py")
+    _run_code("ibm_fez/k53-revised-check.json", "analyse_53.py")
+    sys.modules["tabulate_history"] = types.ModuleType("tabulate_history")
+    _run_code("ibm_kingston/k57-peak-check.json", "analyse_57.py")
+    _run_code("ibm_kingston/k59-peak-check-day-2.json", "analyse_59.py")
+    yield {path: _run_code(path, file) for path, (file, _) in PEAK_RUNS.items()}
+    for k, v in before.items():
+        if v is None:
+            sys.modules.pop(k, None)
+        else:
+            sys.modules[k] = v
+
+
+def _job1_counts(rec: dict, m: int) -> dict:
+    out: dict = {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        if lab["job"] == 1 and lab["M"] == m:
+            out.setdefault(lab["phi_deg"], []).append(cts)
+    return out
+
+
+def _on_m(circuit, m: int) -> list:
+    """M's instructions in order, delays and barriers left out: (name, parameters)."""
+    return [
+        (i.operation.name, [round(float(x), 12) for x in i.operation.params])
+        for i in circuit.data
+        if i.operation.name not in ("delay", "barrier") and m in [circuit.find_bit(q).index for q in i.qubits]
+    ]
+
+
+@pytest.mark.parametrize("path", list(PEAK_RUNS))
+def test_the_sweep_and_the_check_are_what_the_hardware_runs_built(peak_code, path):
+    """Amendment A24, 1d (equivalence): on the chains of Kickoffs 57, 59 and 62, for the offline snapshot of each
+    processor, the package's sweep (`phase_sweep`) is structurally identical to job 1 as the run's own builder builds it
+    (the same operations on the same qubits, with the same parameters, at the same times); `peak_check`, fed the run's
+    own job 1 counts, returns the peak and the Ramsey's offset the run recorded before job 2 was built; and its job 2,
+    W-no and R1 at phi* and at +90 and W-ref, is identical to the builder's job 2 at that phi*. The builder's Z ran on
+    the chain's three lines with M into c5; the package's runs on M alone into c0, with M's instructions the same."""
+    pytest.importorskip("qiskit_ibm_runtime")
+    from qiskit_ibm_runtime import fake_provider
+
+    rec = archive.load(path)
+    hw = peak_code[path]
+    backend = getattr(fake_provider, PEAK_RUNS[path][1])()
+    for chain in rec["meta"]["chains"]:
+        m = chain[1]
+        theirs1, _, _ = hw.build_job1_chain(chain, backend)
+        mine1 = wait.phase_sweep(chain, backend)
+        assert (
+            [e["label"]["phi_deg"] for e in mine1] == list(wait.SWEEP_PHASES_DEG) == list(rec["meta"]["phis_job1_deg"])
+        )
+        for e in mine1:
+            c = theirs1[("R1", "sweep", e["label"]["phi_deg"])]
+            assert wait.structure(e["circuit"]) == wait.structure(c), (path, m, e["label"])
+            assert _timeline(e["circuit"], backend, chain) == _timeline(c, backend, chain)
+        pc = wait.peak_check(chain, backend, _job1_counts(rec, m))
+        recorded = rec["peaks"]["peaks"][str(m)]
+        assert (
+            pc["peak"]["phi_star_deg"]
+            == recorded["phi_star_deg"]
+            == rec["archived"]["analysis"]["phi_star_deg"][str(m)]
+        )
+        assert pc["peak"]["theta_R1_deg"] == pytest.approx(recorded["theta_R1_deg"], abs=1e-9)
+        theirs2, _, _ = hw.build_job2_chain(chain, backend, recorded["phi_star_deg"])
+        mine2 = {(e["label"]["circuit"], e["label"]["role"]): e for e in pc["circuits"]}
+        assert set(mine2) == {
+            ("W-no", "peak"),
+            ("R1", "peak"),
+            ("W-no", "plus90"),
+            ("R1", "plus90"),
+            ("W-ref", "ref"),
+            ("Z", "zero"),
+        }
+        for (name, role, phi), c in theirs2.items():
+            if name in ("R0", "P10", "P01"):
+                continue  # beside the check in the kickoffs; not part of the package's job 2
+            e = mine2[(name, role)]
+            assert e["label"]["phi_deg"] == phi, (path, m, name, role)
+            if name == "Z":
+                assert _on_m(e["circuit"], m) == _on_m(c, m) and e["label"]["m_clbit"] == 0
+                continue
+            assert wait.structure(e["circuit"]) == wait.structure(c), (path, m, name, role)
+            assert e["label"]["m_clbit"] == 5
+
+
+def test_the_check_needs_the_whole_sweep(fez):
+    """peak_check builds job 2 only from job 1's counts at every phase of the sweep; a missing phase is refused."""
+    counts = {p: {"0" * 6: 900, "1" + "0" * 5: 100} for p in wait.SWEEP_PHASES_DEG[:-1]}
+    with pytest.raises(ValueError, match="missing \\[300\\]"):
+        wait.peak_check([144, 143, 142], fez, counts)
+
+
+def test_the_survey(fez):
+    """Amendment A24, 1d (the survey): on the offline ibm_fez snapshot, S0 and S1 cover every qubit; no instruction acts
+    on two or more qubits; qubit i reads into clbit i; S0 has no gate and S1 one X per qubit; each qubit's exact P(1) is
+    0 in S0 and 1 in S1 (its own instructions alone, since none touches another qubit); and both are, instruction for
+    instruction, what Kickoff 62's builder (hw_62.py, from its record) builds."""
+    from qiskit import QuantumCircuit
+
+    survey = {e["label"]["circuit"]: e["circuit"] for e in wait.readout_survey(fez)}
+    n = fez.num_qubits
+    assert sorted(survey) == ["S0", "S1"] and n == 156
+    for name, c in survey.items():
+        assert c.num_clbits == n and all(len(i.qubits) == 1 for i in c.data)
+        meas = {
+            c.find_bit(i.qubits[0]).index: c.find_bit(i.clbits[0]).index
+            for i in c.data
+            if i.operation.name == "measure"
+        }
+        assert meas == {q: q for q in range(n)}
+        gates = [(i.operation.name, c.find_bit(i.qubits[0]).index) for i in c.data if i.operation.name != "measure"]
+        assert gates == ([] if name == "S0" else [("x", q) for q in range(n)])
+        for q in (0, 72, 143, 155):
+            one = QuantumCircuit(1, 1)
+            for i in c.data:
+                if c.find_bit(i.qubits[0]).index == q:
+                    one.append(i.operation, [0], [0] if i.clbits else [])
+            p1 = sum(v for k, v in wait.exact_distribution(one).items() if k[-1] == "1")
+            assert p1 == pytest.approx(0.0 if name == "S0" else 1.0, abs=1e-12)
+
+
+def test_the_survey_is_what_kickoff_62_built(peak_code, fez):
+    hw = peak_code["ibm_fez/k62-peak-check.json"]
+    theirs, qs = hw.build_survey(fez)
+    assert qs == list(range(fez.num_qubits))
+    for e in wait.readout_survey(fez):
+        assert wait.structure(e["circuit"]) == wait.structure(theirs[(e["label"]["circuit"], None, 0)])
+
+
+def test_the_readout_errors():
+    """readout_errors: P(1|0) from S0, P(0|1) from S1, the copies pooled, e their mean; the screen is the caller's
+    number; on Kickoff 62's job 0 counts it gives the survey the run recorded, qubit by qubit, and the 25 qubits above
+    3%."""
+    s0 = [{"000": 990, "001": 10}, {"000": 980, "100": 20}]
+    s1 = {"111": 950, "110": 30, "011": 20}
+    r = wait.readout_errors(s0, s1)
+    assert r["0"] == pytest.approx({"P1_given_0": 0.005, "P0_given_1": 0.03, "e": 0.0175}, abs=1e-15)
+    assert r["2"] == pytest.approx({"P1_given_0": 0.01, "P0_given_1": 0.02, "e": 0.015}, abs=1e-15)
+    assert wait.readout_errors(s0, s1, 0.015)["0"]["above_limit"] is True
+    with pytest.raises(ValueError, match="different numbers"):
+        wait.readout_errors({"00": 1}, {"111": 1})
+    with pytest.raises(ValueError, match="finite"):
+        wait.readout_errors(s0, s1, float("nan"))
+    rec = archive.load("ibm_fez/k62-peak-check.json")
+    zero = [c for lab, c in zip(rec["labels"], rec["counts"]) if lab["job"] == 0 and lab["circuit"] == "S0"]
+    one = [c for lab, c in zip(rec["labels"], rec["counts"]) if lab["job"] == 0 and lab["circuit"] == "S1"]
+    got = wait.readout_errors(zero, one, rec["design"]["survey"]["screen"])
+    for q, v in rec["survey"]["qubits"].items():
+        assert got[q]["e"] == pytest.approx(v["e"], abs=1e-12) and got[q]["above_limit"] == v["above_3pct_measured"]
+    assert sum(v["above_limit"] for v in got.values()) == 25
+
+
+def test_the_0_6_0_check_is_unchanged():
+    """Amendment A24, 1c: build_wait_test, build_wait_ramsey and predicted_fidelity keep their signatures and defaults;
+    the peak check's job 2 holds 0.6.0's check at +90 beside it."""
+    import inspect
+
+    assert (
+        str(inspect.signature(wait.build_wait_test))
+        == "(chain: 'Sequence[int]', refocus: 'bool' = False, backend=None, phase: 'float' = 0.0)"
+    )
+    assert (
+        str(inspect.signature(wait.build_wait_ramsey))
+        == "(chain: 'Sequence[int]', backend, neighbours: 'str' = 'active', phase: 'float' = 0.0)"
+    )
+    assert (
+        str(inspect.signature(wait.predicted_fidelity))
+        == "(f_ref: 'float', p1_wait: 'float', p1_zero: 'float') -> 'float'"
+    )
+    assert wait.CHECK_PHASE_DEG == 90 and wait.SWEEP_PHASES_DEG == (0, 60, 120, 180, 240, 300)

@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.0 (unreleased)
+
+The check can now be placed at the active-neighbour Ramsey's loss maximum: a six-phase sweep fixes each chain's peak phase, and the check runs there, where every cell is informative by construction. `manacitra.wait` gains the sweep, the fit, the peak phase and a readout survey with a per-qubit readout error from measured counts; the 0.6.0 check at +90° is unchanged. Findings 22 to 27, from four runs on ibm_kingston on 14 and 15 October 2026 and two on ibm_fez on 15 October, with their data, and the record of a draw on ibm_fez that found no chain on the published readout table. At the peak phase the check predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains on two processors (findings 23, 25 and 27). On ibm_fez a direct measurement found readout errors of 0.004 to 0.021 on sixteen qubits the published table put at up to 0.44, and a survey of all 156 qubits a median of 0.0098 against a published 0.166 (findings 26 and 27).
+
+- Amendment A24: `manacitra.wait` builds the check at the peak phase in two jobs: `phase_sweep` (the active-neighbour
+  Ramsey at six phases, with the wait test at the same phases as an optional second series), `sweep_fit` (the fit of
+  findings 18 and 22), `peak_phase` and `leftover`, and `peak_check`, which builds the check at the peak phase, with
+  0.6.0's check at +90° beside it, from the sweep's counts and returns the peak to record before it runs; and
+  `readout_survey` and `readout_errors` measure every qubit's readout error, with any screen's threshold the caller's.
+  `build_wait_test`, `build_wait_ramsey` and `predicted_fidelity` are unchanged. Findings 22 to 27 (Kickoffs 56 to 59,
+  61 and 62), with their data in `data/ibm_kingston/` and `data/ibm_fez/` (the counts, labelled by job where a run had
+  several, the run records, the chain draws, the peaks recorded before each check, Kickoff 62's survey and each run's
+  code as verbatim lines of the scripts as run), Kickoff 60's draw that found no chain, the eight posted rule files
+  published unchanged, their recomputes in `tests/_reuse_runs.py`, and a test that the package builds what the runs
+  built. The README opens with the check at the peak phase, and its table of findings has one row per thread; the
+  table with one row per finding moves to `docs/findings.md`.
+
 ## 0.6.0 (15 October 2026)
 
 The check's default Ramsey now runs with the waiting qubit's neighbours active, as they are in the circuit; the 0.5.0 instrument remains available as `neighbours="idle"`. Findings 15 to 21, from six runs on ibm_fez on 13 and 15 October 2026 and one on ibm_kingston on 14 October, with their data. The revised check predicted the wait test within ±0.15 on all informative cells on ibm_fez on two days, across a maintenance (findings 19 and 21), and missed on one of four cells on ibm_kingston (finding 20); the original check would have returned DISAGREE in all three runs, and on each of the eight cells where it missed, the active-neighbour Ramsey was the closer instrument.

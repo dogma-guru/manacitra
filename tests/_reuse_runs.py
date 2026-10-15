@@ -1724,25 +1724,32 @@ def k52_phase_sweep(rec: dict) -> dict:
     }
 
 
-def _revised_check(rec: dict, order, labels=None, counts=None) -> tuple[dict, list]:
-    """Kickoff 53's analysis, as fixed before its data and reused unchanged by Kickoffs 54 and 55 (analyse_53.py): per
-    chain in the given order and phi in {0, +90}, F_no(phi), F_ref and M's losses in R0 and R1; the revised residual d1
-    with R1's loss and the original d0 with R0's; one joint bootstrap (seed bootstrap). The verdict on the cells
-    informative by R1, and the original rule's verdict beside it. Returns the analysis and its cells."""
+def _margin_rule(cs, d_key: str, loss_key: str, margin: float, floor: float) -> tuple[str, list]:
+    """Kickoff 53's rule on a list of cells: informative if the loss interval lies entirely above the floor; DISAGREE if
+    any informative cell's residual interval lies entirely outside the margin, AGREE if every one's lies entirely
+    inside, NOT SETTLED otherwise, with ", uninformative" if no cell is informative."""
+    inf = [c for c in cs if c[loss_key + "_ci90"][0] > floor]
+    out_ = [c for c in inf if c[d_key + "_ci90"][0] > margin or c[d_key + "_ci90"][1] < -margin]
+    inside = [c for c in inf if c[d_key + "_ci90"][0] > -margin and c[d_key + "_ci90"][1] < margin]
+    v = "DISAGREE" if out_ else ("AGREE" if len(inside) == len(inf) else "NOT SETTLED")
+    if not inf:
+        v += ", uninformative"
+    return v, [c["cell"] for c in inf]
+
+
+def _revised_check(rec: dict, order, labels=None, counts=None, phis=(0, 90)) -> tuple[dict, list]:
+    """Kickoff 53's analysis, as fixed before its data and reused unchanged by Kickoffs 54, 55, 57, 59 and 62
+    (analyse_53.py): per chain in the given order and phi in phis ({0, +90} for Kickoffs 53 to 55; Kickoff 57's analysis
+    passes the phi* circuits labelled 0, with phis (0,)), F_no(phi), F_ref and M's losses in R0 and R1; the revised
+    residual d1 with R1's loss and the original d0 with R0's; one joint bootstrap (seed bootstrap). The verdict on the
+    cells informative by R1, and the original rule's verdict beside it. Returns the analysis and its cells."""
     m, fixed = rec["meta"], rec["fixed_before_the_data"]
     seeds = m["seeds"]
     labels, counts = (rec["labels"], rec["counts"]) if labels is None else (labels, counts)
     margin, floor = fixed["margin"], fixed["informative_floor"]
-    phis = (0, 90)
 
     def rule(cs, d_key, loss_key):
-        inf = [c for c in cs if c[loss_key + "_ci90"][0] > floor]
-        out_ = [c for c in inf if c[d_key + "_ci90"][0] > margin or c[d_key + "_ci90"][1] < -margin]
-        inside = [c for c in inf if c[d_key + "_ci90"][0] > -margin and c[d_key + "_ci90"][1] < margin]
-        v = "DISAGREE" if out_ else ("AGREE" if len(inside) == len(inf) else "NOT SETTLED")
-        if not inf:
-            v += ", uninformative"
-        return v, [c["cell"] for c in inf]
+        return _margin_rule(cs, d_key, loss_key, margin, floor)
 
     cells, bits, pooled = _cells_and_bits(labels, counts, lambda lab: (str(lab["M"]), lab["circuit"], lab["phi_deg"]))
     draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
@@ -2048,3 +2055,698 @@ def k55_kingston(rec: dict) -> dict:
             "after_fetch": run["calibration_after_fetch"],
         },
     }
+
+
+# --------------------------------------------------------------------------- Kickoffs 56 to 62 (Amendment A24)
+#: Kickoff 56's verdict, fixed before the data (k56-rule.md): LARGE outside +-10 degrees, SMALL inside +-5
+K56_LARGE_DEG, K56_SMALL_DEG = 10.0, 5.0
+
+
+def k56_phase_sweep(rec: dict) -> dict:
+    """Kickoff 56, the phase sweep on finding 20's chains, as its analysis fixed it before the data (analyse_56.py,
+    through Kickoff 52's fits): per M (7, 43, 18), F_no(phi) at six phases and F_ref, M's losses in R0 and R1; the
+    fitted offsets theta_W, theta_R0 and theta_R1; the leftover L = theta_W - theta_R1 and the two differences beside
+    it; d1 and d0 at every phase and their means (the lean); one joint bootstrap (seed bootstrap), refitting on every
+    resample; after the three M, the pulse-cost circuit's P(1) from the same generator. H56a to H56c."""
+    seeds = rec["meta"]["seeds"]
+    order, name = ("7", "43", "18"), {"7": "H56a", "43": "H56b", "18": "H56c"}
+    lo_deg, sm_deg = K56_LARGE_DEG, K56_SMALL_DEG
+
+    def near(draws, point):
+        return point + _wrap(np.asarray(draws) - point)
+
+    def verdict_of(ci):
+        lo, hi = ci
+        if lo > lo_deg or hi < -lo_deg:
+            return "LARGE"
+        if lo > -sm_deg and hi < sm_deg:
+            return "SMALL"
+        return "NOT SETTLED"
+
+    cells, bits, pooled = _cells_and_bits(
+        rec["labels"], rec["counts"], lambda lab: (str(lab["M"]), lab["circuit"], lab["phi_deg"])
+    )
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    out, zdraws = {}, {}
+    for M in order:
+        wkeys = [(M, "W-no", p) for p in K52_PHIS] + [(M, "W-ref", 0)]
+        rkeys = [(M, "Z", 0)] + [(M, c, p) for c in ("R0", "R1") for p in K52_PHIS]
+        Fb = {k: draw_F(k) for k in wkeys}
+        Pb = {k: draw_P(k) for k in rkeys}
+        Fp = {k: wait.fidelity(dict(pooled[k]), ideal) for k in wkeys}
+        P = {k: _p1(bits, k) for k in rkeys}
+        z = (M, "Z", 0)
+        zdraws[M] = (P[z], Pb[z])
+        y = {"W": np.array([Fp[(M, "W-no", p)] for p in K52_PHIS])}
+        yb = {"W": np.stack([Fb[(M, "W-no", p)] for p in K52_PHIS], -1)}
+        for c in ("R0", "R1"):
+            y[c] = np.array([P[(M, c, p)] - P[z] for p in K52_PHIS])
+            yb[c] = np.stack([Pb[(M, c, p)] - Pb[z] for p in K52_PHIS], -1)
+        th = {"W": wait.sweep_fit(y["W"], "W-no")["theta_deg"]}
+        th |= {c: wait.sweep_fit(y[c], c)["theta_deg"] for c in ("R0", "R1")}
+        thb = {"W": theta_wait_test(yb["W"]), "R0": theta_ramsey(yb["R0"]), "R1": theta_ramsey(yb["R1"])}
+        diffs = {}
+        for dn, (a, b) in (("L_W_minus_R1", ("W", "R1")), ("W_minus_R0", ("W", "R0")), ("R1_minus_R0", ("R1", "R0"))):
+            pt = wait.leftover(th[a], th[b])
+            diffs[dn] = {"deg": pt, "ci90": pct(near(_wrap(thb[a] - thb[b]), pt))}
+        fits = {}
+        for c in ("W", "R0", "R1"):
+            c0, b, s = _fit6(y[c])
+            _, bb, sb = _fit6(yb[c])
+            fits[c] = {
+                "theta_deg": th[c],
+                "theta_ci90": pct(near(thb[c], th[c])),
+                "c": float(c0),
+                "b": float(b),
+                "s": float(s),
+                "amplitude": float(math.hypot(b, s)),
+                "amplitude_ci90": pct(np.hypot(bb, sb)),
+                "residuals": (y[c] - _K52_X @ np.array([c0, b, s])).tolist(),
+                "y": y[c].tolist(),
+                "label": "a fit (OLS of c + b cos phi + s sin phi over the six phases), fixed before the data",
+            }
+        f_ref, f_ref_b = Fp[(M, "W-ref", 0)], Fb[(M, "W-ref", 0)]
+        resid = {}
+        for t, c in (("d0", "R0"), ("d1", "R1")):
+            dp = y["W"] - f_ref * (1 - y[c])
+            db = yb["W"] - f_ref_b[:, None] * (1 - yb[c])
+            resid[t] = {str(p): float(dp[i]) for i, p in enumerate(K52_PHIS)}
+            resid[t + "_ci90"] = {str(p): pct(db[:, i]) for i, p in enumerate(K52_PHIS)}
+            resid[f"mean_{t}"] = float(dp.mean())
+            resid[f"mean_{t}_ci90"] = pct(db.mean(1))
+        out[M] = {
+            "verdict_name": name[M],
+            "verdict": verdict_of(diffs["L_W_minus_R1"]["ci90"]),
+            **diffs,
+            "fits": fits,
+            "F_no": {str(p): Fp[(M, "W-no", p)] for p in K52_PHIS},
+            "F_no_ci90": {str(p): pct(Fb[(M, "W-no", p)]) for p in K52_PHIS},
+            "F_ref": f_ref,
+            "F_ref_ci90": pct(f_ref_b),
+            "P1_Z": P[z],
+            "P1_Z_ci90": pct(Pb[z]),
+            "loss": {f"{c}|{p}": float(y[c][i]) for c in ("R0", "R1") for i, p in enumerate(K52_PHIS)},
+            "loss_ci90": {f"{c}|{p}": pct(yb[c][:, i]) for c in ("R0", "R1") for i, p in enumerate(K52_PHIS)},
+            **resid,
+            "lean_mean_d1": resid["mean_d1"],
+            "lean_mean_d1_ci90": resid["mean_d1_ci90"],
+        }
+    for M in order:
+        k = (M, "XY4", 0)
+        pz, pzb = zdraws[M]
+        pb, p = draw_P(k), _p1(bits, k)
+        out[M]["pulse_cost"] = {"P1": p, "P1_ci90": pct(pb), "P1_minus_Z": p - pz, "P1_minus_Z_ci90": pct(pb - pzb)}
+    run = rec["run"]
+    return {
+        **{name[M]: out[M]["verdict"] for M in order},
+        "per_M": out,
+        "calibration_stamps": {
+            "at_build": run["calibration_at_build"],
+            "at_submission": run["calibration_at_submission"],
+            "after_fetch": run["calibration_after_fetch"],
+        },
+    }
+
+
+def _jobs(rec: dict) -> dict:
+    """A record's labels and counts, split by the job each position's label names."""
+    out: dict = {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        out.setdefault(lab["job"], ([], []))
+        out[lab["job"]][0].append(lab)
+        out[lab["job"]][1].append(cts)
+    return out
+
+
+def _sweep_peaks(labels1, counts1, order) -> dict:
+    """The peak procedure on job 1, from the point estimate, with the package's fit and peak (Kickoffs 57 to 62's
+    analyse_57.peaks): per M, R1's P(1) at the six phases, the copies pooled; theta_R1; phi*."""
+    _, bits, _ = _cells_and_bits(labels1, counts1, lambda lab: (str(lab["M"]), lab["phi_deg"]))
+    out = {}
+    for M in order:
+        y = [_p1(bits, (M, p)) for p in wait.SWEEP_PHASES_DEG]
+        f = wait.sweep_fit(y, "R1")
+        out[M] = {"P1": y, "fit": f, "theta_R1_deg": f["theta_deg"], "phi_star_deg": wait.peak_phase(f["theta_deg"])}
+    return out
+
+
+def _peak_check(rec: dict, order) -> tuple[dict, dict]:
+    """Kickoff 57's analysis (analyse_57.py), reused unchanged by Kickoffs 59 and 62 with their seeds: the verdict by
+    Kickoff 53's analysis on the phi* circuits, W-ref and Z (`_revised_check`, with the phi* circuits labelled 0);
+    beside it, from one generator with the verdict's seed that first repeats the verdict's draws, the check at +90 on
+    the same chains, the original rule at phi* and at +90, job 1's fits with their intervals, and the drift between the
+    jobs. phi* is recomputed from job 1's counts by the package (`_sweep_peaks`) and must equal the peaks recorded
+    before job 2. Returns the analysis (its verdict under "H") and the jobs."""
+    jobs = _jobs(rec)
+    (labels1, counts1), (labels2, counts2) = jobs[1], jobs[2]
+    seeds, fixed = rec["meta"]["seeds"], rec["fixed_before_the_data"]
+    margin, floor = fixed["margin"], fixed["informative_floor"]
+    peaks = _sweep_peaks(labels1, counts1, order)
+    phistar = {M: peaks[M]["phi_star_deg"] for M in order}
+    recorded = {M: rec["peaks"]["peaks"][M]["phi_star_deg"] for M in order}
+    if phistar != recorded:
+        raise RuntimeError(f"the peaks recomputed from job 1 ({phistar}) are not the peaks recorded ({recorded})")
+    sel = [
+        ({**lab, "phi_deg": 0}, cts)
+        for lab, cts in zip(labels2, counts2)
+        if lab["role"] == "peak" or lab["circuit"] in ("W-ref", "Z")
+    ]
+    r53, _ = _revised_check(rec, order, [x[0] for x in sel], [x[1] for x in sel], phis=(0,))
+
+    cells, bits, pooled = _cells_and_bits(labels2, counts2, lambda lab: (str(lab["M"]), lab["circuit"], lab["role"]))
+    _, bits1, _ = _cells_and_bits(labels1, counts1, lambda lab: (str(lab["M"]), "R1-sweep", lab["phi_deg"]))
+    bits.update(bits1)
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    P = {k: _p1(bits, k) for k in bits}
+    Fp = {k: wait.fidelity(dict(v), ideal) for k, v in pooled.items()}
+    Fb, Pb = {}, {}
+    for M in order:  # the verdict's draws, in Kickoff 53's order
+        for k in ((M, "W-no", "peak"), (M, "W-ref", "ref")):
+            Fb[k] = draw_F(k)
+        for k in ((M, "Z", "zero"), (M, "R0", "peak"), (M, "R1", "peak")):
+            Pb[k] = draw_P(k)
+    c53 = {c["M"]: c for c in r53["cells"]}
+    same = True
+    for M in order:
+        z, zb, fr, frb = P[(M, "Z", "zero")], Pb[(M, "Z", "zero")], Fp[(M, "W-ref", "ref")], Fb[(M, "W-ref", "ref")]
+        l1, l1b = P[(M, "R1", "peak")] - z, Pb[(M, "R1", "peak")] - zb
+        d1, d1ci = Fp[(M, "W-no", "peak")] - fr * (1 - l1), pct(Fb[(M, "W-no", "peak")] - frb * (1 - l1b))
+        same = same and abs(d1 - c53[M]["d1"]) < 1e-12 and np.allclose(d1ci, c53[M]["d1_ci90"], rtol=0, atol=1e-12)
+    if not same:
+        raise RuntimeError("the joint generator does not repeat Kickoff 53's verdict draws")
+    for M in order:
+        Fb[(M, "W-no", "plus90")] = draw_F((M, "W-no", "plus90"))
+        for k in ((M, "R0", "plus90"), (M, "R1", "plus90")):
+            Pb[k] = draw_P(k)
+    p90 = []
+    for M in order:
+        z, zb, fr, frb = P[(M, "Z", "zero")], Pb[(M, "Z", "zero")], Fp[(M, "W-ref", "ref")], Fb[(M, "W-ref", "ref")]
+        fno, fnob = Fp[(M, "W-no", "plus90")], Fb[(M, "W-no", "plus90")]
+        l0, l0b = P[(M, "R0", "plus90")] - z, Pb[(M, "R0", "plus90")] - zb
+        l1, l1b = P[(M, "R1", "plus90")] - z, Pb[(M, "R1", "plus90")] - zb
+        c = {
+            "cell": f"{M}|+90",
+            "M": M,
+            "phi_deg": 90,
+            "F_no": fno,
+            "F_no_ci90": pct(fnob),
+            "F_ref": fr,
+            "loss_R0": l0,
+            "loss_R0_ci90": pct(l0b),
+            "loss_R1": l1,
+            "loss_R1_ci90": pct(l1b),
+            "d1": fno - fr * (1 - l1),
+            "d1_ci90": pct(fnob - frb * (1 - l1b)),
+            "d0": fno - fr * (1 - l0),
+            "d0_ci90": pct(fnob - frb * (1 - l0b)),
+        }
+        c["informative_R1"] = c["loss_R1_ci90"][0] > floor
+        c["informative_R0"] = c["loss_R0_ci90"][0] > floor
+        p90.append(c)
+    v90, inf90 = _margin_rule(p90, "d1", "loss_R1", margin, floor)
+    v90_0, inf90_0 = _margin_rule(p90, "d0", "loss_R0", margin, floor)
+    fits1 = {}
+    for M in order:
+        ks = [(M, "R1-sweep", p) for p in K52_PHIS]
+        for k in ks:
+            Pb[k] = draw_P(k)
+        y = np.array([P[k] for k in ks])
+        yb = np.stack([Pb[k] for k in ks], -1)
+        c0, b, s = (float(v) for v in _fit6(y))
+        _, bb, sb = _fit6(yb)
+        th, thb = float(theta_ramsey(y)), theta_ramsey(yb)
+        fits1[M] = {
+            "theta_R1_deg": th,
+            "theta_ci90": pct(th + _wrap(thb - th)),
+            "amplitude": math.hypot(b, s),
+            "amplitude_ci90": pct(np.hypot(bb, sb)),
+            "c": c0,
+            "b": b,
+            "s": s,
+            "residuals": (y - _K52_X @ np.array([c0, b, s])).tolist(),
+            "P1": dict(zip(map(str, K52_PHIS), y.tolist())),
+            "phi_star_from_this_fit": wait.peak_phase(th),
+        }
+    drift = {}
+    for M in order:
+        ph, f = math.radians(phistar[M]), fits1[M]
+        p1_fit = f["c"] + f["b"] * math.cos(ph) + f["s"] * math.sin(ph)
+        p1_j2, z = P[(M, "R1", "peak")], P[(M, "Z", "zero")]
+        drift[M] = {
+            "phi_star_deg": phistar[M],
+            "R1_P1_job2": p1_j2,
+            "R1_P1_job1_fit_at_phi_star": p1_fit,
+            "difference_P1": p1_j2 - p1_fit,
+            "R1_loss_job2": p1_j2 - z,
+            "R1_loss_job1_fit_minus_job2_Z": p1_fit - z,
+            "job1_fit_maximum_P1": f["c"] + f["amplitude"],
+        }
+    d1 = [c["d1"] for c in r53["cells"]]
+    out = {
+        "H": r53["verdict"],
+        "informative_cells": r53["informative_cells"],
+        "cells_phi_star": r53["cells"],
+        "chains": r53["chains"],
+        "phi_star_deg": phistar,
+        "original_rule_at_phi_star": {
+            "verdict": r53["beside"]["original_rule_verdict"],
+            "informative": r53["beside"]["original_rule_informative_cells"],
+        },
+        "comparison_at_phi_star": r53["beside"],
+        "check_at_plus90": {
+            "cells": p90,
+            "verdict": v90,
+            "informative_cells": inf90,
+            "original_rule_verdict": v90_0,
+            "original_rule_informative_cells": inf90_0,
+        },
+        "lean_phi_star": {
+            "d1": {c["M"]: c["d1"] for c in r53["cells"]},
+            "mean_d1": float(np.mean(d1)),
+            "n_d1_above_zero": int(sum(x > 0 for x in d1)),
+        },
+        "job1_fits": fits1,
+        "drift": drift,
+        "joint_generator_repeats_analyse_53": same,
+    }
+    return out, jobs
+
+
+def _drawn_order(rec: dict) -> list:
+    return [str(c["chain"][1]) for c in rec["chain_draw"]["drawn"]]
+
+
+def k57_peak_check(rec: dict) -> dict:
+    """Kickoff 57, the check at the peak phase on ibm_kingston (analyse_57.py): H57 on the four phi* cells, and beside
+    it the check at +90, the original rule, job 1's fits and the drift."""
+    r, _ = _peak_check(rec, _drawn_order(rec))
+    return {"H57": r.pop("H"), **r}
+
+
+def k59_peak_check_day_two(rec: dict) -> dict:
+    """Kickoff 59, the check at the peak phase on a second calibration day (analyse_59.py: Kickoff 57's analysis with
+    its seeds), and each waiting qubit's zero-wait baseline beside it."""
+    r, _ = _peak_check(rec, _drawn_order(rec))
+    out = {"H59": r.pop("H"), **r}
+    out["zero_wait_baseline"] = {
+        M: {"P1_Z": v["P1_Z"], "P1_Z_ci90": v["P1_Z_ci90"], "above_0.1": v["P1_Z"] > 0.1}
+        for M, v in r["chains"].items()
+    }
+    out["zero_wait_baseline_any_above_0.1"] = [M for M, v in out["zero_wait_baseline"].items() if v["above_0.1"]]
+    return out
+
+
+#: Kickoff 58's figures from Kickoffs 55 and 56, as its analysis carried them (k58-rule.md quotes the same)
+K56_THETA_R1_AS_CARRIED = {"7": 16.26, "43": -37.32, "18": -38.11}
+K56_IMPLIED_PEAK_AS_CARRIED = {"7": 164, "43": 217, "18": 218}
+K55_D1_PLUS90_AS_CARRIED = {"7": 0.257, "43": 0.160, "18": 0.073}
+
+
+def k58_placement(rec: dict) -> dict:
+    """Kickoff 58, the placement comparison on finding 20's chains (analyse_58.py): per chain, d1 at phi* and at +90 in
+    one job, D = |d1(+90)| - |d1(phi*)| and H58a to H58c by the 0.02 band; beside, the original rule's D0, the margin at
+    each placement, job 1's fit beside Kickoff 56's, the drift and the +90 cells beside Kickoff 55's. One joint
+    bootstrap (seed bootstrap) in the analysis's order."""
+    fixed, seeds = rec["fixed_before_the_data"], rec["meta"]["seeds"]
+    band, margin, floor = fixed["band"], fixed["margin"], fixed["informative_floor"]
+    order, name = ("7", "43", "18"), {"7": "H58a", "43": "H58b", "18": "H58c"}
+    jobs = _jobs(rec)
+    (labels1, counts1), (labels2, counts2) = jobs[1], jobs[2]
+    peaks = _sweep_peaks(labels1, counts1, order)
+    phistar = {M: peaks[M]["phi_star_deg"] for M in order}
+    if phistar != {M: rec["peaks"]["peaks"][M]["phi_star_deg"] for M in order}:
+        raise RuntimeError("the peaks recomputed from job 1 are not the peaks recorded")
+
+    def verdict_of(ci):
+        lo, hi = ci
+        if lo > band:
+            return "PEAK SMALLER"
+        if hi < -band:
+            return "PLUS-90 SMALLER"
+        return "NOT SEPARATED"
+
+    def margin_of(ci):
+        lo, hi = ci
+        if lo > -margin and hi < margin:
+            return "inside"
+        if lo > margin or hi < -margin:
+            return "outside"
+        return "across"
+
+    cells, bits, pooled = _cells_and_bits(labels2, counts2, lambda lab: (str(lab["M"]), lab["circuit"], lab["role"]))
+    _, bits1, _ = _cells_and_bits(labels1, counts1, lambda lab: (str(lab["M"]), "R1-sweep", lab["phi_deg"]))
+    bits.update(bits1)
+    draw_F, draw_P = _draws(np.random.default_rng(seeds["bootstrap"]), seeds["n_boot"], cells, bits)
+    ideal = wait.wait_test_ideal()
+    P = {k: _p1(bits, k) for k in bits}
+    Fp = {k: wait.fidelity(dict(v), ideal) for k, v in pooled.items()}
+    Fb, Pb = {}, {}
+    for M in order:
+        for k in ((M, "W-no", "peak"), (M, "W-no", "plus90"), (M, "W-ref", "ref")):
+            Fb[k] = draw_F(k)
+        for k in ((M, "Z", "zero"), (M, "R1", "peak"), (M, "R1", "plus90")):
+            Pb[k] = draw_P(k)
+    for M in order:
+        for k in ((M, "R0", "peak"), (M, "R0", "plus90")):
+            Pb[k] = draw_P(k)
+    for M in order:
+        for p in K52_PHIS:
+            Pb[(M, "R1-sweep", p)] = draw_P((M, "R1-sweep", p))
+    per = {}
+    for M in order:
+        z, zb = P[(M, "Z", "zero")], Pb[(M, "Z", "zero")]
+        fr, frb = Fp[(M, "W-ref", "ref")], Fb[(M, "W-ref", "ref")]
+        cell, cellb = {}, {}
+        for role in ("peak", "plus90"):
+            fno, fnob = Fp[(M, "W-no", role)], Fb[(M, "W-no", role)]
+            c = {"phi_deg": phistar[M] if role == "peak" else 90, "F_no": fno, "F_no_ci90": pct(fnob)}
+            for r_, R in (("1", "R1"), ("0", "R0")):
+                lo, lb = P[(M, R, role)] - z, Pb[(M, R, role)] - zb
+                d, db = fno - fr * (1 - lo), fnob - frb * (1 - lb)
+                c.update({f"loss_{R}": lo, f"loss_{R}_ci90": pct(lb), f"d{r_}": d, f"d{r_}_ci90": pct(db)})
+                cellb[(role, r_)] = db
+            c["informative_R1"] = c["loss_R1_ci90"][0] > floor
+            c["informative_R0"] = c["loss_R0_ci90"][0] > floor
+            c["d1_margin"] = margin_of(c["d1_ci90"])
+            c["d0_margin"] = margin_of(c["d0_ci90"])
+            cell[role] = c
+        D = abs(cell["plus90"]["d1"]) - abs(cell["peak"]["d1"])
+        Db = np.abs(cellb[("plus90", "1")]) - np.abs(cellb[("peak", "1")])
+        D0 = abs(cell["plus90"]["d0"]) - abs(cell["peak"]["d0"])
+        D0b = np.abs(cellb[("plus90", "0")]) - np.abs(cellb[("peak", "0")])
+        ks = [(M, "R1-sweep", p) for p in K52_PHIS]
+        y = np.array([P[k] for k in ks])
+        yb = np.stack([Pb[k] for k in ks], -1)
+        c0, b, s = (float(v) for v in _fit6(y))
+        _, bb, sb = _fit6(yb)
+        th, thb = float(theta_ramsey(y)), theta_ramsey(yb)
+        ph = math.radians(phistar[M])
+        p1_fit = c0 + b * math.cos(ph) + s * math.sin(ph)
+        per[M] = {
+            "verdict_name": name[M],
+            "verdict": verdict_of(pct(Db)),
+            "phi_star_deg": phistar[M],
+            "D": D,
+            "D_ci90": pct(Db),
+            "cells": cell,
+            "F_ref": fr,
+            "F_ref_ci90": pct(frb),
+            "P1_Z": z,
+            "P1_Z_ci90": pct(zb),
+            "original_rule": {"D0": D0, "D0_ci90": pct(D0b), "verdict_by_the_same_band": verdict_of(pct(D0b))},
+            "job1_fit": {
+                "theta_R1_deg": th,
+                "theta_ci90": pct(th + _wrap(thb - th)),
+                "amplitude": math.hypot(b, s),
+                "amplitude_ci90": pct(np.hypot(bb, sb)),
+                "c": c0,
+                "b": b,
+                "s": s,
+                "residuals": (y - _K52_X @ np.array([c0, b, s])).tolist(),
+                "P1": dict(zip(map(str, K52_PHIS), y.tolist())),
+                "kickoff_56_theta_R1_deg": K56_THETA_R1_AS_CARRIED[M],
+                "theta_minus_kickoff_56_deg": float(_wrap(th - K56_THETA_R1_AS_CARRIED[M])),
+                "kickoff_56_implied_peak_deg": K56_IMPLIED_PEAK_AS_CARRIED[M],
+            },
+            "drift": {
+                "R1_P1_job2_at_phi_star": P[(M, "R1", "peak")],
+                "R1_P1_job1_fit_at_phi_star": p1_fit,
+                "difference_P1": P[(M, "R1", "peak")] - p1_fit,
+                "R1_loss_job2": P[(M, "R1", "peak")] - z,
+                "R1_loss_job1_fit_minus_job2_Z": p1_fit - z,
+            },
+            "plus90_beside_kickoff_55": {
+                "d1_this_run": cell["plus90"]["d1"],
+                "d1_ci90_this_run": cell["plus90"]["d1_ci90"],
+                "d1_kickoff_55": K55_D1_PLUS90_AS_CARRIED[M],
+            },
+        }
+    return {**{name[M]: per[M]["verdict"] for M in order}, "per_chain": per}
+
+
+def k61_readout(rec: dict) -> dict:
+    """Kickoff 61, the readout check on ibm_fez (analyse_61.py): per qubit of the sixteen, P(1|0) from A, P(0|1) from B
+    and e = (P(1|0) + P(0|1)) / 2, the copies pooled, with one bootstrap (seed bootstrap) in the analysis's order (A
+    and B drawn jointly over the sixteen qubits, then M-zero, M-one and Z per M); each qubit CONSISTENT or INCONSISTENT
+    with the published readout error at the stamp in force at submission and at each later stamp dated before the job
+    finished; H61; beside it, e below 0.05, each M alone against together, and the zero-wait baselines."""
+    m, fixed = rec["meta"], rec["fixed_before_the_data"]
+    seeds, qubits, ms = m["seeds"], [int(q) for q in m["qubits"]], [int(x) for x in m["M"]]
+    n_boot, chunk = seeds["n_boot"], 1_000
+    floor, at = 0.02, fixed["not_readable_at_or_above"]
+
+    def tol(p):
+        return max(floor, p / 2)
+
+    g: dict = {}
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        g.setdefault((lab["circuit"], lab["M"]), []).append(
+            (lab["copy"], {k.replace(" ", ""): int(n) for k, n in cts.items()})
+        )
+    for k in g:
+        g[k].sort(key=lambda x: x[0])
+    rng = np.random.default_rng(seeds["bootstrap"])
+    n = len(qubits)
+
+    def joint(key, flip):
+        copies = g[key]
+        keys = sorted({k for _, d in copies for k in d})
+        B = np.array([[int(k[::-1][i]) for i in range(n)] for k in keys], dtype=np.int64)
+        if flip:
+            B = 1 - B
+        V = np.array([[d.get(k, 0) for k in keys] for _, d in copies], float)
+        tot = V.sum(1)
+        point = (V.sum(0) @ B) / tot.sum()
+        freq = V / tot[:, None]
+        draws = np.zeros((n_boot, n))
+        idx = rng.integers(0, V.shape[0], size=(n_boot, V.shape[0]))
+        for s in range(0, n_boot, chunk):
+            acc, accn = np.zeros((min(chunk, n_boot - s), n)), np.zeros(min(chunk, n_boot - s))
+            for j in range(V.shape[0]):
+                pick = idx[s : s + chunk, j]
+                acc += rng.multinomial(tot[pick].astype(np.int64), freq[pick]) @ B
+                accn += tot[pick]
+            draws[s : s + chunk] = acc / accn[:, None]
+        return point, draws
+
+    def single(key, target):
+        copies = g[key]
+        o = np.array([sum(v for k, v in d.items() if k[-1] == str(target)) for _, d in copies])
+        t = np.array([sum(d.values()) for _, d in copies])
+        acc1, accn = np.zeros(n_boot), np.zeros(n_boot)
+        for _ in range(len(o)):
+            pick = rng.integers(0, len(o), size=n_boot)
+            acc1 += rng.binomial(t[pick], o[pick] / t[pick])
+            accn += t[pick]
+        return float(o.sum() / t.sum()), acc1 / accn
+
+    p10, p10b = joint(("A", None), flip=False)
+    p01, p01b = joint(("B", None), flip=True)
+    e, eb = (p10 + p01) / 2, (p10b + p01b) / 2
+    alone = {}
+    for M in ms:
+        a10, a10b = single(("M-zero", M), 1)
+        a01, a01b = single(("M-one", M), 0)
+        z1, z1b = single(("Z", M), 1)
+        i = qubits.index(M)
+        alone[str(M)] = {
+            "alone": {
+                "P10": a10,
+                "P10_ci90": pct(a10b),
+                "P01": a01,
+                "P01_ci90": pct(a01b),
+                "e": (a10 + a01) / 2,
+                "e_ci90": pct((a10b + a01b) / 2),
+            },
+            "together": {
+                "P10": float(p10[i]),
+                "P10_ci90": pct(p10b[:, i]),
+                "P01": float(p01[i]),
+                "P01_ci90": pct(p01b[:, i]),
+                "e": float(e[i]),
+                "e_ci90": pct(eb[:, i]),
+            },
+            "alone_minus_together": {
+                "P10": a10 - float(p10[i]),
+                "P10_ci90": pct(a10b - p10b[:, i]),
+                "P01": a01 - float(p01[i]),
+                "P01_ci90": pct(a01b - p01b[:, i]),
+            },
+            "Z_P1": z1,
+            "Z_P1_ci90": pct(z1b),
+            "Z_above_0.1": z1 > 0.1,
+        }
+    per_q = {
+        str(q): {
+            "P10": float(p10[i]),
+            "P10_ci90": pct(p10b[:, i]),
+            "P01": float(p01[i]),
+            "P01_ci90": pct(p01b[:, i]),
+            "e": float(e[i]),
+            "e_ci90": pct(eb[:, i]),
+            "e_below_0.05": bool(e[i] < 0.05),
+        }
+        for i, q in enumerate(qubits)
+    }
+    # the stamp in force at submission, then each distinct stamp dated after it and no later than the job's finish
+    stamps = rec["calibration_record"]["stamps"]
+    s0 = rec["run"]["calibration_at_submission_utc"]
+    fin = _utc(rec["timestamps"]["finished"].replace("Z", "+00:00"))
+    by_stamp: dict = {}
+    for row in stamps:
+        by_stamp.setdefault(row["stamp_utc"], row)
+    pubs = {"at submission": by_stamp[s0]}
+    for st, row in sorted(by_stamp.items()):
+        if _utc(st.replace("Z", "+00:00")) > _utc(s0.replace("Z", "+00:00")) and _utc(st.replace("Z", "+00:00")) <= fin:
+            pubs[f"new stamp {st}"] = row
+    import json
+
+    comparisons = {}
+    for lab, row in pubs.items():
+        pub = json.loads(row["readout_error_16"])
+        v, rows = {}, {}
+        for q in qubits:
+            p = pub[str(q)]
+            ci = per_q[str(q)]["e_ci90"]
+            lo, hi = ci
+            v[str(q)] = "CONSISTENT" if (lo <= p + tol(p) and hi >= p - tol(p)) else "INCONSISTENT"
+            rows[str(q)] = {
+                "p": p,
+                "tolerance": tol(p),
+                "accepted_range": [p - tol(p), p + tol(p)],
+                "e": per_q[str(q)]["e"],
+                "e_ci90": ci,
+                "e_minus_p": per_q[str(q)]["e"] - p,
+                "verdict": v[str(q)],
+            }
+        n_in = sum(x == "INCONSISTENT" for x in v.values())
+        H = "PUBLISHED READABLE" if n_in == 0 else ("PUBLISHED NOT READABLE" if n_in >= at else "MIXED")
+        comparisons[lab] = {
+            "stamp_utc": row["stamp_utc"],
+            "per_qubit": rows,
+            "n_inconsistent": n_in,
+            "inconsistent": [q for q in v if v[q] == "INCONSISTENT"],
+            "H61": H,
+        }
+    return {
+        "H61": comparisons["at submission"]["H61"],
+        "H61_by_stamp": {k: c["H61"] for k, c in comparisons.items()},
+        "per_qubit": per_q,
+        "comparisons": comparisons,
+        "beside": {
+            "all_e_below_0.05": all(r["e_below_0.05"] for r in per_q.values()),
+            "qubits_e_at_or_above_0.05": [q for q, r in per_q.items() if not r["e_below_0.05"]],
+            "alone_against_together": alone,
+            "any_Z_above_0.1": any(a["Z_above_0.1"] for a in alone.values()),
+        },
+    }
+
+
+def k62_survey(rec: dict) -> tuple[dict, dict]:
+    """Kickoff 62's survey (job 0) by the package's readout_errors: per qubit P(1|0), P(0|1) and e, the copies pooled,
+    with the 3% screen the rule fixed; and the published values at the survey's submission, from the record."""
+    lab0, cnt0 = _jobs(rec)[0]
+    s0 = [c for lab, c in sorted(zip(lab0, cnt0), key=lambda x: x[0]["copy"]) if lab["circuit"] == "S0"]
+    s1 = [c for lab, c in sorted(zip(lab0, cnt0), key=lambda x: x[0]["copy"]) if lab["circuit"] == "S1"]
+    errs = wait.readout_errors(s0, s1, rec["design"]["survey"]["screen"])
+    pub = {q: {k: v["value"] for k, v in row.items()} for q, row in rec["published_at_the_stamp"]["qubits"].items()}
+    return errs, pub
+
+
+def k62_peak_check_fez(rec: dict) -> dict:
+    """Kickoff 62, the check at the peak phase on ibm_fez, drawn on measured readout (analyse_62.py: Kickoff 59's
+    analysis with its seeds): H62 on the four phi* cells and the list beside it; each M's readout measured alone in job
+    2 beside the survey's and the published values; and the survey against the published table, with the counts each
+    readout screen alone excludes."""
+    order = _drawn_order(rec)
+    r, jobs = _peak_check(rec, order)
+    out = {"H62": r.pop("H"), **r}
+    out["zero_wait_baseline"] = {
+        M: {"P1_Z": v["P1_Z"], "P1_Z_ci90": v["P1_Z_ci90"], "above_0.1": v["P1_Z"] > 0.1}
+        for M, v in r["chains"].items()
+    }
+    out["zero_wait_baseline_any_above_0.1"] = [M for M, v in out["zero_wait_baseline"].items() if v["above_0.1"]]
+    labels2, counts2 = jobs[2]
+    _, bits, _ = _cells_and_bits(
+        [lab for lab in labels2 if lab["circuit"] in ("P10", "P01")],
+        [c for lab, c in zip(labels2, counts2) if lab["circuit"] in ("P10", "P01")],
+        lambda lab: (str(lab["M"]), lab["circuit"]),
+    )
+    ro = {}
+    for M in order:
+        p10, p01 = bits[(M, "P10")], bits[(M, "P01")]
+        ro[M] = {
+            "P1_given_0": sum(x[1] for x in p10) / sum(x[2] for x in p10),
+            "P1_given_0_by_copy": [x[1] / x[2] for x in p10],
+            "P0_given_1": 1 - sum(x[1] for x in p01) / sum(x[2] for x in p01),
+            "P0_given_1_by_copy": [1 - x[1] / x[2] for x in p01],
+            "shots": {"P10": [x[2] for x in p10], "P01": [x[2] for x in p01]},
+        }
+        ro[M]["mean_of_the_two"] = (ro[M]["P1_given_0"] + ro[M]["P0_given_1"]) / 2
+    out["readout_measured"] = ro
+    errs, pub = k62_survey(rec)
+    fields = ("readout_error", "prob_meas1_prep0", "prob_meas0_prep1")
+    out["readout_beside"] = {
+        M: {
+            "alone_job2": {k: ro[M][k] for k in ("P1_given_0", "P0_given_1", "mean_of_the_two")},
+            "survey_job0": {k: errs[M][k] for k in ("P1_given_0", "P0_given_1", "e")},
+            **{
+                w: {k: pub[M][k] for k in fields}
+                for w in ("published_at_survey_submission", "published_at_job2_running", "published_at_job2_submission")
+            },
+        }
+        for M in order
+    }
+    stamp = rec["run"]["0"]["calibration_at_submission_utc"]
+    assert (
+        stamp
+        == rec["run"]["2"]["calibration_at_submission_utc"]
+        == rec["calibration_record"]["stamps"][-1]["stamp_utc"]
+    )
+    out["readout_published_stamps"] = {
+        "at_job2_running": {"stamp_utc": stamp},
+        "at_job2_submission": {"stamp_utc": stamp},
+        "at_survey_submission": stamp,
+        "job2_running_utc_by_ibm": rec["timestamps"]["2"]["running"],
+    }
+    e = np.array([v["e"] for v in errs.values()])
+    p = np.array([pub[q]["readout_error"] for q in errs])
+    meas = sorted(int(q) for q, v in errs.items() if v["above_limit"])
+    pubs = sorted(int(q) for q in errs if pub[q]["readout_error"] > 0.03)
+    lab0, cnt0 = jobs[0]
+    shots = {
+        c: [sum(x.values()) for lab, x in sorted(zip(lab0, cnt0), key=lambda y: y[0]["copy"]) if lab["circuit"] == c]
+        for c in ("S0", "S1")
+    }
+    draw = rec["chain_draw"]
+    out["survey_against_table"] = {
+        "summary": {
+            "n_qubits": len(errs),
+            "shots": shots,
+            "e_min": float(e.min()),
+            "e_max": float(e.max()),
+            "e_median": float(np.median(e)),
+            "n_measured_above_3pct": len(meas),
+            "measured_above_3pct": meas,
+            "p_min": float(p.min()),
+            "p_max": float(p.max()),
+            "p_median": float(np.median(p)),
+            "n_published_above_3pct": len(pubs),
+            "published_above_3pct": pubs,
+            "above_3pct_both": sorted(set(meas) & set(pubs)),
+            "above_3pct_measured_only": sorted(set(meas) - set(pubs)),
+            "above_3pct_published_only_count": len(set(pubs) - set(meas)),
+        },
+        "stamp_utc": stamp,
+        "per_qubit": {q: {"e": v["e"], "published_readout_error": pub[q]["readout_error"]} for q, v in errs.items()},
+        "chains_each_exclusion_alone_over_all_candidates": draw["each_exclusion_alone_over_all_candidates"],
+        "chains_each_exclusion_alone_over_candidates_without_a_used_qubit": draw[
+            "each_exclusion_alone_over_candidates_without_a_used_qubit"
+        ],
+        "chains_readout_screens_over_candidates_without_a_used_qubit": draw[
+            "readout_screens_over_candidates_without_a_used_qubit"
+        ],
+    }
+    return out

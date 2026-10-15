@@ -31,9 +31,18 @@ B's Ramsey on M alone at T_M (made even), the instrument of findings 13 and 14. 
 prediction, F_pred = F_ref x (1 - (P(1) at T_M - P(1) at no wait)). A known phase, one RZ on M right after its first H,
 is the probe of Kickoffs 51 to 53 (`phase`, on both builders and on `build_wait_test`).
 
+**The check at the peak phase** (Amendment A24) is the procedure of Kickoffs 57 to 62, in two jobs. Job 1 is the
+sweep (`phase_sweep`): the active-neighbour Ramsey at six phases, with the wait test at the same phases as an optional
+second series (Kickoff 56's, which measures the leftover). Its fit (`sweep_fit`) gives the Ramsey's offset theta_R1, and
+the peak phase phi* = 180 - theta_R1 (`peak_phase`) is where that Ramsey's loss is greatest. `peak_check` builds job 2
+from job 1's counts: the check at phi*, with 0.6.0's check at +90 beside it, and the record of phi* to keep before job 2
+runs. `readout_survey` and `readout_errors` measure every qubit's readout error (Kickoff 62's survey); the threshold of
+any screen on it is the caller's.
+
 **The boundary (D-02).** Nothing here is a reuse compiler, a port of a published reuse-compilation method, a
 restore-and-route step, or an algorithm that decides where to measure and reset. The wait test's measures and resets are
-written by hand and fixed in its definition, the same for every chain, and the user names the chain.
+written by hand and fixed in its definition, the same for every chain, and the user names the chain. The peak phase is
+where the check is read on a chain the user names; nothing here chooses chains or placements.
 """
 
 from __future__ import annotations
@@ -68,6 +77,9 @@ WAIT_TEST_CLBITS = 6
 #: What M's neighbours do in the Ramsey over the wait test's wait (Amendment A22): "active", what they do in the
 #: wait test (the default from 0.6.0, findings 16 to 19), or "idle" in |0> (0.5.0's instrument, findings 13 and 14)
 NEIGHBOURS = ("active", "idle")
+#: The sweep's phases on M, in degrees (Kickoff 52's six, kept by Kickoffs 56 to 62), and the phase of 0.6.0's check
+SWEEP_PHASES_DEG = (0, 60, 120, 180, 240, 300)
+CHECK_PHASE_DEG = 90
 
 
 # --------------------------------------------------------------------------- Part B
@@ -708,6 +720,193 @@ def wait_lengths(backend, chain: Sequence[int]) -> dict:
     for name, q in (("L1", chain[0]), ("L3", chain[2])):
         d = t["measure"][(q,)].duration + t["reset"][(q,)].duration
         out[name] = {"qubit": int(q), "dt": int(round(d / backend.dt)), "us": d * 1e6}
+    return out
+
+
+# --------------------------------------------------------------------------- the check at the peak phase (A24)
+def phase_sweep(chain: Sequence[int], backend, wait_test: bool = False) -> list[dict]:
+    """Job 1 of the check at the peak phase (Kickoffs 57 to 62): on the chain L1-M-L3 the user names, the
+    active-neighbour Ramsey (`build_wait_ramsey`, its default) at each phase of SWEEP_PHASES_DEG, one RZ(phi) on M right
+    after its first H. With wait_test=True, the wait test without refocusing (`build_wait_test`) at the same phases
+    follows, Kickoff 56's second series, which measures the leftover (`sweep_fit`, `leftover`).
+
+    Returns one entry per circuit: its label (the circuit, "R1" or "W-no", phi in degrees, and the classical bit that
+    holds M's result, `m_clbit`) and the circuit. Every circuit has the wait test's six classical bits; M's is c5."""
+    out = []
+    series = (("R1", False), ("W-no", True)) if wait_test else (("R1", False),)
+    for name, is_wait_test in series:
+        for deg in SWEEP_PHASES_DEG:
+            phase = math.radians(deg)
+            qc = (
+                build_wait_test(chain, False, backend, phase)
+                if is_wait_test
+                else build_wait_ramsey(chain, backend, phase=phase)
+            )
+            label = {"circuit": name, "phi_deg": deg, "m_clbit": WAIT_TEST_CLBITS - 1}
+            out.append({"label": label, "circuit": qc})
+    return out
+
+
+def sweep_fit(y, series: str = "R1") -> dict:
+    """The fit of Kickoffs 52 and 56 to 62, fixed before their data: y(phi) = c + b cos(phi) + s sin(phi) by ordinary
+    least squares over the six phases of SWEEP_PHASES_DEG, in their order.
+
+    For a Ramsey (series "R1" or "R0"), y is M's P(1), or its loss; its offset, the Ramsey's offset, is
+    theta = atan2(s, -b), so that its loss is least at phi = -theta and greatest at 180 - theta. For the wait test
+    (series "W-no"), y is F without refocusing and theta = atan2(-s, b), so that F is greatest at phi = -theta. Returns
+    c, b, s, the amplitude sqrt(b^2 + s^2), theta in degrees, the residuals at each phase and the largest |residual|. A
+    fit, beside a verdict, not a measurement of the offset's cause."""
+    if series not in ("R1", "R0", "W-no"):
+        raise ValueError(f"series is 'R1', 'R0' or 'W-no'; got {series!r}")
+    y = np.asarray(y, float)
+    if y.shape != (len(SWEEP_PHASES_DEG),) or not np.all(np.isfinite(y)):
+        raise ValueError(f"one finite value per phase of {SWEEP_PHASES_DEG}; got {y.tolist()}")
+    rad = np.radians(SWEEP_PHASES_DEG)
+    x = np.column_stack([np.ones(len(rad)), np.cos(rad), np.sin(rad)])
+    c, b, s = (float(v) for v in y @ np.linalg.pinv(x).T)
+    theta = math.degrees(math.atan2(-s, b) if series == "W-no" else math.atan2(s, -b))
+    resid = y - x @ np.array([c, b, s])
+    return {
+        "c": c,
+        "b": b,
+        "s": s,
+        "amplitude": math.hypot(b, s),
+        "theta_deg": theta,
+        "residuals": resid.tolist(),
+        "max_abs_residual": float(np.max(np.abs(resid))),
+    }
+
+
+def peak_phase(theta_r1_deg: float) -> int:
+    """The peak phase phi* = 180 - theta_R1, the phase at which the active-neighbour Ramsey's loss is greatest, from the
+    Ramsey's offset theta_R1 (`sweep_fit`): wrapped to [0, 360) and rounded to the nearest whole degree, halves up
+    (Kickoff 57's procedure, from the point estimate only)."""
+    x = (180.0 - float(theta_r1_deg)) % 360.0
+    return int(math.floor(x + 0.5)) % 360
+
+
+def leftover(theta_w_deg: float, theta_r1_deg: float) -> float:
+    """The leftover: the wait test's offset minus the active-neighbour Ramsey's, theta_W - theta_R1, wrapped to
+    (-180, +180] degrees (Kickoff 56)."""
+    w = (float(theta_w_deg) - float(theta_r1_deg) + 180.0) % 360.0 - 180.0
+    return w + 360.0 if w <= -180.0 else w
+
+
+def _pooled(counts) -> list[dict]:
+    """A counts dictionary, or a list of them (the copies of one circuit), as a list."""
+    return [counts] if isinstance(counts, dict) else list(counts)
+
+
+def _p1_of_bit(counts, clbit: int) -> float:
+    """The fraction of shots with classical bit `clbit` read 1, the copies pooled (bit 0 rightmost)."""
+    ones = tot = 0
+    for cts in _pooled(counts):
+        for key, n in cts.items():
+            ones += n if _bits(key)[clbit] == "1" else 0
+            tot += n
+    if not tot:
+        raise ValueError("no shots")
+    return ones / tot
+
+
+def peak_check(chain: Sequence[int], backend, sweep_counts: dict) -> dict:
+    """Job 2 of the check at the peak phase, from job 1's counts (Kickoffs 57 to 62). sweep_counts maps each phase of
+    SWEEP_PHASES_DEG, in degrees, to the counts of `phase_sweep`'s R1 circuit at that phase (a dictionary, or a list
+    of them, one per copy, pooled).
+
+    The peak: M's P(1) at each phase (bit 5), the fit (`sweep_fit`), the Ramsey's offset theta_R1 and phi*
+    (`peak_phase`), from the point estimate. The circuits: the check at phi*, W-no(phi*) and R1(phi*)
+    (`build_wait_test`, `build_wait_ramsey`); 0.6.0's check at +90 beside it, W-no(+90) and R1(+90); the reference
+    W-ref, the wait test with refocusing; and Z, M's zero-wait baseline, H, H and a measure on M alone
+    (`part_b_circuit` with no wait, translated onto M, its result in c0). Each entry's label names the circuit, its
+    role ("peak", "plus90", "ref" or "zero"), phi in degrees and `m_clbit`.
+
+    Returns {"peak": ..., "circuits": [...]}. Record the peak before job 2 runs: phi* is fixed by job 1, not chosen
+    after job 2. Each cell's prediction is `predicted_fidelity`(F_ref, R1's P(1), Z's P(1)); one shot count per job
+    (qiskit-ibm-runtime 0.49.0 deprecates different shot counts across the circuits of one job)."""
+    chain = [int(q) for q in chain]
+    missing = [p for p in SWEEP_PHASES_DEG if p not in sweep_counts]
+    if missing:
+        raise ValueError(f"the sweep's counts at every phase of {SWEEP_PHASES_DEG}; missing {missing}")
+    p1 = [_p1_of_bit(sweep_counts[p], WAIT_TEST_CLBITS - 1) for p in SWEEP_PHASES_DEG]
+    fit = sweep_fit(p1, "R1")
+    phi_star = peak_phase(fit["theta_deg"])
+    peak = {
+        "chain": chain,
+        "M": chain[1],
+        "P1": dict(zip(map(str, SWEEP_PHASES_DEG), p1)),
+        "fit": fit,
+        "theta_R1_deg": fit["theta_deg"],
+        "phi_star_unrounded_deg": (180.0 - fit["theta_deg"]) % 360.0,
+        "phi_star_deg": phi_star,
+    }
+    m = WAIT_TEST_CLBITS - 1
+    built = []
+    for role, deg in (("peak", phi_star), ("plus90", CHECK_PHASE_DEG)):
+        phase = math.radians(deg)
+        built.append(("W-no", role, deg, m, build_wait_test(chain, False, backend, phase)))
+        built.append(("R1", role, deg, m, build_wait_ramsey(chain, backend, phase=phase)))
+    built.append(("W-ref", "ref", 0, m, build_wait_test(chain, True, backend)))
+    built.append(("Z", "zero", 0, 0, to_backend(part_b_circuit(1, 0, "R"), [chain[1]], backend)))
+    circuits = [
+        {"label": {"circuit": name, "role": role, "phi_deg": deg, "m_clbit": clbit}, "circuit": qc}
+        for name, role, deg, clbit, qc in built
+    ]
+    return {"peak": peak, "circuits": circuits}
+
+
+# --------------------------------------------------------------------------- the readout survey (A24)
+def readout_survey(backend) -> list[dict]:
+    """Kickoff 62's survey: two circuits on every qubit of the backend, qubit i on physical qubit i and measured into
+    classical bit i, translated by `to_backend`. S0 measures every qubit with no gate, for P(1|0); S1 puts one X on
+    every qubit, then the same measures, for P(0|1). No instruction acts on two or more qubits. Returns one entry per
+    circuit, its label and the circuit."""
+    from qiskit import QuantumCircuit
+
+    n = int(backend.num_qubits)
+    out = []
+    for name in ("S0", "S1"):
+        qc = QuantumCircuit(n, n, name=name)
+        if name == "S1":
+            for i in range(n):
+                qc.x(i)
+        for i in range(n):
+            qc.measure(i, i)
+        out.append({"label": {"circuit": name, "n_qubits": n}, "circuit": to_backend(qc, list(range(n)), backend)})
+    return out
+
+
+def readout_errors(counts_zero, counts_one, limit: float | None = None) -> dict:
+    """Each qubit's readout error from the survey's counts (Kickoff 62): P(1|0) from S0, P(0|1) from S1, each argument
+    a counts dictionary or a list of them (the copies, pooled), and e = (P(1|0) + P(0|1)) / 2, the average that IBM's
+    published readout error is defined as. Qubit i is classical bit i.
+
+    limit: a screen the caller chooses (Kickoff 62's was 0.03); with it, each qubit's entry says whether e is above it.
+    The package fixes no threshold. A measurement at one time: it says nothing about why it differs from any published
+    value. Returns {str(qubit): {"P1_given_0", "P0_given_1", "e"[, "above_limit"]}}."""
+    if limit is not None and not math.isfinite(float(limit)):
+        raise ValueError(f"the limit must be finite; got {limit!r}")
+
+    def tally(counts):
+        ones, tot = None, 0
+        for cts in _pooled(counts):
+            for key, n in cts.items():
+                bits = np.frombuffer(_bits(key).encode(), dtype=np.uint8).astype(np.int64) - 48
+                ones = bits * n if ones is None else ones + bits * n
+                tot += n
+        if not tot:
+            raise ValueError("no shots")
+        return ones / tot
+
+    p10, p1_given_1 = tally(counts_zero), tally(counts_one)
+    if p10.shape != p1_given_1.shape:
+        raise ValueError("S0 and S1 hold different numbers of classical bits")
+    out = {}
+    for q, (a, b) in enumerate(zip(p10.tolist(), (1 - p1_given_1).tolist())):
+        row = {"P1_given_0": a, "P0_given_1": b, "e": (a + b) / 2}
+        if limit is not None:
+            row["above_limit"] = row["e"] > float(limit)
+        out[str(q)] = row
     return out
 
 

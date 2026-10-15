@@ -228,7 +228,7 @@ def _utc(s):
 
 def test_the_findings_dates():
     assert "The findings come from runs on 5 to 15 October 2026." in README
-    assert "Twenty-one findings, from runs on 5 to 15 October 2026." in README
+    assert "Twenty-seven findings, from runs on 5 to 15 October 2026." in README
     # a reconstruction (A18, ruling R1: Kickoff 47's Part B circuits) is a record about a run, not a run; nor is a
     # record of the provider's published calibration stamps (A23: calibration history 01)
     runs = [
@@ -303,12 +303,34 @@ def test_the_findings_dates():
         "readout errors on 154 qubits." in README
     )
     # Amendment A23: finding 20 on ibm_kingston on 14 October, finding 21 on ibm_fez on 15 October, one job each
-    a23 = {archive.load(p)["meta"]["utc"][:10]: p for p in runs if archive.load(p)["meta"]["utc"][:10] in days}
-    a23 = {d: p for d, p in a23.items() if d > "2026-10-13"}
+    a23 = {p.name: p for p in runs if p.name in ("k55-revised-check.json", "k54-revised-check-day-2.json")}
+    a23 = {archive.load(p)["meta"]["utc"][:10]: p for p in a23.values()}
     assert {d: (p.name, archive.load(p)["meta"]["processor"]) for d, p in a23.items()} == {
         "2026-10-14": ("k55-revised-check.json", "ibm_kingston"),
         "2026-10-15": ("k54-revised-check-day-2.json", "ibm_fez"),
     }
+    # Amendment A24: Kickoffs 56 to 59 on ibm_kingston (Kickoff 56's job began on 14 October), 60 to 62 on ibm_fez
+    late = sorted(
+        (p.name, archive.load(p)["meta"]["utc"][:10], archive.load(p)["meta"]["processor"])
+        for p in runs
+        if archive.load(p)["meta"]["utc"][:10] in ("2026-10-14", "2026-10-15")
+    )
+    assert late == [
+        ("k54-revised-check-day-2.json", "2026-10-15", "ibm_fez"),
+        ("k55-revised-check.json", "2026-10-14", "ibm_kingston"),
+        ("k56-phase-sweep.json", "2026-10-14", "ibm_kingston"),
+        ("k57-peak-check.json", "2026-10-15", "ibm_kingston"),
+        ("k58-placement-comparison.json", "2026-10-15", "ibm_kingston"),
+        ("k59-peak-check-day-2.json", "2026-10-15", "ibm_kingston"),
+        ("k60-draw-stopped.json", "2026-10-15", "ibm_fez"),
+        ("k61-readout-check.json", "2026-10-15", "ibm_fez"),
+        ("k62-peak-check.json", "2026-10-15", "ibm_fez"),
+    ]
+    assert (
+        "- **Two processors, two calibration days, for the check at the peak phase.** On ibm_kingston it has run on "
+        "eight waiting qubits of new chains, under the daily calibrations of 14 and 15 October 2026 (findings 23 and "
+        "25), and on finding 20's three chains (finding 24); on ibm_fez on four, on 15 October (finding 27)." in README
+    )
     k55 = archive.load(a23["2026-10-14"])
     stamps = {r_["stamp_utc"] for r_ in k55["calibration_record"]["stamps"]}
     assert len(stamps) == 2 and k55["run"]["calibration_after_fetch_utc"] in stamps
@@ -743,6 +765,10 @@ RETIRED = [
     "The run cannot separate the recalibration",  # A23, 1d: no published value changed at the new stamp
     "which published calibration they ran under is not known",  # A23, 1d: what the stamps changed, from the history
     "To be released as 0.6.0",  # the 0.6.0 release: released, with its date (A23, ruling R1, Q3)
+    "Twenty-one findings, from runs on 5 to 15 October 2026",  # A24: twenty-seven
+    "the twenty-one findings in full",  # A24: twenty-seven, with the table of all of them
+    "the check runs with the neighbours active",  # A24: the README opens with the check at the peak phase
+    "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
 
@@ -807,29 +833,75 @@ def test_every_link_resolves(page):
 
 
 def test_the_findings_table_matches_the_findings():
-    """The README's table of findings: each row's headline is that finding's own bold sentence in docs/findings.md,
-    word for word; its kickoffs are the ones the finding names; and every verdict word in the row (the capitalised
-    words) is in that kickoff's row of the kickoffs table, so the summary carries nothing the full text does not."""
+    """The table of findings, one row per finding, on docs/findings.md (the README's until A24): each row's headline is
+    that finding's own bold sentence, word for word; its kickoffs are the ones the finding names; and every verdict word
+    in the row (the capitalised words) is in that kickoff's row of the kickoffs table, so the summary carries nothing
+    the full text does not."""
+    import re
+
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    kickoffs = (ROOT / "docs" / "kickoffs.md").read_text()
+    full = dict(re.findall(r'^(\d+)\. <a id="finding-\d+"></a>\*\*(.+?)\*\*', findings, re.M))
+    table = findings.split("\n## The findings in one table\n", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(r"^\| \[(\d+)\]\(#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", table, re.M)
+    rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 28)] == list(full)
+    for n, head, kicks, verdict in rows:
+        assert head == full[n], n
+        item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
+        table_rows = ""
+        for k in kicks.replace(" to 15 Oct", "").split(", "):
+            assert f"Kickoff {k}" in item, (n, k)
+            table_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
+        words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
+        assert words and all(w in table_rows for w in words), (n, words)
+
+
+#: Amendment A24, the author's ruling of 14 October: the README's table of findings has one row per thread
+THREADS = {
+    "The kept-share map on IBM processors": (1, 7),
+    "The map on a second vendor's processor": (2, 6, 8, 9, 10),
+    "What the neighbours do not explain": (3,),
+    "Choosing pairs by the map": (4, 11),
+    "The rule can say no": (5, 26),
+    "The collapse on 143 and 144, and the wait": (12, 13),
+    "The check and its instrument": (14, 15, 16, 17, 18, 19, 20, 21),
+    "The check at the peak phase": (22, 23, 24, 25, 27),
+}
+
+
+def test_the_readme_table_has_one_row_per_thread():
+    """A24: the README's table of findings has one row per thread, each finding number in exactly one row and linked to
+    its finding, the full table one row per finding on docs/findings.md; every verdict word in a row is in the kickoffs
+    table's rows of that row's findings, and every row's state is one sentence."""
     import re
 
     readme = (ROOT / "README.md").read_text()
     findings = (ROOT / "docs" / "findings.md").read_text()
     kickoffs = (ROOT / "docs" / "kickoffs.md").read_text()
-    full = dict(re.findall(r'^(\d+)\. <a id="finding-\d+"></a>\*\*(.+?)\*\*', findings, re.M))
-    rows = re.findall(
-        r"^\| \[(\d+)\]\(docs/findings\.md#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", readme, re.M
-    )
-    rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
-    assert [n for n, *_ in rows] == [str(i) for i in range(1, 22)]
-    for n, head, kicks, verdict in rows:
-        assert head == full[n], n
-        item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
-        table_rows = ""
-        for k in kicks.split(", "):
-            assert f"Kickoff {k}" in item, (n, k)
-            table_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
+    section = readme.split("\n## Findings\n", 1)[1].split("\n## ", 1)[0]
+    assert "](docs/findings.md#the-findings-in-one-table)" in section
+    assert "Twenty-seven findings, from runs on 5 to 15 October 2026." in section
+    rows = re.findall(r"^\| ([^|\[]+?) \| (\[.+?) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", section, re.M)
+    assert [r_[0] for r_ in rows] == list(THREADS)
+    seen = []
+    full_rows = findings.split("\n## The findings in one table\n", 1)[1].split("\n## ", 1)[0]
+    for thread, links, _where, state, verdict in rows:
+        nums = [int(n) for n in re.findall(r"\[(\d+)\]\(docs/findings\.md#finding-\1\)", links)]
+        assert tuple(nums) == THREADS[thread] and links.count("](") == len(nums), thread
+        seen += nums
+        assert len(re.findall(r"[.!?](?:\s|$)", state.strip() + " ")) == 1, thread
+        kick_rows = ""
+        for n in nums:
+            row = next(line for line in full_rows.splitlines() if line.startswith(f"| [{n}](#finding-{n}) |"))
+            for k in row.split(" | ")[3].rsplit(", ", 1)[0].replace(" to 15 Oct", "").split(", "):
+                kick_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
         words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
-        assert words and all(w in table_rows for w in words), (n, words)
+        assert words and all(w in kick_rows for w in words), (thread, words - {w for w in words if w in kick_rows})
+    assert sorted(seen) == list(range(1, 28))
+    # the record beside finding 26, Kickoff 60, is named in its thread's row and in the kickoffs table
+    assert "Kickoff 60" in dict((r_[0], r_[3]) for r_ in rows)["The rule can say no"]
+    assert "| 60, 15 October 2026 |" in kickoffs
 
 
 def test_the_front_page():
@@ -879,8 +951,9 @@ def test_finding_4_reference_lines():
     assert "(G = +0.0004 on ibm_fez and +0.0001 on ibm_kingston, against +0.0012 and +0.0004)" in README
     assert "(G = −0.0003, 90% interval −0.0010 to +0.0003) and gained +0.0004 on ibm_kingston" in README
     assert "(r = 0.80 between them) did not pick the same eight" in README
-    front = (ROOT / "README.md").read_text()
-    assert "| USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT SETTLED on ibm_kingston |" in front
+    # A24: the table with one row per finding is on the findings page
+    table = (ROOT / "docs" / "findings.md").read_text()
+    assert "| USEFUL on ibm_fez (G = +0.0012 in fidelity); NOT SETTLED on ibm_kingston |" in table
 
 
 def test_the_distance_from_the_ideal_paragraph():
@@ -1434,7 +1507,10 @@ def test_what_was_known_before_findings_13_and_14():
     assert untested in section
     flat = " ".join(README.split())
     assert "with refocusing every idle qubit and with ADAPT's choice of qubits to refocus, has not been run." in flat
-    assert "the twenty-one findings in full, what was known before them, and what has not been shown." in flat  # A23
+    assert (
+        "the twenty-seven findings in full, with a table of all of them, what was known before them, and what has not "
+        "been shown." in flat
+    )  # A24
 
 
 def test_the_wait_test_hardware_picture():
@@ -1468,7 +1544,7 @@ def test_the_wait_test_hardware_picture():
     assert "11 October 2026, 02:13 to 02:14 UTC" in text and "T_M = 10.45 µs" in text
     assert "predicted from M's Ramsey loss at T_M" in text
     index = " ".join((ROOT / "docs" / "index.md").read_text().split())
-    assert len(list(DIAGRAMS.glob("*.svg"))) == 12 and "# the twelve diagrams, from data/" in index  # A22: twelve
+    assert len(list(DIAGRAMS.glob("*.svg"))) == 13 and "# the thirteen diagrams, from data/" in index  # A24: thirteen
 
 
 # --------------------------------------------------------------------------- findings 15 to 19 (Amendment A22)
@@ -2188,135 +2264,60 @@ def test_finding_15_in_the_persistence_bullet():
 
 
 def test_the_readme_opens_with_the_latest_findings():
-    """A22, ruling R1, Q7, and A23: a short section at the top of the README, after the opening description and before
-    what it does, the findings table and installation, says what the check's new default is and what findings 15 to 21
-    found, each number checked here; one line per finding 15 to 21 carries that finding's own headline; and the "Why
-    the default changed" spotlight closes the section. It names no chooser and carries none of the words the release
-    waits for (the author may add one at review)."""
-    import inspect
+    """A24: a short section at the top of the README, after the opening description and before what it does, the
+    findings table and installation, says what the peak placement is, what it found, that the +90 degree check remains,
+    and what the survey measured, in at most five sentences, each number checked here. It names no chooser, says
+    nothing is validated, and carries none of the words the release waits for (the author may add one at review)."""
     import re
 
-    from _reproduce import (
-        K49,
-        K50,
-        K51,
-        K52,
-        K53,
-        K54,
-        K55,
-        k50_recomputed,
-        k52_recomputed,
-        k53_recomputed,
-        k54_recomputed,
-        k55_recomputed,
-        reuse_doc,
-    )
+    from _reproduce import K57, K59, K62, k57_recomputed, k59_recomputed, k62_recomputed, reuse_doc
 
     front = (ROOT / "README.md").read_text()
-    head = "\n## Latest findings: the check runs with the neighbours active\n"
-    assert head in front and "New on this branch" not in front
+    head = "\n## Latest findings: the check at the peak phase\n"
+    assert head in front
     before, rest = front.split(head, 1)
     section = rest.split("\n## ", 1)[0]
     assert "**Manacitra makes a map of a quantum processor's qubit pairs" in before
     assert not any(h in before for h in ("\n## What it does", "\n## Findings", "\n## Install and try it"))
-    assert "[Latest findings](#latest-findings-the-check-runs-with-the-neighbours-active)" in before
+    assert "[Latest findings](#latest-findings-the-check-at-the-peak-phase)" in before
     flat = " ".join(section.split())
-    # five runs on one day
-    assert all(reuse_doc(f)["meta"]["utc"].startswith("2026-10-13") for f in (K49, K50, K51, K52, K53))
-    assert "Five runs on ibm_fez on 13 October 2026 found" in flat
-    # the neighbours shift the waiting qubit's phase (findings 16 to 18)
-    assert all(m["state_split_ci90"][1] < 0 for m in k50_recomputed()["per_M"].values())
-    assert all(m["R1_minus_R0"]["ci90"][1] < 0 for m in k52_recomputed()["per_M"].values())
-    assert "what the neighbours do during the wait shifts the waiting qubit's phase (findings 16 to 18)" in flat
-    # finding 19: every informative cell inside the margin; the idle-neighbour Ramsey's three misses
-    k = k53_recomputed()
-    arch = {c["cell"]: c for c in reuse_doc(K53)["archived"]["analysis"]["cells"]}
-    assert reuse_doc(K53)["fixed_before_the_data"]["margin"] == 0.15 and k["H53"] == "AGREE"
-    assert all(-0.15 < arch[c]["d1_ci90"][0] and arch[c]["d1_ci90"][1] < 0.15 for c in k["informative_cells"])
-    misses = [c for c in k["cells"] if c["informative_R0"] and arch[c["cell"]]["d0_ci90"][0] > 0.15]
-    assert len(misses) == 3 and {_q(c["d0"], 2) for c in misses} == {"0.17"}
+    assert len(re.findall(r"[.!?](?:\s|$)", flat + " ")) <= 5
+    # what the peak placement is: the package's procedure, as the runs used it
+    assert wait.peak_phase(16.44) == 164 and wait.peak_phase(162.41) == 18
     assert (
-        "predicted the wait test within ±0.15 on every informative cell of four chains it had never run on, where "
-        "the idle-neighbour Ramsey missed by about 0.17 on three cells (finding 19)." in flat
-    )
-    # the default, and 0.5.0's instrument
-    from manacitra import wait as w
-
-    assert inspect.signature(w.build_wait_ramsey).parameters["neighbours"].default == "active"
-    assert "The active-neighbour Ramsey is now the default (`build_wait_ramsey`)." in flat
-    assert '0.5.0\'s instrument remains, with `neighbours="idle"`.' in flat
-    # A23: Day 2 (finding 21) and ibm_kingston (finding 20), each against the original check on the same cells
-    k54, k55 = reuse_doc(K54), reuse_doc(K55)
-    r54, r55 = k54_recomputed(), k55_recomputed()
-    assert k54["meta"]["utc"].startswith("2026-10-15") and k54["meta"]["chains"] == [
-        *reuse_doc(K53)["meta"]["chains"],
-        *(reuse_doc(K52)["meta"]["chains"][q] for q in ("144", "143")),
-    ]
-    assert r54["H54"] == "AGREE" and len(r54["informative_cells"]) == 7
-    a54 = {c["cell"]: c for c in k54["archived"]["analysis"]["cells"]}
-    out0 = [
-        c for c in r54["original_rule_and_comparison"]["original_rule_informative_cells"] if a54[c]["d0_ci90"][0] > 0.15
-    ]
-    assert out0 == ["74|+90"]
-    assert (
-        "On a second day on ibm_fez, 15 October 2026, across a maintenance, the revised check ran again on the six "
-        "chains of findings 16 to 19 and predicted the wait test within ±0.15 on all seven informative cells, where "
-        "the idle-neighbour Ramsey would have missed on one (finding 21)." in flat
-    )
-    a55 = {c["cell"]: c for c in k55["archived"]["analysis"]["cells"]}
-    out1 = [c for c in r55["informative_cells"] if a55[c]["d1_ci90"][0] > 0.15]
-    out0 = [
-        c for c in r55["original_rule_and_comparison"]["original_rule_informative_cells"] if a55[c]["d0_ci90"][0] > 0.15
-    ]
-    assert r55["H55"] == "DISAGREE" and (len(out1), len(r55["informative_cells"]), len(out0)) == (1, 4, 4)
-    assert (
-        "On a second processor, ibm_kingston, it missed the margin on one informative cell of four, where the "
-        "idle-neighbour Ramsey would have missed on all four (finding 20). Released as 0.6.0 on 15 October 2026."
+        "one sweep of six known phases fixes each chain's φ* = 180° − θ_R1, θ_R1 being the active-neighbour Ramsey's "
+        "offset, and the check then runs at φ*, where that Ramsey's loss is greatest (`phase_sweep` and `peak_check`)."
         in flat
     )
-    # one line per finding, each with its own headline
-    findings = (ROOT / "docs" / "findings.md").read_text()
-    full = dict(re.findall(r'^(\d+)\. <a id="finding-\d+"></a>\*\*(.+?)\*\*', findings, re.M))
-    for n in range(15, 22):
-        assert f"- [{n}](docs/findings.md#finding-{n}): {full[str(n)]}." in section, n
-    # the spotlight, last in the section
-    assert "\n### Why the default changed\n" in section
-    spot = " ".join(section.split("\n### Why the default changed\n", 1)[1].split())
-    assert len(re.findall(r"[.!?](?:\s|$)", spot)) <= 5
-    st = [-k50_recomputed()["per_M"][q]["state_split_R0_minus_R2"] for q in ("144", "143")]
-    assert (_q(min(st), 2), _q(max(st), 2)) == ("0.25", "0.35")
+    # twelve of twelve cells, three runs on new chains, two processors, every cell informative
+    cells, procs = [], set()
+    for rec, r_ in ((K57, k57_recomputed()), (K59, k59_recomputed()), (K62, k62_recomputed())):
+        doc = reuse_doc(rec)
+        assert doc["chain_draw"]["drawn"] and r_[next(k for k in r_ if k.startswith("H"))] == "AGREE"
+        procs.add(doc["meta"]["processor"])
+        for c in doc["archived"]["analysis"]["cells_phi_star"]:
+            assert c["informative_R1"] and -0.15 < c["d1_ci90"][0] and c["d1_ci90"][1] < 0.15
+            cells.append(c)
+    assert len(cells) == 12 and procs == {"ibm_kingston", "ibm_fez"}
     assert (
-        "In the circuit, the waiting qubit's neighbours are measured, reset and used again while it waits, and a "
-        "Ramsey with them idle does not see what they do: held in |1⟩ they changed its loss by 0.25 to 0.35, and with "
-        "a known phase added the circuit answered as if its offset differed from the idle-neighbour Ramsey's (findings "
-        "16 to 18)." in spot
+        "There it predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two "
+        "processors, each cell informative by construction, since the design places it at the loss maximum (findings "
+        "23, 25 and 27)." in flat
     )
-    misses, closer = 0, 0
-    for doc, r_ in ((reuse_doc(K53), k), (k55, r55), (k54, r54)):
-        a = {c["cell"]: c for c in doc["archived"]["analysis"]["cells"]}
-        b = r_.get("original_rule_and_comparison") or r_["beside"]
-        for c in r_["cells"]:
-            if c["cell"] in b["original_rule_informative_cells"] and a[c["cell"]]["d0_ci90"][0] > 0.15:
-                misses += 1
-                closer += abs(c["d1"]) < abs(c["d0"])
-    assert (misses, closer) == (8, 8)
     assert (
-        "In findings 19 to 21 the idle-neighbour check would have missed the ±0.15 margin on eight cells, on both "
-        "processors, and on every one of them the active-neighbour Ramsey sat closer to the circuit." in spot
+        "The 0.6.0 check at +90° remains the cheaper form for a chain whose leftover between the wait test and the "
+        "Ramsey is small." in flat
     )
-    fez = [c for c in k["informative_cells"]] + [c for c in r54["informative_cells"]]
-    assert len(fez) == 12 and all(
-        -0.15 < c[0] and c[1] < 0.15 for c in (arch[x]["d1_ci90"] for x in k["informative_cells"])
-    )
-    assert all(-0.15 < a54[x]["d1_ci90"][0] and a54[x]["d1_ci90"][1] < 0.15 for x in r54["informative_cells"])
+    s_ = k62_recomputed()["survey_against_table"]["summary"]
+    assert (s_["n_qubits"], _q(s_["e_median"], 4), _q(s_["p_median"], 3)) == (156, "0.0098", "0.166")
     assert (
-        "The margin itself held on ibm_fez on two days, on twelve informative cells of twelve, and failed on "
-        "ibm_kingston, on one cell of four (finding 20)." in spot
+        "On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table "
+        "gave 0.166 (finding 27)." in flat
     )
-    assert 'The 0.5.0 instrument remains available, with `neighbours="idle"`.' in spot
-    # no chooser, and none of the release's words
-    assert "choos" not in flat and "placement" not in flat
-    for word in ("veri" + "fied", "valid" + "ated", "prov" + "en"):
+    assert flat.endswith("To be released as 0.7.0.")
+    # no chooser, nothing validated, and none of the release's words
+    assert "choos" not in flat
+    for word in ("veri" + "fied", "valid" + "ated", "prov" + "en", "chooses"):
         assert word not in flat.lower(), word
 
 
@@ -2748,7 +2749,7 @@ def test_findings_20_and_21_beside_the_findings():
     )
 
     readme = " ".join((ROOT / "README.md").read_text().split())
-    assert "the twenty-one findings in full, what was known before them, and what has not been shown." in readme
+    assert "the twenty-seven findings in full, with a table of all of them, what was known before them" in readme  # A24
     flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
     r53, r54, r55 = k53_recomputed(), k54_recomputed(), k55_recomputed()
     # the margin's bullet
@@ -2761,13 +2762,8 @@ def test_findings_20_and_21_beside_the_findings():
         > 0.15
     ]
     assert out == ["7|+90"] and _q(next(c["d1"] for c in r55["cells"] if c["cell"] == "7|+90"), 3, True) == "+0.257"
-    assert (
-        "- **The ±0.15 margin held on one processor for two days and failed on a second.** On ibm_fez (findings 19 and "
-        "21) the revised check predicted the wait test within ±0.15 on twelve of twelve informative cells over two "
-        "days. On ibm_kingston (finding 20) it missed on one of four, by +0.257, where the lean was larger and, on "
-        "that qubit, the offset left over between the wait test and the Ramsey was estimated at tens of degrees. The "
-        "instrument choice held on both; the margin did not." in flat
-    )
+    # A24 replaced this bullet with the margin at the peak phase (test_findings_22_to_27_beside_the_findings)
+    assert "The ±0.15 margin held on one processor for two days and failed on a second." not in flat
     assert "The active-neighbour check has run on one processor." not in flat
     # the lean bullet
     cells = [k50_recomputed()["per_M"][q]["d1"] for q in ("144", "143")]
@@ -2785,8 +2781,7 @@ def test_findings_20_and_21_beside_the_findings():
     assert (
         "- **Its positive lean is unexplained.** The active-neighbour residual d1 has read high in 47 of its 48 cells "
         "so far (findings 16 to 21). On ibm_kingston the lean was larger: at the chains' own offsets d1 ran from "
-        "+0.071 to +0.119 (finding 20), against +0.045 to +0.101 on ibm_fez (findings 19 and 21). A chain with a "
-        "larger lean could fail the ±0.15 margin without any offset." in flat
+        "+0.071 to +0.119 (finding 20), against +0.045 to +0.101 on ibm_fez (findings 19 and 21)." in flat
     )
     # the method's paragraph
     method = " ".join((ROOT / "docs" / "method.md").read_text().split())
@@ -2814,7 +2809,9 @@ def test_findings_20_and_21_beside_the_findings():
     assert (d7, d74) == ("+0.257", "+0.184")
     assert f"DISAGREE ({d7} on 7 at +90°), and the original DISAGREE on all four informative cells" in index
     assert f"AGREE on seven informative cells, and the original DISAGREE ({d74} on 74)" in index
-    assert "(and ibm_fez again on 10, 11, 13 and 15 October, and ibm_kingston again on 14 October)" in index
+    assert (
+        "(and ibm_fez again on 10, 11, 13 and 15 October, and ibm_kingston again on 14 and 15 October)" in index
+    )  # A24
     # the changelog's lead: six runs on ibm_fez on 13 and 15 October and one on ibm_kingston on 14 October
     from manacitra import archive as ar
 
@@ -2823,7 +2820,10 @@ def test_findings_20_and_21_beside_the_findings():
     assert sorted(ar.load(p)["meta"]["utc"][:10] for p in fez_runs) == ["2026-10-13"] * 5 + ["2026-10-15"]
     assert reuse_doc(K55)["meta"]["utc"].startswith("2026-10-14")
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
-    assert "## 0.6.0 (15 October 2026)" in log and "(unreleased)" not in log and "## Unreleased" not in log
+    assert "## 0.6.0 (15 October 2026)" in log and "## Unreleased" not in log
+    assert (
+        "(unreleased)" not in log.split("## 0.6.0 (15 October 2026)", 1)[1]
+    )  # A24: 0.7.0's heading waits for its date
     assert (
         "Findings 15 to 21, from six runs on ibm_fez on 13 and 15 October 2026 and one on ibm_kingston on 14 October, "
         "with their data." in log
@@ -2843,9 +2843,11 @@ def test_findings_20_and_21_beside_the_findings():
     assert reuse_doc(K53)["meta"]["processor"] == reuse_doc(K54)["meta"]["processor"] == "ibm_fez"
     # the data README's job IDs
     ids = [ar.load(p)["meta"].get("job_id") for p in ar.records()]
-    assert len([i for i in ids if i]) == 25
+    many = [j for p in ar.records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
+    assert (len([i for i in ids if i]), len(many)) == (27, 9)  # A24: Kickoffs 56 and 61; 57 to 59 and 62
     data = " ".join((ar.data_dir() / "README.md").read_text().split())
-    assert "the twenty-five IBM `meta.job_id` values" in data and "(`first_submission.job_id`)" in data
+    assert "the twenty-seven IBM `meta.job_id` values and the nine of the runs with several jobs" in data
+    assert "(`first_submission.job_id`)" in data
 
 
 def test_the_phase_sweep_picture():
@@ -2869,3 +2871,641 @@ def test_the_phase_sweep_picture():
     text = svg_text(DIAGRAMS / "phase-sweep.svg")
     assert "13 October 2026, 18:59 to 20:00 UTC" in text and "θ_W = −16.1°" in text and "θ_R0 = +5.4°" in text
     assert "θ_R1 = −12.7°" in text and "Δ = θ_W − θ_R0 = −21.6°" in text
+
+
+# --------------------------------------------------------------------------- findings 22 to 27 (Amendment A24)
+def _ci(c, nd: int = 3, deg: bool = False) -> str:
+    u = "°" if deg else ""
+    return f"({_q(c[0], nd, True)}{u} to {_q(c[1], nd, True)}{u})"
+
+
+def _hms(utc: str) -> str:
+    return datetime.fromisoformat(utc.replace("Z", "+00:00")).strftime("%H:%M:%S")
+
+
+def _job_span(doc: dict) -> tuple[str, str]:
+    t = doc["timestamps"]
+    if "running" in t:
+        return t["running"], t["finished"]
+    jobs = sorted(t)
+    return t[jobs[0]]["running"], t[jobs[-1]]["finished"]
+
+
+def _shots(doc: dict) -> dict:
+    """Shots per circuit of each (job, block), from the record's labels and counts."""
+    out: dict = {}
+    for lab, cts in zip(doc["labels"], doc["counts"]):
+        out.setdefault((lab.get("job"), lab.get("block") or lab.get("part")), set()).add(sum(cts.values()))
+    assert all(len(v) == 1 for v in out.values()), out
+    return {k: v.pop() for k, v in out.items()}
+
+
+def _shuffle_seed(draw: dict) -> int:
+    import re
+
+    return int(re.search(r"default_rng\((\d+)\)", draw["procedure"]).group(1))
+
+
+def test_finding_22():
+    """Amendment A24: finding 22 (Kickoff 56), every number from the recompute or the record."""
+    from _reproduce import K55, K56, k55_recomputed, k56_recomputed, reuse_doc
+
+    item, doc, r = _item(22), reuse_doc(K56), k56_recomputed()
+    a, pm = doc["archived"]["analysis"]["per_M"], r["per_M"]
+    t0, t1 = _job_span(doc)
+    assert (t0[:10], t1[:10], _hms(t0), _hms(t1)) == ("2026-10-14", "2026-10-15", "23:59:32", "00:01:50")
+    assert "(Kickoff 56; ibm_kingston, from 23:59:32 UTC on 14 October 2026 to 00:01:50 UTC on 15 October)" in item
+    L = {M: pm[M]["L_W_minus_R1"]["deg"] for M in ("7", "43", "18")}
+    assert (_q(L["7"], 1, True), _q(L["43"], 1, True), abs(L["18"]) < 0.05) == ("−36.7", "−11.7", True)
+    assert (
+        "measured the leftover between the wait test and the active-neighbour Ramsey: −36.7° on the qubit where "
+        "finding 20 missed, −11.7° on a second and 0.0° on the third" in item
+    )
+    assert sorted(doc["meta"]["chains"]) == sorted(reuse_doc(K55)["meta"]["chains"][1:]) and doc["meta"]["chains"][
+        0
+    ] == [6, 7, 8]
+    assert doc["meta"]["built_from"]["commit"].startswith("e45f15d")
+    assert len({(x["M"], x["circuit"], x["phi_deg"]) for x in doc["labels"]}) == 63 and len(doc["labels"]) == 126
+    assert set(_shots(doc).values()) == {3000} and doc["meta"]["phis_deg"] == list(wait.SWEEP_PHASES_DEG)
+    assert "63 circuits, each twice with 3,000 shots, in one job." in item
+    stamps = {x["stamp_utc"] for x in doc["calibration_record"]["stamps"]}
+    assert stamps == {"2026-10-14T23:06:14Z"} and doc["calibration_record"]["walk_over_the_job"]["all_polled_in_walk"]
+    since = doc["chains_fixed"]["since_kickoff_55"]
+    early, late = since["since K55 draw stamp 22:21:08"], since["since K55 later stamp 22:41:12"]
+    assert [early[k] for k in ("q_T1", "q_T2", "g1_any", "cz_error", "q_readout_error")] == [0, 0, 0, 0, 153]
+    assert late["q_readout_error"] == 0
+    assert (
+        "One calibration stamp, 23:06:14 UTC, was in force from the build to the read after the fetch; against finding "
+        "20's stamp at its draw, no published T1, T2, single-qubit gate or CZ value had changed, and readout errors "
+        "had "
+        "changed on 153 qubits, at the 22:41:12 UTC stamp finding 20 describes." in item
+    )
+    assert _posted(K56) == (37, "https://github.com/dogma-guru/manacitra/issues/37", "23:08")
+    assert "([issue 37](https://github.com/dogma-guru/manacitra/issues/37), 23:08 UTC on 14 October;" in item
+    rule = (archive.data_dir() / "ibm_kingston" / "k56-rule.md").read_text()
+    assert "entirely outside [−10°, +10°]" in rule and "entirely inside [−5°, +5°]" in rule
+    for chain, M, v in (("6-7-8", "7", "LARGE"), ("42-43-44", "43", "NOT SETTLED"), ("31-18-11", "18", "SMALL")):
+        assert pm[M]["verdict"] == v
+        pt = "0.0" if M == "18" else _q(L[M], 1, True)
+        assert f"- **{chain}**, with {M} waiting: L = {pt}° {_ci(a[M]['L_W_minus_R1']['ci90'], 1, True)}: {v}." in item
+    miss = next(c for c in k55_recomputed()["cells"] if c["cell"] == "7|+90")
+    assert _q(miss["d1"], 3, True) == "+0.257"
+    assert "Finding 20's miss, d1 +0.257 at +90°, was on 6-7-8, the chain with the large leftover." in item
+    lean = {M: _q(pm[M]["mean_d1"], 3, True) for M in pm}
+    assert lean == {"7": "+0.076", "43": "+0.081", "18": "+0.059"} and all(a[M]["mean_d1_ci90"][0] > 0 for M in a)
+    assert (
+        "was positive on all three, +0.076 on 7, +0.081 on 43 and +0.059 on 18, each interval entirely above zero"
+        in item
+    )
+    d18, d7 = pm["18"]["d1"].values(), pm["7"]["d1"]
+    assert (_q(min(d18), 3, True), _q(max(d18), 3, True)) == ("+0.037", "+0.086")
+    assert (_q(min(d7.values()), 3, True), _q(max(d7.values()), 3, True)) == ("−0.099", "+0.244")
+    assert all(a["7"]["d1_ci90"][p][0] > 0.15 for p in ("60", "120")) and _q(d7["120"], 3, True) == "+0.222"
+    assert (
+        "on 7 it ran from −0.099 to +0.244, and its cells at 60° and 120° (+0.244 and +0.222) lay entirely above +0.15"
+        in item
+    )
+    pc = {M: pm[M]["pulse_cost"]["P1_minus_Z"] for M in pm}
+    assert [_q(pc[M], 3, True) for M in ("7", "43", "18")] == ["−0.002", "−0.001", "+0.002"]
+    assert all(a[M]["pulse_cost"]["P1_minus_Z_ci90"][0] < 0 < a[M]["pulse_cost"]["P1_minus_Z_ci90"][1] for M in a)
+    assert (
+        "The pulse-cost circuit's P(1) above Z's was −0.002, −0.001 and +0.002, each interval containing zero" in item
+    )
+    rr = {M: -pm[M]["R1_minus_R0"]["deg"] for M in pm}
+    assert [_q(rr[M], 1) for M in ("7", "43", "18")] == ["13.2", "10.5", "17.1"]
+    assert abs(pm["18"]["W_minus_R0"]["deg"] - pm["18"]["R1_minus_R0"]["deg"]) < 0.05
+    assert 0.2 < pm["7"]["R1_minus_R0"]["deg"] / pm["7"]["W_minus_R0"]["deg"] < 0.3
+    assert "by 13.2°, 10.5° and 17.1° (θ_R1 − θ_R0)" in item
+    # the reading after the data: the shots alone redrawn, the copies pooled, with the rule's seed
+    rng = np.random.default_rng(doc["meta"]["seeds"]["bootstrap"])
+    _, q = __import__("_reuse_runs")._wait_test_keys()
+    import _reuse_runs as reuse
+
+    cells, bits, _ = reuse._cells_and_bits(
+        doc["labels"], doc["counts"], lambda x: (str(x["M"]), x["circuit"], x["phi_deg"])
+    )
+    shots_only = {}
+    for M in ("7", "43", "18"):
+        Fb = []
+        for p in reuse.K52_PHIS:
+            V = np.array([x[1] for x in cells[(M, "W-no", p)]], float).sum(0)
+            m = rng.multinomial(int(V.sum()), V / V.sum(), size=10_000)
+            Fb.append(np.sqrt(m / m.sum(-1, keepdims=True) * q).sum(-1) ** 2)
+
+        def dp(k):
+            o, t = sum(x[1] for x in bits[k]), sum(x[2] for x in bits[k])
+            return rng.binomial(t, o / t, size=10_000) / t
+
+        z = dp((M, "Z", 0))
+        R1 = np.stack([dp((M, "R1", p)) - z for p in reuse.K52_PHIS], -1)
+        Lb = reuse._wrap(reuse.theta_wait_test(np.stack(Fb, -1)) - reuse.theta_ramsey(R1))
+        shots_only[M] = reuse.pct(L[M] + reuse._wrap(Lb - L[M]))
+    lo, hi = shots_only["43"]
+    assert hi < -10 and abs(lo + 13.1) < 0.3 and abs(hi + 10.3) < 0.3  # "about": a platform's stream moves the ends
+    assert shots_only["7"][1] < -10 and -5 < shots_only["18"][0] and shots_only["18"][1] < 5
+    assert (
+        "with the shots alone redrawn and the copies pooled, 43's interval would be about −13.1° to −10.3°, entirely "
+        "outside ±10°; the verdicts on 7 and 18 would not change." in item
+    )
+    assert "Manacitra does not rank machines." in item
+
+
+def _peak_lines(a: dict, chains: list) -> list:
+    out = []
+    for c, chain in zip(a["cells_phi_star"], chains):
+        assert c["M"] == str(chain[1]) and c["informative_R1"]
+        name = "-".join(map(str, chain))
+        out.append(
+            f"- **{name}**, with {c['M']} waiting: d1 {_q(c['d1'], 3, True)} at {a['phi_star_deg'][c['M']]}° "
+            f"{_ci(c['d1_ci90'])}."
+        )
+    return out
+
+
+def test_finding_23():
+    """Amendment A24: finding 23 (Kickoff 57)."""
+    from _reproduce import K57, k57_recomputed, reuse_doc
+
+    item, doc, r = _item(23), reuse_doc(K57), k57_recomputed()
+    a = doc["archived"]["analysis"]
+    t0, t1 = _job_span(doc)
+    assert (hhmm(t0), hhmm(t1), t0[:10]) == ("00:39", "00:43", "2026-10-15")
+    assert "(Kickoff 57; ibm_kingston, 15 October 2026, 00:39 to 00:43 UTC)" in item
+    d = doc["chain_draw"]
+    assert (d["n_candidates"], d["n_survivors"], _shuffle_seed(d)) == (488, 272, 5757)
+    assert d["n_excluded"] == {
+        "uses a qubit of Kickoffs 55 and 56": 68,
+        "a readout error above 3%": 136,
+        "a CZ error above 1%": 12,
+    }
+    chains = [x["chain"] for x in d["drawn"]]
+    assert chains == doc["meta"]["chains"] == [[0, 1, 2], [90, 89, 88], [57, 47, 48], [17, 27, 28]]
+    assert (
+        "Of 488 candidates, 68 used a qubit of findings 20 and 22, 136 had a qubit with a readout error above 3% and "
+        "12 "
+        "a coupler with a CZ error above 1%, leaving 272; shuffled with NumPy's `default_rng(5757)`, the first four "
+        "were "
+        "taken: 0-1-2, 90-89-88, 57-47-48 and 17-27-28" in item
+    )
+    sh = _shots(doc)
+    assert (sh[(1, "sweep")], sh[(2, "verdict")], sh[(2, "beside")]) == (2000, 3000, 1500)
+    phi = r["phi_star_deg"]
+    assert phi == {"1": 164, "89": 220, "47": 156, "27": 211} == a["phi_star_deg"]
+    assert _utc(doc["peaks"]["computed_utc"]) < _utc(doc["meta"]["T_M"]["per_job"]["2"]["recorded_utc"])
+    assert "164°, 220°, 156° and 211°, recorded before job 2 was built (`peaks` in the data)" in item
+    assert {x["stamp_utc"] for x in doc["calibration_record"]["stamps"]} == {"2026-10-15T00:05:34Z"}
+    assert (
+        _posted(K57)[0::2] == (38, "00:26")
+        and "([issue 38](https://github.com/dogma-guru/manacitra/issues/38), 00:26 UTC;" in item
+    )
+    assert r["H57"] == "AGREE" and len(r["informative_cells"]) == 4
+    assert all(line in item for line in _peak_lines(a, chains))
+    p90 = a["check_at_plus90"]  # interval-derived: as archived (A17)
+    assert p90["verdict"] == "AGREE" and len(p90["informative_cells"]) == 4
+    d90 = [c["d1"] for c in p90["cells"]]
+    assert (_q(min(d90), 3, True), _q(max(d90), 3, True)) == ("+0.040", "+0.061")
+    assert "would also have returned AGREE, all four cells informative, with d1 from +0.040 to +0.061" in item
+    assert (r["original_rule_at_phi_star"]["verdict"], p90["original_rule_verdict"]) == ("AGREE", "NOT SETTLED")
+    lean = r["lean_phi_star"]
+    assert lean["n_d1_above_zero"] == 4 and _q(lean["mean_d1"], 3, True) == "+0.049"
+    assert "Every d1 at the peak was positive, a mean of +0.049." in item
+    assert max(abs(v["difference_P1"]) for v in r["drift"].values()) <= 0.0105
+    assert "R1's P(1) at φ* in job 2 lay within 0.010 of what job 1's fit gave there." in item
+    z = {M: v["P1_Z"] for M, v in r["chains"].items()}
+    others = [z[M] for M in ("89", "47", "27")]
+    assert (_q(z["1"], 2), _q(min(others), 3), _q(max(others), 3)) == ("0.30", "0.005", "0.024")
+    assert _q(r["chains"]["1"]["F_ref"], 3) == "0.571"
+    ro = d["drawn"][0]["readout_error"]["1"]
+    assert f"{100 * ro:.2f}%" == "0.87%" and ro < 0.03
+    assert (
+        "Qubit 1 read P(1) 0.30 at zero wait, against 0.005 to 0.024 on the other three, and its F_ref was 0.571."
+        in item
+    )
+    assert "Its published readout error at the draw was 0.87%, under the 3% the draw screened on" in item
+    c1, c90 = a["cells_phi_star"][0], p90["cells"][0]
+    assert (_q(c1["d1"], 3, True), _q(c90["d1"], 3, True)) == ("+0.116", "+0.051")
+    assert c1["d1"] == max(c["d1"] for c in a["cells_phi_star"])
+    assert "Both its cells held: +0.116 at φ*, the run's largest residual, and +0.051 at +90°." in item
+
+
+def test_finding_24():
+    """Amendment A24: finding 24 (Kickoff 58)."""
+    from _reproduce import K56, K58, k55_recomputed, k56_recomputed, k58_recomputed, reuse_doc
+
+    item, doc, r = _item(24), reuse_doc(K58), k58_recomputed()
+    pc = doc["archived"]["analysis"]["per_chain"]  # the intervals and what rests on them, as archived (A17)
+    assert {M: (v["D"], v["verdict"]) for M, v in r["per_chain"].items()} == {
+        M: (v["D"], v["verdict"]) for M, v in pc.items()
+    }
+    t0, t1 = _job_span(doc)
+    assert (hhmm(t0), hhmm(t1)) == ("01:16", "01:19")
+    assert "(Kickoff 58; ibm_kingston, 15 October 2026, 01:16 to 01:19 UTC)" in item
+    assert doc["meta"]["chains"] == reuse_doc(K56)["meta"]["chains"]
+    assert {M: v["phi_star_deg"] for M, v in pc.items()} == {"7": 167, "43": 213, "18": 223}
+    rule = (archive.data_dir() / "ibm_kingston" / "k58-rule.md").read_text()
+    assert "This run is a placement comparison, not a pass-rate test." in rule
+    assert "No result on them enters any pass rate of the check." in rule
+    assert "not a pass-rate test: by its rule, no result on these chains enters any pass rate of the check." in item
+    assert _posted(K58)[0::2] == (39, "01:00")
+    for chain, M, v in (
+        ("6-7-8", "7", "PEAK SMALLER"),
+        ("42-43-44", "43", "PEAK SMALLER"),
+        ("31-18-11", "18", "NOT SEPARATED"),
+    ):
+        c = pc[M]
+        assert c["verdict"] == v
+        line = (
+            f"- **{chain}**, with {M} waiting: d1 {_q(c['cells']['peak']['d1'], 3, True)} at {c['phi_star_deg']}° and "
+            f"{_q(c['cells']['plus90']['d1'], 3, True)} at +90°; D = {_q(c['D'], 3, True)} {_ci(c['D_ci90'])}: {v}."
+        )
+        assert line in item, line
+    assert abs(k56_recomputed()["per_M"]["18"]["L_W_minus_R1"]["deg"]) < 0.05
+    assert all(
+        c["cells"]["peak"]["informative_R1"] and c["cells"]["peak"]["d1_margin"] == "inside" for c in pc.values()
+    )
+    assert [pc[M]["cells"]["plus90"]["d1_margin"] for M in ("7", "43")] == ["outside", "across"]
+    assert not pc["18"]["cells"]["plus90"]["informative_R1"]
+    c7 = pc["7"]["cells"]["plus90"]
+    assert f"At +90° the cell on 7 lay entirely outside, {_q(c7['d1'], 3, True)} {_ci(c7['d1_ci90'])}." in item
+    assert _q(next(c["d1"] for c in k55_recomputed()["cells"] if c["cell"] == "7|+90"), 3, True) == "+0.257"
+    assert "at +90° in finding 20 (+0.257), at 60° and 120° in finding 22, and at +90° here" in item
+    d0 = [_q(pc[M]["original_rule"]["D0"], 3, True) for M in ("7", "43", "18")]
+    assert d0 == ["+0.256", "+0.168", "+0.125"] and all(pc[M]["original_rule"]["D0"] > pc[M]["D"] for M in pc)
+    th = [_q(pc[M]["job1_fit"]["theta_R1_deg"], 1, True) for M in ("7", "43", "18")]
+    th56 = [_q(k56_recomputed()["per_M"][M]["fits"]["R1"]["theta_deg"], 1, True) for M in ("7", "43", "18")]
+    assert th == ["+13.4", "−33.2", "−42.8"] and th56 == ["+16.3", "−37.3", "−38.1"]
+    assert all(abs(pc[M]["job1_fit"]["theta_minus_kickoff_56_deg"]) < 5 for M in pc)
+    moved = [abs(pc[M]["phi_star_deg"] - pc[M]["job1_fit"]["kickoff_56_implied_peak_deg"]) for M in ("7", "43", "18")]
+    assert moved == [3, 4, 5]
+    gap = (_utc(t0) - _utc(reuse_doc(K56)["timestamps"]["running"])).total_seconds() / 60
+    assert 70 < gap < 80
+    assert (
+        "Job 1's fits put θ_R1 at +13.4°, −33.2° and −42.8°, within 5° of finding 22's (+16.3°, −37.3° and −38.1°) "
+        "about 75 minutes later" in item
+    )
+    assert "the peaks they imply moved by 3°, 4° and 5°" in item
+    Ls = [abs(k56_recomputed()["per_M"][M]["L_W_minus_R1"]["deg"]) for M in ("7", "43", "18")]
+    assert [round(x) for x in Ls] == [37, 12, 0]
+    assert all(c["cells"]["peak"]["d1"] > 0 for c in pc.values())
+
+
+def test_finding_25():
+    """Amendment A24: finding 25 (Kickoff 59)."""
+    from _reproduce import K59, k59_recomputed, reuse_doc
+
+    item, doc, r = _item(25), reuse_doc(K59), k59_recomputed()
+    a = doc["archived"]["analysis"]
+    t0, t1 = _job_span(doc)
+    assert (hhmm(t0), hhmm(t1)) == ("12:46", "13:08")
+    assert "(Kickoff 59; ibm_kingston, 15 October 2026, 12:46 to 13:08 UTC)" in item
+    w = {x["stamp_utc"]: x for x in doc["window"]["stamps"]}
+    assert w["2026-10-15T07:37:10Z"]["q_T1"] == "151" and w["2026-10-15T12:08:57Z"]["cz_error"] == "171"
+    assert "new T1 values on 151 qubits at 07:37:10 UTC and new CZ errors on 171 couplers at 12:08:57 UTC" in item
+    d = doc["chain_draw"]
+    assert (d["n_candidates"], d["n_survivors"], _shuffle_seed(d)) == (488, 192, 5959)
+    assert list(d["n_excluded"].values()) == [130, 150, 16]
+    assert (
+        "Of 488 candidates, 130 used one of those qubits, 150 had a readout error above 3% and 16 a CZ error above "
+        "1%, leaving 192" in item
+    )
+    chains = [x["chain"] for x in d["drawn"]]
+    assert "`default_rng(5959)` gave 22-23-16, 136-143-144, 69-68-67 and 126-125-124" in item
+    assert r["phi_star_deg"] == {"23": 231, "143": 214, "68": 18, "125": 143}
+    assert (doc["run"]["1"]["calibration_at_submission_utc"], doc["run"]["2"]["calibration_at_submission_utc"]) == (
+        "2026-10-15T12:08:57Z",
+        "2026-10-15T12:50:45Z",
+    )
+    new = [
+        x
+        for x in doc["calibration_record"]["stamps"]
+        if x["stamp_utc"] == "2026-10-15T12:50:45Z" and x["new_stamp"] == "True"
+    ]
+    assert new and new[0]["any_value_changed"] in ("False", "0", "")
+    assert _posted(K59)[0::2] == (40, "11:46")
+    assert r["H59"] == "AGREE" and all(line in item for line in _peak_lines(a, chains))
+    assert _q(r["job1_fits"]["68"]["theta_R1_deg"], 1, True) == "+162.4"
+    assert "On 69-68-67 the Ramsey's offset was +162.4°, so its peak fell at 18°, far from +90°" in item
+    z = {M: v["P1_Z"] for M, v in r["zero_wait_baseline"].items()}
+    assert max(z.values()) < 0.1 and _q(z["125"], 3) == "0.060" and max(z, key=z.get) == "125"
+    p90 = a["check_at_plus90"]
+    assert p90["verdict"] == "AGREE" and p90["informative_cells"] == ["143|+90", "68|+90", "125|+90"]
+    assert (r["original_rule_at_phi_star"]["verdict"], p90["original_rule_verdict"]) == ("AGREE", "NOT SETTLED")
+    lean = r["lean_phi_star"]
+    below = [c for c in a["cells_phi_star"] if c["d1"] < 0]
+    assert _q(lean["mean_d1"], 3, True) == "+0.014" and len(below) == 2
+    assert [c["M"] for c in a["cells_phi_star"] if c["d1_ci90"][1] < 0] == ["125"]
+    from _reproduce import k57_recomputed, k62_recomputed
+
+    others = (k57_recomputed()["lean_phi_star"]["mean_d1"], k62_recomputed()["lean_phi_star"]["mean_d1"])
+    assert [_q(x, 3, True) for x in others] == ["+0.049", "+0.051"] and lean["mean_d1"] < min(others)
+    assert "The mean d1 at the peak was +0.014, with two cells below zero" in item
+    m1 = np.mean([abs(c["d1"]) for c in a["cells_phi_star"]])
+    m9 = np.mean([abs(c["d1"]) for c in p90["cells"]])
+    smaller = sum(abs(c["d1"]) < abs(d_["d1"]) for c, d_ in zip(a["cells_phi_star"], p90["cells"]))
+    assert (_q(m1, 3), _q(m9, 3), smaller) == ("0.021", "0.052", 3)
+    assert (
+        "|d1| was smaller at φ* than at +90° on three of the four chains, a mean of 0.021 against 0.052 over all four "
+        "cells." in item
+    )
+
+
+def test_finding_26():
+    """Amendment A24: finding 26 (Kickoff 61), with Kickoff 60's draw beside it."""
+    from _reproduce import K61, k61_recomputed, reuse_doc
+
+    item, doc, r = _item(26), reuse_doc(K61), k61_recomputed()
+    k60 = archive.load("ibm_fez/k60-draw-stopped.json")
+    d60 = k60["chain_draw"]
+    assert (hhmm(d60["utc"]), d60["n_candidates"], d60["n_survivors"], d60["drawn"]) == ("14:01", 488, 0, [])
+    assert d60["n_excluded"] == {"a readout error above 3%": 360, "uses a qubit of Kickoffs 47 to 54 on ibm_fez": 128}
+    pub = [v["readout_error"]["value"] for v in k60["published_at_draw"]["qubits"].values()]
+    assert (sum(x > 0.03 for x in pub), len(pub)) == (134, 156)
+    assert k60["published_at_draw"]["last_update_date"] == "2026-10-15 09:39:11-04:00"
+    assert (
+        k60["meta"]["rule"]["posted"]["issue"] == 41 and hhmm(k60["meta"]["rule"]["posted"]["created_utc"]) == "13:45"
+    )
+    assert (
+        "At that stamp, 13:39:11 UTC, 134 of fez's 156 qubits were published above 3%: of 488 candidate chains, 128 "
+        "used a qubit of earlier runs on fez and the other 360 each had a qubit published above 3%." in item
+    )
+    t0, t1 = _job_span(doc)
+    assert (hhmm(t0), hhmm(t1)) == ("14:45", "14:46")
+    assert "(Kickoff 61; ibm_fez, 15 October 2026, 14:45 to 14:46 UTC)" in item
+    assert len(doc["meta"]["qubits"]) == 16 and set(_shots(doc).values()) == {2000}
+    rule, v1 = doc["meta"]["rule"], doc["meta"]["rule"]["superseded"]
+    assert (rule["posted"]["issue"], hhmm(rule["posted"]["created_utc"])) == (43, "14:28")
+    assert (v1["posted"]["issue"], hhmm(v1["posted"]["created_utc"]), v1["closed_utc"]) == (
+        42,
+        "14:17",
+        "2026-10-15T14:28:53Z",
+    )
+    t_v1 = (archive.data_dir() / "ibm_fez" / "k61-rule-v1-superseded.md").read_text()
+    t_v2 = (archive.data_dir() / "ibm_fez" / "k61-rule.md").read_text()
+    assert "eighteen" in t_v1 and "eighteen" not in t_v2.split("version 1, which counted the qubits as eighteen", 1)[1]
+    assert _utc(rule["posted"]["created_utc"]) < _utc(doc["meta"]["submitted_utc"])
+    assert r["H61_by_stamp"] == {
+        "at submission": "PUBLISHED NOT READABLE",
+        "new stamp 2026-10-15T14:39:04Z": "PUBLISHED NOT READABLE",
+    }
+    s16 = {x["stamp_utc"]: x["readout_error_16"] for x in doc["calibration_record"]["stamps"]}
+    assert s16["2026-10-15T14:22:27Z"] == s16["2026-10-15T14:39:04Z"]
+    e = {q: v["e"] for q, v in r["per_qubit"].items()}
+    assert (_q(min(e.values()), 3), _q(max(e.values()), 3)) == ("0.004", "0.021")
+    c = r["comparisons"]["at submission"]
+    inc = c["inconsistent"]
+    ps = [c["per_qubit"][q]["p"] for q in inc]
+    assert len(inc) == 13 and (_q(min(ps), 2), _q(max(ps), 2)) == ("0.03", "0.44")
+    assert all(c["per_qubit"][q]["e_minus_p"] < 0 for q in inc)
+    assert (_q(e["143"], 3), _q(c["per_qubit"]["143"]["p"], 3)) == ("0.009", "0.232")
+    assert sorted(set(e) - set(inc), key=int) == ["74", "75", "116"]
+    assert "- The measured e was 0.004 to 0.021 on all sixteen qubits." in item
+    assert (
+        "Qubit 143 measured 0.009 against a published 0.232." in item
+        and "- Three were CONSISTENT: 74, 75 and 116." in item
+    )
+    b = doc["archived"]["analysis"]["beside"]
+    assert b["all_e_below_0.05"]
+    diffs = [v["alone_minus_together"] for v in b["alone_against_together"].values()]
+    assert max(abs(x[k]) for x in diffs for k in ("P10", "P01")) <= 0.00405
+    assert all(x[k + "_ci90"][0] <= 1e-12 and x[k + "_ci90"][1] >= -1e-12 for x in diffs for k in ("P10", "P01"))
+    zs = [v["Z_P1"] for v in b["alone_against_together"].values()]
+    assert (_q(min(zs), 4), _q(max(zs), 4)) == ("0.0008", "0.0065")
+    assert "were at most 0.004 in size, and every one's interval contained zero or touched it" in item
+    assert "The six zero-wait baselines were 0.0008 to 0.0065." in item
+    cyc = doc["cycle"]
+    assert (
+        cyc["T1_stamps"]["stamps_utc"][-1] == "2026-10-15T09:16:30Z"
+        and cyc["CZ_stamps"]["stamps_utc"][-1] == "2026-10-15T12:05:17Z"
+    )
+    assert "nothing about anyone's calibration. Manacitra does not rank machines." in item
+
+
+def test_finding_27():
+    """Amendment A24: finding 27 (Kickoff 62)."""
+    from _reproduce import K62, k62_recomputed, reuse_doc
+
+    item, doc, r = _item(27), reuse_doc(K62), k62_recomputed()
+    a = doc["archived"]["analysis"]
+    t0, t1 = _job_span(doc)
+    assert (hhmm(t0), hhmm(t1)) == ("15:31", "15:38")
+    assert "(Kickoff 62; ibm_fez, 15 October 2026, 15:31 to 15:38 UTC)" in item
+    sv = r["survey_against_table"]
+    s_ = sv["summary"]
+    assert (s_["n_qubits"], _q(s_["e_median"], 4), _q(s_["p_median"], 3)) == (156, "0.0098", "0.166")
+    assert (s_["n_measured_above_3pct"], s_["n_published_above_3pct"]) == (25, 135)
+    gap = {q: v["published_readout_error"] - v["e"] for q, v in sv["per_qubit"].items()}
+    assert (sum(x > 0.05 for x in gap.values()), sum(abs(x) <= 0.01 for x in gap.values())) == (105, 13)
+    assert [q for q, x in gap.items() if x < -0.01] == ["72"]
+    q72 = sv["per_qubit"]["72"]
+    assert (_q(q72["e"], 3), _q(q72["published_readout_error"], 3)) == ("0.381", "0.357")
+    assert (
+        "It measured a median readout error of 0.0098 over the 156 qubits, against a published median of 0.166 at the "
+        "stamp in force (14:39:04 UTC), and 25 qubits above 3% against 135 published." in item
+    )
+    assert (
+        "on 105 qubits and lay within 0.01 of it on 13; the measured exceeded the published by more than 0.01 on one, "
+        "qubit 72 (0.381 against 0.357)." in item
+    )
+    d = doc["chain_draw"]
+    assert (
+        d["each_exclusion_alone_over_all_candidates"][
+            "a published readout error above 3% (for comparison; not applied)"
+        ]
+        == 488
+    )
+    assert (d["n_candidates"], d["n_survivors"], _shuffle_seed(d)) == (488, 156, 6260)
+    assert sorted(d["n_excluded"].values()) == [36, 128, 168]
+    chains = [x["chain"] for x in d["drawn"]]
+    assert "The draw, once, with `default_rng(6260)`, took 35-19-15, 20-21-36, 109-110-111 and 99-95-94." in item
+    assert r["phi_star_deg"] == {"19": 110, "21": 194, "110": 245, "95": 216}
+    sh = _shots(doc)
+    assert (sh[(0, "survey")], sh[(1, "sweep")], sh[(2, "verdict")], sh[(2, "beside")]) == (2000, 2000, 3000, 1500)
+    assert {x["stamp_utc"] for x in doc["calibration_record"]["stamps"]} == {"2026-10-15T14:39:04Z"}
+    assert _posted(K62)[0::2] == (44, "15:06")
+    ic = doc["window"]["interval_condition"]
+    assert ic["intervals_outside_range_h"]["T1_stamps"] == [30.491] and ic["range_h"] == [20.0, 30.0]
+    assert doc["window"]["CZ_stamps"]["stamps_utc"][-1] == "2026-10-15T12:05:17Z"
+    assert "the interval between ibm_fez's last two daily T1 stamps was 30.49 h, outside the 20 to 30 hours" in item
+    assert r["H62"] == "AGREE" and all(line in item for line in _peak_lines(a, chains))
+    p90 = a["check_at_plus90"]
+    assert p90["verdict"] == "AGREE" and p90["informative_cells"] == ["19|+90", "21|+90", "95|+90"]
+    assert (r["original_rule_at_phi_star"]["verdict"], p90["original_rule_verdict"]) == ("AGREE", "AGREE")
+    assert r["lean_phi_star"]["n_d1_above_zero"] == 4 and _q(r["lean_phi_star"]["mean_d1"], 3, True) == "+0.051"
+    rb = r["readout_beside"]
+    alone = [v["alone_job2"]["mean_of_the_two"] for v in rb.values()]
+    survey = [v["survey_job0"]["e"] for v in rb.values()]
+    assert max(abs(x - y) for x, y in zip(alone, survey)) <= 0.003
+    assert (_q(min(alone + survey), 3), _q(max(alone + survey), 3)) == ("0.007", "0.020")
+    pub = [v["published_at_survey_submission"]["readout_error"] for v in rb.values()]
+    assert (_q(min(pub), 3), _q(max(pub), 3)) == ("0.019", "0.500")
+    assert rb["19"]["published_at_survey_submission"]["prob_meas0_prep1"] == pytest.approx(0.9985, abs=5e-5)
+    assert (
+        "lay within 0.003 of its survey value; both lay between 0.007 and 0.020, where the table published 0.019 to "
+        "0.500" in item
+    )
+    pk, pl = a["cells_phi_star"], p90["cells"]
+    smaller = [c["M"] for c, d_ in zip(pk, pl) if abs(c["d1"]) < abs(d_["d1"])]
+    assert (
+        smaller == ["21", "110"]
+        and abs(abs(pk[0]["d1"]) - abs(pl[0]["d1"])) < 0.002
+        and abs(pk[3]["d1"]) > abs(pl[3]["d1"])
+    )
+    m1, m9 = np.mean([abs(c["d1"]) for c in pk]), np.mean([abs(c["d1"]) for c in pl])
+    assert (_q(m1, 3), _q(m9, 3)) == ("0.051", "0.058")
+    assert "the mean |d1| was 0.051 at φ* against 0.058 at +90°." in item
+
+
+def test_findings_22_to_27_beside_the_findings():
+    """Amendment A24: what has not been shown, before and after; the method's subsection; the reproduce page's pointer;
+    the kickoffs rows; the long documentation's row; the changelog's lead as the kickoff fixed it; the data README."""
+    from _reproduce import k56_recomputed, k57_recomputed, k59_recomputed, k62_recomputed
+
+    flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    assert (
+        "- **At the peak phase the ±0.15 margin held in the cases tested; at +90° it failed on one chain of one "
+        "processor.** At the peak phase the check held on three runs on new chains, on two processors, on twelve cells "
+        "of twelve (findings 23, 25 and 27)." in flat
+    )
+    assert "Three runs at the peak phase: two calibration days on ibm_kingston and one day on ibm_fez." in flat
+    means = [k57_recomputed()["lean_phi_star"]["mean_d1"], k59_recomputed()["lean_phi_star"]["mean_d1"]]
+    means.append(k62_recomputed()["lean_phi_star"]["mean_d1"])
+    assert [_q(x, 3, True) for x in means] == ["+0.049", "+0.014", "+0.051"]
+    assert (
+        "a mean d1 of +0.049, +0.014 and +0.051 in findings 23, 25 and 27, with two cells of twelve below zero, both "
+        "in finding 25" in flat
+    )
+    assert "A chain with a larger lean could fail the ±0.15 margin without any offset." in flat
+    # the +90 degree check's cells that were not informative: findings 24, 25 and 27 (none in finding 23)
+    from _reproduce import K57, K58, K59, K62, reuse_doc
+
+    arch = {k: reuse_doc(k)["archived"]["analysis"] for k in (K57, K58, K59, K62)}
+    assert [M for M, v in arch[K58]["per_chain"].items() if not v["cells"]["plus90"]["informative_R1"]] == ["18"]
+    assert all(c["informative_R1"] for c in arch[K57]["check_at_plus90"]["cells"])
+    for k in (K59, K62):
+        assert any(not c["informative_R1"] for c in arch[k]["check_at_plus90"]["cells"])
+    assert (
+        "the check at +90° has landed cells that were not informative on both processors (findings 24, 25 and 27)"
+        in flat
+    )
+    assert (
+        "- **The published readout table was shown not to describe ibm_fez's readout at one time (findings 26 and "
+        "27).**" in flat
+    )
+    assert (
+        "- **A static shift per neighbour pair is consistent with the data and was not tested as a mechanism** "
+        "(finding 21's additivity and symmetry)." in flat
+    )
+    assert "- **It has not been tested as a chooser.**" in flat
+    # the method's subsection
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    assert (
+        "### The check at the peak phase" in method
+        and "informative by construction, a property of the design" in method
+    )
+    L = k56_recomputed()["per_M"]
+    assert (_q(L["7"]["L_W_minus_R1"]["deg"], 1, True), abs(L["18"]["L_W_minus_R1"]["deg"]) < 0.05) == ("−36.7", True)
+    assert "was −36.7° on one ibm_kingston qubit and 0.0° on another" in method
+    assert "One shot count per job: qiskit-ibm-runtime 0.49.0 deprecates different shot counts" in method
+    # the reproduce page, the kickoffs table and the long documentation
+    page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    assert "All seven built their code at `e45f15d`, unedited" in page
+    kick = (ROOT / "docs" / "kickoffs.md").read_text()
+    for k in range(56, 63):
+        assert f"| {k}, " in kick, k
+    index = " ".join((ROOT / "docs" / "index.md").read_text().split())
+    assert (
+        "`k56_phase_sweep`, `k57_peak_check`, `k58_placement`, `k59_peak_check_day_two`, `k61_readout`, "
+        "`k62_peak_check_fez`" in index
+    )
+    # the changelog's lead, as fixed by the kickoff
+    log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
+    assert log.index("## 0.7.0 (unreleased)") < log.index("## 0.6.0 (15 October 2026)")
+    assert (
+        "## 0.7.0 (unreleased) The check can now be placed at the active-neighbour Ramsey's loss maximum: a six-phase "
+        "sweep fixes each chain's peak phase, and the check runs there, where every cell is informative by "
+        "construction. "
+        "`manacitra.wait` gains the sweep, the fit, the peak phase and a readout survey with a per-qubit readout "
+        "error from "
+        "measured counts; the 0.6.0 check at +90° is unchanged. Findings 22 to 27, from four runs on ibm_kingston on "
+        "14 "
+        "and 15 October 2026 and two on ibm_fez on 15 October, with their data, and the record of a draw on ibm_fez "
+        "that "
+        "found no chain on the published readout table. At the peak phase the check predicted the wait test within "
+        "±0.15 "
+        "on twelve of twelve cells over three runs on new chains on two processors (findings 23, 25 and 27). On "
+        "ibm_fez "
+        "a direct measurement found readout errors of 0.004 to 0.021 on sixteen qubits the published table put at up "
+        "to "
+        "0.44, and a survey of all 156 qubits a median of 0.0098 against a published 0.166 (findings 26 and 27)." in log
+    )
+
+
+def test_the_a24_rules_are_published_unchanged():
+    """Amendment A24, 2b: the eight rule files of Kickoffs 56 to 62 are in data/ byte for byte, each with the SHA-256
+    posted publicly before its run, and each run's record names its rule, its hash and the issue it was posted in,
+    before the job was submitted (Kickoff 60, which stopped at its draw, before the draw). Kickoff 61's record names its
+    superseded version 1 and the issue that posted it, closed with a comment before version 2's run."""
+    import hashlib
+
+    posted = {
+        ("ibm_kingston", "k56-rule.md"): ("9b859965f419a0d0d2c613fccf98052d0e6df91d35161a509bdd0c4d02fae333", 37),
+        ("ibm_kingston", "k57-rule.md"): ("61207896b00e090a78df047c5f218363d7370a80b8d6809be726184a7092bb57", 38),
+        ("ibm_kingston", "k58-rule.md"): ("988d611a3eca79da02ffdbfc36c9c604b8bd452bb9037ff5f1d76def3c88502b", 39),
+        ("ibm_kingston", "k59-rule.md"): ("99db7f4bbcfe9224581bf90ea0dd4726fe68e965cb2d419c1cd39279c0b72bc0", 40),
+        ("ibm_fez", "k60-rule.md"): ("e701f30537e2cee8552c67f94bc1419238c3e418725d8de40ab714050c30780c", 41),
+        ("ibm_fez", "k61-rule-v1-superseded.md"): (
+            "cb1375a1ba901d04c85dc465eb035dde400d8c598d1f64e04d9ae67feee472a2",
+            42,
+        ),
+        ("ibm_fez", "k61-rule.md"): ("0a8a4242907a2c3607e7d729ecf504cfadcf296059ce9953c134d95ca551018b", 43),
+        ("ibm_fez", "k62-rule.md"): ("ec13ffaf7b239d6e5f74ba4cda1eed33b5f84cee3e8e96b05c25b8f47aa19778", 44),
+    }
+    for (folder, name), (sha, _) in posted.items():
+        text = (archive.data_dir() / folder / name).read_bytes()
+        assert hashlib.sha256(text).hexdigest() == sha, name
+        assert b"The rule is not changed after the data, whatever they show." in text, name
+    records = {
+        "ibm_kingston/k56-phase-sweep.json": "k56-rule.md",
+        "ibm_kingston/k57-peak-check.json": "k57-rule.md",
+        "ibm_kingston/k58-placement-comparison.json": "k58-rule.md",
+        "ibm_kingston/k59-peak-check-day-2.json": "k59-rule.md",
+        "ibm_fez/k60-draw-stopped.json": "k60-rule.md",
+        "ibm_fez/k61-readout-check.json": "k61-rule.md",
+        "ibm_fez/k62-peak-check.json": "k62-rule.md",
+    }
+    for path, name in records.items():
+        doc = archive.load(path)
+        r_ = doc["meta"]["rule"]
+        sha, issue = posted[(path.split("/")[0], name)]
+        assert (r_["file"], r_["sha256"], r_["posted"]["issue"]) == (name, sha, issue), path
+        assert r_["posted"]["url"] == f"https://github.com/dogma-guru/manacitra/issues/{issue}"
+        sub = doc["meta"].get("submitted_utc") or doc["chain_draw"]["utc"]
+        first = min(sub.values()) if isinstance(sub, dict) else sub
+        assert _utc(r_["posted"]["created_utc"]) < _utc(first), path
+    v1 = archive.load("ibm_fez/k61-readout-check.json")["meta"]["rule"]["superseded"]
+    assert (v1["file"], v1["sha256"], v1["posted"]["issue"]) == (
+        "k61-rule-v1-superseded.md",
+        posted[("ibm_fez", "k61-rule-v1-superseded.md")][0],
+        42,
+    )
+    assert _utc(v1["posted"]["created_utc"]) < _utc(v1["closed_utc"])
+
+
+def test_the_leftover_picture():
+    """A24: finding 22's picture, made from the data by docs/make_diagrams.py and referenced from finding 22; its alt
+    text and its own text carry the fitted offsets and the leftover of the data."""
+    from _reproduce import k56_recomputed
+
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    item = findings.split('<a id="finding-22"></a>', 1)[1].split("<a id=", 1)[0]
+    assert "](diagrams/leftover-sweep.svg)" in item and (DIAGRAMS / "leftover-sweep.png").is_file()
+    alt = " ".join(item.split("![", 1)[1].split("](diagrams/leftover-sweep.svg)", 1)[0].split())
+    p = k56_recomputed()["per_M"]["7"]
+    th = {c: _q(p["fits"][c]["theta_deg"], 1, True) for c in ("W", "R1")}
+    L, ci = _q(p["L_W_minus_R1"]["deg"], 1, True), [_q(x, 1, True) for x in p["L_W_minus_R1"]["ci90"]]
+    assert (th["W"], th["R1"], L, ci) == ("−20.4", "+16.3", "−36.7", ["−39.1", "−34.2"])
+    assert f"the wait test's offset θ_W is {th['W']}° and the Ramsey's offset θ_R1 is {th['R1']}°" in alt
+    assert f"The leftover, L = θ_W − θ_R1, is {L}°, with a 90% interval of {ci[0]}° to {ci[1]}°" in alt
+    text = svg_text(DIAGRAMS / "leftover-sweep.svg")
+    assert "θ_W = −20.4°" in text and "θ_R1 = +16.3°" in text and "L = θ_W − θ_R1 = −36.7°" in text
+    assert "−39.1° to −34.2°: LARGE" in text and "ibm_kingston, Kickoff 56, 14 to 15 October 2026, one job." in text

@@ -157,6 +157,16 @@ MUTATED = {
     # Amendment A23: the verdicts of Kickoffs 54 and 55
     "Kickoff 54, the revised check on a second day": ("ibm_fez/k54-revised-check-day-2.json", "archived/analysis/H54"),
     "Kickoff 55, the revised check on ibm_kingston": ("ibm_kingston/k55-revised-check.json", "archived/analysis/H55"),
+    # Amendment A24: the verdicts of Kickoffs 56 to 59, 61 and 62
+    "Kickoff 56, the phase sweep on ibm_kingston": ("ibm_kingston/k56-phase-sweep.json", "archived/analysis/H56a"),
+    "Kickoff 57, the check at the peak phase": ("ibm_kingston/k57-peak-check.json", "archived/analysis/H57"),
+    "Kickoff 58, the placement comparison": ("ibm_kingston/k58-placement-comparison.json", "archived/analysis/H58b"),
+    "Kickoff 59, the check at the peak phase on a second day": (
+        "ibm_kingston/k59-peak-check-day-2.json",
+        "archived/analysis/H59",
+    ),
+    "Kickoff 61, the readout check on ibm_fez": ("ibm_fez/k61-readout-check.json", "archived/analysis/H61"),
+    "Kickoff 62, the check at the peak phase on ibm_fez": ("ibm_fez/k62-peak-check.json", "archived/analysis/H62"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 
@@ -303,9 +313,9 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED
+    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
-    assert (len(A22_MARKED), len(A23_MARKED)) == (336, 147)
+    assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED)) == (336, 147, 385)
 
 
 def _reuse_marked() -> set:
@@ -530,8 +540,155 @@ A23_NOT_MARKED = {
 }
 
 
+#: The intervals of Kickoffs 56 to 62 that are excluded, not marked: the fitted angles' intervals in degrees, and those
+#: that move by 8·10⁻⁴ or more over 200 other seeds (each with its measured movement in tests/excluded_fields.json)
+A24_NOT_MARKED = {
+    "ibm_kingston/k56-phase-sweep.json": {
+        "archived/analysis/per_M/18/L_W_minus_R1/ci90",
+        "archived/analysis/per_M/18/R1_minus_R0/ci90",
+        "archived/analysis/per_M/18/W_minus_R0/ci90",
+        "archived/analysis/per_M/18/d0_ci90/0",
+        "archived/analysis/per_M/18/d0_ci90/120",
+        "archived/analysis/per_M/18/d0_ci90/300",
+        "archived/analysis/per_M/18/d1_ci90/0",
+        "archived/analysis/per_M/18/d1_ci90/120",
+        "archived/analysis/per_M/18/d1_ci90/300",
+        "archived/analysis/per_M/18/fits/R0/theta_ci90",
+        "archived/analysis/per_M/18/fits/R1/theta_ci90",
+        "archived/analysis/per_M/18/fits/W/theta_ci90",
+        "archived/analysis/per_M/18/loss_ci90/R1|120",
+        "archived/analysis/per_M/43/L_W_minus_R1/ci90",
+        "archived/analysis/per_M/43/R1_minus_R0/ci90",
+        "archived/analysis/per_M/43/W_minus_R0/ci90",
+        "archived/analysis/per_M/43/d0_ci90/120",
+        "archived/analysis/per_M/43/d0_ci90/300",
+        "archived/analysis/per_M/43/d1_ci90/0",
+        "archived/analysis/per_M/43/d1_ci90/180",
+        "archived/analysis/per_M/43/d1_ci90/300",
+        "archived/analysis/per_M/43/d1_ci90/60",
+        "archived/analysis/per_M/43/fits/R0/theta_ci90",
+        "archived/analysis/per_M/43/fits/R1/theta_ci90",
+        "archived/analysis/per_M/43/fits/W/theta_ci90",
+        "archived/analysis/per_M/43/loss_ci90/R0|120",
+        "archived/analysis/per_M/7/F_no_ci90/300",
+        "archived/analysis/per_M/7/L_W_minus_R1/ci90",
+        "archived/analysis/per_M/7/R1_minus_R0/ci90",
+        "archived/analysis/per_M/7/W_minus_R0/ci90",
+        "archived/analysis/per_M/7/d0_ci90/120",
+        "archived/analysis/per_M/7/d0_ci90/300",
+        "archived/analysis/per_M/7/d0_ci90/60",
+        "archived/analysis/per_M/7/d1_ci90/240",
+        "archived/analysis/per_M/7/d1_ci90/300",
+        "archived/analysis/per_M/7/d1_ci90/60",
+        "archived/analysis/per_M/7/fits/R0/theta_ci90",
+        "archived/analysis/per_M/7/fits/R1/theta_ci90",
+        "archived/analysis/per_M/7/fits/W/theta_ci90",
+        "archived/analysis/per_M/7/loss_ci90/R1|60",
+    },
+    "ibm_kingston/k57-peak-check.json": {
+        "archived/analysis/cells_phi_star/[0]/d0_ci90",
+        "archived/analysis/cells_phi_star/[0]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/F_no_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/F_no_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/loss_R1_ci90",
+        "archived/analysis/job1_fits/1/theta_ci90",
+        "archived/analysis/job1_fits/27/theta_ci90",
+        "archived/analysis/job1_fits/47/theta_ci90",
+        "archived/analysis/job1_fits/89/theta_ci90",
+    },
+    "ibm_kingston/k58-placement-comparison.json": {
+        "archived/analysis/per_chain/18/D_ci90",
+        "archived/analysis/per_chain/18/cells/peak/loss_R0_ci90",
+        "archived/analysis/per_chain/18/cells/plus90/d0_ci90",
+        "archived/analysis/per_chain/18/cells/plus90/loss_R0_ci90",
+        "archived/analysis/per_chain/18/job1_fit/theta_ci90",
+        "archived/analysis/per_chain/18/original_rule/D0_ci90",
+        "archived/analysis/per_chain/43/D_ci90",
+        "archived/analysis/per_chain/43/cells/plus90/d0_ci90",
+        "archived/analysis/per_chain/43/cells/plus90/loss_R0_ci90",
+        "archived/analysis/per_chain/43/job1_fit/theta_ci90",
+        "archived/analysis/per_chain/43/original_rule/D0_ci90",
+        "archived/analysis/per_chain/7/D_ci90",
+        "archived/analysis/per_chain/7/cells/peak/d0_ci90",
+        "archived/analysis/per_chain/7/cells/plus90/d0_ci90",
+        "archived/analysis/per_chain/7/cells/plus90/d1_ci90",
+        "archived/analysis/per_chain/7/job1_fit/theta_ci90",
+        "archived/analysis/per_chain/7/original_rule/D0_ci90",
+        "archived/analysis/per_chain/7/plus90_beside_kickoff_55/d1_ci90_this_run",
+    },
+    "ibm_kingston/k59-peak-check-day-2.json": {
+        "archived/analysis/cells_phi_star/[0]/d1_ci90",
+        "archived/analysis/cells_phi_star/[1]/d0_ci90",
+        "archived/analysis/cells_phi_star/[2]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/F_no_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[0]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/loss_R1_ci90",
+        "archived/analysis/job1_fits/125/theta_ci90",
+        "archived/analysis/job1_fits/143/theta_ci90",
+        "archived/analysis/job1_fits/23/theta_ci90",
+        "archived/analysis/job1_fits/68/theta_ci90",
+    },
+    "ibm_fez/k61-readout-check.json": {},
+    "ibm_fez/k62-peak-check.json": {
+        "archived/analysis/cells_phi_star/[0]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/F_no_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R0_ci90",
+        "archived/analysis/check_at_plus90/cells/[1]/loss_R1_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[2]/d1_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/d0_ci90",
+        "archived/analysis/check_at_plus90/cells/[3]/d1_ci90",
+        "archived/analysis/job1_fits/110/theta_ci90",
+        "archived/analysis/job1_fits/19/theta_ci90",
+        "archived/analysis/job1_fits/21/theta_ci90",
+        "archived/analysis/job1_fits/95/theta_ci90",
+    },
+}
+
+
+def _a24_marked() -> set:
+    """Amendment A24: Kickoffs 56 to 59, 61 and 62's 90% bootstrap intervals, each compared at 10⁻³: every field of the
+    archived analysis that is an interval (a part of its path names ci90), less those named in A24_NOT_MARKED."""
+    rs = "resampled-shots"
+    out = set()
+    for f in A24_NOT_MARKED:
+        doc = ar.load(f)
+        out |= {
+            (f, x, rs)
+            for x in data_fields(doc)
+            if x.startswith("archived/analysis/") and any("ci90" in part for part in x.split("/"))
+        }
+    return out - {(f, x, rs) for f, xs in A24_NOT_MARKED.items() for x in xs}
+
+
 REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")
 REUSE_MARKED = _reuse_marked()
 WAIT_TEST_MARKED = _wait_test_marked()
 A22_MARKED = _a22_marked()
 A23_MARKED = _a23_marked()
+A24_MARKED = _a24_marked()
