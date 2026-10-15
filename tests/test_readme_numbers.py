@@ -3494,7 +3494,7 @@ def test_the_a24_rules_are_published_unchanged():
 def test_the_leftover_picture():
     """A24: finding 22's picture, made from the data by docs/make_diagrams.py and referenced from finding 22; its alt
     text and its own text carry the fitted offsets and the leftover of the data."""
-    from _reproduce import k56_recomputed
+    from _reproduce import K56, k56_recomputed, reuse_doc
 
     findings = (ROOT / "docs" / "findings.md").read_text()
     item = findings.split('<a id="finding-22"></a>', 1)[1].split("<a id=", 1)[0]
@@ -3502,7 +3502,10 @@ def test_the_leftover_picture():
     alt = " ".join(item.split("![", 1)[1].split("](diagrams/leftover-sweep.svg)", 1)[0].split())
     p = k56_recomputed()["per_M"]["7"]
     th = {c: _q(p["fits"][c]["theta_deg"], 1, True) for c in ("W", "R1")}
-    L, ci = _q(p["L_W_minus_R1"]["deg"], 1, True), [_q(x, 1, True) for x in p["L_W_minus_R1"]["ci90"]]
+    # the interval as archived, as the figure draws it: a fitted angle's interval moves with a platform's random
+    # stream (A17), and tests/excluded_fields.json names it with its measured movement
+    arch = reuse_doc(K56)["archived"]["analysis"]["per_M"]["7"]["L_W_minus_R1"]
+    L, ci = _q(p["L_W_minus_R1"]["deg"], 1, True), [_q(x, 1, True) for x in arch["ci90"]]
     assert (th["W"], th["R1"], L, ci) == ("−20.4", "+16.3", "−36.7", ["−39.1", "−34.2"])
     assert f"the wait test's offset θ_W is {th['W']}° and the Ramsey's offset θ_R1 is {th['R1']}°" in alt
     assert f"The leftover, L = θ_W − θ_R1, is {L}°, with a 90% interval of {ci[0]}° to {ci[1]}°" in alt
