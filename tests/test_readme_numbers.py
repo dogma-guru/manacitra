@@ -768,6 +768,7 @@ RETIRED = [
     "Twenty-one findings, from runs on 5 to 15 October 2026",  # A24: twenty-seven
     "the twenty-one findings in full",  # A24: twenty-seven, with the table of all of them
     "the check runs with the neighbours active",  # A24: the README opens with the check at the peak phase
+    "To be released as 0.7.0",  # the 0.7.0 release: released, with its date
     "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
@@ -2314,7 +2315,7 @@ def test_the_readme_opens_with_the_latest_findings():
         "On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table "
         "gave 0.166 (finding 27)." in flat
     )
-    assert flat.endswith("To be released as 0.7.0.")
+    assert flat.endswith("Released as 0.7.0 on 15 October 2026.")  # the release pull request dates it
     # no chooser, nothing validated, and none of the release's words
     assert "choos" not in flat
     for word in ("veri" + "fied", "valid" + "ated", "prov" + "en", "chooses"):
@@ -3419,9 +3420,11 @@ def test_findings_22_to_27_beside_the_findings():
     )
     # the changelog's lead, as fixed by the kickoff
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
-    assert log.index("## 0.7.0 (unreleased)") < log.index("## 0.6.0 (15 October 2026)")
+    assert log.index("## 0.7.0 (15 October 2026)") < log.index("## 0.6.0 (15 October 2026)")
+    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
     assert (
-        "## 0.7.0 (unreleased) The check can now be placed at the active-neighbour Ramsey's loss maximum: a six-phase "
+        "## 0.7.0 (15 October 2026) The check can now be placed at the active-neighbour Ramsey's loss maximum: "
+        "a six-phase "
         "sweep fixes each chain's peak phase, and the check runs there, where every cell is informative by "
         "construction. "
         "`manacitra.wait` gains the sweep, the fit, the peak phase and a readout survey with a per-qubit readout "
