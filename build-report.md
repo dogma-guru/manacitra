@@ -3570,3 +3570,49 @@ step 4).
 4. the version DOI, once Zenodo has minted it.
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.
+
+**The release (15 October 2026), each step by the author's go given in chat on 15 October.**
+- **The merge of the amendment.** Pull request 47 (A24) was marked ready and merged as `a07acad` with a merge commit,
+  at 21:07:54 UTC, after every check had passed on its head, `8063610`. Signing on `main` wrote the bundles of its
+  fifteen new data files, `data/README.md` and `data/SHA256SUMS` in `fcd4126`.
+- **The merge of the release.** Pull request 48 (this release) was merged as `b782d00` with a merge commit, at
+  22:33:09 UTC, after every check had passed on its head, `fc2df32`, whose tree `b782d00` carries unchanged. No signed
+  file changed (`tools/sign_targets.py` lists none between `fcd4126` and `b782d00`), the signing run on `b782d00`
+  committed nothing, and the tag is on the merge commit.
+- **The tree check, before tagging,** at 22:50:31 UTC, on `b782d00`: all 272 files in the tree with a `.sigstore.json`
+  bundle, every one in `data/`, gave `OK:` offline against `…/sign.yml@refs/heads/main`, one line each and no
+  failure; the tree holds no `*.commit.json` file and no data file without a bundle. The negative control:
+  `data/ibm_fez/k62-peak-check.json` against `…/sign.yml@refs/tags/v0.6.0` fails (exit status 1), its certificate
+  naming `…/sign.yml@refs/heads/main`. The tool was `sigstore` 4.5.0, with Python 3.14.8 and pip 26.2.1 on macOS
+  26.6.2 (arm64), installed by the author's standing leave (A20, C2) into a throwaway environment outside the
+  repository, as for v0.6.0 (section 41): its 31 wheels downloaded first, then installed from that folder alone, `pip
+  check` clean, no credentials, and the environment deleted afterwards. The git identity scan was clean (152 reachable
+  commits).
+- **The tag and the release.** `v0.7.0` is annotated and unsigned, as every earlier tag (tag object `bd0a013`, message
+  "Manacitra 0.7.0"), on `b782d00`. The release is at <https://github.com/dogma-guru/manacitra/releases/tag/v0.7.0>,
+  published at 22:57:02 UTC, with the changelog's 0.7.0 entry as its notes (its wrapped lines joined, the words
+  unchanged).
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 23:00:38 UTC, with `sigstore` 4.5.0 in a second throwaway environment set
+  up the same way and deleted afterwards (the paths below shortened to the file names):
+
+  ```
+  $ sigstore verify identity --offline manacitra-0.7.0-py3-none-any.whl manacitra-0.7.0.tar.gz SHA256SUMS --cert-identity https://github.com/dogma-guru/manacitra/.github/workflows/sign.yml@refs/tags/v0.7.0 --cert-oidc-issuer https://token.actions.githubusercontent.com
+  OK: manacitra-0.7.0-py3-none-any.whl
+  OK: manacitra-0.7.0.tar.gz
+  OK: SHA256SUMS
+  ```
+
+  `shasum -a 256 -c SHA256SUMS` passes on both packages. The negative control: against `…@refs/tags/v0.6.0`, the
+  wheel, the sdist and `SHA256SUMS` each fail (exit status 1), each certificate naming `…@refs/tags/v0.7.0`. The wheel
+  carries version 0.7.0; neither package contains `data/`. GitHub's two source archives were not checked this time.
+- **Zenodo.** GitHub's release events to Zenodo failed at publication: the delivery of `published` timed out at 22:57:13
+  UTC, without an answer from Zenodo, and `released` and `created` were answered with HTTP 502. Zenodo had no v0.7.0
+  record at 23:46 UTC. On the author's request in chat, the `published` delivery was sent again through GitHub's API at
+  03:34:56 and 03:40:29 UTC on 16 October; both timed out (HTTP 504). A further redelivery at 08:47:55 UTC was accepted
+  (HTTP 202), and Zenodo archived v0.7.0 with its own DOI, `10.5281/zenodo.23408345` (record created 08:48:08 UTC on 16
+  October, its publication date 2026-10-16, linked to the `v0.7.0` tree), under the concept DOI
+  `10.5281/zenodo.23228518`, which now resolves to it. It is the only v0.7.0 record under the concept DOI.
+- **Step 4.** The README's version-DOI parenthetical names v0.7.0's DOI, `CITATION.cff` lists it among its
+  `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
