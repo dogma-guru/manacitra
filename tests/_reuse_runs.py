@@ -3531,3 +3531,130 @@ def _t7_fit_points(t, ph, y, n, seeds: dict = T7_SEEDS) -> dict:
     starts = [list(np.clip(x, p_lo, p_hi)) for x in grid] + uniform(p_lo, p_hi, 20, rng_p)
     P = best(wait._ramsey_p, starts, (p_lo, p_hi), wait.RAMSEY_XY_NAMES["P"])
     return {"S": S, "P": P}
+
+
+# --------------------------------------------------------------------------- test 7's execution spans (Amendment A26)
+def t7_spans(spans: dict) -> dict:
+    """The quantities test 7's span record derives from the provider's own fields (each span's start and stop, read as
+    UTC, and the positions and shots it ran): each span's duration and runs of positions, the gaps between spans in
+    start order, and whether every position ran in exactly one span with all its shots."""
+    from datetime import datetime
+
+    def t(s):
+        return datetime.fromisoformat(s)
+
+    rows = spans["spans"]
+    order = sorted(range(len(rows)), key=lambda i: rows[i]["start_utc"])
+    cover: dict = {}
+    for r in rows:
+        for p in r["positions"]:
+            cover.setdefault(p, []).append((r["span"], r["shots_per_position"][str(p)]))
+    shots = 1500
+    return {
+        "n_spans": len(rows),
+        "spans": [
+            {
+                "duration_s": (t(r["stop_utc"]) - t(r["start_utc"])).total_seconds(),
+                "size_shots": sum(r["shots_per_position"].values()),
+                "n_positions": len(r["positions"]),
+                "position_runs": _runs(r["positions"]),
+            }
+            for r in rows
+        ],
+        "spans_in_start_order": order,
+        "gaps": [
+            {
+                "after_span": a,
+                "before_span": b,
+                "gap_s": (t(rows[b]["start_utc"]) - t(rows[a]["stop_utc"])).total_seconds(),
+            }
+            for a, b in zip(order, order[1:])
+        ],
+        "every_position_in_exactly_one_span_with_all_its_shots": all(
+            len(c) == 1 and c[0][1] == shots for c in cover.values()
+        )
+        and sorted(cover) == list(range(spans["n_positions"])),
+        "positions_in_more_than_one_span": sorted(p for p, c in cover.items() if len(c) > 1),
+        "positions_in_no_span": sorted(set(range(spans["n_positions"])) - set(cover)),
+    }
+
+
+def _runs(idx) -> list:
+    out: list = []
+    for i in sorted(idx):
+        if out and i == out[-1][1] + 1:
+            out[-1][1] = i
+        else:
+            out.append([i, i])
+    return out
+
+
+def t7_span_readings(rec: dict, spans: dict) -> dict:
+    """Test 7's readings against its execution spans (A26; readings after the data, not in the rule): the upper line's
+    weight per span, by the method of the ten blocks (each Ramsey position's implied weight, P held at its archived fit,
+    where the lever is at least 0.35, averaged with inverse-variance weights); the blocks that hold the span boundaries;
+    the nearest three positions passing the lever on either side of each boundary; and the copies check split by
+    whether a circuit's two copies ran in the same span or in different ones (`manacitra.wait.copies_check`)."""
+    span_of = {p: r["span"] for r in spans["spans"] for p in r["positions"]}
+    pos = rec["archived"]["readings_after_the_data"]["B_weight_in_execution_order"]["positions"]
+    per_span = []
+    for r in spans["spans"]:
+        rows = [x for x in pos if span_of[x["k"]] == r["span"]]
+        b, se = np.array([x["b_pos"] for x in rows]), np.array([x["se"] for x in rows])
+        w = 1 / se**2
+        mu = float(np.sum(w * b) / np.sum(w))
+        per_span.append(
+            {
+                "span": r["span"],
+                "positions": [min(r["positions"]), max(r["positions"])],
+                "n_positions_passing_the_lever": len(rows),
+                "weighted_mean": mu,
+                "se": float(1 / math.sqrt(np.sum(w))),
+                "spread_sd": float(np.std(b)),
+                "chi2_per_dof_against_one_weight": float(np.mean(((b - mu) / se) ** 2)),
+            }
+        )
+    starts = sorted(min(r["positions"]) for r in spans["spans"])[1:]
+    bounds = {}
+    for name, first in zip(("first", "second"), starts):
+        j = first // 26
+        bounds[name] = {
+            "between_positions": [first - 1, first],
+            "block": j + 1,
+            "block_positions": [26 * j, 26 * (j + 1) - 1],
+            "before": [{"position": x["k"], "weight": x["b_pos"]} for x in pos if x["k"] < first][-3:],
+            "after": [{"position": x["k"], "weight": x["b_pos"]} for x in pos if x["k"] >= first][:3],
+        }
+    labs, cts = rec["labels"], rec["counts"]
+    idx = [k for k, lab in enumerate(labs) if lab["circuit"] in ("X", "Y")]
+    chk = wait.copies_check([labs[k] for k in idx], [cts[k] for k in idx])
+    rows = []
+    for c in chk["circuits"]:
+        ks = [idx[c["positions"][0]], idx[c["positions"][1]]]
+        sp = [span_of[k] for k in ks]
+        rows.append(
+            {
+                "circuit": c["label"]["circuit"],
+                "t_requested_us": c["label"]["t_requested_us"],
+                "positions": ks,
+                "spans": sp,
+                "same_span": sp[0] == sp[1],
+                "z": c["z"],
+            }
+        )
+    rows.sort(key=lambda r: (r["circuit"], r["t_requested_us"]))
+    split = {}
+    for name, keep in (("same_span", True), ("cross_span", False)):
+        z = [r["z"] for r in rows if r["same_span"] is keep]
+        s = float(np.sum(np.square(z)))
+        split[name] = {
+            "n": len(z),
+            "sum_z2": s,
+            "per_dof": s / len(z),
+            "n_abs_z_over_3": int(sum(abs(x) > 3 for x in z)),
+        }
+    return {
+        "weight_per_span": per_span,
+        "span_boundaries": bounds,
+        "copies_by_span": {**split, "circuits": rows},
+    }

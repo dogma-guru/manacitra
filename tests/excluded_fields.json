@@ -1572,6 +1572,43 @@
    "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/chi2": "a reading after the data: a fit to one half of the run by the rule's starts, which lands elsewhere from other random starts (moves by up to 488 over 200 other seeds); finding 28 quotes only the second half's P, which is compared",
    "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz": "a reading after the data: a fit to one half of the run by the rule's starts, which lands elsewhere from other random starts (moves by up to 10.6 over 200 other seeds); finding 28 quotes only the second half's P, which is compared",
    "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/c": "a reading after the data: a fit to one half of the run by the rule's starts, which lands elsewhere from other random starts (moves by up to 0.399 over 200 other seeds); finding 28 quotes only the second half's P, which is compared"
+  },
+  "ibm_fez/spans-t7.json": {
+   "meta": "record metadata (provenance, the source file and script by SHA-256, the record it belongs to, how the times read), not a statistic",
+   "source_code": "the read, as verbatim lines of the script as run, named by its SHA-256: a record, not a statistic; tests/test_wait.py checks its text",
+   "test": "the span check's label of this job, a record",
+   "job": "the span check's label of this job, a record",
+   "job_id": "the job's ID, provenance",
+   "n_positions": "the job's number of positions, as the record gives it: input",
+   "metadata_keys": "the keys of the result's metadata, as fetched: the provider's record",
+   "execution_keys": "the keys under the result's execution metadata, as fetched: the provider's record",
+   "metadata_other": "the result's other metadata, as fetched: the provider's record",
+   "pub_metadata_keys": "each position's metadata keys, as fetched: the provider's record",
+   "pub_metadata_first": "the first position's metadata, as fetched: the provider's record",
+   "pub_metadata_all_equal": "whether every position's metadata is the same, as the span check read it: a record of the fetch",
+   "ibm_timestamps": "IBM's job times, record metadata",
+   "read_utc": "the time of the read, record metadata",
+   "spans/[0]/span": "the provider's execution record as fetched (span): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[0]/start_utc": "the provider's execution record as fetched (start_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[0]/stop_utc": "the provider's execution record as fetched (stop_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[0]/positions": "the provider's execution record as fetched (positions): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[0]/shots_per_position": "the provider's execution record as fetched (shots_per_position): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[0]/type": "the provider's execution record as fetched (type): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/span": "the provider's execution record as fetched (span): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/start_utc": "the provider's execution record as fetched (start_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/stop_utc": "the provider's execution record as fetched (stop_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/positions": "the provider's execution record as fetched (positions): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/shots_per_position": "the provider's execution record as fetched (shots_per_position): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[1]/type": "the provider's execution record as fetched (type): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/span": "the provider's execution record as fetched (span): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/start_utc": "the provider's execution record as fetched (start_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/stop_utc": "the provider's execution record as fetched (stop_utc): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/positions": "the provider's execution record as fetched (positions): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/shots_per_position": "the provider's execution record as fetched (shots_per_position): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py",
+   "spans/[2]/type": "the provider's execution record as fetched (type): input to the derived fields, not a statistic; finding 28 quotes the spans' times, checked by tests/test_readme_numbers.py"
+  },
+  "ibm_fez/t7-span-readings.json": {
+   "meta": "record metadata (the records it is computed from, by SHA-256; what it is; the method), not a statistic"
   }
  }
 }

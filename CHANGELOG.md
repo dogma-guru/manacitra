@@ -2,7 +2,7 @@
 
 ## 0.8.0 (17 October 2026)
 
-The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.
+The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. The weight differed between the job's three execution spans, from about 0.46 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.
 
 - Amendment A25: `manacitra.wait` gains the two-quadrature Ramsey on one qubit, `ramsey_xy` (X and Y at the waits
   the caller names, with the two readout circuits as an optional third series); its fit, `ramsey_xy_fit` (one line and
@@ -17,6 +17,9 @@ The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143
   results attached to the release, with their SHA-256 in the folder's README), its recompute in
   `tests/_reuse_runs.py`, a test that the package builds what the run built, and one figure. The README opens with
   finding 28, and its table of findings gains a ninth row.
+- Amendment A26: finding 28 reads the weight per execution span, after the provider's execution record, which is
+  archived (`data/ibm_fez/spans-t7.json`, with the read as verbatim lines), with the readings against it in
+  `data/ibm_fez/t7-span-readings.json` and their recompute in `tests/_reuse_runs.py`.
 
 ## 0.7.0 (15 October 2026)
 

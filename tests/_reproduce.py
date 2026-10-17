@@ -1921,6 +1921,46 @@ def t7():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- test 7's execution spans (Amendment A26)
+T7_SPANS = "ibm_fez/spans-t7.json"
+T7_SPAN_READINGS = "ibm_fez/t7-span-readings.json"
+
+
+@cache
+def t7_spans_recomputed() -> tuple[dict, dict]:
+    spans = reuse_doc(T7_SPANS)
+    return reuse.t7_spans(spans), reuse.t7_span_readings(reuse_doc(T7), spans)
+
+
+def t7_spans():
+    """Test 7's execution spans: the durations, runs of positions and gaps the span record derives from the provider's
+    starts, stops and positions; and the readings against the spans (the weight per span, the boundaries' blocks and
+    neighbours, the copies check split by span)."""
+    derived, readings = t7_spans_recomputed()
+    docs = {T7_SPANS: reuse_doc(T7_SPANS), T7_SPAN_READINGS: reuse_doc(T7_SPAN_READINGS)}
+    leaves = compare("Test 7, the execution spans", {T7_SPANS: derived, T7_SPAN_READINGS: readings}, docs)
+    a = docs[T7_SPAN_READINGS]
+    rows = _rows(
+        lambda: [
+            *(
+                (f"weight, span {x['span']}", x["weighted_mean"], y["weighted_mean"])
+                for x, y in zip(a["weight_per_span"], readings["weight_per_span"])
+            ),
+            (
+                "sum of z², same span",
+                a["copies_by_span"]["same_span"]["sum_z2"],
+                readings["copies_by_span"]["same_span"]["sum_z2"],
+            ),
+            (
+                "sum of z², cross span",
+                a["copies_by_span"]["cross_span"]["sum_z2"],
+                readings["copies_by_span"]["cross_span"]["sum_z2"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1980,6 +2020,7 @@ CASES = {
     "Kickoff 61, the readout check on ibm_fez": k61,
     "Kickoff 62, the check at the peak phase on ibm_fez": k62,
     "Test 7, two frequencies on qubit 143": t7,
+    "Test 7, the execution spans": t7_spans,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
