@@ -3787,6 +3787,52 @@ are attached to the release at step 3 and checked from a fresh download against 
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.
 
+**The release (17 October 2026), each step by the author's go given in chat on 17 October (UTC).**
+- **The merge of the amendment.** Pull request 51 (A25) was marked ready and merged as `302a66c` with a merge commit, at
+  02:07:51 UTC, after every check had passed on its head, `b7313bb`. Signing on `main` wrote the bundles of its new data
+  files, `data/README.md` and `data/SHA256SUMS` in `9e768fc`.
+- **The merge of the release.** Pull request 52 (this release) was merged as `0248f12` with a merge commit, at 03:13:10
+  UTC, after every check had passed on its head, `68377d1`. No signed file changed, and the signing run on `0248f12`
+  committed nothing.
+- **The first tree check,** at 03:23:09 to 03:24:03 UTC, on `0248f12`: all 286 files in `data/` have a bundle, and all
+  286 gave OK offline against `…/sign.yml@refs/heads/main`. The negative control: `data/ibm_fez/t7-ramsey-xy.json`
+  against `…/sign.yml@refs/tags/v0.7.0` fails (exit status 1), its certificate naming `…/sign.yml@refs/heads/main`. The
+  git identity scan was clean (161 reachable commits).
+- **The tag held.** `main`'s CI on `0248f12` passed, but before the tag the A26 kickoff arrived, which changes finding
+  28's text (section 46). The author chose to hold the tag and to bring A26 into 0.8.0 on a branch of its own from
+  `main`. Pull request 56 (A26) was merged as `3afb86b` with a merge commit, at 17:03:37 UTC, after every check had
+  passed on its head, `94f464a`. Signing on `main` wrote the bundles of its two new data files, `data/README.md` and
+  `data/SHA256SUMS` in `09bdebd`, and the tag is on that bundle commit.
+- **The tree check, before tagging,** at 17:38:01 to 17:38:56 UTC, on `09bdebd`: all 288 files in `data/` have a bundle,
+  and all 288 gave OK offline against `…/sign.yml@refs/heads/main`. The negative control: `data/ibm_fez/spans-t7.json`
+  against `…/sign.yml@refs/tags/v0.7.0` fails (exit status 1). The git identity scan was clean (165 reachable commits).
+  The DCO check over pull request 56's own commits, the range CI checks, passes; over `0248f12..09bdebd` it names
+  GitHub's merge commit `3afb86b`, which has no Signed-off-by line, as 37 of the 38 merge commits on `main` have none,
+  and it exempts the bundle commit.
+- **The tool.** `sigstore` 4.5.0 (wheel `f045b207…`), with Python 3.14.8 and pip 26.2.1 on macOS 26.6.2 (arm64),
+  installed by the author's standing leave (A20, C2) into a throwaway environment outside the repository: its 31 wheels
+  downloaded first, then installed from that folder alone, `pip check` clean, no credentials. The same environment
+  served both tree checks and the release's verification, and was deleted afterwards.
+- **The tag and the release.** `v0.8.0` is annotated and unsigned, as every earlier tag (tag object `a6e75fd`, message
+  "Manacitra 0.8.0"), on `09bdebd`, at 18:02:24 UTC, so the release keeps the date 17 October 2026. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.8.0>, published at 18:05:46 UTC, with the changelog's 0.8.0
+  entry as its notes (its wrapped lines joined, the words unchanged) and the desk power check's `results-t7v51.jsonl`
+  attached. Before it was attached, its SHA-256 was checked against the hand-back's `SHA256SUMS` and the folder README,
+  and the identifier scan was clean on it.
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, GitHub's two source archives and `results-t7v51.jsonl`, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 18:07:45 UTC: the wheel (144,225 bytes), the sdist (293,827 bytes),
+  `SHA256SUMS` and `results-t7v51.jsonl` each gave exit status 0 offline against `…/sign.yml@refs/tags/v0.8.0`. `shasum
+  -a 256 -c SHA256SUMS` passes on both packages, and the jsonl's SHA-256 is the folder README's. The negative control:
+  against `…@refs/tags/v0.7.0`, all four fail (exit status 1), each certificate naming `…@refs/tags/v0.8.0`. The wheel
+  carries version 0.8.0; neither package contains `data/`. GitHub's two source archives were not checked.
+- **Zenodo.** GitHub's release events reached Zenodo at publication: `created` and `released` were answered with HTTP
+  202, and `published` with HTTP 409. Zenodo archived v0.8.0 with its own DOI, `10.5281/zenodo.23440342` (record created
+  18:06:00 UTC on 17 October, its publication date 2026-10-17, linked to the `v0.8.0` tree), under the concept DOI
+  `10.5281/zenodo.23228518`, which now resolves to it. It is the only v0.8.0 record under the concept DOI.
+- **Step 4.** The README's version-DOI parenthetical names v0.8.0's DOI, `CITATION.cff` lists it among its `identifiers`
+  beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
+
 ## 46. Amendment A26: finding 28 and the execution spans (17 October 2026)
 
 **Why.** By the author's go of 17 October 2026, in chat ("We can do the finding 28 amendment now"), on the provider's
