@@ -3756,10 +3756,15 @@ def test_finding_28_beside_the_finding():
         "process; the job was not, and the weight moved more within three minutes than its interval spans. The next "
         "rule carries the copies' agreement as a pre-fixed diagnostic.",
         "- **One qubit, one job, one day.** Nothing about 143 on another day, or about any other qubit, or about the "
-        "loss at the wait test's own wait on the days of findings 12 to 21.",
+        "loss at the wait test's own wait on the days of findings 13 to 18 and 21.",  # R1, Q4
     ):
         assert bullet in flat, bullet[:40]
     assert "- **It has not been tested as a chooser.**" in flat and "- **The physical origin of 143's offset.**" in flat
+    assert (
+        "and what would cause either was not measured. Finding 28 separates two lines present at once from one line, "
+        "and rules out switching between them within a shot; it does not separate slow switching between shots from a "
+        "fixed mixture, and names no cause." in flat
+    )  # R1: the dated bullet amended
     readme = " ".join((ROOT / "README.md").read_text().split())
     assert (
         "| The fringe on 143: one line or two | [28](docs/findings.md#finding-28) | ibm_fez | Measured at every wait "
@@ -3779,6 +3784,7 @@ def test_finding_28_beside_the_finding():
     assert "python power_t7v51.py fitcheck" in page
     kick = (ROOT / "docs" / "kickoffs.md").read_text()
     assert "| test 7, 16 October 2026 | Is qubit 143's Ramsey fringe over 0 to 63 µs one line" in kick
+    assert "| ibm_fez | TWO FIXED FREQUENCIES. No predictions were sealed for this run. |" in kick  # R1, Q14
     index = " ".join((ROOT / "docs" / "index.md").read_text().split())
     assert "| ibm_fez, test 7: the two-quadrature Ramsey on 143, TWO FIXED FREQUENCIES" in index
     data = " ".join((archive.data_dir() / "README.md").read_text().split())
@@ -3786,8 +3792,9 @@ def test_finding_28_beside_the_finding():
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
     assert log.index("## 0.8.0 (unreleased)") < log.index("## 0.7.0 (15 October 2026)")
     assert (
-        "## 0.8.0 (unreleased) The waiting qubit of findings 12 to 21, ibm_fez's 143, was measured at every wait from "
-        "0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed "
+        "## 0.8.0 (unreleased) The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was "
+        "measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its "
+        "Ramsey fringe is two fixed "
         "frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error "
         "was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the "
         "job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and "
@@ -3846,7 +3853,7 @@ def test_the_power_check_folder():
     root = archive.data_dir() / "desk"
     readme = (root / "t7-power-check" / "README.md").read_text()
     rows = re.findall(r"^\| `([^`]+)` \| [^|]+ \| `([0-9a-f]{64})` \|$", readme, re.M)
-    assert len(rows) == 9
+    assert len(rows) == 10  # R1, Q8: the grid's run record
     for name, sha in rows:
         assert hashlib.sha256((root / "t7-power-check" / name).read_bytes()).hexdigest() == sha, name
     names = {p.name for p in (root / "t7-power-check").iterdir()} | {f"../t7/{p.name}" for p in (root / "t7").iterdir()}
@@ -3854,6 +3861,7 @@ def test_the_power_check_folder():
     pre = hashlib.sha256((root / "t7" / "pretest_t7.py").read_bytes()).hexdigest()
     assert (root / "t7" / "SHA256SUMS").read_text() == f"{pre}  pretest_t7.py\n"
     assert "`27c29bc2c242312ff9b2ab3b22c987263aa2900ebdcf966c24e0fcc1369b1a48`" in readme
+    assert "\"DRAFT\" in the version 5.1 kickoff's name is the author's working label" in readme  # R1, Q9
     for name in ("t7-power-check/power_t7v51.py", "t7/pretest_t7.py"):
         first = (root / name).read_text().splitlines()[0]
         assert first.startswith('"""Test 7, ') and "tr" + "ace" not in (root / name).read_text().lower()

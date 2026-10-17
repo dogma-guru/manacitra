@@ -3,9 +3,10 @@ bd51b7697382bfd63303299eee081838f342bfa6591386ac4080a9709ba133fd  PROGRAMS.md
 f93d26ad10344795190378b7915b30a75d5411a18b32573f702e22fb29ee1ed7  README.md
 48ea20250e32f35e7ad2fea1ec4e5b801e0bbfa3cfe50800176be96afecc544d  desk/t7/SHA256SUMS
 7cb62fecbd50184cc75d31960d2504129b4d21653d5b7003cae9c2f831f72cdc  desk/t7/pretest_t7.py
-173380e7925252b4444d7b700f01259afba0042f93c8e6314c97e723a11d6e37  desk/t7-power-check/README.md
+dc81ce5d90c0b0557b5b4ee689bf652fbbd8797baca026133d103f061bdcb32c  desk/t7-power-check/README.md
 2e299cab16bdd273551b5c2ec92aee54faa0acb3b931be46b7f41a32f7e0de1d  desk/t7-power-check/beside-t7v51.json
 abc40212769f686d93d032c143df7807a64dfff3acdec22c7cf2d6ea59205eaa  desk/t7-power-check/fitcheck-t7v51.json
+53f19059c8fe9ec9b355d9869d3237bbdac9273e1c08bf4842f33d64c9cca960  desk/t7-power-check/grid-run-t7v51.json
 06cacb4fb58d293f685f822f43fb7bcfe35a6f335a19b0649e56251982f66531  desk/t7-power-check/keep-t7v51.json
 ccbef15f1e6602fa1a5491eef3772007611317803cebd10541c855883a8dd9f0  desk/t7-power-check/kickoff-t7-steady-or-switching-v5.1-DRAFT-2026-10-16.md
 a1c178a8b6054ddb5492405f30dbc05fd2502438dbb6699a9bd337533c01ee3c  desk/t7-power-check/power_t7v51.py

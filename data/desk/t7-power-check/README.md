@@ -13,6 +13,7 @@ The files are as they were handed back, each checked against the hand-back's `SH
 | `keep-t7v51.json` | the keep and every point's verdict fractions | `06cacb4fb58d293f685f822f43fb7bcfe35a6f335a19b0649e56251982f66531` |
 | `fitcheck-t7v51.json` | step 1, the fit check | `abc40212769f686d93d032c143df7807a64dfff3acdec22c7cf2d6ea59205eaa` |
 | `timing-t7v51.json` | step 2, the timing, with every draw of its six points | `05d34be47a08f0098e5158b0018fdc728df4dad64569ef4b7863bf7386bbee9e` |
+| `grid-run-t7v51.json` | step 3's run record: its start and end, the script's SHA-256 as run, the order of the points and the points written, 135 in one run with no restart | `53f19059c8fe9ec9b355d9869d3237bbdac9273e1c08bf4842f33d64c9cca960` |
 | `beside-t7v51.json` | beside the check: the two models fitted to each archived run on 143 alone, one quadrature | `2e299cab16bdd273551b5c2ec92aee54faa0acb3b931be46b7f41a32f7e0de1d` |
 | `../t7/pretest_t7.py` | the pre-test's script, which `power_t7v51.py` imports for the one-line model and its fit | `7cb62fecbd50184cc75d31960d2504129b4d21653d5b7003cae9c2f831f72cdc` |
 
@@ -22,6 +23,8 @@ The files are as they were handed back, each checked against the hand-back's `SH
 - `../t7/pretest_t7.py`: handed back and run as `a701a0711c5f832feb041cc32fbafc21fb97b0fe6e967a9b1748a03c721ea6c9`.
 
 `power_t7v51.py` checks `pretest_t7.py` against `../t7/SHA256SUMS`, which holds the published copy's SHA-256. The JSON records name each script by its SHA-256 as run.
+
+"DRAFT" in the version 5.1 kickoff's name is the author's working label; the design was fixed by the rule, not by the kickoff.
 
 **The grid's results** (`results-t7v51.jsonl`, one line per grid point with all 200 draws; 21,973,170 bytes) are not in this repository. They are attached to the 0.8.0 release as an asset, with this SHA-256:
 
@@ -33,4 +36,4 @@ The files are as they were handed back, each checked against the hand-back's `SH
 MANACITRA_REPO=/path/to/clone-at-9b260fb python power_t7v51.py fitcheck
 ```
 
-then `time` and `grid`, in that order (the grid ran 3.8 hours on ten cores). The `beside` stage and `tables_t7v51.py` also read records of versions 2 to 5 of the design, which are not published here; `tables_t7v51.py` reads round 5's timing record for one bracketed column of its tables, and so does not run from this repository alone. `keep-t7v51.json` holds every point's verdict fractions, from which the keep is counted again by `tests/test_readme_numbers.py`.
+then `time` and `grid`, in that order (the grid ran 3.8 hours on ten cores). Take `grid-run-t7v51.json` out of the copy before the grid stage: the stage reads it as its own run record and stops once twelve hours have passed since the first start it records. The `beside` stage and `tables_t7v51.py` also read records of versions 2 to 5 of the design, which are not published here; `tables_t7v51.py` reads round 5's timing record for one bracketed column of its tables, and so does not run from this repository alone. `keep-t7v51.json` holds every point's verdict fractions, from which the keep is counted again by `tests/test_readme_numbers.py`.

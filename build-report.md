@@ -3713,8 +3713,8 @@ from other seeds, and pass (A17).
 - **Ruff:** clean.
 - **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
 - **The DCO check:** clean on the branch.
-- **`data/SHA256SUMS`:** gains the thirteen new files. The signing workflow signs them, `data/README.md` and
-  `data/SHA256SUMS` on `main` after a merge.
+- **`data/SHA256SUMS`:** gains the fourteen new files (thirteen at first; the grid's run record by ruling R1). The
+  signing workflow signs them, `data/README.md` and `data/SHA256SUMS` on `main` after a merge.
 - **CI:** runs on the draft pull request.
 
 **CI on the first push.** One test failed on Linux under Python 3.13, and passed under 3.11:
@@ -3723,3 +3723,17 @@ model's fit outside the band, where this machine (macOS, numpy 2.5.3) and the 3.
 the check held there: inside the band the same fit from all 40 draws, and outside it the same alias. How many of the
 40 land outside the band follows the optimiser's path, which a platform's floating point can move (A17's lesson), so
 finding 28 now says "about half of those 40 draws", and the test accepts 16 to 24.
+
+**Ruling R1 (16 October 2026, the author's go given in chat: "Go with your recommendations").** It answers the
+packet's fifteen questions: the source folder's name removed from the two scripts' first lines (Q1); the telegraph
+check kept in finding 28 with its test (Q2); the scoped sentence on published rates (Q3); the range "findings 13 to 18
+and 21" in the changelog's lead and in the not-shown bullet (Q4); the question set beside findings 14 and 15's fits
+(Q5); no literature sentence in 0.8.0 (Q6); the power check's layout, `archive.records()` leaving out `data/desk/`
+(Q7); the grid's run record, `grid-run-t7v51.json`, published in `data/desk/t7-power-check/` after its SHA-256 was
+checked against the hand-back's `SHA256SUMS`, with what does not rerun from the repository alone as the README says
+(Q8); the version 5.1 kickoff's name kept, with the README's line that "DRAFT" is the author's working label (Q9); the
+power check kept beside the rule (Q10); the API names (Q11); the title (Q12); the README's limit line (Q13); the
+note on the kickoffs page's test 7 row that no predictions were sealed for this run (Q14); and the position of the
+rz(−90°) as the run's checks fixed it (Q15). The nine corrections of the packet's section 3a stand as written, and
+the bullet on the physical origin of 143's offset gains one sentence on what finding 28 separates. The folder's
+README also says to take the grid's run record out of a copy before rerunning the grid, which reads it as its own.
