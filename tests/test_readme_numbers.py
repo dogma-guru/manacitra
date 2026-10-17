@@ -3771,7 +3771,8 @@ def test_finding_28_beside_the_finding():
     assert (
         "| The fringe on 143: one line or two | [28](docs/findings.md#finding-28) | ibm_fez | Measured at every wait "
         "from 0 to 63 µs in two quadratures, 143's Ramsey fringe was two fixed frequencies about 90 kHz apart at "
-        "unequal weight, not one line decaying; within the job the weight moved. | TWO FIXED FREQUENCIES |" in readme
+        "unequal weight, not one line decaying; the weight differed between the job's execution spans. | TWO FIXED "
+        "FREQUENCIES |" in readme  # A26 R1, Q6
     )
     method = " ".join((ROOT / "docs" / "method.md").read_text().split())
     assert "### The two-quadrature Ramsey and the two-model fit" in (ROOT / "docs" / "method.md").read_text()
@@ -3801,10 +3802,11 @@ def test_finding_28_beside_the_finding():
         "Ramsey fringe is two fixed "
         "frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error "
         "was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the "
-        "job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and "
-        "finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature "
-        "Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's "
-        "thresholds are the caller's. The desk power check that preceded the rule is published beside the data." in log
+        "job. The weight differed between the job's three execution spans, from about 0.46 to 0.27, which the rule did "
+        "not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the "
+        "two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies "
+        "check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published "
+        "beside the data." in log
     )
 
 
@@ -3932,7 +3934,11 @@ def test_finding_28_execution_spans():
     assert chi == ["0.8", "1.2", "3.1"]
     assert "in χ² per degree of freedom, was 0.8, 1.2 and 3.1)" in item
     assert "Two classes of candidate are theories that can be proved wrong, and neither has been tested." in item
-    assert "(`span-check-t9.md`)" in item and "10.3 s and 0.9 s" in item
+    assert (
+        "in the test record's span check of a run on ibm_kingston (`span-check-t9.md`; the processor confirmed by "
+        "the author in chat, 17 October 2026), the readings of several qubits changed at span boundaries whose gaps "
+        "were 10.3 s and 0.9 s." in item
+    )  # A26 R1, Q4
     a = reuse_doc(T7_SPAN_READINGS)
     assert [x["weighted_mean"] for x in a["weight_per_span"]] == [x["weighted_mean"] for x in w]
     for word in ("minute", "drift", "in time", "per second"):

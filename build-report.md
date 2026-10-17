@@ -3848,3 +3848,14 @@ the README opening's, the dates (three records on 16 October) and the not-shown 
 - **`data/SHA256SUMS`:** gains the two new files. The signing workflow signs them, `data/README.md` and
   `data/SHA256SUMS` on `main` after a merge; the tag waits for that.
 - **CI:** runs on the draft pull request.
+
+**Ruling R1 (17 October 2026, the author's go given in chat: "I approve the recommendations").** It answers the packet's
+nine questions: the sidecar for the readings (Q1); "in the order the circuits were submitted" for the ten blocks (Q2);
+"within each span the blocks agreed within their standard errors", with the three χ² figures, as written (Q3);
+ibm_kingston named in finding 28's sentence on the test record's span check, the processor confirmed by the author in
+chat on 17 October 2026, which the span check's files do not record (Q4); the changelog's lead, "The weight differed
+between the job's three execution spans, from about 0.46 to 0.27, which the rule did not assume and finding 28 reports
+as what the counts show." in place of the sentence that gave the job's duration (Q5); the README's table row, "the
+weight differed between the job's execution spans" (Q6); the read kept as code, with its own test (Q7); the release date
+following the tag's UTC day, with nothing to change before the tag (Q8); and the title (Q9). The tests of the three
+sentences follow them.
