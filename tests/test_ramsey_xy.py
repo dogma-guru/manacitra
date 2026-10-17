@@ -114,9 +114,12 @@ def test_the_copies_check():
 def test_the_telegraph_fit_inside_and_outside_the_band():
     """Finding 28's check after the data on its telegraph diagnostic (a test helper's fit, not the package's): from
     each of 40 other draws of its 20 random starts (seeds 1 to 40), beside the rule's 20 grid starts, the telegraph
-    model held inside the band P is held to returns the run's fit, gamma at zero; with its own wider bounds, 19 of the
-    40 reach a lower chi-square with its lines outside the band, where gamma, about 0.012 per µs, stands in for the
-    decay and the held-out error is 0.18 to 0.20. The finding quotes these numbers."""
+    model held inside the band P is held to returns the run's fit, gamma at zero; with its own wider bounds, about half
+    of the 40 reach a lower chi-square with its lines outside the band, where gamma, about 0.012 per µs, stands in for
+    the decay and the held-out error is 0.18 to 0.20. The finding quotes these numbers. How many of the 40 land
+    outside the band depends on the platform's floating point, as an optimiser's path does: 19 on macOS under numpy
+    2.5.3 and on CI's Linux runner under Python 3.11, 20 there under Python 3.13; so the finding says "about half",
+    and the test accepts 16 to 24."""
     import _reuse_runs as R
 
     from manacitra import archive
@@ -163,13 +166,13 @@ def test_the_telegraph_fit_inside_and_outside_the_band():
                 assert abs(p["Delta0_MHz"]) + p["delta_MHz"] > 0.25
                 gammas.append(p["gamma_per_us"])
                 maes.append(float(np.mean(np.abs(R._t7_model_T(list(p.values()), to, pho) - yo))))
-    assert lower == 19
+    assert 16 <= lower <= 24, lower  # "about half" of 40
     assert {round(g, 3) for g in gammas} == {0.012}
     assert (f"{min(maes):.2f}", f"{max(maes):.2f}") == ("0.18", "0.20")
     item = " ".join((Path(__file__).resolve().parents[1] / "docs" / "findings.md").read_text().split())
     assert (
         "held inside the band P is held to, the telegraph model returns the same fit from each of 40 other draws of "
-        "its random starts; with its own wider bounds, 19 of those 40 draws reach a lower χ² with its lines outside "
-        "that band, where γ, about 0.012 per µs, stands in for the decay and the held-out error is 0.18 to "
+        "its random starts; with its own wider bounds, about half of those 40 draws reach a lower χ² with its lines "
+        "outside that band, where γ, about 0.012 per µs, stands in for the decay and the held-out error is 0.18 to "
         "0.20." in item
     )
