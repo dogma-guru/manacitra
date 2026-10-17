@@ -252,7 +252,9 @@ def test_the_findings_dates():
         "2026-10-16",
     }
     # Amendment A25: finding 28, one job on 16 October 2026, on 143 alone, under one stamp
-    (t7,) = [p for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-16"]
+    day7 = sorted(p.name for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-16")
+    assert day7 == ["spans-t7.json", "t7-ramsey-xy.json", "t7-span-readings.json"]  # A26: the job's spans, the readings
+    (t7,) = [p for p in runs if p.name == "t7-ramsey-xy.json"]
     m7 = archive.load(t7)["meta"]
     assert (t7.name, m7["processor"], m7["kickoff"]) == ("t7-ramsey-xy.json", "ibm_fez", "Test 7")
     assert m7["calibration_last_update_utc"] == "2026-10-16T20:59:56Z" and m7["qubit"] == 143
@@ -2314,17 +2316,16 @@ def test_the_readme_opens_with_the_latest_findings():
         "Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying."
         in flat
     )
-    blocks = [b["weighted_mean"] for b in rd["B_weight_in_execution_order"]["blocks_of_26"]]
-    assert all(abs(b - 0.45) < 0.015 for b in blocks[:4]) and _q(blocks[-1], 2) == "0.27"
-    ts = doc["timestamps"]
-    run = datetime.fromisoformat(ts["finished"].replace("Z", "+00:00")) - datetime.fromisoformat(
-        ts["running"].replace("Z", "+00:00")
-    )
-    assert timedelta(minutes=2, seconds=30) < run < timedelta(minutes=3, seconds=30)
+    from _reproduce import t7_spans_recomputed
+
+    spans = t7_spans_recomputed()[1]["weight_per_span"]  # A26: the weight per execution span
+    assert len(spans) == 3 and (_q(spans[0]["weighted_mean"], 2), _q(spans[-1]["weighted_mean"], 2)) == ("0.46", "0.27")
     assert (
-        "Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did "
-        "not assume and the finding reports as what the counts show." in flat
+        "The weight of the upper line differed between the job's three execution spans, from 0.46 in the first to 0.27 "
+        "in the third, which the rule did not assume and the finding reports as what the counts show." in flat
     )
+    for word in ("minute", "drift", "in time"):
+        assert word not in flat.lower(), word  # A26: no duration or rate for the weight's change
     assert "No cause is named." in flat
     assert flat.endswith("Released as 0.8.0 on 17 October 2026.")  # the release pull request dates it
     for word in ("predict", "parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "steady"):
@@ -3719,12 +3720,10 @@ def test_finding_28_beside_the_verdict():
     step = [r_["k"] for r_ in B["positions"]]
     high = [r_["k"] for r_ in B["positions"] if r_["b_pos"] > 0.4]
     assert max(high) == 98 and min(k for k in step if k > 98) == 101
-    run = (
-        datetime.fromisoformat(doc["timestamps"]["finished"].replace("Z", "+00:00"))
-        - datetime.fromisoformat(doc["timestamps"]["running"].replace("Z", "+00:00"))
-    ).total_seconds()
-    assert 55 < 100 / 260 * run < 75  # about a minute, if the positions ran in order at an even pace
-    assert "(0.452 in the first block of 26 positions, 0.269 in the last)" in item
+    assert (
+        "The ten blocks of 26 positions, in the order the circuits were submitted, read 0.452 in the first and 0.269 "
+        in item
+    )
     half = rd["C_P_on_each_half_of_the_run"]["second half (positions 130 to 259)"]["P"]
     assert (_q(half["delta_kHz"], 2), _q(half["b"], 3)) == ("44.76", "0.276")
     assert "gave the same split (δ 44.76 kHz) at b = 0.276" in item
@@ -3754,8 +3753,10 @@ def test_finding_28_beside_the_finding():
         "design rules out switching between them within one shot and says nothing about how the mixture is made across "
         "shots.",
         "- **The intervals of finding 28 are a job average.** The rule's bootstrap treats the job as one stationary "
-        "process; the job was not, and the weight moved more within three minutes than its interval spans. The next "
-        "rule carries the copies' agreement as a pre-fixed diagnostic.",
+        "process; the job was executed as three spans, and the weight differed between them by more than its interval "
+        "spans. The next rule carries the copies' agreement as a pre-fixed diagnostic.",  # A26
+        "- **Finding 28 does not say what happens between execution spans.** The execution record says where the "
+        "weight changed; it does not say why, and the repository has not tested either candidate.",  # A26
         "- **One qubit, one job, one day.** Nothing about 143 on another day, or about any other qubit, or about the "
         "loss at the wait test's own wait on the days of findings 13 to 18 and 21.",  # R1, Q4
     ):
@@ -3870,3 +3871,78 @@ def test_the_power_check_folder():
     for name in ("t7-power-check/power_t7v51.py", "t7/pretest_t7.py"):
         first = (root / name).read_text().splitlines()[0]
         assert first.startswith('"""Test 7, ') and "tr" + "ace" not in (root / name).read_text().lower()
+
+
+def test_finding_28_execution_spans():
+    """A26: finding 28's reading of the weight per execution span, from the provider's span record (spans-t7.json) and
+    the readings against it (t7-span-readings.json): the spans' positions and UTC times as the record gives them and the
+    gaps between them, the weight per span with its counts, the step's neighbours on either side of the first boundary,
+    the blocks that hold the boundaries, the copies check split by span, the labelled reading with its two candidates,
+    and the method, reproduce and changelog lines. No sentence gives the weight's change a duration or a rate."""
+    from _reproduce import T7_SPAN_READINGS, T7_SPANS, reuse_doc, t7_spans_recomputed
+
+    derived, readings = t7_spans_recomputed()
+    rec = reuse_doc(T7_SPANS)
+    item = " ".join(_item(28).split())
+    runs = [s_["position_runs"] for s_ in derived["spans"]]
+    assert runs == [[[0, 99]], [[100, 199]], [[200, 259]]] and derived["spans_in_start_order"] == [0, 1, 2]
+    times = [(s_["start_utc"][11:23], s_["stop_utc"][11:23]) for s_ in rec["spans"]]
+    assert times == [
+        ("21:31:39.632", "21:32:24.294"),
+        ("21:32:24.300", "21:33:08.742"),
+        ("21:33:08.748", "21:33:35.820"),
+    ]
+    stops = [round(float(s_["stop_utc"][17:]), 3) for s_ in rec["spans"]]
+    assert stops == [24.294, 8.743, 35.82]  # the stops to the millisecond, rounded (08.742811 reads 08.743)
+    assert (
+        "0 to 99 (21:31:39.632 to 21:32:24.294 UTC), 100 to 199 (21:32:24.300 to 21:33:08.743 UTC) and 200 to 259 "
+        "(21:33:08.748 to 21:33:35.820 UTC), with gaps of 6 ms and 5 ms between them." in item
+    )
+    gaps = [g["gap_s"] * 1e3 for g in derived["gaps"]]
+    assert [f"{g:.0f}" for g in gaps] == ["6", "5"]
+    assert derived["every_position_in_exactly_one_span_with_all_its_shots"] is True
+    assert rec["read_utc"].startswith("2026-10-17") and "retrieved again, read-only, on 17 October" in item
+    w = readings["weight_per_span"]
+    assert [_q(x["weighted_mean"], 3) for x in w] == ["0.457", "0.315", "0.274"]
+    assert [x["n_positions_passing_the_lever"] for x in w] == [33, 42, 27]
+    assert (
+        "was 0.457 in the first span, 0.315 in the second and 0.274 in the third, over 33, 42 and 27 positions" in item
+    )
+    first = readings["span_boundaries"]["first"]
+    assert first["between_positions"] == [99, 100] and first["block"] == 4
+    assert readings["span_boundaries"]["second"]["block"] == 8
+    before = [(x["position"], _q(x["weight"], 3)) for x in first["before"]]
+    after = [(x["position"], _q(x["weight"], 3)) for x in first["after"]]
+    assert before == [(93, "0.484"), (97, "0.447"), (98, "0.473")]
+    assert after == [(101, "0.315"), (103, "0.302"), (105, "0.306")]
+    assert (
+        "read 0.484, 0.447 and 0.473 at positions 93, 97 and 98, and 0.315, 0.302 and 0.306 at 101, 103 and 105."
+        in item
+    )
+    assert "the first span boundary falls inside block 4 and the second inside block 8." in item
+    same, cross = readings["copies_by_span"]["same_span"], readings["copies_by_span"]["cross_span"]
+    assert (same["n"], _q(same["sum_z2"], 1), same["n_abs_z_over_3"]) == (43, "34.9", 0)
+    assert (cross["n"], _q(cross["sum_z2"], 1), cross["n_abs_z_over_3"]) == (85, "836.8", 27)
+    assert same["sum_z2"] < same["n"] and cross["sum_z2"] > 5 * cross["n"]
+    assert (
+        "the 43 circuits whose two copies ran in the same span give a sum of z² of 34.9 on 43 degrees of freedom, none "
+        "beyond |z| = 3, and the 85 whose copies ran in different spans give 836.8 on 85, with all 27 beyond." in item
+    )
+    chi = [_q(x["chi2_per_dof_against_one_weight"], 1) for x in w]
+    assert chi == ["0.8", "1.2", "3.1"]
+    assert "in χ² per degree of freedom, was 0.8, 1.2 and 3.1)" in item
+    assert "Two classes of candidate are theories that can be proved wrong, and neither has been tested." in item
+    assert "(`span-check-t9.md`)" in item and "10.3 s and 0.9 s" in item
+    a = reuse_doc(T7_SPAN_READINGS)
+    assert [x["weighted_mean"] for x in a["weight_per_span"]] == [x["weighted_mean"] for x in w]
+    for word in ("minute", "drift", "in time", "per second"):
+        assert word not in item.split("**What the counts show", 1)[1].split("This is a measurement", 1)[0], word
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    assert "A provider may execute one job as several spans" in method
+    assert "the copies check is reported split by whether a circuit's two copies ran in the same span." in method
+    page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    assert 'pytest tests/test_reproduction.py -k "execution spans"' in page
+    log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
+    assert (
+        "- Amendment A26: finding 28 reads the weight per execution span, after the provider's execution record" in log
+    )

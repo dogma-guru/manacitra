@@ -3786,3 +3786,65 @@ are attached to the release at step 3 and checked from a fresh download against 
 4. the version DOI, once Zenodo has minted it.
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.
+
+## 46. Amendment A26: finding 28 and the execution spans (17 October 2026)
+
+**Why.** By the author's go of 17 October 2026, in chat ("We can do the finding 28 amendment now"), on the provider's
+execution record of test 7's job, read after the data. Finding 28, as merged under A25, read the upper line's weight in
+the order the circuits were submitted and placed its step in time "if the positions ran in order at an even pace". The
+provider's record says the job ran as three execution spans, and the step lies at the first span's boundary. The
+release of 0.8.0 waits for this amendment, because it changes finding 28's text: pull request 51 and the release pull
+request 52 were merged, and the tree check passed, before the A26 kickoff arrived; the author chose to hold the tag
+and to bring A26 into 0.8.0 on a branch of its own from `main`, with its changelog line under the dated heading.
+
+**Order.** A new branch, `findings/t7-execution-spans`, from `0248f12` (the merge of the release pull request), worked
+in a git worktree of its own. No hardware, no provider job, and no contact with anyone.
+
+**Sources.** The test record's span check (`span-check-t9.md`, `spans-t9.json`, `span_check_t9.py`), each checked
+against its folder's `SHA256SUMS` before anything was taken from it. Nothing whose name contains "SEALED" was read.
+
+**The data.**
+- `ibm_fez/spans-t7.json`: the span check's entry for test 7's job, every field as fetched (each span's start and stop
+  as the record gives them, read as UTC, the positions and shots it ran, each position's shots in it, every position's
+  metadata, IBM's job times, the time of the read), with a `meta` block; and the read, in `source_code`, as verbatim
+  lines of the script as run without the three lines that listed the other six jobs it read.
+- `ibm_fez/t7-span-readings.json`: the readings against the spans, computed by this repository's recompute, a sidecar
+  that names `t7-ramsey-xy.json` and `spans-t7.json` by their SHA-256. `t7-ramsey-xy.json` keeps its released bytes:
+  its signed record is not edited (A18's ruling R1).
+
+**The recompute.** `tests/_reuse_runs.py` gains `t7_spans` (each span's duration and runs of positions, the gaps in
+start order, and whether every position ran in one span with all its shots, from the provider's starts, stops and
+positions) and `t7_span_readings` (the weight per span by the method of the ten blocks, the blocks and neighbours of
+the boundaries, and the copies check split by span through `manacitra.wait.copies_check`). `tests/_reproduce.py` gains
+the case "Test 7, the execution spans": 850 fields compared, the provider's own fields excluded as the record they are.
+- **The weight per span:** 0.457, 0.315 and 0.274, over 33, 42 and 27 positions that pass the lever.
+- **The copies check split by span:** the 43 circuits whose copies ran in the same span give a sum of z² of 34.9 on
+  43 degrees of freedom; the 85 whose copies ran in different spans give 836.8 on 85, with all 27 circuits beyond
+  |z| = 3.
+- **The boundaries:** the first, between positions 99 and 100, in block 4; the second, between 199 and 200, in block 8.
+
+**The text.**
+- **`docs/findings.md`, finding 28:** the reading in time ("sat near 0.45 for the first 100 or so of the 260 positions,
+  about a minute into the three-minute run …") is replaced by the three spans, their times and gaps, the weight per
+  span, the step at the first boundary with its neighbours, the blocks that hold the boundaries and the copies check
+  split by span; the first consequence speaks of spans, not minutes; a labelled reading after the data names two
+  classes of candidate as theories that can be proved wrong, untested. In what has not been shown, the bullet on the
+  job average is rewritten and one bullet is added (what happens between execution spans).
+- **Elsewhere:** the README's opening sentence on the weight; `docs/method.md`, two sentences under the copies check;
+  `docs/reproduce.md`, the line that reproduces the span readings; `data/README.md`, the two files, their format and
+  their recompute; `CHANGELOG.md`, the A26 line under 0.8.0.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A26-review-packet.md`), with
+its reason.
+
+**The tests:** 981 pass, against 972 at `0248f12` (9 new): finding 28's execution spans; the read kept as verbatim
+lines; the reproduction case; and the data checks of the two new records. Changed: finding 28's tests for the new text,
+the README opening's, the dates (three records on 16 October) and the not-shown bullets.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the two new files. The signing workflow signs them, `data/README.md` and
+  `data/SHA256SUMS` on `main` after a merge; the tag waits for that.
+- **CI:** runs on the draft pull request.

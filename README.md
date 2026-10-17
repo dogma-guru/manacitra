@@ -8,7 +8,7 @@
 
 ## Latest finding: two frequencies on one qubit
 
-Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28](docs/findings.md#finding-28)). Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying. Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did not assume and the finding reports as what the counts show. No cause is named. Released as 0.8.0 on 17 October 2026.
+Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28](docs/findings.md#finding-28)). Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying. The weight of the upper line differed between the job's three execution spans, from 0.46 in the first to 0.27 in the third, which the rule did not assume and the finding reports as what the counts show. No cause is named. Released as 0.8.0 on 17 October 2026.
 
 ## What it does
 

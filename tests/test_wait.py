@@ -1539,3 +1539,23 @@ def test_the_earlier_builders_and_fits_are_unchanged():
     }
     for name, sig in expected.items():
         assert str(inspect.signature(getattr(wait, name))) == sig, name
+
+
+def test_the_span_read_is_kept_as_verbatim_lines():
+    """Amendment A26: the read of test 7's execution spans is in its record as verbatim lines of the script as run,
+    named by its SHA-256, without the three lines that listed the other jobs it read: the kept text has its recorded
+    SHA-256 and line count, compiles, names this job alone, and carries no instance name, path, email, dollar amount or
+    usage figure. It reads the job's result through the account the run used, so, unlike the builders' kept code, it
+    calls the account's service, by an instance name it reads from a file and never writes out."""
+    rec = archive.load("ibm_fez/spans-t7.json")
+    code = rec["source_code"]["span_check_t7.py"]
+    assert code["cut_from"]["sha256"] == rec["meta"]["source_scripts"][0]["sha256"]
+    text = code["text"]
+    assert hashlib.sha256(text.encode()).hexdigest() == code["text_sha256"]
+    assert len(text.splitlines()) == sum(b - a + 1 for a, b in code["kept_lines"]) == code["lines_as_run"] - 3
+    assert code["dropped_inside_kept_span"] == [21, 22, 23]
+    compile(text, "span_check_t7.py", "exec")
+    jobs = re.findall(r'\("t\d", \d, "([a-z0-9]{20})"', text)
+    assert jobs == [rec["job_id"]] == [archive.load("ibm_fez/t7-ramsey-xy.json")["meta"]["job_id"]]
+    bad = re.findall(r"/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+|\$|instance=\"|usage_|\btr[a]ce\b|charge", text, re.I)
+    assert not bad, sorted(set(bad))

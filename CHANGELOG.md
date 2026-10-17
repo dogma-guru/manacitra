@@ -17,6 +17,9 @@ The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143
   results attached to the release, with their SHA-256 in the folder's README), its recompute in
   `tests/_reuse_runs.py`, a test that the package builds what the run built, and one figure. The README opens with
   finding 28, and its table of findings gains a ninth row.
+- Amendment A26: finding 28 reads the weight per execution span, after the provider's execution record, which is
+  archived (`data/ibm_fez/spans-t7.json`, with the read as verbatim lines), with the readings against it in
+  `data/ibm_fez/t7-span-readings.json` and their recompute in `tests/_reuse_runs.py`.
 
 ## 0.7.0 (15 October 2026)
 
