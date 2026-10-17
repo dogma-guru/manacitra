@@ -2165,10 +2165,16 @@ def is_bundle(path) -> bool:
     return Path(path).name.endswith(".sigstore.json")
 
 
+#: The folder under data/ that holds the desk power checks published beside the runs (Amendment A25): simulations
+#: of a design before its rule was fixed, kept as their scripts wrote them, not run records
+DESK = "desk"
+
+
 def records(root=None) -> list[Path]:
-    """Every JSON run record under data/ (or under root), without the signing workflow's bundles."""
+    """Every JSON run record under data/ (or under root), without the signing workflow's bundles and the desk power
+    checks (data/desk/), which are not run records."""
     root = Path(root) if root is not None else data_dir()
-    return sorted(p for p in root.rglob("*.json") if not is_bundle(p))
+    return sorted(p for p in root.rglob("*.json") if not is_bundle(p) and p.relative_to(root).parts[0] != DESK)
 
 
 def fez_or_kingston(processor: str) -> dict:

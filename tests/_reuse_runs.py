@@ -2750,3 +2750,784 @@ def k62_peak_check_fez(rec: dict) -> dict:
         ],
     }
     return out
+
+
+# --------------------------------------------------------------------------- test 7 (Amendment A25)
+#: Test 7's seeds, as its rule and its analysis's docstring fixed them before the data
+T7_SEEDS = {
+    "S_starts": 7302,
+    "P_random_starts": 7303,
+    "bootstrap": 7304,
+    "T_random_starts": 7305,
+    "periodogram_noise": 7306,
+}
+#: The rule's thresholds, the caller's to pass: the held-out margin, delta's floor in MHz, b's edges
+T7_RULE = {"margin": 0.01, "delta_floor_mhz": 0.005, "b_edges": (0.05, 0.95)}
+T7_N_NOISE = 1_000
+T7_WAIT_TEST_WAIT_US = 10.45  # the wait test's own wait on 143, as the rule names it
+#: Beside the verdict, as analyse_t7.py fixed them: the telegraph model T (version 4's, with its bounds and grid
+#: starts), the four-tone sideband model at finding 21's shifts, and the published rates set beside gamma
+T7_T_BOUNDS = ((0, 0, 0.5, -0.3, 0, 0, 0), (1, 1, 1e4, 0.3, 2 * np.pi, 10, 0.3))
+T7_T_NAMES = ("c", "A", "tau_prime_us", "Delta0_MHz", "phi0_rad", "gamma_per_us", "delta_MHz")
+T7_T_GRID = ((0.015, 0.03, 0.05), (0.003, 0.03), ((0.0, 0.005, 0.003), (0.0, 0.005, 0.03)))
+T7_SHIFT_DEG, T7_SHIFT_US = {"144": -28.4, "142": -8.7, "both": -40.5}, 10.444
+T7_OFFSETS_MHZ = {k: v / (360.0 * T7_SHIFT_US) for k, v in T7_SHIFT_DEG.items()}
+T7_4_NAMES = ("c", "A", "tau_us", "Delta_MHz", "phi0_rad", "w144", "w142", "wboth")
+T7_4_BOUNDS = ((0, 0, 0.5, -0.3, 0, 0.0, 0.0, 0.0), (1, 1, 1e4, 0.3, 2 * np.pi, 1.0, 1.0, 1.0))
+T7_RATES_PER_S = {
+    "parity switching on IBM Falcon devices": [3, 5],
+    "Riste et al.": [1300, 1300],
+    "two-level-system fluctuators": [0.004, 0.5],
+}
+
+
+def _t7_g(t, gam, dl):
+    """The telegraph factor e^{-gam t} [cosh(k t) + (gam / k) sinh(k t)], k = sqrt(gam^2 - (2 pi dl)^2) (test 7's T)."""
+    t = np.asarray(t, float)
+    k = np.sqrt(gam**2 - (2 * np.pi * dl) ** 2 + 0j)
+    if abs(k) < 1e-9:
+        return np.exp(-gam * t) * (1 + gam * t)
+    return np.real(0.5 * ((1 + gam / k) * np.exp((k - gam) * t) + (1 - gam / k) * np.exp(-(k + gam) * t)))
+
+
+def _t7_model_T(p, t, ph):
+    c, A, tau, D, p0, gam, dl = p
+    return c + A * np.exp(-t / tau) * _t7_g(t, gam, dl) * np.cos(2 * np.pi * D * t + p0 + ph)
+
+
+def _t7_model_4(p, t, ph):
+    c, A, tau, D, p0, w1, w2, w3 = p
+    env = A * np.exp(-t / tau)
+    s1, s2, s3 = T7_OFFSETS_MHZ["144"], T7_OFFSETS_MHZ["142"], T7_OFFSETS_MHZ["both"]
+    return c + env * (
+        (1 - w1 - w2 - w3) * np.cos(2 * np.pi * D * t + p0 + ph)
+        + w1 * np.cos(2 * np.pi * (D + s1) * t + p0 + ph)
+        + w2 * np.cos(2 * np.pi * (D + s2) * t + p0 + ph)
+        + w3 * np.cos(2 * np.pi * (D + s3) * t + p0 + ph)
+    )
+
+
+def _t7_counts(rec: dict):
+    """Per copy, quadrature and wait, the shots that read 1 and the shots; each quadrature's scheduled waits; the
+    readout circuits' (ones, shots) per copy."""
+    ones, n, t_us = np.zeros((2, 2, 64), int), np.zeros((2, 2, 64), int), np.full((2, 2, 64), np.nan)
+    ro = {"P10": [None, None], "P01": [None, None]}
+    for lab, cts, sh in zip(rec["labels"], rec["counts"], rec["shots"]):
+        tot = sum(cts.values())
+        assert tot == sh
+        k1 = sum(v for key, v in cts.items() if key[-1] == "1")
+        cp = lab["copy"] - 1
+        if lab["circuit"] in ("X", "Y"):
+            q, i = "XY".index(lab["circuit"]), int(lab["t_requested_us"])
+            ones[cp, q, i], n[cp, q, i], t_us[cp, q, i] = k1, tot, float(lab["scheduled_wait_us"])
+        else:
+            ro[lab["circuit"]][cp] = (k1, tot)
+    assert not np.isnan(t_us).any() and (t_us[0] == t_us[1]).all()
+    return ones, n, t_us[0], ro
+
+
+def _t7_best(model, starts, bounds, t, ph, y, sig, names):
+    from scipy.optimize import least_squares
+
+    best, sts = None, []
+    for p in starts:
+        try:
+            r = least_squares(lambda q: (model(q, t, ph) - y) / sig, p, bounds=bounds, max_nfev=4000)
+            sts.append(int(r.status))
+        except (ValueError, FloatingPointError):
+            sts.append("exception")
+            continue
+        if best is None or r.cost < best.cost:
+            best = r
+    chi2, k = float(2 * best.cost), len(best.x)
+    fit = {
+        "params": dict(zip(names, [float(v) for v in best.x])),
+        "chi2": chi2,
+        "n_points": len(y),
+        "dof": len(y) - k,
+        "chi2_per_dof": chi2 / (len(y) - k) if len(y) > k else None,
+        "largest_abs_residual_sigma": float(np.max(np.abs(best.fun))),
+        "n_starts": len(starts),
+    }
+    return fit, sts
+
+
+def _t7_failed(sts) -> int:
+    return sum(1 for s in sts if s == "exception" or (isinstance(s, int) and s <= 0))
+
+
+def _t7_pct(a, q=(5, 95)):
+    a = np.asarray(a, float)
+    a = a[~np.isnan(a)]
+    return [float(v) for v in np.percentile(a, q)] if len(a) else [None, None]
+
+
+def _t7_band(D, dl, b):
+    reach = abs(D) + dl
+    return {
+        "P_lines_kHz": [(D + dl) * 1e3, (D - dl) * 1e3],
+        "P_reach_kHz": reach * 1e3,
+        "P_outside_band": bool(reach > 0.25 + 1e-12),
+        "P_presses_band": bool(reach >= 0.25 - 0.001),
+        "P_b_at_edge": bool(b < 0.05 or b > 0.95),
+    }
+
+
+def _t7_published(rec: dict):
+    """The stamp in force at the submission and every distinct stamp read from then to the fetch, with 143's
+    published values, from the calibration record's reads."""
+    rows = rec["calibration_record"]["stamps"]
+    keep = (
+        "stamp_utc",
+        "q143_readout_error",
+        "q143_prob_meas1_prep0",
+        "q143_prob_meas0_prep1",
+        "q143_T1_us",
+        "q143_T2_us",
+        "q142_prob_meas1_prep0",
+        "q144_prob_meas1_prep0",
+    )
+
+    def pick(r):
+        return {k: (r[k] if k == "stamp_utc" else (None if r[k] in ("", None) else float(r[k]))) for k in keep}
+
+    sub = [r for r in rows if r["kind"].startswith("submission")]
+    k0 = rows.index(sub[-1])
+    during = []
+    for r in rows[k0:]:
+        if not during or during[-1]["stamp_utc"] != r["stamp_utc"]:
+            during.append({**pick(r), "first_read_utc": r["utc"], "kind": r["kind"]})
+    return {
+        "rows": len(rows),
+        "at_submission": {**pick(sub[-1]), "read_utc": sub[-1]["utc"]},
+        "distinct_from_submission_to_fetch": during,
+    }
+
+
+def _t7_env_mean(env, se, tq, lo, hi):
+    m = (tq >= lo - 1e-9) & (tq <= hi + 1e-9)
+    k = int(m.sum())
+    return [float(np.mean(env[m])), float(np.sqrt(np.sum(se[m] ** 2)) / k), k]
+
+
+def _t7_envelope_tests(env, env_se, tX):
+    """The windows and tests the rule's item 4 fixed: the means over 20 to 22, 31 to 33, 41 to 43 and 52 to 54 us, the
+    three contrasts in standard errors, and the largest rise of the 5-wait running mean above its running minimum."""
+    means = {
+        k: _t7_env_mean(env, env_se, tX, a, b)
+        for k, (a, b) in {"20_22": (20, 22), "31_33": (31, 33), "41_43": (41, 43), "52_54": (52, 54)}.items()
+    }
+
+    def z(a, b):
+        return (a[0] - b[0]) / math.hypot(a[1], b[1])
+
+    rev = {
+        "20_22_over_31_33_in_se": z(means["20_22"], means["31_33"]),
+        "41_43_over_31_33_in_se": z(means["41_43"], means["31_33"]),
+        "41_43_over_52_54_in_se": z(means["41_43"], means["52_54"]),
+    }
+    rm = np.convolve(env, np.ones(5) / 5, mode="valid")
+    rm_se = np.sqrt(np.convolve(env_se**2, np.ones(5), mode="valid")) / 5
+    run_min, rise = np.inf, []
+    for v, s_ in zip(rm, rm_se):
+        run_min = min(run_min, v)
+        rise.append((v - run_min) / s_)
+    as_read = all(v > 3 for v in rev.values())
+    reading = "revivals and nodes as read" if as_read else ("a monotone fall" if max(rise) <= 3 else "neither")
+    return means, rev, float(max(rise)), reading
+
+
+def t7_ramsey_xy(rec: dict, seeds: dict = T7_SEEDS) -> tuple[dict, dict]:
+    """Test 7 (finding 28) from its counts: the rule's S and P fits, held-out errors, bootstrap and verdict by the
+    package (`manacitra.wait.ramsey_xy_fit`, with the rule's thresholds passed in and the verdict's words written
+    here); and, as analyse_t7.py fixed them before the data, the items beside the verdict: the telegraph model T and
+    gamma, the weight, the beat nodes, the envelope's test, the detuning beside the archive, the periodograms of P's
+    residuals and the four-tone sideband check, the readout, the scheduled waits and the published values. T and the
+    four-tone model are refitted on the bootstrap's own draws (the same generator; the refits draw nothing). Returns
+    the analysis and the bootstrap record, in the shape the run archived them. seeds: the rule's, unless another stream
+    is asked for (the movement study of the intervals)."""
+    from scipy.optimize import least_squares
+    from scipy.signal import lombscargle
+
+    ones, n, tq, ro = _t7_counts(rec)
+    nn = n.sum(0)
+    yq = ones.sum(0) / nn
+    se_q = np.sqrt(yq * (1 - yq) / nn)
+    E, O = np.arange(0, 64, 2), np.arange(1, 64, 2)
+    s = seeds
+    fit = wait.ramsey_xy_fit(
+        tq, ones, n, E, seeds=(s["S_starts"], s["P_random_starts"], s["bootstrap"]), n_boot=2000, **T7_RULE
+    )
+    fS, fP = fit["S"], fit["P"]
+
+    def stack2(a, idx):
+        return np.concatenate([a[0][idx], a[1][idx]])
+
+    ph_all = np.array([0.0, -np.pi / 2])[:, None] * np.ones((2, 64))
+    te, phe, ye, ne = stack2(tq, E), stack2(ph_all, E), stack2(yq, E), stack2(nn, E)
+    to, pho, yo = stack2(tq, O), stack2(ph_all, O), stack2(yq, O)
+    se = np.sqrt(np.clip(ye * (1 - ye), 1 / ne, None) / ne)
+    xS, xP = list(fS["params"].values()), list(fP["params"].values())
+
+    def full(f, model, x):
+        res = (model(x, te, phe) - ye) / se
+        return {
+            "params": f["params"],
+            "chi2": f["chi2"],
+            "n_points": f["n_points"],
+            "dof": f["dof"],
+            "chi2_per_dof": f["chi2"] / f["dof"],
+            **({"largest_abs_residual_sigma": float(np.max(np.abs(res)))} if model is wait._ramsey_s else {}),
+            "n_starts": f["starts"],
+        }
+
+    fs, fp = full(fS, wait._ramsey_s, xS), full(fP, wait._ramsey_p, xP)
+    mae_s, mae_p = fS["held_out_error"], fP["held_out_error"]
+
+    # beside: T and the four-tone fit on the same fit set
+    sp = fS["params"]
+    D = sp["Delta_MHz"]
+    gd, gg, gx = T7_T_GRID
+    t_starts = [
+        [sp["c"], sp["A"], sp["tau_us"], D + k * d, sp["phi0_rad"], g, d] for d in gd for k in (0, 1, -1) for g in gg
+    ]
+    t_starts += [[sp["c"], sp["A"], sp["tau_us"], D + sh, sp["phi0_rad"], g, d] for sh, d, g in gx]
+    lo, hi = (np.array(b, float) for b in T7_T_BOUNDS)
+    t_starts = [list(np.clip(x, lo, hi)) for x in t_starts]
+    rng_t = np.random.default_rng(s["T_random_starts"])
+    t_starts += [list(lo + (hi - lo) * rng_t.random(len(lo))) for _ in range(20)]
+    ft, st_t = _t7_best(_t7_model_T, t_starts, T7_T_BOUNDS, te, phe, ye, se, T7_T_NAMES)
+    mae_t = float(np.mean(np.abs(_t7_model_T(list(ft["params"].values()), to, pho) - yo)))
+    starts4 = [
+        [sp["c"], sp["A"], sp["tau_us"], D, sp["phi0_rad"], a, b, a * b] for a in (0, 0.05, 0.2) for b in (0, 0.05, 0.2)
+    ]
+    f4, st_4 = _t7_best(_t7_model_4, starts4, T7_4_BOUNDS, te, phe, ye, se, T7_4_NAMES)
+    f4 = {k: f4[k] for k in ("params", "chi2", "n_points", "dof", "n_starts")}
+    f4["offsets_kHz"] = {k: v * 1e3 for k, v in T7_OFFSETS_MHZ.items()}
+    mae_4 = float(np.mean(np.abs(_t7_model_4(list(f4["params"].values()), to, pho) - yo)))
+
+    # the bootstrap's draws again (the generator as the package draws it), with P, T and the four-tone model refitted
+    rng = np.random.default_rng(s["bootstrap"])
+    ones_e, n_e, shots = ones[:, :, E], nn[:, E], int(n[0, 0, 0])
+    xT, x4 = list(ft["params"].values()), list(f4["params"].values())
+    draws = {"P": np.full((2000, 7), np.nan), "T": np.full((2000, 7), np.nan), "four_tone": np.full((2000, 8), np.nan)}
+    st_r = {"P": [], "T": [], "four_tone": []}
+    p_bounds = (np.array([0, 0, 0.5, -0.125, 0, 0.0, 0.0]), np.array([1, 1, 1e4, 0.125, 2 * np.pi, 0.125, 1.0]))
+    for k in range(2000):
+        pick = rng.integers(0, 2, size=ones_e.shape)
+        src = np.take_along_axis(ones_e, pick, axis=0) / shots
+        yb = rng.binomial(shots, src).sum(0) / n_e
+        yb = np.concatenate([yb[0], yb[1]])
+        sb = np.sqrt(np.clip(yb * (1 - yb), 1 / ne, None) / ne)
+        for name, model, x0, bounds in (
+            ("P", wait._ramsey_p, xP, p_bounds),
+            ("T", _t7_model_T, xT, T7_T_BOUNDS),
+            ("four_tone", _t7_model_4, x4, T7_4_BOUNDS),
+        ):
+            try:
+                r = least_squares(
+                    lambda q, m=model, yb=yb, sb=sb: (m(q, te, phe) - yb) / sb, x0, bounds=bounds, max_nfev=4000
+                )
+                st_r[name].append(int(r.status))
+                draws[name][k] = r.x
+            except (ValueError, FloatingPointError):
+                st_r[name].append("exception")
+    pct = fit["bootstrap"]["percentiles_5_50_95"]
+    d_lo, d_hi = pct["delta_MHz"][0], pct["delta_MHz"][2]
+    b_lo, b_hi = pct["b"][0], pct["b"][2]
+    assert [d_lo, d_hi] == _t7_pct(draws["P"][:, 5]) and [b_lo, b_hi] == _t7_pct(draws["P"][:, 6])
+    cl = fit["clauses"]
+    if cl["S_within_the_margin_of_P_or_below"] and (
+        cl["delta_lower_bound_below_the_floor"] or cl["b_interval_reaches_an_edge"]
+    ):
+        verdict = "NO RESOLVED SPLIT"
+    elif (
+        cl["P_below_S_by_more_than_the_margin"]
+        and cl["delta_lower_bound_above_the_floor"]
+        and cl["b_interval_inside_the_edges"]
+    ):
+        verdict = "TWO FIXED FREQUENCIES"
+    else:
+        verdict = "NOT SETTLED"
+    clauses = {
+        "S_within_0.01_of_P_or_smaller": cl["S_within_the_margin_of_P_or_below"],
+        "P_smaller_than_S_by_more_than_0.01": cl["P_below_S_by_more_than_the_margin"],
+        "delta_lower_bound_below_5_kHz": cl["delta_lower_bound_below_the_floor"],
+        "delta_lower_bound_above_5_kHz": cl["delta_lower_bound_above_the_floor"],
+        "b_interval_reaches_an_edge": cl["b_interval_reaches_an_edge"],
+        "b_interval_inside_0.05_0.95": cl["b_interval_inside_the_edges"],
+    }
+
+    # beside 1: T
+    g_lo, g_hi = _t7_pct(draws["T"][:, 5])
+    gp = ft["params"]["gamma_per_us"]
+    t_lines = _t7_band(ft["params"]["Delta0_MHz"], ft["params"]["delta_MHz"], 0.5)
+    t_lines.pop("P_b_at_edge")
+    beside_T = {
+        "fit": ft,
+        "held_out_error": mae_t,
+        "gamma_per_us": gp,
+        "gamma_ci90_per_us": [g_lo, g_hi],
+        "gamma_per_s": gp * 1e6,
+        "gamma_ci90_per_s": [None if v is None else v * 1e6 for v in (g_lo, g_hi)],
+        "delta_T_kHz": ft["params"]["delta_MHz"] * 1e3,
+        "delta_T_ci90_kHz": [None if v is None else v * 1e3 for v in _t7_pct(draws["T"][:, 6])],
+        "lines_against_the_band": {k.replace("P_", "T_"): v for k, v in t_lines.items()},
+        "published_rates_per_s": T7_RATES_PER_S,
+        "starts_failed": _t7_failed(st_t),
+        "starts_run": len(st_t),
+        "refits_failed": _t7_failed(st_r["T"]),
+        "note": "a diagnostic: no verdict reads gamma",
+    }
+
+    # beside 3 and 4: the envelope, the nodes, the span
+    c_s = sp["c"]
+    zx, zy = yq[0] - c_s, yq[1] - c_s
+    env = np.sqrt(zx**2 + zy**2)
+    env_se = np.sqrt((zx * se_q[0]) ** 2 + (zy * se_q[1]) ** 2) / np.where(env > 0, env, np.nan)
+    tX = tq[0]
+    dl_p = fp["params"]["delta_MHz"]
+    nodes = []
+    for m in (1, 3, 5):
+        tn = m / (4 * dl_p)
+        i = int(np.argmin(np.abs(tX - tn)))
+        nodes.append(
+            {
+                "k": m,
+                "t_us": tn,
+                "in_span": bool(tn <= tX.max()),
+                "nearest_wait_us": float(tX[i]),
+                "X_P1": float(yq[0][i]),
+                "X_se": float(se_q[0][i]),
+                "Y_P1": float(yq[1][i]),
+                "Y_se": float(se_q[1][i]),
+                "envelope": float(env[i]),
+                "envelope_se": float(env_se[i]),
+            }
+        )
+    t_max = float(max(tq[0].max(), tq[1].max()))
+    m4, rev, rise, reading4 = _t7_envelope_tests(env, env_se, tX)
+
+    # beside 6: the periodograms of P's residuals, and the sideband check
+    predq = np.stack([wait._ramsey_p(xP, tq[0], 0.0), wait._ramsey_p(xP, tq[1], -np.pi / 2)])
+    res = yq - predq
+    f_khz = np.arange(2.0, 500.0 + 1e-9, 0.5)
+    w = 2 * np.pi * f_khz * 1e-3
+
+    def ls(tt, r):
+        return lombscargle(tt, r - r.mean(), w)
+
+    fz = np.concatenate([-f_khz[::-1], f_khz]) * 1e-3
+    Ez = [np.exp(-2j * np.pi * np.outer(fz, tq[0])), np.exp(-2j * np.pi * np.outer(fz, tq[1]))]
+
+    def cz(rx, ry):
+        return np.abs(Ez[0] @ rx + 1j * (Ez[1] @ ry)) ** 2 / len(rx)
+
+    pls, pcz = [ls(tq[0], res[0]), ls(tq[1], res[1])], cz(res[0], res[1])
+    rng_n = np.random.default_rng(s["periodogram_noise"])
+    mx = {"X": [], "Y": [], "complex": []}
+    pc = np.clip(predq, 0, 1)
+    for _ in range(T7_N_NOISE):
+        rn = rng_n.binomial(nn, pc) / nn - pc
+        mx["X"].append(ls(tq[0], rn[0]).max())
+        mx["Y"].append(ls(tq[1], rn[1]).max())
+        mx["complex"].append(cz(rn[0], rn[1]).max())
+    floors = {k: float(np.percentile(v, 95)) for k, v in mx.items()}
+
+    def peaks(p, f, floor):
+        out = [
+            {"f_kHz": float(f[i]), "height": float(p[i]), "over_floor": float(p[i] / floor)}
+            for i in range(len(p))
+            if p[i] > floor and (i == 0 or p[i] >= p[i - 1]) and (i == len(p) - 1 or p[i] >= p[i + 1])
+        ]
+        return sorted(out, key=lambda d: -d["height"])
+
+    pk = {
+        "X": peaks(pls[0], f_khz, floors["X"]),
+        "Y": peaks(pls[1], f_khz, floors["Y"]),
+        "complex": peaks(pcz, fz * 1e3, floors["complex"]),
+    }
+    top = {
+        "X": {"f_kHz": float(f_khz[np.argmax(pls[0])]), "height": float(pls[0].max())},
+        "Y": {"f_kHz": float(f_khz[np.argmax(pls[1])]), "height": float(pls[1].max())},
+        "complex": {"f_kHz": float(fz[np.argmax(pcz)] * 1e3), "height": float(pcz.max())},
+    }
+    wts = {k: f4["params"][k] for k in ("w144", "w142", "wboth")}
+    w_ci = {k: _t7_pct(draws["four_tone"][:, 5 + j]) for j, k in enumerate(("w144", "w142", "wboth"))}
+    resolved = [k for k in wts if w_ci[k][0] is not None and w_ci[k][0] > 0.01]
+    side = (
+        "NO SIDEBAND RESOLVED"
+        if not resolved
+        else (
+            "SIDEBANDS AT THE NEIGHBOUR SHIFTS"
+            if all(wts[k] <= 0.10 for k in resolved)
+            else "WEIGHTS ABOVE A FEW PER CENT"
+        )
+    )
+
+    # beside 7: readout
+    def rate(pair, one_is_error):
+        per = []
+        for k1, tot in pair:
+            p = k1 / tot if one_is_error else 1 - k1 / tot
+            per.append({"p": p, "se": math.sqrt(p * (1 - p) / tot), "shots": tot})
+        k1s, tots = sum(k for k, _ in pair), sum(t_ for _, t_ in pair)
+        p = k1s / tots if one_is_error else 1 - k1s / tots
+        return {"pooled": p, "pooled_se": math.sqrt(p * (1 - p) / tots), "per_copy": per}
+
+    p10, p01 = rate(ro["P10"], True), rate(ro["P01"], False)
+    pub = _t7_published(rec)
+    sub_pub = pub["at_submission"]
+    readout = {
+        "P(1|0)": p10,
+        "P(0|1)": p01,
+        "e": (p10["pooled"] + p01["pooled"]) / 2,
+        "e_se": 0.5 * math.hypot(p10["pooled_se"], p01["pooled_se"]),
+        "published_at_submission": {
+            k: sub_pub.get(k)
+            for k in ("stamp_utc", "q143_readout_error", "q143_prob_meas1_prep0", "q143_prob_meas0_prep1")
+        },
+    }
+    per_wait = [
+        {
+            "t_requested_us": i,
+            "t_scheduled_us": {"X": float(tq[0][i]), "Y": float(tq[1][i])},
+            "set": "fit" if i % 2 == 0 else "held out",
+            "X": {
+                "P1": float(yq[0][i]),
+                "se": float(se_q[0][i]),
+                "copies": [int(ones[0, 0, i]), int(ones[1, 0, i])],
+                "shots": int(nn[0][i]),
+            },
+            "Y": {
+                "P1": float(yq[1][i]),
+                "se": float(se_q[1][i]),
+                "copies": [int(ones[0, 1, i]), int(ones[1, 1, i])],
+                "shots": int(nn[1][i]),
+            },
+            "envelope": float(env[i]),
+            "envelope_se": float(env_se[i]),
+            "residual_P": {"X": float(res[0][i]), "Y": float(res[1][i])},
+        }
+        for i in range(64)
+    ]
+    scheduled = [
+        {
+            "t_requested_us": i,
+            "scheduled_us": {"X": float(tq[0][i]), "Y": float(tq[1][i])},
+            "difference_us": {"X": float(tq[0][i] - i), "Y": float(tq[1][i] - i)},
+        }
+        for i in range(64)
+    ]
+    analysis = {
+        "verdict": verdict,
+        "deciding": {
+            "held_out_error_S": mae_s,
+            "held_out_error_P": mae_p,
+            "P_minus_S": mae_p - mae_s,
+            "delta_ci90_kHz": [d_lo * 1e3, d_hi * 1e3],
+            "b_ci90": [b_lo, b_hi],
+            "clauses": clauses,
+            "bootstrap_refits_returned": fit["bootstrap"]["returned"],
+            "bootstrap_refits_failed_to_converge": fit["bootstrap"]["refits_failed"],
+        },
+        "fits": {
+            "S": fs,
+            "P": fp,
+            "P_lines": _t7_band(fp["params"]["Delta0_MHz"], dl_p, fp["params"]["b"]),
+            "starts": {
+                "S": {"run": fS["starts"], "failed_to_converge": fS["starts_failed"]},
+                "P": {"run": fP["starts"], "failed_to_converge": fP["starts_failed"]},
+            },
+        },
+        "beside": {
+            "1_telegraph_T": beside_T,
+            "2_weight": {
+                "b": fp["params"]["b"],
+                "b_ci90": [b_lo, b_hi],
+                "equal_weight": 0.5,
+                "shirizly_exception": 0.368,
+                "ci_contains_0.5": b_lo <= 0.5 <= b_hi,
+                "ci_contains_0.368": b_lo <= 0.368 <= b_hi,
+            },
+            "3_beat_nodes": {
+                "delta_P_kHz": dl_p * 1e3,
+                "nodes": nodes,
+                "wait_test_wait_us": T7_WAIT_TEST_WAIT_US,
+                "t_max_us": t_max,
+                "split_with_first_node_at_the_span_end_kHz": 1e3 / (4 * t_max),
+                "delta_ci90_upper_kHz": d_hi * 1e3,
+                "decay_absorbed_per_us": 1 / fs["params"]["tau_us"] - 1 / fp["params"]["tau_prime_us"],
+                "tau_S_us": fs["params"]["tau_us"],
+                "tau_prime_P_us": fp["params"]["tau_prime_us"],
+            },
+            "4_reading_23p7_kHz": {
+                "means": m4,
+                "contrasts_in_se": rev,
+                "running_mean_max_rise_in_se": rise,
+                "reading": reading4,
+                "note": "a reading recorded before the data; the verdict does not depend on it",
+            },
+            "5_detuning_and_T2": {
+                "S_Delta_kHz": sp["Delta_MHz"] * 1e3,
+                "S_abs_Delta_kHz": abs(sp["Delta_MHz"]) * 1e3,
+                "P_Delta0_kHz": fp["params"]["Delta0_MHz"] * 1e3,
+                "P_lines_kHz": _t7_band(fp["params"]["Delta0_MHz"], dl_p, fp["params"]["b"])["P_lines_kHz"],
+                "archive_kHz": {"2026-10-11": [47.1, 1.8], "2026-10-13": [40.4, 3.2]},
+                "archive_note": "sizes, fitted on the X quadrature alone",
+                "tau_S_us": fs["params"]["tau_us"],
+                "tau_prime_P_us": fp["params"]["tau_prime_us"],
+                "published_at_submission": {k: sub_pub.get(k) for k in ("stamp_utc", "q143_T1_us", "q143_T2_us")},
+            },
+            "6_more_than_two": {
+                "periodogram": {
+                    "f_kHz": [2.0, 500.0, 0.5],
+                    "floors_95": floors,
+                    "peaks_above_floor": pk,
+                    "largest": top,
+                    "reading": "MORE THAN TWO" if any(pk.values()) else "no peak above the floor",
+                    "resolution_kHz": 1e3 / t_max,
+                },
+                "sideband_check": {
+                    "fit": f4,
+                    "held_out_error": mae_4,
+                    "weights": wts,
+                    "weights_ci90": w_ci,
+                    "resolved": resolved,
+                    "reading": side,
+                    "published_neighbour_prob_meas1_prep0_at_submission": {
+                        k: sub_pub.get(k) for k in ("q142_prob_meas1_prep0", "q144_prob_meas1_prep0")
+                    },
+                    "published_note": "IBM publishes no excited-state population; prob_meas1_prep0 is a readout "
+                    "figure, given as the nearest published quantity",
+                    "starts_failed": _t7_failed(st_4),
+                    "refits_failed": _t7_failed(st_r["four_tone"]),
+                },
+                "note": "neighbour sidebands sit on one side at a few per cent; a parity split is two-sided at "
+                "near-equal weights",
+            },
+            "7_readout": readout,
+            "8_scheduled_waits": {
+                "all_equal_to_requested": all(abs(x["difference_us"][q]) < 1e-9 for x in scheduled for q in ("X", "Y")),
+                "largest_abs_difference_us": max(abs(x["difference_us"][q]) for x in scheduled for q in ("X", "Y")),
+                "waits": scheduled,
+            },
+            "9_published_from_submission_to_fetch": pub,
+        },
+        "per_wait": per_wait,
+    }
+    boot = {
+        "meta": {
+            "seed": s["bootstrap"],
+            "n_boot": 2000,
+            "names": {"P": list(wait.RAMSEY_XY_NAMES["P"]), "T": list(T7_T_NAMES), "four_tone": list(T7_4_NAMES)},
+            "point_fits": {"P": xP, "T": xT, "four_tone": x4},
+            "status_failed": {k: _t7_failed(v) for k, v in st_r.items()},
+        },
+        "draws": {k: [[None if np.isnan(x) else float(x) for x in row] for row in v] for k, v in draws.items()},
+    }
+    return analysis, boot
+
+
+def t7_readings(rec: dict, analysis: dict, seeds: dict = T7_SEEDS) -> dict:
+    """Test 7's readings after the data (reading_t7.py; not in the rule, and the verdict reads none of them): A, the
+    copies' agreement (`manacitra.wait.copies_check`); B, the upper line's weight each Ramsey position implies, in
+    execution order, P's other parameters held at the point fit; C, P refitted on each half of the run; D, the
+    envelope centred on P's c, with item 4's windows and tests."""
+    from scipy.stats import chi2
+
+    P = analysis["fits"]["P"]["params"]
+    cP, A, tau, D0, p0, dl = (P[k] for k in ("c", "A", "tau_prime_us", "Delta0_MHz", "phi0_rad", "delta_MHz"))
+    labs, cts, shots = rec["labels"], rec["counts"], rec["shots"]
+    agree, rows_a = {}, []
+    for group, keep in (("ramsey", ("X", "Y")), ("readout", ("P10", "P01"))):
+        idx = [k for k, lab in enumerate(labs) if lab["circuit"] in keep]
+        chk = wait.copies_check([labs[k] for k in idx], [cts[k] for k in idx])
+        z = [c["z"] for c in chk["circuits"]]
+        agree[group] = {
+            "n": chk["dof"],
+            "sum_z2": chk["sum_z2"],
+            "per_dof": chk["per_dof"],
+            "p_value": float(chi2.sf(chk["sum_z2"], chk["dof"])),
+            "n_abs_z_over_3": int(sum(abs(x) > 3 for x in z)),
+            "largest_abs_z": float(max(abs(x) for x in z)),
+        }
+        for c in chk["circuits"]:
+            rows_a.append(
+                {
+                    "circuit": c["label"]["circuit"],
+                    "t_requested_us": c["label"]["t_requested_us"],
+                    "copy1": c["P1"][0],
+                    "copy2": c["P1"][1],
+                    "z": c["z"],
+                    "positions": [idx[c["positions"][0]], idx[c["positions"][1]]],
+                }
+            )
+    rows_a.sort(key=lambda r: (r["circuit"], -1 if r["t_requested_us"] is None else r["t_requested_us"]))
+
+    pos = [
+        {
+            "k": k,
+            "circuit": lab["circuit"],
+            "t": lab.get("scheduled_wait_us"),
+            "ones": sum(v for key, v in ct.items() if key[-1] == "1"),
+            "n": n,
+        }
+        for k, (lab, ct, n) in enumerate(zip(labs, cts, shots))
+    ]
+    rows = []
+    for p in pos:
+        if p["circuit"] not in ("X", "Y"):
+            continue
+        ph = 0.0 if p["circuit"] == "X" else -math.pi / 2
+        t, n = p["t"], p["n"]
+        y = p["ones"] / n
+        e = A * math.exp(-t / tau)
+        a1 = math.cos(2 * math.pi * (D0 + dl) * t + p0 + ph)
+        a2 = math.cos(2 * math.pi * (D0 - dl) * t + p0 + ph)
+        lev = e * (a1 - a2)
+        if abs(lev) < 0.35:
+            continue
+        rows.append(
+            {
+                "k": p["k"],
+                "circuit": p["circuit"],
+                "t_us": t,
+                "b_pos": (y - cP - e * a2) / lev,
+                "se": math.sqrt(max(y * (1 - y), 1 / n) / n) / abs(lev),
+            }
+        )
+    bpos, bse = np.array([r["b_pos"] for r in rows]), np.array([r["se"] for r in rows])
+    ks = np.array([r["k"] for r in rows])
+    blocks = []
+    for j in range(10):
+        m = (ks >= 26 * j) & (ks < 26 * (j + 1))
+        if m.any():
+            w = 1 / bse[m] ** 2
+            blocks.append(
+                {
+                    "positions": [26 * j, 26 * (j + 1) - 1],
+                    "n": int(m.sum()),
+                    "weighted_mean": float(np.sum(w * bpos[m]) / np.sum(w)),
+                    "se": float(1 / math.sqrt(np.sum(w))),
+                    "spread_sd": float(np.std(bpos[m])),
+                }
+            )
+    w = 1 / bse**2
+    mu_all = float(np.sum(w * bpos) / np.sum(w))
+    order = {
+        "n_positions": len(rows),
+        "lever_min": 0.35,
+        "weighted_mean": mu_all,
+        "chi2_per_dof_against_one_weight": float(np.mean(((bpos - mu_all) / bse) ** 2)),
+        "lag1_autocorrelation": float(np.corrcoef(bpos[:-1], bpos[1:])[0, 1]),
+        "blocks_of_26": blocks,
+        "positions": rows,
+    }
+
+    halves = {}
+    for name, lo, hi in (("first half (positions 0 to 129)", 0, 130), ("second half (positions 130 to 259)", 130, 260)):
+        sel = [p for p in pos if lo <= p["k"] < hi and p["circuit"] in ("X", "Y")]
+        t = np.array([p["t"] for p in sel])
+        ph = np.array([0.0 if p["circuit"] == "X" else -math.pi / 2 for p in sel])
+        n = np.array([p["n"] for p in sel], float)
+        y = np.array([p["ones"] for p in sel]) / n
+        hv = _t7_fit_points(t, ph, y, n, seeds)
+        q = hv["P"]["params"]
+        halves[name] = {
+            "n_points": len(sel),
+            "S": {
+                "chi2": hv["S"]["chi2"],
+                "dof": hv["S"]["dof"],
+                "Delta_kHz": hv["S"]["params"]["Delta_MHz"] * 1e3,
+                "c": hv["S"]["params"]["c"],
+            },
+            "P": {
+                "chi2": hv["P"]["chi2"],
+                "dof": hv["P"]["dof"],
+                "lines_kHz": [(q["Delta0_MHz"] + q["delta_MHz"]) * 1e3, (q["Delta0_MHz"] - q["delta_MHz"]) * 1e3],
+                "b": q["b"],
+                "delta_kHz": q["delta_MHz"] * 1e3,
+                "Delta0_kHz": q["Delta0_MHz"] * 1e3,
+                "tau_prime_us": q["tau_prime_us"],
+                "c": q["c"],
+                "A": q["A"],
+            },
+        }
+
+    pw = analysis["per_wait"]
+    tX = np.array([r["t_scheduled_us"]["X"] for r in pw])
+    yx, yy = np.array([r["X"]["P1"] for r in pw]), np.array([r["Y"]["P1"] for r in pw])
+    sx, sy = np.array([r["X"]["se"] for r in pw]), np.array([r["Y"]["se"] for r in pw])
+    zx, zy = yx - cP, yy - cP
+    env = np.sqrt(zx**2 + zy**2)
+    env_se = np.sqrt((zx * sx) ** 2 + (zy * sy) ** 2) / env
+    means, rev, rise, reading = _t7_envelope_tests(env, env_se, tX)
+    envelope = {
+        "centre": cP,
+        "centre_note": "P's c; the rule-fixed item 4 used S's c",
+        "means": means,
+        "contrasts_in_se": rev,
+        "running_mean_max_rise_in_se": rise,
+        "reading": reading,
+        "local_minima_us": [float(tX[i]) for i in range(1, 63) if env[i] < env[i - 1] and env[i] < env[i + 1]],
+        "local_maxima_us": [float(tX[i]) for i in range(1, 63) if env[i] > env[i - 1] and env[i] > env[i + 1]],
+        "values": [float(v) for v in env],
+        "P_nodes_us": [k / (4 * dl) for k in (1, 3, 5, 7, 9, 11)],
+        "P_revivals_us": [k / (2 * dl) for k in (1, 2, 3, 4, 5)],
+    }
+    return {
+        "note": "readings after the data; not in t7-rule.md; the verdict does not read them",
+        "A_copy_agreement": {**agree, "circuits": rows_a},
+        "B_weight_in_execution_order": order,
+        "C_P_on_each_half_of_the_run": halves,
+        "D_envelope_recentred_on_P_c": envelope,
+        "job_running_utc": rec["timestamps"],
+    }
+
+
+def _t7_fit_points(t, ph, y, n, seeds: dict = T7_SEEDS) -> dict:
+    """S and P fitted to single positions (each its own point, as reading C fits each half of the run), with the
+    package's models, bounds and start layouts and the rule's seeds, every point fitted. The package's ramsey_xy_fit
+    pools copies on a grid of waits, which a half of the run is not."""
+    from scipy.optimize import least_squares
+
+    sig = np.sqrt(np.clip(y * (1 - y), 1 / n, None) / n)
+    s_lo, s_hi = (np.array(b, float) for b in wait.RAMSEY_XY_S_BOUNDS)
+    rng_s, rng_p = np.random.default_rng(seeds["S_starts"]), np.random.default_rng(seeds["P_random_starts"])
+
+    def uniform(lo, hi, k, rng):
+        return [list(lo + (hi - lo) * rng.random(len(lo))) for _ in range(k)]
+
+    def best(model, starts, bounds, names):
+        b = None
+        for p in starts:
+            try:
+                r = least_squares(lambda q: (model(q, t, ph) - y) / sig, p, bounds=bounds, max_nfev=4000)
+            except (ValueError, FloatingPointError):
+                continue
+            if b is None or r.cost < b.cost:
+                b = r
+        return {
+            "params": dict(zip(names, (float(v) for v in b.x))),
+            "chi2": float(2 * b.cost),
+            "dof": len(y) - len(b.x),
+        }
+
+    S = best(wait._ramsey_s, uniform(s_lo, s_hi, 40, rng_s), (s_lo, s_hi), wait.RAMSEY_XY_NAMES["S"])
+    sp = S["params"]
+    p_lo = np.array([0, 0, 0.5, -0.125, 0, 0.0, 0.0])
+    p_hi = np.array([1, 1, 1e4, 0.125, 2 * np.pi, 0.125, 1.0])
+    grid = [
+        [sp["c"], sp["A"], sp["tau_us"], sp["Delta_MHz"] + k * d, sp["phi0_rad"], d, bb]
+        for d in wait.RAMSEY_XY_P_GRID_DELTA_MHZ
+        for k in (0, 1, -1)
+        for bb in wait.RAMSEY_XY_P_GRID_B
+    ]
+    grid += [
+        [sp["c"], sp["A"], sp["tau_us"], sp["Delta_MHz"], sp["phi0_rad"], d, bb]
+        for d, bb in wait.RAMSEY_XY_P_GRID_EXTRA
+    ]
+    starts = [list(np.clip(x, p_lo, p_hi)) for x in grid] + uniform(p_lo, p_hi, 20, rng_p)
+    P = best(wait._ramsey_p, starts, (p_lo, p_hi), wait.RAMSEY_XY_NAMES["P"])
+    return {"S": S, "P": P}

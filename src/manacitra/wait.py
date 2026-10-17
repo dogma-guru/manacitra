@@ -910,6 +910,336 @@ def readout_errors(counts_zero, counts_one, limit: float | None = None) -> dict:
     return out
 
 
+# --------------------------------------------------------------------------- the two-quadrature Ramsey (A25)
+#: The quadratures of the two-quadrature Ramsey and their phase in the models: X is H, wait, H; Y is the same with an
+#: S-dagger before the final H, so its fringe is X's with sin in place of cos, the cosine's phase minus pi/2
+RAMSEY_XY_QUADRATURES = ("X", "Y")
+RAMSEY_XY_PHASE = {"X": 0.0, "Y": -math.pi / 2}
+#: The two models' parameters, t in us and frequencies in MHz: S, one line; P, two fixed lines at Delta0 + delta and
+#: Delta0 - delta with a free weight b on the upper one
+RAMSEY_XY_NAMES = {
+    "S": ("c", "A", "tau_us", "Delta_MHz", "phi0_rad"),
+    "P": ("c", "A", "tau_prime_us", "Delta0_MHz", "phi0_rad", "delta_MHz", "b"),
+}
+#: S's bounds, and P's shared ones; P's Delta0 and delta are bounded by the fit set's band (`ramsey_xy_band`)
+RAMSEY_XY_S_BOUNDS = ((0.0, 0.0, 0.5, -0.3, 0.0), (1.0, 1.0, 1e4, 0.3, 2 * math.pi))
+#: The starts, as test 7's rule fixes them: 40 for S, uniform within its bounds; for P, 20 from the S fit (Delta0 at
+#: Delta_S and Delta_S +- delta_s for each delta_s, at each b, then the two extra (delta, b) at Delta_S) and 20 uniform
+RAMSEY_XY_S_STARTS = 40
+RAMSEY_XY_P_RANDOM_STARTS = 20
+RAMSEY_XY_P_GRID_DELTA_MHZ = (0.005, 0.015, 0.05)
+RAMSEY_XY_P_GRID_B = (0.5, 0.3)
+RAMSEY_XY_P_GRID_EXTRA = ((0.008, 0.5), (0.030, 0.5))
+
+
+def ramsey_xy(qubit: int, backend, waits_us: Sequence[float], readout: bool = False) -> list[dict]:
+    """The two-quadrature Ramsey on one qubit (test 7, finding 28), for the backend, at each wait in µs: X, Part B's
+    Ramsey on one qubit (`part_b_circuit`(1, wait_dt, "R"): H, the wait, H, measure), and Y, the same with an S-dagger
+    inserted right before the final H, each translated onto the qubit by `to_backend`, the other qubits idle in |0>.
+    Each wait is converted with the backend's dt and made even (`even_wait`, the target's granularity), as
+    `build_wait_ramsey` makes its idle wait. With readout=True, the two readout circuits on the qubit follow: P10, a
+    measure with no gate (P(1|0)), and P01, X then a measure (P(0|1)).
+
+    Returns one entry per circuit, X at every wait, then Y at every wait, then P10 and P01: its label (the circuit, the
+    quadrature, the requested wait, the wait in dt, the wait as scheduled on the target, from the end of the qubit's
+    first SX to the start of its last, in dt and in µs, the qubit and its classical bit, 0) and the circuit."""
+    from qiskit import QuantumCircuit
+    from qiskit.circuit import CircuitInstruction
+    from qiskit.circuit.library import SdgGate
+
+    q = int(qubit)
+    t, dt = backend.target, backend.dt
+    gran = getattr(t, "granularity", 1) or 1
+    waits = [float(w) for w in waits_us]
+    if not all(math.isfinite(w) and w >= 0 for w in waits):
+        raise ValueError(f"the waits are finite and not negative, in µs; got {waits}")
+    out = []
+    for quad in RAMSEY_XY_QUADRATURES:
+        for w in waits:
+            wait_dt = even_wait(w * 1e-6 / dt, gran)
+            qc = part_b_circuit(1, wait_dt, "R")
+            if quad == "Y":
+                k = max(i for i, x in enumerate(qc.data) if x.operation.name == "h")
+                qc.data.insert(k, CircuitInstruction(SdgGate(), (qc.qubits[0],)))
+                qc.name = f"Y{wait_dt}"
+            isa = to_backend(qc, [q], backend)
+            T = _window(_timeline(_chain_schedule(isa, backend, [q]), t, dt, [q]), q)["T_dt"]
+            label = {
+                "circuit": quad,
+                "quadrature": quad,
+                "t_requested_us": w,
+                "wait_dt": wait_dt,
+                "scheduled_wait_dt": T,
+                "scheduled_wait_us": T * dt * 1e6,
+                "qubit": q,
+                "clbit": 0,
+            }
+            out.append({"label": label, "circuit": isa})
+    if readout:
+        for name in ("P10", "P01"):
+            qc = QuantumCircuit(1, 1, name=f"{name}-{q}")
+            if name == "P01":
+                qc.x(0)
+            qc.measure(0, 0)
+            label = {"circuit": name, "quadrature": None, "t_requested_us": None, "qubit": q, "clbit": 0}
+            out.append({"label": label, "circuit": to_backend(qc, [q], backend)})
+    return out
+
+
+def _ramsey_s(p, t, ph):
+    c, A, tau, D, p0 = p
+    return c + A * np.exp(-t / tau) * np.cos(2 * np.pi * D * t + p0 + ph)
+
+
+def _ramsey_p(p, t, ph):
+    c, A, tau, D, p0, dl, b = p
+    env = A * np.exp(-t / tau)
+    return c + env * (
+        b * np.cos(2 * np.pi * (D + dl) * t + p0 + ph) + (1 - b) * np.cos(2 * np.pi * (D - dl) * t + p0 + ph)
+    )
+
+
+def ramsey_xy_band(fit_waits_us) -> dict:
+    """The band of line frequencies a fit set can tell apart. Waits a spacing s apart fix a line's frequency only
+    modulo 1 / s: a line at f and one at f + 1 / s are the same function at every fitted wait. P's lines are therefore
+    held inside the band |f| <= 1 / (2 s), the fit set's Nyquist frequency, by bounding Delta0 to +-1 / (4 s) and delta
+    to [0, 1 / (4 s)], so that |Delta0| + delta never exceeds it. s is the smallest spacing of the fitted waits, in µs
+    (rounded to 1e-9 µs); at test 7's 2 µs the band is 250 kHz and each bound 125 kHz."""
+    w = np.unique(np.round(np.asarray(fit_waits_us, float).ravel(), 9))
+    if len(w) < 2:
+        raise ValueError("a fit set of at least two distinct waits")
+    s = float(np.min(np.diff(w)))
+    return {
+        "spacing_us": s,
+        "nyquist_MHz": 1 / (2 * s),
+        "Delta0_bound_MHz": 1 / (4 * s),
+        "delta_bound_MHz": 1 / (4 * s),
+    }
+
+
+def _p1_sigma(y, n):
+    """The binomial standard error of a P(1), with p (1 - p) floored at 1/n."""
+    return np.sqrt(np.clip(y * (1 - y), 1 / n, None) / n)
+
+
+def _best_of(model, starts, bounds, t, ph, y, sig) -> tuple:
+    """Weighted least squares from each start (max_nfev 4,000), the best kept: (the result, the starts that failed to
+    converge, counting least_squares' status 0 and an exception)."""
+    from scipy.optimize import least_squares
+
+    best, failed = None, 0
+    for p in starts:
+        try:
+            r = least_squares(lambda x: (model(x, t, ph) - y) / sig, p, bounds=bounds, max_nfev=4000)
+        except (ValueError, FloatingPointError):
+            failed += 1
+            continue
+        failed += int(r.status) <= 0
+        if best is None or r.cost < best.cost:
+            best = r
+    return best, failed
+
+
+def ramsey_xy_fit(
+    t_us,
+    ones,
+    shots,
+    fit,
+    *,
+    seeds: Sequence[int],
+    n_boot: int = 2000,
+    margin: float | None = None,
+    delta_floor_mhz: float | None = None,
+    b_edges: Sequence[float] | None = None,
+) -> dict:
+    """The one-line and two-line fits of a two-quadrature Ramsey, with a held-out error and a bootstrap (test 7's
+    procedure, finding 28).
+
+    t_us: each quadrature's waits as scheduled, shape (2, W), X first (or (W,) for both). ones: the shots that read 1,
+    per copy, quadrature and wait, shape (copies, 2, W); shots: the shots of each, an int or the same shape. fit: the
+    fitted waits, a boolean mask or indices over W; the others are held out.
+
+    The models, jointly over X and Y, Y being X with the phase minus pi/2 (`RAMSEY_XY_PHASE`):
+      S, one line:  c + A exp(-t / tau) cos(2 pi Delta t + phi0);
+      P, two lines: c + A exp(-t / tau') [b cos(2 pi (Delta0 + delta) t + phi0) + (1 - b) cos(2 pi (Delta0 - delta) t
+      + phi0)], with Delta0 and delta inside the fit set's band (`ramsey_xy_band`).
+    Each is fitted by weighted least squares to the copies' pooled P(1) on the fit set, each point weighted by its
+    binomial standard error with p (1 - p) floored at 1/n, from every start, the best kept: S from RAMSEY_XY_S_STARTS
+    starts uniform within its bounds (seeds[0]); P from twenty starts on the S fit and RAMSEY_XY_P_RANDOM_STARTS
+    uniform within its bounds (seeds[1]). Each model's held-out error is the mean absolute difference between its
+    prediction and the pooled P(1) over the held-out waits of both quadratures.
+
+    The bootstrap (seeds[2], n_boot draws): for each fitted wait of each quadrature, the copies drawn with replacement,
+    each drawn copy's shots redrawn from its own P(1), and P refitted from its point fit. Returns each of P's
+    parameters' 5th, 50th and 95th percentiles over the refits that returned.
+
+    margin, delta_floor_mhz and b_edges are a rule's thresholds, the caller's: given, the result says which of the
+    clauses on them hold (P's held-out error below S's by more than the margin, or S's within it; delta's 5th
+    percentile above or below the floor; b's interval inside the edges or reaching one). The package fixes none of
+    them and names no verdict. A fit, beside a rule's verdict: it says nothing about what makes two lines."""
+    rng_s, rng_p, rng_b = (np.random.default_rng(int(s)) for s in seeds)
+    ones = np.asarray(ones)
+    if ones.ndim != 3 or ones.shape[1] != 2 or ones.shape[0] < 1:
+        raise ValueError(f"ones has the shape (copies, 2, waits); got {ones.shape}")
+    copies, _, nw = ones.shape
+    shots_arr = np.broadcast_to(np.asarray(shots), ones.shape)
+    uniform = bool(np.all(shots_arr == shots_arr.flat[0]))
+    tq = np.broadcast_to(np.asarray(t_us, float), (2, nw))
+    mask = np.zeros(nw, bool)
+    mask[np.asarray(fit)] = True
+    fi, hi = np.flatnonzero(mask), np.flatnonzero(~mask)
+    if len(fi) < 4 or not len(hi):
+        raise ValueError("a fit set of at least four waits, and at least one wait held out")
+    nn = shots_arr.sum(0)
+    yq = ones.sum(0) / nn
+    band = ramsey_xy_band(tq[:, fi])
+    s_lo, s_hi = (np.array(b, float) for b in RAMSEY_XY_S_BOUNDS)
+    p_lo = np.array([*s_lo[:3], -band["Delta0_bound_MHz"], s_lo[4], 0.0, 0.0])
+    p_hi = np.array([*s_hi[:3], band["Delta0_bound_MHz"], s_hi[4], band["delta_bound_MHz"], 1.0])
+
+    def stack(idx, a):
+        return np.concatenate([a[0][idx], a[1][idx]])
+
+    ph_of = np.array([RAMSEY_XY_PHASE["X"], RAMSEY_XY_PHASE["Y"]])[:, None] * np.ones((2, nw))
+    te, phe, ye, ne = stack(fi, tq), stack(fi, ph_of), stack(fi, yq), stack(fi, nn)
+    to, pho, yo = stack(hi, tq), stack(hi, ph_of), stack(hi, yq)
+    se = _p1_sigma(ye, ne)
+
+    def uniform_starts(lo, hi_, k, rng):
+        return [list(lo + (hi_ - lo) * rng.random(len(lo))) for _ in range(k)]
+
+    def result(name, r, failed, n_starts, model):
+        chi2 = float(2 * r.cost)
+        return {
+            "params": dict(zip(RAMSEY_XY_NAMES[name], (float(v) for v in r.x))),
+            "chi2": chi2,
+            "n_points": len(ye),
+            "dof": len(ye) - len(r.x),
+            "starts": n_starts,
+            "starts_failed": failed,
+            "held_out_error": float(np.mean(np.abs(model(r.x, to, pho) - yo))),
+        }
+
+    starts_s = uniform_starts(s_lo, s_hi, RAMSEY_XY_S_STARTS, rng_s)
+    rs, fails = _best_of(_ramsey_s, starts_s, (s_lo, s_hi), te, phe, ye, se)
+    S = result("S", rs, fails, len(starts_s), _ramsey_s)
+    c, A, tau, D, p0 = rs.x
+    grid = [
+        [c, A, tau, D + k * d, p0, d, bb]
+        for d in RAMSEY_XY_P_GRID_DELTA_MHZ
+        for k in (0, 1, -1)
+        for bb in RAMSEY_XY_P_GRID_B
+    ]
+    grid += [[c, A, tau, D, p0, d, bb] for d, bb in RAMSEY_XY_P_GRID_EXTRA]
+    starts_p = [list(np.clip(x, p_lo, p_hi)) for x in grid] + uniform_starts(
+        p_lo, p_hi, RAMSEY_XY_P_RANDOM_STARTS, rng_p
+    )
+    rp, fails = _best_of(_ramsey_p, starts_p, (p_lo, p_hi), te, phe, ye, se)
+    P = result("P", rp, fails, len(starts_p), _ramsey_p)
+    P["lines_MHz"] = [
+        P["params"]["Delta0_MHz"] + P["params"]["delta_MHz"],
+        P["params"]["Delta0_MHz"] - P["params"]["delta_MHz"],
+    ]
+    P["reach_MHz"] = abs(P["params"]["Delta0_MHz"]) + P["params"]["delta_MHz"]
+
+    from scipy.optimize import least_squares
+
+    ones_f, n_f = ones[:, :, fi], shots_arr[:, :, fi]
+    n_pool = nn[:, fi]
+    draws = np.full((int(n_boot), 7), np.nan)
+    refits_failed = 0
+    for k in range(int(n_boot)):
+        pick = rng_b.integers(0, copies, size=ones_f.shape)
+        if uniform:
+            n0 = int(shots_arr.flat[0])
+            src = np.take_along_axis(ones_f, pick, axis=0) / n0
+            yb = rng_b.binomial(n0, src).sum(0) / n_pool
+        else:
+            nk = np.take_along_axis(n_f, pick, axis=0)
+            src = np.take_along_axis(ones_f, pick, axis=0) / nk
+            yb = rng_b.binomial(nk, src).sum(0) / n_pool
+        yb = np.concatenate([yb[0], yb[1]])
+        sb = _p1_sigma(yb, ne)
+        try:
+            r = least_squares(
+                lambda x, yb=yb, sb=sb: (_ramsey_p(x, te, phe) - yb) / sb, rp.x, bounds=(p_lo, p_hi), max_nfev=4000
+            )
+        except (ValueError, FloatingPointError):
+            refits_failed += 1
+            continue
+        refits_failed += int(r.status) <= 0
+        draws[k] = r.x
+    ok = ~np.isnan(draws[:, 0])
+    pct = {
+        name: [float(v) for v in np.percentile(draws[ok, i], [5, 50, 95])] if ok.any() else [math.nan] * 3
+        for i, name in enumerate(RAMSEY_XY_NAMES["P"])
+    }
+    out = {
+        "fit_waits": fi.tolist(),
+        "held_out_waits": hi.tolist(),
+        "band": band,
+        "S": S,
+        "P": P,
+        "bootstrap": {
+            "draws": int(n_boot),
+            "returned": int(ok.sum()),
+            "refits_failed": refits_failed,
+            "percentiles_5_50_95": pct,
+        },
+        "seeds": [int(s) for s in seeds],
+        "per_wait": {
+            quad: {"t_us": tq[i].tolist(), "P1": yq[i].tolist(), "se": np.sqrt(yq[i] * (1 - yq[i]) / nn[i]).tolist()}
+            for i, quad in enumerate(RAMSEY_XY_QUADRATURES)
+        },
+    }
+    if margin is not None or delta_floor_mhz is not None or b_edges is not None:
+        clauses: dict = {}
+        if margin is not None:
+            clauses["P_below_S_by_more_than_the_margin"] = P["held_out_error"] < S["held_out_error"] - float(margin)
+            clauses["S_within_the_margin_of_P_or_below"] = S["held_out_error"] <= P["held_out_error"] + float(margin)
+        d_lo = pct["delta_MHz"][0]
+        if delta_floor_mhz is not None:
+            clauses["delta_lower_bound_above_the_floor"] = d_lo > float(delta_floor_mhz)
+            clauses["delta_lower_bound_below_the_floor"] = d_lo < float(delta_floor_mhz)
+        if b_edges is not None:
+            e0, e1 = (float(x) for x in b_edges)
+            b_lo, b_hi = pct["b"][0], pct["b"][2]
+            clauses["b_interval_inside_the_edges"] = e0 < b_lo and b_hi < e1
+            clauses["b_interval_reaches_an_edge"] = b_lo <= e0 or b_hi >= e1
+        out["clauses"] = clauses
+    return out
+
+
+def copies_check(labels: Sequence[dict], counts: Sequence[dict], clbit: int = 0) -> dict:
+    """Do the two copies of each circuit agree within their shot noise (finding 28)? The positions are grouped by
+    their label without its "copy"; each circuit must have exactly two copies. Per circuit, z = (p1 - p2) / sqrt(p (1 -
+    p) (1/n1 + 1/n2)), p1 and p2 the copies' P(1) (classical bit `clbit`, bit 0 rightmost), p the pooled P(1), with
+    p (1 - p) floored at 1e-9. Returns the sum of z^2 over the circuits, its degrees of freedom (one per circuit), and
+    each circuit's label, copies' P(1) and z. A diagnostic: the package fixes no threshold on it. Two copies drawn from
+    one binomial give a sum near its degrees of freedom; copies whose P(1) moved between them do not."""
+    groups: dict = {}
+    order = []
+    for k, (lab, cts) in enumerate(zip(labels, counts)):
+        key = tuple(sorted((a, repr(b)) for a, b in lab.items() if a != "copy"))
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        ones = sum(n for bits, n in cts.items() if _bits(bits)[clbit] == "1")
+        groups[key].append((lab.get("copy"), k, ones, sum(cts.values())))
+    rows, total = [], 0.0
+    for key in order:
+        g = sorted(groups[key], key=lambda x: (x[0] is None, x[0]))
+        if len(g) != 2:
+            raise ValueError(f"each circuit has exactly two copies; {dict(key)} has {len(g)}")
+        (c1, k1, a, n1), (c2, k2, b, n2) = g
+        p1, p2, pp = a / n1, b / n2, (a + b) / (n1 + n2)
+        z = (p1 - p2) / math.sqrt(max(pp * (1 - pp), 1e-9) * (1 / n1 + 1 / n2))
+        total += z * z
+        lab = {name: v for name, v in labels[k1].items() if name != "copy"}
+        rows.append({"label": lab, "copies": [c1, c2], "positions": [k1, k2], "P1": [p1, p2], "z": z})
+    return {"sum_z2": total, "dof": len(rows), "per_dof": total / len(rows) if rows else math.nan, "circuits": rows}
+
+
 # --------------------------------------------------------------------------- a run: the job and its analysis
 def default_groups(chain: Sequence[int]) -> tuple[tuple[int, ...], tuple[int, ...]]:
     """Part B's groups for a chain L1-M-L3: M alone, then the two end lines, which are not neighbours."""

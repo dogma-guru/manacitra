@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.0 (unreleased)
+
+The waiting qubit of findings 12 to 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.
+
+- Amendment A25: `manacitra.wait` gains the two-quadrature Ramsey on one qubit, `ramsey_xy` (X and Y at the waits
+  the caller names, with the two readout circuits as an optional third series); its fit, `ramsey_xy_fit` (one line and
+  two fixed lines with a free weight, fitted jointly over both quadratures on the waits the caller names and scored by
+  the held-out error on the others, the two lines held inside the band the fitted waits can tell apart,
+  `ramsey_xy_band`, and a bootstrap over the copies and their shots; a rule's thresholds are the caller's); and a
+  copies check, `copies_check`. `build_wait_test`, `build_wait_ramsey`, `predicted_fidelity`, the sweep, the peak, the
+  survey and `ramsey_fit` are unchanged; `manacitra.archive.records` leaves out `data/desk/`, which holds no run
+  records. Finding 28 (test 7), with its data in `data/ibm_fez/t7-ramsey-xy.json` (the counts, the run records, the
+  analysis and the readings after the data, and the run's code as verbatim lines of the scripts as run), its posted
+  rule published unchanged (`t7-rule.md`), the desk power check that preceded the rule in `data/desk/` (the grid's
+  results attached to the release, with their SHA-256 in the folder's README), its recompute in
+  `tests/_reuse_runs.py`, a test that the package builds what the run built, and one figure. The README opens with
+  finding 28, and its table of findings gains a ninth row.
+
 ## 0.7.0 (15 October 2026)
 
 The check can now be placed at the active-neighbour Ramsey's loss maximum: a six-phase sweep fixes each chain's peak phase, and the check runs there, where every cell is informative by construction. `manacitra.wait` gains the sweep, the fit, the peak phase and a readout survey with a per-qubit readout error from measured counts; the 0.6.0 check at +90° is unchanged. Findings 22 to 27, from four runs on ibm_kingston on 14 and 15 October 2026 and two on ibm_fez on 15 October, with their data, and the record of a draw on ibm_fez that found no chain on the published readout table. At the peak phase the check predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains on two processors (findings 23, 25 and 27). On ibm_fez a direct measurement found readout errors of 0.004 to 0.021 on sixteen qubits the published table put at up to 0.44, and a survey of all 156 qubits a median of 0.0098 against a published 0.166 (findings 26 and 27).

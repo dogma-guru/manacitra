@@ -40,7 +40,7 @@ def test_coupling_maps_name_their_snapshot(path):
 @pytest.mark.parametrize("path", [f for f in FILES if not f.endswith("coupling-map.json")])
 def test_run_records_name_a_kickoff_and_a_time(path):
     m = archive.load(path)["meta"]
-    assert m["kickoff"].startswith("Kickoff") and m["utc"][:10] in (
+    assert (m["kickoff"].startswith("Kickoff") or m["kickoff"] == "Test 7") and m["utc"][:10] in (
         "2026-10-05",
         "2026-10-06",
         "2026-10-07",
@@ -49,6 +49,7 @@ def test_run_records_name_a_kickoff_and_a_time(path):
         "2026-10-13",
         "2026-10-14",
         "2026-10-15",
+        "2026-10-16",
     )
     assert m["shots_per_circuit"] == NA or isinstance(m["shots_per_circuit"], int)
 
@@ -66,6 +67,15 @@ def test_every_counts_record_declares_its_bit_reading(path):
         ), path
     else:
         assert "bit_reading" not in rec["meta"], path
+
+
+def test_the_desk_power_check_is_not_a_run_record():
+    """Amendment A25: the desk power check published beside test 7 (data/desk/) is a simulation of the design before
+    its rule was fixed, kept as its scripts wrote it; its files are not run records, and the index names its folder."""
+    root = archive.data_dir()
+    desk = sorted(p.relative_to(root).as_posix() for p in (root / archive.DESK).rglob("*.json"))
+    assert desk and not set(desk) & set(FILES)
+    assert "`desk/t7-power-check/`" in (root / "README.md").read_text()
 
 
 def test_the_signing_bundles_are_not_records():
