@@ -3737,3 +3737,52 @@ note on the kickoffs page's test 7 row that no predictions were sealed for this 
 rz(−90°) as the run's checks fixed it (Q15). The nine corrections of the packet's section 3a stand as written, and
 the bullet on the physical origin of 143's offset gains one sentence on what finding 28 separates. The folder's
 README also says to take the grid's run record out of a copy before rerunning the grid, which reads it as its own.
+
+## 45. Release v0.8.0 (17 October 2026)
+
+**What it carries.** Amendment A25 (pull request 51): the two-quadrature Ramsey and its fit (`manacitra.wait.ramsey_xy`,
+`ramsey_xy_band`, `ramsey_xy_fit` and `copies_check`), with finding 28, its data and the desk power check that preceded
+its rule (section 44). Pull request 51 was merged as `302a66c` with a merge commit, on the author's go after every check
+had passed on its head, `b7313bb`, and its fourteen new data files, `data/README.md` and `data/SHA256SUMS` were signed
+on `main` in the bundle commit `9e768fc`.
+
+**The version, by the author's rulings** (16 October: the kickoff of A25, reviewed by the author; A25's ruling R1, the
+review, with its addendum; and the goes for steps 6.1 and 6.2, given in chat), is 0.8.0.
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (`version`, and `date-released` 2026-10-17)
+  and the README's citation; the changelog heading `## 0.8.0 (unreleased)` becomes `## 0.8.0 (17 October 2026)`, and
+  the README's "To be released as 0.8.0." becomes "Released as 0.8.0 on 17 October 2026.". The date is the UTC date,
+  as every date of a run and a record here is: the release pull request was made after 02:00 UTC on 17 October, the
+  evening of 16 October in Rochester. The changelog's lead is the one the kickoff fixed, with ruling R1's range.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`;
+  the README's sentence and the changelog heading are checked by `test_the_readme_opens_with_the_latest_findings` and
+  `test_finding_28_beside_the_finding`, and "To be released as 0.8.0" joins the retired phrases.
+- **The package.** Since 0.7.0, `src/` changes in `manacitra.wait` (A25's four public functions, four private helpers
+  and nine constants) and in `manacitra.archive` (the `DESK` constant, and `records()` leaving out `data/desk/`), and in
+  the version line; nothing else in the package changes. The packages build as `manacitra-0.8.0`; neither the wheel
+  nor the sdist contains `data/`.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.7.0's DOI until Zenodo has minted v0.8.0's (release
+step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+
+**One test fixed.** `test_the_power_check_folder` compared the files of `data/desk/` with the folder README's table;
+once the sign run on `main` had put a bundle beside each file, the comparison counted the bundles too and failed on
+`main`'s head, `9e768fc` (pull request 51's checks had run before the bundles existed). It now leaves out the signing
+workflow's bundles, as `manacitra.archive.is_bundle` names them, and passes with and without them.
+
+**The release asset.** The desk power check's grid results, `results-t7v51.jsonl` (21,973,170 bytes, SHA-256
+`27c29bc2c242312ff9b2ab3b22c987263aa2900ebdcf966c24e0fcc1369b1a48`, as `data/desk/t7-power-check/README.md` gives it),
+are attached to the release at step 3 and checked from a fresh download against that SHA-256. The workflow's
+`build-release` job signs the packages it builds and their `SHA256SUMS`; it does not build this file.
+
+**The release path** is the release steps in `docs/index.md` section 9, each on the author's go:
+1. the merge of this pull request with a merge commit, then signing on `main`;
+2. the tree check against `…/sign.yml@refs/heads/main` and the git identity scan, then the annotated tag, on the bundle
+   commit if there is one, otherwise on the merge commit;
+3. the release, with its assets' signatures checked from a fresh download against `@refs/tags/v0.8.0`, and the
+   negative control against `@refs/tags/v0.7.0`, and the power check's asset checked against its SHA-256;
+4. the version DOI, once Zenodo has minted it.
+
+The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken.

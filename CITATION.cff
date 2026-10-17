@@ -5,8 +5,8 @@ type: software
 authors:
   - given-names: Anish
     family-names: Patel
-version: 0.7.0
-date-released: 2026-10-15
+version: 0.8.0
+date-released: 2026-10-17
 doi: 10.5281/zenodo.23228518
 identifiers:
   - type: doi

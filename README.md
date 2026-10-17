@@ -8,7 +8,7 @@
 
 ## Latest finding: two frequencies on one qubit
 
-Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28](docs/findings.md#finding-28)). Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying. Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did not assume and the finding reports as what the counts show. No cause is named. To be released as 0.8.0.
+Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28](docs/findings.md#finding-28)). Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying. Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did not assume and the finding reports as what the counts show. No cause is named. Released as 0.8.0 on 17 October 2026.
 
 ## What it does
 
@@ -124,7 +124,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.7.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.8.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.7.0: [10.5281/zenodo.23408345](https://doi.org/10.5281/zenodo.23408345)).
 
