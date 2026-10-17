@@ -4,11 +4,11 @@
 
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
-**Contents:** [Latest findings](#latest-findings-the-check-at-the-peak-phase) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+**Contents:** [Latest finding](#latest-finding-two-frequencies-on-one-qubit) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
 
-## Latest findings: the check at the peak phase
+## Latest finding: two frequencies on one qubit
 
-Manacitra's check predicts how a reuse-shaped circuit will fare from one qubit's Ramsey loss over the circuit's own wait, and it can now be read at the peak phase: one sweep of six known phases fixes each chain's φ* = 180° − θ_R1, θ_R1 being the active-neighbour Ramsey's offset, and the check then runs at φ*, where that Ramsey's loss is greatest (`phase_sweep` and `peak_check`). There it predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two processors, each cell informative by construction, since the design places it at the loss maximum (findings 23, 25 and 27). The 0.6.0 check at +90° remains the cheaper form for a chain whose leftover between the wait test and the Ramsey is small. On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table gave 0.166 (finding 27). Released as 0.7.0 on 15 October 2026.
+Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28](docs/findings.md#finding-28)). Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying. Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did not assume and the finding reports as what the counts show. No cause is named. To be released as 0.8.0.
 
 ## What it does
 
@@ -22,7 +22,7 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Findings
 
-Twenty-seven findings, from runs on 5 to 15 October 2026. Here the findings on one thread share a row, and each number links to its finding; each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md), which also has [the full table](docs/findings.md#the-findings-in-one-table), one row per finding. What has *not* been shown is there too.
+Twenty-eight findings, from runs on 5 to 16 October 2026. Here the findings on one thread share a row, and each number links to its finding; each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md), which also has [the full table](docs/findings.md#the-findings-in-one-table), one row per finding. What has *not* been shown is there too.
 
 | thread | findings | where | where it stands | verdicts |
 |---|---|---|---|---|
@@ -34,6 +34,7 @@ Twenty-seven findings, from runs on 5 to 15 October 2026. Here the findings on o
 | The collapse on 143 and 144, and the wait | [12](docs/findings.md#finding-12), [13](docs/findings.md#finding-13) | ibm_fez | A reuse circuit collapsed on chains around qubits 143 and 144; five explanations were set aside, and refocusing pulses restored the circuit, since 143 lost phase while it waited. | NOT SUPPORTED for the explanations tested; H_phase SUPPORTED; REFOCUSABLE |
 | The check and its instrument | [14](docs/findings.md#finding-14), [15](docs/findings.md#finding-15), [16](docs/findings.md#finding-16), [17](docs/findings.md#finding-17), [18](docs/findings.md#finding-18), [19](docs/findings.md#finding-19), [20](docs/findings.md#finding-20), [21](docs/findings.md#finding-21) | ibm_fez, ibm_kingston | A qubit's Ramsey loss over the circuit's own wait predicts how a reuse-shaped circuit fares; with the neighbours active, 0.6.0's default, the check at +90° held on ibm_fez on two days and missed on one cell of four on ibm_kingston. | AGREE; DISAGREE on a second day; SUPPORTED and DIFFERENT; AGREE on new chains; DISAGREE on ibm_kingston |
 | The check at the peak phase | [22](docs/findings.md#finding-22), [23](docs/findings.md#finding-23), [24](docs/findings.md#finding-24), [25](docs/findings.md#finding-25), [27](docs/findings.md#finding-27) | ibm_kingston, ibm_fez | Read at the active-neighbour Ramsey's loss maximum, the check predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two processors; its residual was not smaller than at +90° on every chain. | LARGE, NOT SETTLED and SMALL; AGREE in three runs; PEAK SMALLER and NOT SEPARATED |
+| The fringe on 143: one line or two | [28](docs/findings.md#finding-28) | ibm_fez | Measured at every wait from 0 to 63 µs in two quadratures, 143's Ramsey fringe was two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying; within the job the weight moved. | TWO FIXED FREQUENCIES |
 
 What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
 
@@ -46,6 +47,7 @@ What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT 
 - **One processor, one day, six waiting qubits, for findings 15 to 19.** Findings 15 to 19 are from five jobs on ibm_fez on 13 October 2026. From finding 15's calibration stamp to finding 19's submission no published T1, T2, readout, gate or CZ value changed; during finding 19's job, at 20:29:58 UTC, IBM published new readout errors on 154 qubits.
 - **Two processors, three days, for the active-neighbour check.** On ibm_fez it has run on six waiting qubits, on 13 October 2026 (findings 16 to 19) and again on 15 October (finding 21); on ibm_kingston on four, on 14 October (finding 20). Which of two calibration stamps finding 20's job ran under is not known.
 - **Two processors, two calibration days, for the check at the peak phase.** On ibm_kingston it has run on eight waiting qubits of new chains, under the daily calibrations of 14 and 15 October 2026 (findings 23 and 25), and on finding 20's three chains (finding 24); on ibm_fez on four, on 15 October (finding 27).
+- **One qubit, one job, one day, for finding 28.** Finding 28 is from one job on ibm_fez on 16 October 2026, on qubit 143 alone, under one published calibration stamp.
 - **Two routes to one processor.** The Rigetti findings through Open Quantum (2, 6) and through Amazon Braket (8 to 10) are from the same processor, but only the Braket route records where each pair ran. The difference between them is a difference between the two platforms' placement records, not between the vendors' machines.
 - **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
 - **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
@@ -109,7 +111,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the twenty-seven findings in full, with a table of all of them, what was known before them, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the twenty-eight findings in full, with a table of all of them, what was known before them, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.

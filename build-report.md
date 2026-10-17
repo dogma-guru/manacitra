@@ -3616,3 +3616,124 @@ The merge, the tag, the release and its verification, and the DOI are recorded h
   `10.5281/zenodo.23228518`, which now resolves to it. It is the only v0.7.0 record under the concept DOI.
 - **Step 4.** The README's version-DOI parenthetical names v0.7.0's DOI, `CITATION.cff` lists it among its
   `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
+
+## 44. Amendment A25: finding 28, two frequencies on qubit 143 (16 October 2026)
+
+**Why.** By the author's rulings of 16 October 2026, in chat: ruling R5 of the desk power check ("Let's go with your
+recommendations"), the rule for test 7, the two-quadrature Ramsey on ibm_fez's qubit 143 ("Rule looks good, let's do
+it"), its SHA-256 posted publicly, and the go for one job on ibm_fez. The job ran and the rule returned TWO FIXED
+FREQUENCIES. The kickoff, reviewed by the author ("Looks good"), publishes the desk power check beside the rule as the
+record of how the rule was reached, a choice the author may reverse before the pull request leaves draft. The merge
+and each release step of 0.8.0 wait for their own go after the author's review.
+
+**Order.** A new branch, `findings/t7-two-frequencies`, from `ee82e86` (the merge of pull request 49, the 0.7.0 DOI),
+worked in a git worktree of its own outside the shared checkout. No hardware, no provider job and no contact with
+anyone.
+
+**Sources.** Test 7's hand-back, the desk power check's (version 5.1), the pre-test's script, the rule with its
+`.sha256`, the version 5.1 kickoff and ruling R5, all from the author's working folders, which are not named here.
+Nothing whose name contains "SEALED" was read, and no scorecard is in the repository. Every copied file was checked
+against its hand-back's `SHA256SUMS` before it was copied, but the version 5.1 kickoff, which no `SHA256SUMS` lists; its
+SHA-256 as read is in the power check's README. The rule hashes to the value posted in issue 50 of this repository at
+21:00:21 UTC on 16 October 2026, 23 minutes before the job was submitted; the issue was not edited after it was opened.
+
+**The data.**
+- `ibm_fez/t7-ramsey-xy.json` (1.9 MB), in Kickoffs 53 to 62's layout: the counts with their labels, the job ID and
+  times, the options as IBM recorded them, the window, the calibration record and the estimate before submission that
+  the rule asks for (its one machine-time figure, with the allowance and IBM's formula beside it); under `archived`,
+  the run's analysis, its bootstrap with every draw, and its readings after the data, whole.
+- `ibm_fez/t7-rule.md`, byte for byte.
+- `desk/t7-power-check/` and `desk/t7/`: the desk power check before the rule, with its README (the files and their
+  SHA-256 values, the release asset's, and how to rerun it). Every file is as handed back but two scripts, whose
+  docstrings' first lines named the author's working folder. The grid's results (21,973,170 bytes) go to the 0.8.0
+  release as an asset, not into the tree.
+- **The code**, in `source_code`: the builder as Kickoff 53's, also without the two per-shot rates and the functions
+  that read the account; the analysis from line 1 to the line before `def main(`, without four lines that name paths in
+  the author's working folders, the function that locates them and its call; the readings whole. The copy of the
+  builder handed back differs from the script as run in three lines, none kept, so the record names the script as run.
+- **Dropped:** the instance's name, the lines that read the account, the per-shot rates, the snapshots' file names, the
+  hand-back's report, and the source folders' names and paths. The converter, a scratch tool outside the repository,
+  refused to write the record if it or its kept code carried an instance's name, a dollar sign, a path, an email address
+  or the source folder's name.
+
+**The code.** `manacitra.wait` gains `ramsey_xy` (the X and Y circuits on one qubit at the waits the caller names, the
+readout circuits as an optional third series), `ramsey_xy_band`, `ramsey_xy_fit` (the one-line and two-line fits
+jointly over both quadratures on the caller's fitted waits, the held-out error on the others, P's lines held inside the
+fitted waits' band, and the bootstrap; any rule's thresholds are the caller's, and the package names no verdict) and
+`copies_check`. `manacitra.archive.records` leaves out `data/desk/`, whose files are not run records. Nothing else
+changes: `build_wait_test`, `build_wait_ramsey`, `predicted_fidelity`, the sweep, the peak, the survey and `ramsey_fit`
+keep their signatures and defaults. The telegraph model stays out of the package.
+
+**The recompute.** `tests/_reuse_runs.py` gains `t7_ramsey_xy` and `t7_readings`: the rule's fits, held-out errors,
+bootstrap and verdict through `ramsey_xy_fit`, the copies through `copies_check`, and the items beside the verdict and
+the readings as the run's scripts computed them. `tests/_reproduce.py` gains the case, required to give TWO FIXED
+FREQUENCIES.
+- **Under numpy 2.5.3:** every archived number reproduces, the bootstrap's 2,000 draws of all three models included:
+  3,215 fields, the largest difference 1.1·10⁻¹³.
+- **Other random streams.** The recompute was rerun under 200 other seeds of every stream it draws. The verdict and its
+  clauses did not change. δ's interval ends move by up to 0.0097 kHz and b's by 0.0024, and are excluded. The telegraph
+  fit, whose bounds reach past the fitted waits' band, lands from some other random starts on a fit outside the band
+  with a lower chi-square; its fields are excluded, and finding 28 says so.
+- **The inventory:** 3,077 fields compared, 32 of them at 10⁻³, and 105 of the archived fields excluded with their
+  movement; the bootstrap's record and the rest excluded with reasons.
+
+**The power check, rerun.** Its fit-check stage, rerun from a copy of `data/desk/` with a clone at `9b260fb` and numpy
+2.5.3, reproduced every one of the 4,176 leaves of `fitcheck-t7v51.json` but five: its time, the two scripts' SHA-256
+(the published copies'), numpy's version and its wall time. The timing and the grid (3.8 hours on ten cores) were not
+rerun.
+
+**The text.**
+- **`docs/findings.md`:** finding 28, with one figure (the two quadratures with both fits, and the envelope with P's
+  nodes); its row in the table of all twenty-eight; in what has not been shown, three bullets (no cause named, the
+  intervals a job average, one qubit, one job, one day).
+- **`README.md`:** the opening section, "Latest finding: two frequencies on one qubit", in five sentences; a ninth row in
+  the table of findings; "Twenty-eight findings"; a limit line for finding 28.
+- **Elsewhere:** `docs/method.md`, a subsection on the two-quadrature Ramsey, the two-model fit and the desk power
+  check; `docs/reproduce.md`, a pointer naming `b782d00` and the two reproduction lines; `docs/kickoffs.md`, the test 7
+  row; `docs/index.md`, the reproduction row, the run dates and fourteen diagrams; `data/README.md`, the files, their
+  formats, their recompute and the job IDs; `CHANGELOG.md`, the heading `## 0.8.0 (unreleased)`, the lead the kickoff
+  fixed and the A25 entry.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A25-review-packet.md`), with
+its reason.
+
+**The tests:** 972 pass, against 945 at `ee82e86` (27 new). New: the tests of finding 28 and of the text beside it, the
+README's opening section (A24's, replaced), the rule and its post, the power check's folder and the figure; the
+two-quadrature circuits on the offline snapshot, and their equivalence with the run's own builder, run from its record;
+the fit at stated lines, on one line at the run's shot counts (100 draws) and on the Nyquist alias; the copies check on
+stated copies and on the run's counts; the telegraph fit inside and outside the band; the unchanged signatures; the desk
+folder kept out of the run records; the reproduction case with its verdict mutation; and the inventory's marks. Changed:
+the dates, the job IDs, the diagrams' count, the findings tables' tests (finding 28 is named as test 7, not a kickoff),
+the code test (a script kept whole), and the A24 tests whose text A25 changed. The suite runs as CI runs it (`pytest -n
+auto --dist loadfile`) in about six minutes here; the one-line check, in a file of its own, takes about three on one
+worker. The text's tests were also run with every random generator of the recompute and of the package's fit drawing
+from other seeds, and pass (A17).
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the fourteen new files (thirteen at first; the grid's run record by ruling R1). The
+  signing workflow signs them, `data/README.md` and `data/SHA256SUMS` on `main` after a merge.
+- **CI:** runs on the draft pull request.
+
+**CI on the first push.** One test failed on Linux under Python 3.13, and passed under 3.11:
+`test_the_telegraph_fit_inside_and_outside_the_band` counted 20 of the 40 other start draws reaching the telegraph
+model's fit outside the band, where this machine (macOS, numpy 2.5.3) and the 3.11 job counted 19. Every other part of
+the check held there: inside the band the same fit from all 40 draws, and outside it the same alias. How many of the
+40 land outside the band follows the optimiser's path, which a platform's floating point can move (A17's lesson), so
+finding 28 now says "about half of those 40 draws", and the test accepts 16 to 24.
+
+**Ruling R1 (16 October 2026, the author's go given in chat: "Go with your recommendations").** It answers the
+packet's fifteen questions: the source folder's name removed from the two scripts' first lines (Q1); the telegraph
+check kept in finding 28 with its test (Q2); the scoped sentence on published rates (Q3); the range "findings 13 to 18
+and 21" in the changelog's lead and in the not-shown bullet (Q4); the question set beside findings 14 and 15's fits
+(Q5); no literature sentence in 0.8.0 (Q6); the power check's layout, `archive.records()` leaving out `data/desk/`
+(Q7); the grid's run record, `grid-run-t7v51.json`, published in `data/desk/t7-power-check/` after its SHA-256 was
+checked against the hand-back's `SHA256SUMS`, with what does not rerun from the repository alone as the README says
+(Q8); the version 5.1 kickoff's name kept, with the README's line that "DRAFT" is the author's working label (Q9); the
+power check kept beside the rule (Q10); the API names (Q11); the title (Q12); the README's limit line (Q13); the
+note on the kickoffs page's test 7 row that no predictions were sealed for this run (Q14); and the position of the
+rz(−90°) as the run's checks fixed it (Q15). The nine corrections of the packet's section 3a stand as written, and
+the bullet on the physical origin of 143's offset gains one sentence on what finding 28 separates. The folder's
+README also says to take the grid's run record out of a copy before rerunning the grid, which reads it as its own.

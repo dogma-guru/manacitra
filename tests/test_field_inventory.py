@@ -167,6 +167,8 @@ MUTATED = {
     ),
     "Kickoff 61, the readout check on ibm_fez": ("ibm_fez/k61-readout-check.json", "archived/analysis/H61"),
     "Kickoff 62, the check at the peak phase on ibm_fez": ("ibm_fez/k62-peak-check.json", "archived/analysis/H62"),
+    # Amendment A25: test 7's verdict
+    "Test 7, two frequencies on qubit 143": ("ibm_fez/t7-ramsey-xy.json", "archived/analysis/verdict"),
 }
 HOW = ["999", "remove", "None", "NaN"]
 
@@ -286,7 +288,8 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
     """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
     on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, (Amendment A17) the
     283 interval fields of Kickoffs 43 to 47, (Amendment A19) Kickoff 48's 75, (Amendment A22) Kickoffs 49 to 53's
-    336 and (Amendment A23) Kickoffs 54 and 55's 147, enumerated below."""
+    336, (Amendment A23) Kickoffs 54 and 55's 147, (Amendment A24) Kickoffs 56 to 62's 385 and (Amendment A25) test
+    7's 32, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -313,9 +316,9 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED
+    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED | A25_MARKED
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
-    assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED)) == (336, 147, 385)
+    assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED), len(A25_MARKED)) == (336, 147, 385, 32)
 
 
 def _reuse_marked() -> set:
@@ -684,6 +687,49 @@ def _a24_marked() -> set:
             if x.startswith("archived/analysis/") and any("ci90" in part for part in x.split("/"))
         }
     return out - {(f, x, rs) for f, xs in A24_NOT_MARKED.items() for x in xs}
+
+
+#: Amendment A25: test 7's fields compared at 10⁻³: those that moved by 10⁻⁶ or more, and less than 8·10⁻⁴, over 200
+#: other seeds of every random stream its analysis draws (the bootstrap, the periodogram's noise and the fits' random
+#: starts), and its intervals that move less than 8·10⁻⁴; the fields that moved more are excluded with their reasons
+A25_MARKED = {
+    ("ibm_fez/t7-ramsey-xy.json", f, "resampled-shots")
+    for f in (
+        "archived/analysis/fits/S/params/A",
+        "archived/analysis/fits/S/params/tau_us",
+        "archived/analysis/fits/S/params/phi0_rad",
+        "archived/analysis/fits/S/chi2",
+        "archived/analysis/fits/S/largest_abs_residual_sigma",
+        "archived/analysis/fits/P/params/tau_prime_us",
+        "archived/analysis/beside/1_telegraph_T/fit/params/c",
+        "archived/analysis/beside/1_telegraph_T/fit/params/A",
+        "archived/analysis/beside/3_beat_nodes/tau_S_us",
+        "archived/analysis/beside/3_beat_nodes/tau_prime_P_us",
+        "archived/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se",
+        "archived/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se",
+        "archived/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se",
+        "archived/analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se",
+        "archived/analysis/beside/5_detuning_and_T2/S_Delta_kHz",
+        "archived/analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz",
+        "archived/analysis/beside/5_detuning_and_T2/tau_S_us",
+        "archived/analysis/beside/5_detuning_and_T2/tau_prime_P_us",
+        "archived/analysis/beside/6_more_than_two/periodogram/floors_95/X",
+        "archived/analysis/beside/6_more_than_two/periodogram/floors_95/Y",
+        "archived/analysis/beside/6_more_than_two/periodogram/floors_95/complex",
+        "archived/analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us",
+        "archived/analysis/beside/6_more_than_two/sideband_check/fit/params/phi0_rad",
+        "archived/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w144",
+        "archived/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142",
+        "archived/analysis/beside/6_more_than_two/sideband_check/weights_ci90/wboth",
+        "archived/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/chi2",
+        "archived/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz",
+        "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/lines_kHz",
+        "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/Delta0_kHz",
+        "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/"
+        "P/tau_prime_us",
+        "archived/readings_after_the_data/D_envelope_recentred_on_P_c/running_mean_max_rise_in_se",
+    )
+}
 
 
 REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")

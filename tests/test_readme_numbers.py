@@ -227,8 +227,8 @@ def _utc(s):
 
 
 def test_the_findings_dates():
-    assert "The findings come from runs on 5 to 15 October 2026." in README
-    assert "Twenty-seven findings, from runs on 5 to 15 October 2026." in README
+    assert "The findings come from runs on 5 to 16 October 2026." in README
+    assert "Twenty-eight findings, from runs on 5 to 16 October 2026." in README
     # a reconstruction (A18, ruling R1: Kickoff 47's Part B circuits) is a record about a run, not a run; nor is a
     # record of the provider's published calibration stamps (A23: calibration history 01)
     runs = [
@@ -249,7 +249,17 @@ def test_the_findings_dates():
         "2026-10-13",
         "2026-10-14",
         "2026-10-15",
+        "2026-10-16",
     }
+    # Amendment A25: finding 28, one job on 16 October 2026, on 143 alone, under one stamp
+    (t7,) = [p for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-16"]
+    m7 = archive.load(t7)["meta"]
+    assert (t7.name, m7["processor"], m7["kickoff"]) == ("t7-ramsey-xy.json", "ibm_fez", "Test 7")
+    assert m7["calibration_last_update_utc"] == "2026-10-16T20:59:56Z" and m7["qubit"] == 143
+    assert (
+        "- **One qubit, one job, one day, for finding 28.** Finding 28 is from one job on ibm_fez on 16 October 2026, "
+        "on qubit 143 alone, under one published calibration stamp." in README
+    )
     assert "- **Three processors, three days.** The hardware results of findings 1 to 10" in README
     assert "all on 5 to 7 October 2026." in README
     # Amendment A17: findings 11 to 13, one processor on one day, three published calibration stamps
@@ -846,13 +856,13 @@ def test_the_findings_table_matches_the_findings():
     table = findings.split("\n## The findings in one table\n", 1)[1].split("\n## ", 1)[0]
     rows = re.findall(r"^\| \[(\d+)\]\(#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", table, re.M)
     rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
-    assert [n for n, *_ in rows] == [str(i) for i in range(1, 28)] == list(full)
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 29)] == list(full)
     for n, head, kicks, verdict in rows:
         assert head == full[n], n
         item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
         table_rows = ""
         for k in kicks.replace(" to 15 Oct", "").split(", "):
-            assert f"Kickoff {k}" in item, (n, k)
+            assert (f"Kickoff {k}" if k[0].isdigit() else f"({k};") in item, (n, k)  # A25: finding 28 is test 7
             table_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
         words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
         assert words and all(w in table_rows for w in words), (n, words)
@@ -868,6 +878,7 @@ THREADS = {
     "The collapse on 143 and 144, and the wait": (12, 13),
     "The check and its instrument": (14, 15, 16, 17, 18, 19, 20, 21),
     "The check at the peak phase": (22, 23, 24, 25, 27),
+    "The fringe on 143: one line or two": (28,),  # A25
 }
 
 
@@ -882,7 +893,7 @@ def test_the_readme_table_has_one_row_per_thread():
     kickoffs = (ROOT / "docs" / "kickoffs.md").read_text()
     section = readme.split("\n## Findings\n", 1)[1].split("\n## ", 1)[0]
     assert "](docs/findings.md#the-findings-in-one-table)" in section
-    assert "Twenty-seven findings, from runs on 5 to 15 October 2026." in section
+    assert "Twenty-eight findings, from runs on 5 to 16 October 2026." in section
     rows = re.findall(r"^\| ([^|\[]+?) \| (\[.+?) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", section, re.M)
     assert [r_[0] for r_ in rows] == list(THREADS)
     seen = []
@@ -899,7 +910,7 @@ def test_the_readme_table_has_one_row_per_thread():
                 kick_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {k}, "))
         words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
         assert words and all(w in kick_rows for w in words), (thread, words - {w for w in words if w in kick_rows})
-    assert sorted(seen) == list(range(1, 28))
+    assert sorted(seen) == list(range(1, 29))
     # the record beside finding 26, Kickoff 60, is named in its thread's row and in the kickoffs table
     assert "Kickoff 60" in dict((r_[0], r_[3]) for r_ in rows)["The rule can say no"]
     assert "| 60, 15 October 2026 |" in kickoffs
@@ -1509,9 +1520,9 @@ def test_what_was_known_before_findings_13_and_14():
     flat = " ".join(README.split())
     assert "with refocusing every idle qubit and with ADAPT's choice of qubits to refocus, has not been run." in flat
     assert (
-        "the twenty-seven findings in full, with a table of all of them, what was known before them, and what has not "
+        "the twenty-eight findings in full, with a table of all of them, what was known before them, and what has not "
         "been shown." in flat
-    )  # A24
+    )  # A25
 
 
 def test_the_wait_test_hardware_picture():
@@ -1545,7 +1556,7 @@ def test_the_wait_test_hardware_picture():
     assert "11 October 2026, 02:13 to 02:14 UTC" in text and "T_M = 10.45 µs" in text
     assert "predicted from M's Ramsey loss at T_M" in text
     index = " ".join((ROOT / "docs" / "index.md").read_text().split())
-    assert len(list(DIAGRAMS.glob("*.svg"))) == 13 and "# the thirteen diagrams, from data/" in index  # A24: thirteen
+    assert len(list(DIAGRAMS.glob("*.svg"))) == 14 and "# the fourteen diagrams, from data/" in index  # A25: fourteen
 
 
 # --------------------------------------------------------------------------- findings 15 to 19 (Amendment A22)
@@ -2265,60 +2276,57 @@ def test_finding_15_in_the_persistence_bullet():
 
 
 def test_the_readme_opens_with_the_latest_findings():
-    """A24: a short section at the top of the README, after the opening description and before what it does, the
-    findings table and installation, says what the peak placement is, what it found, that the +90 degree check remains,
-    and what the survey measured, in at most five sentences, each number checked here. It names no chooser, says
-    nothing is validated, and carries none of the words the release waits for (the author may add one at review)."""
+    """A25 (A24's section, replaced): a short section at the top of the README, after the opening description and
+    before what it does, the findings table and installation, says what was measured on 143 and under what rule, what
+    the fringe is, that the weight moved, which the rule did not assume, and that no cause is named, in at most five
+    sentences, each number checked here. It says nothing about the check predicting better, names no parity, and
+    carries "To be released as 0.8.0." until the release pull request dates it."""
     import re
 
-    from _reproduce import K57, K59, K62, k57_recomputed, k59_recomputed, k62_recomputed, reuse_doc
+    from _reproduce import T7, reuse_doc, t7_recomputed
 
     front = (ROOT / "README.md").read_text()
-    head = "\n## Latest findings: the check at the peak phase\n"
+    head = "\n## Latest finding: two frequencies on one qubit\n"
     assert head in front
     before, rest = front.split(head, 1)
     section = rest.split("\n## ", 1)[0]
     assert "**Manacitra makes a map of a quantum processor's qubit pairs" in before
     assert not any(h in before for h in ("\n## What it does", "\n## Findings", "\n## Install and try it"))
-    assert "[Latest findings](#latest-findings-the-check-at-the-peak-phase)" in before
+    assert "[Latest finding](#latest-finding-two-frequencies-on-one-qubit)" in before
     flat = " ".join(section.split())
     assert len(re.findall(r"[.!?](?:\s|$)", flat + " ")) <= 5
-    # what the peak placement is: the package's procedure, as the runs used it
-    assert wait.peak_phase(16.44) == 164 and wait.peak_phase(162.41) == 18
+    doc = reuse_doc(T7)
+    an, _, rd = t7_recomputed()
+    m = doc["meta"]
+    waits = {(lab["circuit"], lab["t_requested_us"]) for lab in doc["labels"] if lab["circuit"] in ("X", "Y")}
+    assert len({t for _, t in waits}) == 64 and {q for q, _ in waits} == {"X", "Y"} and m["qubit"] == 143
+    assert m["rule"]["posted"]["created_utc"] < m["submitted_utc"]
     assert (
-        "one sweep of six known phases fixes each chain's φ* = 180° − θ_R1, θ_R1 being the active-neighbour Ramsey's "
-        "offset, and the check then runs at φ*, where that Ramsey's loss is greatest (`phase_sweep` and `peak_check`)."
+        "Qubit 143 of ibm_fez, the qubit that waited in the circuits of findings 13 to 18 and 21, was measured at 64 "
+        "waits in two quadratures under a rule whose SHA-256 was posted before the job ([finding 28]"
+        "(docs/findings.md#finding-28))." in flat
+    )
+    P = an["fits"]["P"]["params"]
+    lo, hi = doc["archived"]["analysis"]["deciding"]["b_ci90"]
+    assert an["verdict"] == "TWO FIXED FREQUENCIES" and round(2 * P["delta_MHz"] * 1e3, -1) == 90 and hi < 0.5
+    assert (
+        "Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying."
         in flat
     )
-    # twelve of twelve cells, three runs on new chains, two processors, every cell informative
-    cells, procs = [], set()
-    for rec, r_ in ((K57, k57_recomputed()), (K59, k59_recomputed()), (K62, k62_recomputed())):
-        doc = reuse_doc(rec)
-        assert doc["chain_draw"]["drawn"] and r_[next(k for k in r_ if k.startswith("H"))] == "AGREE"
-        procs.add(doc["meta"]["processor"])
-        for c in doc["archived"]["analysis"]["cells_phi_star"]:
-            assert c["informative_R1"] and -0.15 < c["d1_ci90"][0] and c["d1_ci90"][1] < 0.15
-            cells.append(c)
-    assert len(cells) == 12 and procs == {"ibm_kingston", "ibm_fez"}
-    assert (
-        "There it predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two "
-        "processors, each cell informative by construction, since the design places it at the loss maximum (findings "
-        "23, 25 and 27)." in flat
+    blocks = [b["weighted_mean"] for b in rd["B_weight_in_execution_order"]["blocks_of_26"]]
+    assert all(abs(b - 0.45) < 0.015 for b in blocks[:4]) and _q(blocks[-1], 2) == "0.27"
+    ts = doc["timestamps"]
+    run = datetime.fromisoformat(ts["finished"].replace("Z", "+00:00")) - datetime.fromisoformat(
+        ts["running"].replace("Z", "+00:00")
     )
+    assert timedelta(minutes=2, seconds=30) < run < timedelta(minutes=3, seconds=30)
     assert (
-        "The 0.6.0 check at +90° remains the cheaper form for a chain whose leftover between the wait test and the "
-        "Ramsey is small." in flat
+        "Within the three-minute job the weight of the upper line moved from about 0.45 to 0.27, which the rule did "
+        "not assume and the finding reports as what the counts show." in flat
     )
-    s_ = k62_recomputed()["survey_against_table"]["summary"]
-    assert (s_["n_qubits"], _q(s_["e_median"], 4), _q(s_["p_median"], 3)) == (156, "0.0098", "0.166")
-    assert (
-        "On ibm_fez a survey of all 156 qubits measured a median readout error of 0.0098 where the published table "
-        "gave 0.166 (finding 27)." in flat
-    )
-    assert flat.endswith("Released as 0.7.0 on 15 October 2026.")  # the release pull request dates it
-    # no chooser, nothing validated, and none of the release's words
-    assert "choos" not in flat
-    for word in ("veri" + "fied", "valid" + "ated", "prov" + "en", "chooses"):
+    assert "No cause is named." in flat
+    assert flat.endswith("To be released as 0.8.0.")  # the release pull request dates it
+    for word in ("predict", "parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "steady"):
         assert word not in flat.lower(), word
 
 
@@ -2750,7 +2758,7 @@ def test_findings_20_and_21_beside_the_findings():
     )
 
     readme = " ".join((ROOT / "README.md").read_text().split())
-    assert "the twenty-seven findings in full, with a table of all of them, what was known before them" in readme  # A24
+    assert "the twenty-eight findings in full, with a table of all of them, what was known before them" in readme  # A25
     flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
     r53, r54, r55 = k53_recomputed(), k54_recomputed(), k55_recomputed()
     # the margin's bullet
@@ -2811,8 +2819,8 @@ def test_findings_20_and_21_beside_the_findings():
     assert f"DISAGREE ({d7} on 7 at +90°), and the original DISAGREE on all four informative cells" in index
     assert f"AGREE on seven informative cells, and the original DISAGREE ({d74} on 74)" in index
     assert (
-        "(and ibm_fez again on 10, 11, 13 and 15 October, and ibm_kingston again on 14 and 15 October)" in index
-    )  # A24
+        "(and ibm_fez again on 10, 11, 13, 15 and 16 October, and ibm_kingston again on 14 and 15 October)" in index
+    )  # A25
     # the changelog's lead: six runs on ibm_fez on 13 and 15 October and one on ibm_kingston on 14 October
     from manacitra import archive as ar
 
@@ -2845,9 +2853,9 @@ def test_findings_20_and_21_beside_the_findings():
     # the data README's job IDs
     ids = [ar.load(p)["meta"].get("job_id") for p in ar.records()]
     many = [j for p in ar.records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
-    assert (len([i for i in ids if i]), len(many)) == (27, 9)  # A24: Kickoffs 56 and 61; 57 to 59 and 62
+    assert (len([i for i in ids if i]), len(many)) == (28, 9)  # A24: Kickoffs 56 and 61; 57 to 59 and 62; A25: test 7
     data = " ".join((ar.data_dir() / "README.md").read_text().split())
-    assert "the twenty-seven IBM `meta.job_id` values and the nine of the runs with several jobs" in data
+    assert "the twenty-eight IBM `meta.job_id` values and the nine of the runs with several jobs" in data
     assert "(`first_submission.job_id`)" in data
 
 
@@ -3421,7 +3429,8 @@ def test_findings_22_to_27_beside_the_findings():
     # the changelog's lead, as fixed by the kickoff
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
     assert log.index("## 0.7.0 (15 October 2026)") < log.index("## 0.6.0 (15 October 2026)")
-    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
+    assert "(unreleased)" not in log.split("## 0.7.0 (15 October 2026)", 1)[1] and "## Unreleased" not in log
+    # the release pull request dated it; A25: 0.8.0's heading waits for its date
     assert (
         "## 0.7.0 (15 October 2026) The check can now be placed at the active-neighbour Ramsey's loss maximum: "
         "a six-phase "
@@ -3515,3 +3524,344 @@ def test_the_leftover_picture():
     text = svg_text(DIAGRAMS / "leftover-sweep.svg")
     assert "θ_W = −20.4°" in text and "θ_R1 = +16.3°" in text and "L = θ_W − θ_R1 = −36.7°" in text
     assert "−39.1° to −34.2°: LARGE" in text and "ibm_kingston, Kickoff 56, 14 to 15 October 2026, one job." in text
+
+
+# --------------------------------------------------------------------------- finding 28 (Amendment A25)
+def _t7():
+    from _reproduce import T7, reuse_doc, t7_recomputed
+
+    doc = reuse_doc(T7)
+    an, _, rd = t7_recomputed()
+    return doc, an, rd, " ".join(_item(28).split())
+
+
+def _minute(stamp: str) -> str:
+    t = datetime.fromisoformat(stamp.replace("Z", "+00:00")) + timedelta(seconds=30)
+    return t.strftime("%H:%M")
+
+
+def test_finding_28():
+    """Finding 28 (test 7): its headline and design, the rule with its posted hash, the desk power check, the verdict's
+    three clauses with their margins, the two lines, the centre, the split, the weight and the envelope, each number
+    recomputed from the counts (points) or read from the archive (interval ends, A17), and each quoted only where its
+    rounding is not an exact half case."""
+    doc, an, rd, item = _t7()
+    a = doc["archived"]["analysis"]
+    ts = doc["timestamps"]
+    assert (_minute(ts["running"]), _minute(ts["finished"])) == ("21:31", "21:34")
+    assert item.startswith(
+        "**On ibm_fez, qubit 143's Ramsey fringe over 0 to 63 µs was two fixed frequencies about 90 kHz apart at "
+        "unequal weight, not one line decaying** (test 7; ibm_fez, 16 October 2026, 21:31 to 21:34 UTC)."
+    )
+    arch = a["beside"]["5_detuning_and_T2"]["archive_kHz"]
+    assert arch == {"2026-10-11": [47.1, 1.8], "2026-10-13": [40.4, 3.2]}
+    assert "47.1 ± 1.8 kHz on 11 October (finding 14) and 40.4 ± 3.2 kHz on 13 October (finding 15)" in item
+    assert "a fit, labelled as a fit, gives 40.4 ± 3.2 kHz, against finding 14's 47.1 ± 1.8 kHz" in " ".join(
+        _item(15).split()
+    )
+    # the design
+    labels = doc["labels"]
+    assert len(labels) == 260 and set(doc["shots"]) == {1500} and doc["meta"]["copies"] == 2
+    assert len({(lab["circuit"], lab["t_requested_us"]) for lab in labels}) == 130
+    assert doc["meta"]["built_from"]["commit"].startswith("b782d00") and doc["meta"]["built_from"]["tag"] == "v0.7.0"
+    assert doc["job_options_as_recorded_by_ibm"] == {
+        "dynamical_decoupling": {"enable": False},
+        "twirling": {"enable_gates": False, "enable_measure": False},
+    }
+    assert "Dynamical decoupling, gate twirling and measurement twirling were off, as IBM recorded them" in item
+    assert a["beside"]["8_scheduled_waits"]["all_equal_to_requested"] is True
+    stamps = {r_["stamp_utc"] for r_ in doc["calibration_record"]["stamps"]}
+    walk = doc["calibration_record"]["walk_over_the_job"]
+    assert stamps == {"2026-10-16T20:59:56Z"} and walk["walk_distinct_stamps"] == ["2026-10-16T20:59:56Z"]
+    assert "Every requested wait was scheduled exactly." in item
+    assert (
+        "One calibration stamp, 20:59:56 UTC, was in force at the build, the submission, every poll and the read"
+        in item
+    )
+    # the rule and the desk power check
+    posted = doc["meta"]["rule"]["posted"]
+    assert (posted["issue"], posted["created_utc"][11:16]) == (50, "21:00")
+    assert (
+        "([issue 50](https://github.com/dogma-guru/manacitra/issues/50), 21:00 UTC; `data/ibm_fez/t7-rule.md`)" in item
+    )
+    import json
+
+    keep = json.loads((archive.data_dir() / "desk" / "t7-power-check" / "keep-t7v51.json").read_text())
+    pts = keep["per_point"]
+    counted = [x for x in pts if x["counted"]]
+    passing = [x for x in counted if x["fraction_generating_verdict"] >= 0.8]
+    assert (len(pts), len(counted), len(passing), keep["keep"]["needed"]) == (135, 117, 106, 88)
+    assert {x["n_draws"] for x in pts} == {200} and keep["keep"]["verdict"] == "KEPT"
+    failing = [x for x in counted if x not in passing]
+    assert len(failing) == 11
+    assert {(x["delta_kHz"], x["tau_us"]) for x in failing} == {(8, 15), (11, 15), (3, 150)}
+    assert (
+        "On a grid of 135 simulated qubits, with 200 noisy draws at each, the rule returned the generating verdict in "
+        "at least 80% of draws at 106 of 117 counted points, where 88 were needed: the design was kept." in item
+    )
+    assert "splits of 8 to 11 kHz on a 15 µs decay" in item and "3 kHz splits on a 150 µs decay" in item
+    assert "Five earlier versions of the design preceded the rule and are recorded elsewhere" in item
+    # the verdict and its clauses
+    d = an["deciding"]
+    assert an["verdict"] == a["verdict"] == "TWO FIXED FREQUENCIES"
+    assert all(
+        d["clauses"][k]
+        for k in ("P_smaller_than_S_by_more_than_0.01", "delta_lower_bound_above_5_kHz", "b_interval_inside_0.05_0.95")
+    )
+    s_, p_, m_ = _q(d["held_out_error_S"], 4), _q(d["held_out_error_P"], 4), _q(-d["P_minus_S"], 4)
+    assert (s_, p_, m_) == ("0.0733", "0.0200", "0.0533")
+    assert (
+        f"**The held-out error:** {s_} for S and {p_} for P, so P is smaller by {m_}, against a margin of 0.01." in item
+    )
+    P, S = an["fits"]["P"]["params"], an["fits"]["S"]["params"]
+    dlo, dhi = a["deciding"]["delta_ci90_kHz"]
+    blo, bhi = a["deciding"]["b_ci90"]
+    dl = _q(P["delta_MHz"] * 1e3, 2)
+    assert (dl, _q(dlo, 2), _q(dhi, 2)) == ("44.82", "44.72", "44.92")
+    assert (
+        f"**The split:** δ {dl} kHz, 90% interval {_q(dlo, 2)} to {_q(dhi, 2)} kHz, its lower bound above 5 kHz."
+        in item
+    )
+    assert (_q(P["b"], 3), _q(blo, 3), _q(bhi, 3)) == ("0.355", "0.333", "0.377")
+    assert "**The weight:** b 0.355, 90% interval 0.333 to 0.377, inside (0.05, 0.95)." in item
+    # the lines, the centre, the envelope and S
+    up, lo_ = (P["Delta0_MHz"] + P["delta_MHz"]) * 1e3, (P["Delta0_MHz"] - P["delta_MHz"]) * 1e3
+    draws = np.array(doc["archived"]["bootstrap"]["draws"]["P"], float)  # interval ends from the archive (A17)
+    assert doc["archived"]["bootstrap"]["meta"]["seed"] == 7304 and draws.shape == (2000, 7)
+    d0_lo, d0_hi = (float(v) for v in np.percentile(draws[:, 3] * 1e3, [5, 95]))
+    t_lo, t_hi = (float(v) for v in np.percentile(draws[:, 2], [5, 95]))
+    assert (_q(up, 1), _q(lo_, 1), _q(1 - P["b"], 3)) == ("93.5", "3.8", "0.645")
+    assert (_q(P["Delta0_MHz"] * 1e3, 1), _q(d0_lo, 1), _q(d0_hi, 1)) == ("48.7", "48.4", "48.9")
+    assert (f"{P['tau_prime_us']:.0f}", f"{t_lo:.0f}", f"{t_hi:.0f}") == ("128", "117", "141")
+    assert (
+        "P's two lines sit at 93.5 kHz, with the weight 0.355, and at 3.8 kHz, with 0.645, about a centre Δ0 of 48.7 "
+        "kHz (48.4 to 48.9), under one envelope of 128 µs (τ′, 117 to 141 µs)." in item
+    )
+    assert (_q(S["Delta_MHz"] * 1e3, 1), _q(S["tau_us"], 1), _q(S["c"], 3)) == ("94.0", "40.1", "0.317")
+    assert (_q(P["c"], 3), _q(P["A"], 3)) == ("0.490", "0.487")
+    assert (
+        "S put its one line at 94.0 kHz with a decay of 40.1 µs and its centre at 0.317, following the upper line; P "
+        "put the fringe's centre at 0.490 and its amplitude at 0.487." in item
+    )
+
+
+def test_finding_28_beside_the_verdict():
+    """Finding 28's paragraph beside the verdict, in the rule's order, and the readings after the data: the telegraph
+    diagnostic, the weight, the nodes and the wait test's own wait, the reading recorded before the data and the
+    envelope's minima and maxima, the centre beside the archive, T2, the periodogram and the sideband check, the
+    readout; the copies, the weight in execution order, the second half and the three consequences; and what it does
+    not say."""
+    doc, an, rd, item = _t7()
+    a = doc["archived"]["analysis"]
+    T = a["beside"]["1_telegraph_T"]
+    assert T["gamma_per_us"] < 1e-15 and T["gamma_ci90_per_s"][1] < 3e-9 and _q(T["held_out_error"], 4) == "0.0306"
+    assert f"{T['gamma_ci90_per_s'][1]:.1e}" == "2.5e-09"
+    assert (
+        "fitted no better (held-out error 0.0306) and put γ at zero, its lower bound (90% interval 0 to 2.5·10⁻⁹ "
+        in item
+    )
+    rates = [v for pair in T["published_rates_per_s"].values() for v in pair]
+    assert (min(rates), max(rates), round(1 / 63e-6, -3)) == (0.004, 1300, 16000)
+    assert "from 0.004 to 1,300 per second, all read as zero over a 63 µs wait" in item
+    assert "a rate far below 1/(63 µs), about 16,000 per second, cannot show there" in item
+    assert (
+        "The design separates switching within a shot from a mixture across shots, and it found no switching within"
+        in item
+    )
+    assert a["beside"]["2_weight"]["ci_contains_0.5"] is False and "b's interval excludes equal weights (0.5)." in item
+    nodes = [x["t_us"] for x in a["beside"]["3_beat_nodes"]["nodes"]]
+    assert [_q(x, 1) for x in nodes] == ["5.6", "16.7", "27.9"]
+    rev = 1 / (2 * an["fits"]["P"]["params"]["delta_MHz"])
+    assert (_q(rev, 1), _q(rev - 10.45, 1)) == ("11.2", "0.7")
+    assert (
+        "P's first three nodes fall at 5.6, 16.7 and 27.9 µs, and the wait test's own wait on 143, 10.45 µs, lies 0.7"
+        in item
+    )
+    assert a["beside"]["4_reading_23p7_kHz"]["reading"] == "neither"
+    assert 'The fringe returned neither its pattern nor its disconfirmer (the fixed test reads "neither")' in item
+    D = rd["D_envelope_recentred_on_P_c"]
+    mins, maxs = [round(x) for x in D["local_minima_us"][:5]], [round(x) for x in D["local_maxima_us"][:5]]
+    assert (mins, maxs) == ([5, 16, 28, 39, 50], [11, 22, 33, 44, 55])
+    assert "the envelope's minima fall at 5, 16, 28, 39 and 50 µs and its maxima at 11, 22, 33, 44 and 55 µs" in item
+    assert "whether 143's loss at that wait on 11 to 15 October was a beat feature is not tested by this job." in item
+    t2 = a["beside"]["5_detuning_and_T2"]["published_at_submission"]["q143_T2_us"]
+    assert (f"{t2:.0f}", f"{an['fits']['P']['params']['tau_prime_us']:.0f}") == ("235", "128")
+    assert "IBM's published T2 for 143 at the stamp was 235 µs, beside the fitted envelope's 128 µs" in item
+    assert "they are not the same quantity" in item
+    six = a["beside"]["6_more_than_two"]
+    assert (
+        six["periodogram"]["reading"] == "MORE THAN TWO" and six["sideband_check"]["reading"] == "NO SIDEBAND RESOLVED"
+    )
+    ro = a["beside"]["7_readout"]
+    assert (_q(ro["e"], 4), _q(ro["e_se"], 4), _q(ro["published_at_submission"]["q143_readout_error"], 4)) == (
+        "0.0045",
+        "0.0009",
+        "0.0070",
+    )
+    assert "its readout error was 0.0045 (±0.0009), beside the published 0.0070." in item
+    # what the counts show, which the rule did not assume
+    A = rd["A_copy_agreement"]
+    assert (_q(A["ramsey"]["sum_z2"], 1), A["ramsey"]["n"], A["ramsey"]["n_abs_z_over_3"]) == ("871.7", 128, 27)
+    assert (_q(A["readout"]["sum_z2"], 2), A["readout"]["n"]) == ("0.95", 2)
+    assert (
+        "the sum of z² over the 128 circuits was 871.7, on 128 degrees of freedom, with 27 circuits beyond |z| = 3"
+        in item
+    )
+    B = rd["B_weight_in_execution_order"]
+    blocks = [b["weighted_mean"] for b in B["blocks_of_26"]]
+    assert (_q(blocks[0], 3), _q(blocks[-1], 3), _q(min(blocks), 2), _q(max(blocks), 2)) == (
+        "0.452",
+        "0.269",
+        "0.27",
+        "0.46",
+    )
+    step = [r_["k"] for r_ in B["positions"]]
+    high = [r_["k"] for r_ in B["positions"] if r_["b_pos"] > 0.4]
+    assert max(high) == 98 and min(k for k in step if k > 98) == 101
+    run = (
+        datetime.fromisoformat(doc["timestamps"]["finished"].replace("Z", "+00:00"))
+        - datetime.fromisoformat(doc["timestamps"]["running"].replace("Z", "+00:00"))
+    ).total_seconds()
+    assert 55 < 100 / 260 * run < 75  # about a minute, if the positions ran in order at an even pace
+    assert "(0.452 in the first block of 26 positions, 0.269 in the last)" in item
+    half = rd["C_P_on_each_half_of_the_run"]["second half (positions 130 to 259)"]["P"]
+    assert (_q(half["delta_kHz"], 2), _q(half["b"], 3)) == ("44.76", "0.276")
+    assert "gave the same split (δ 44.76 kHz) at b = 0.276" in item
+    assert all(0.05 < b < 0.95 for b in blocks)
+    for line in (
+        "- **The intervals describe the job's average.**",
+        "- **The verdict's clauses hold at every block's weight.**",
+        "- **The periodogram's MORE THAN TWO cannot be told from the movement.**",
+    ):
+        assert line in _item(28), line
+    assert "**What the counts show, which the rule did not assume** (readings after the data)." in item
+    # what the finding does not say
+    low = item.lower()
+    for word in ("parit", "charge", "unusual", "ticket", "steady", "predicts better", "switching rate of"):
+        assert word not in low, word
+    assert "It names no cause for either line, for the split or for the movement of the weight." in item
+    assert "Manacitra does not rank machines." in item
+
+
+def test_finding_28_beside_the_finding():
+    """A25, 2d and 2e: the three bullets added to what has not been shown, the README's row and limit line, the method
+    subsection, the reproduce pointer, the kickoffs row, the long documentation's row, the data index and the
+    changelog's lead as the kickoff fixed it."""
+    flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    for bullet in (
+        "- **Finding 28 names no cause.** A Ramsey fringe shows two frequencies; it does not say what makes them. The "
+        "design rules out switching between them within one shot and says nothing about how the mixture is made across "
+        "shots.",
+        "- **The intervals of finding 28 are a job average.** The rule's bootstrap treats the job as one stationary "
+        "process; the job was not, and the weight moved more within three minutes than its interval spans. The next "
+        "rule carries the copies' agreement as a pre-fixed diagnostic.",
+        "- **One qubit, one job, one day.** Nothing about 143 on another day, or about any other qubit, or about the "
+        "loss at the wait test's own wait on the days of findings 13 to 18 and 21.",  # R1, Q4
+    ):
+        assert bullet in flat, bullet[:40]
+    assert "- **It has not been tested as a chooser.**" in flat and "- **The physical origin of 143's offset.**" in flat
+    assert (
+        "and what would cause either was not measured. Finding 28 separates two lines present at once from one line, "
+        "and rules out switching between them within a shot; it does not separate slow switching between shots from a "
+        "fixed mixture, and names no cause." in flat
+    )  # R1: the dated bullet amended
+    readme = " ".join((ROOT / "README.md").read_text().split())
+    assert (
+        "| The fringe on 143: one line or two | [28](docs/findings.md#finding-28) | ibm_fez | Measured at every wait "
+        "from 0 to 63 µs in two quadratures, 143's Ramsey fringe was two fixed frequencies about 90 kHz apart at "
+        "unequal weight, not one line decaying; within the job the weight moved. | TWO FIXED FREQUENCIES |" in readme
+    )
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    assert "### The two-quadrature Ramsey and the two-model fit" in (ROOT / "docs" / "method.md").read_text()
+    for name in ("`manacitra.wait.ramsey_xy`", "`ramsey_xy_fit`", "`ramsey_xy_band`", "`copies_check`"):
+        assert name in method, name
+    assert "a line at f and one at f + 500 kHz are the same function at every fitted wait" in method
+    for word in ("TWO FIXED FREQUENCIES", "NO RESOLVED SPLIT", "NOT SETTLED"):
+        assert word not in method.split("### The two-quadrature Ramsey", 1)[1], word
+    page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    assert "with its circuits built unedited at `b782d00`, the commit of v0.7.0" in page
+    assert "python -B analyse_t7.py --counts results-t7-counts.json --stamps stamps-t7.csv" in page
+    assert "python power_t7v51.py fitcheck" in page
+    kick = (ROOT / "docs" / "kickoffs.md").read_text()
+    assert "| test 7, 16 October 2026 | Is qubit 143's Ramsey fringe over 0 to 63 µs one line" in kick
+    assert "| ibm_fez | TWO FIXED FREQUENCIES. No predictions were sealed for this run. |" in kick  # R1, Q14
+    index = " ".join((ROOT / "docs" / "index.md").read_text().split())
+    assert "| ibm_fez, test 7: the two-quadrature Ramsey on 143, TWO FIXED FREQUENCIES" in index
+    data = " ".join((archive.data_dir() / "README.md").read_text().split())
+    assert "| `ibm_fez/t7-ramsey-xy.json` |" in data and "**Recomputing test 7** (finding 28)" in data
+    log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
+    assert log.index("## 0.8.0 (unreleased)") < log.index("## 0.7.0 (15 October 2026)")
+    assert (
+        "## 0.8.0 (unreleased) The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was "
+        "measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its "
+        "Ramsey fringe is two fixed "
+        "frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error "
+        "was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the "
+        "job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and "
+        "finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature "
+        "Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's "
+        "thresholds are the caller's. The desk power check that preceded the rule is published beside the data." in log
+    )
+
+
+def test_the_two_lines_picture():
+    """Finding 28's picture: made from the data by docs/make_diagrams.py, referenced from finding 28, and its alt text
+    and header carry the verdict and the numbers that decide it."""
+    doc, an, _, _ = _t7()
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    raw = findings.split('<a id="finding-28"></a>', 1)[1].split("<a id=", 1)[0]
+    assert "](diagrams/two-lines-143.svg)" in raw and (DIAGRAMS / "two-lines-143.png").is_file()
+    alt = " ".join(raw.split("![", 1)[1].split("](diagrams/two-lines-143.svg)", 1)[0].split())
+    nodes = [m / (4 * an["fits"]["P"]["params"]["delta_MHz"]) for m in (1, 3, 5, 7, 9, 11)]
+    assert ", ".join(_q(x, 1) for x in nodes) == "5.6, 16.7, 27.9, 39.0, 50.2, 61.4"
+    assert "at the odd multiples of 1/(4δ), 5.6, 16.7, 27.9, 39.0, 50.2 and 61.4 µs" in alt
+    assert (
+        "TWO FIXED FREQUENCIES, held-out error 0.0733 (S) against 0.0200 (P), δ 44.82 kHz (44.72 to 44.92), b 0.355 "
+        "(0.333 to 0.377)." in alt
+    )
+    text = svg_text(DIAGRAMS / "two-lines-143.svg")
+    assert "TWO FIXED FREQUENCIES" in text and "ibm_fez, test 7, 16 October 2026, one job" in text
+    assert "the wait test's own wait, 10.45 µs" in text
+
+
+def test_the_t7_rule_is_published_unchanged():
+    """A25, 2b: test 7's rule is in data/ byte for byte, with the SHA-256 posted publicly before its run (issue 50), and
+    its record names the rule, its hash and the issue, posted before the job was submitted."""
+    import hashlib
+
+    sha = "350fe947ac9ff97749743951a2b05b402533dc2c5bffcfd0f1fa00faeae43c86"
+    text = (archive.data_dir() / "ibm_fez" / "t7-rule.md").read_bytes()
+    assert hashlib.sha256(text).hexdigest() == sha
+    assert b"The rule is not changed after the data, whatever they show." in text
+    m = archive.load("ibm_fez/t7-ramsey-xy.json")["meta"]
+    assert m["rule"]["file"] == "t7-rule.md" and m["rule"]["sha256"] == sha
+    assert m["rule"]["posted"] == {
+        "issue": 50,
+        "url": "https://github.com/dogma-guru/manacitra/issues/50",
+        "created_utc": "2026-10-16T21:00:21Z",
+    }
+    assert m["rule"]["posted"]["created_utc"] < m["submitted_utc"] == "2026-10-16T21:23:19Z"
+
+
+def test_the_power_check_folder():
+    """A25, 2a: the desk power check beside the data: every file the folder's README lists has the SHA-256 it gives;
+    the two scripts changed from the copies handed back differ from them only in their docstring's first line, as the
+    README says; pretest_t7.py's SHA256SUMS holds the published copy's; and the release asset's SHA-256 is given."""
+    import hashlib
+    import re
+
+    root = archive.data_dir() / "desk"
+    readme = (root / "t7-power-check" / "README.md").read_text()
+    rows = re.findall(r"^\| `([^`]+)` \| [^|]+ \| `([0-9a-f]{64})` \|$", readme, re.M)
+    assert len(rows) == 10  # R1, Q8: the grid's run record
+    for name, sha in rows:
+        assert hashlib.sha256((root / "t7-power-check" / name).read_bytes()).hexdigest() == sha, name
+    names = {p.name for p in (root / "t7-power-check").iterdir()} | {f"../t7/{p.name}" for p in (root / "t7").iterdir()}
+    assert names == {n for n, _ in rows} | {"README.md", "../t7/SHA256SUMS"}
+    pre = hashlib.sha256((root / "t7" / "pretest_t7.py").read_bytes()).hexdigest()
+    assert (root / "t7" / "SHA256SUMS").read_text() == f"{pre}  pretest_t7.py\n"
+    assert "`27c29bc2c242312ff9b2ab3b22c987263aa2900ebdcf966c24e0fcc1369b1a48`" in readme
+    assert "\"DRAFT\" in the version 5.1 kickoff's name is the author's working label" in readme  # R1, Q9
+    for name in ("t7-power-check/power_t7v51.py", "t7/pretest_t7.py"):
+        first = (root / name).read_text().splitlines()[0]
+        assert first.startswith('"""Test 7, ') and "tr" + "ace" not in (root / name).read_text().lower()

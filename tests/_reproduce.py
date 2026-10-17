@@ -1879,6 +1879,48 @@ def k62():
     return _peak_rows(doc["archived"]["analysis"], r, "H62"), leaves
 
 
+# --------------------------------------------------------------------------- test 7 (Amendment A25)
+T7 = "ibm_fez/t7-ramsey-xy.json"
+
+
+@cache
+def t7_recomputed() -> tuple[dict, dict, dict]:
+    doc = reuse_doc(T7)
+    analysis, boot = reuse.t7_ramsey_xy(doc)
+    return analysis, boot, reuse.t7_readings(doc, analysis)
+
+
+def t7():
+    """Test 7: the S and P fits, their held-out errors, the bootstrap's intervals and the verdict, by the package's
+    ramsey_xy_fit with the rule's thresholds passed in; the items beside the verdict as the run's analysis fixed them;
+    and the readings after the data (the copies' agreement, the weight in execution order, the two halves, the envelope
+    centred on P's c)."""
+    doc = reuse_doc(T7)
+    analysis, boot, readings = t7_recomputed()
+    leaves = compare(
+        "Test 7, two frequencies on qubit 143",
+        {T7: {"archived": {"analysis": analysis, "bootstrap": boot, "readings_after_the_data": readings}}},
+        {T7: doc},
+    )
+    a, r = doc["archived"]["analysis"], analysis
+    ra, rr = doc["archived"]["readings_after_the_data"], readings
+    rows = _rows(
+        lambda: [
+            ("verdict", a["verdict"], r["verdict"]),
+            ("held-out error, S", a["deciding"]["held_out_error_S"], r["deciding"]["held_out_error_S"]),
+            ("held-out error, P", a["deciding"]["held_out_error_P"], r["deciding"]["held_out_error_P"]),
+            ("delta, kHz", a["beside"]["3_beat_nodes"]["delta_P_kHz"], r["beside"]["3_beat_nodes"]["delta_P_kHz"]),
+            ("b", a["beside"]["2_weight"]["b"], r["beside"]["2_weight"]["b"]),
+            (
+                "sum of z², Ramsey copies",
+                ra["A_copy_agreement"]["ramsey"]["sum_z2"],
+                rr["A_copy_agreement"]["ramsey"]["sum_z2"],
+            ),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -1937,6 +1979,7 @@ CASES = {
     "Kickoff 59, the check at the peak phase on a second day": k59,
     "Kickoff 61, the readout check on ibm_fez": k61,
     "Kickoff 62, the check at the peak phase on ibm_fez": k62,
+    "Test 7, two frequencies on qubit 143": t7,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -1978,4 +2021,5 @@ REQUIRED = {
     "Kickoff 59, the check at the peak phase on a second day": "AGREE",
     "Kickoff 61, the readout check on ibm_fez": "PUBLISHED NOT READABLE",
     "Kickoff 62, the check at the peak phase on ibm_fez": "AGREE",
+    "Test 7, two frequencies on qubit 143": "TWO FIXED FREQUENCIES",
 }

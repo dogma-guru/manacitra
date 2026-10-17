@@ -1390,6 +1390,94 @@ def diagram_leftover(out: Path):
     save(fig, out, "leftover-sweep")
 
 
+def diagram_two_lines(out: Path):
+    """Finding 28 on ibm_fez's qubit 143: the two-quadrature Ramsey at every wait from 0 to 63 us, X and Y, each with
+    the rule's two models as fitted on the even waits, S (one line) and P (two lines with a free weight); and the
+    envelope |z|, z = (X - c) + i (Y - c), centred on P's c, with P's own envelope and its nodes at the odd multiples of
+    1 / (4 delta). Points are computed here from the counts; the fits' parameters are the run's, as archived, which
+    tests/test_reproduction.py recomputes."""
+    rec = archive.load("ibm_fez/t7-ramsey-xy.json")
+    an = rec["archived"]["analysis"]
+    S, P = an["fits"]["S"]["params"], an["fits"]["P"]["params"]
+    ones, n = np.zeros((2, 64)), np.zeros((2, 64))
+    t = np.zeros((2, 64))
+    for lab, cts in zip(rec["labels"], rec["counts"]):
+        if lab["circuit"] in ("X", "Y"):
+            q, i = "XY".index(lab["circuit"]), int(lab["t_requested_us"])
+            ones[q, i] += sum(v for k, v in cts.items() if k[-1] == "1")
+            n[q, i] += sum(cts.values())
+            t[q, i] = lab["scheduled_wait_us"]
+    y = ones / n
+    grid = np.linspace(0, 63, 1261)
+    ph = (0.0, -np.pi / 2)
+
+    def model_s(tt, phase):
+        return S["c"] + S["A"] * np.exp(-tt / S["tau_us"]) * np.cos(
+            2 * np.pi * S["Delta_MHz"] * tt + S["phi0_rad"] + phase
+        )
+
+    def model_p(tt, phase):
+        env = P["A"] * np.exp(-tt / P["tau_prime_us"])
+        up = P["b"] * np.cos(2 * np.pi * (P["Delta0_MHz"] + P["delta_MHz"]) * tt + P["phi0_rad"] + phase)
+        lo = (1 - P["b"]) * np.cos(2 * np.pi * (P["Delta0_MHz"] - P["delta_MHz"]) * tt + P["phi0_rad"] + phase)
+        return P["c"] + env * (up + lo)
+
+    fig, axes = plt.subplots(3, 1, figsize=(8.6, 8.4), sharex=True, gridspec_kw={"height_ratios": [1, 1, 0.9]})
+    for k, (ax, name, colour) in enumerate(zip(axes[:2], ("X", "Y"), (SERIES_1, SERIES_2))):
+        ax.plot(grid, model_s(grid, ph[k]), color=MUTED, lw=1.1, ls=(0, (4, 3)), zorder=2, label="S, one line")
+        ax.plot(grid, model_p(grid, ph[k]), color=colour, lw=1.5, zorder=2, label="P, two lines")
+        even, odd = np.arange(0, 64, 2), np.arange(1, 64, 2)
+        ax.plot(t[k][even], y[k][even], "o", ms=4.2, color=colour, zorder=3, label="measured, fitted wait")
+        ax.plot(
+            t[k][odd], y[k][odd], "o", ms=4.2, mfc=SURFACE, mec=colour, mew=1.1, zorder=3, label="measured, held out"
+        )
+        ax.set_ylim(0, 1)
+        ax.set_ylabel(f"P(1), {name} quadrature")
+        ax.yaxis.grid(True, color=GRID, lw=0.8)
+        ax.set_axisbelow(True)
+        ax.legend(loc="upper right", frameon=False, fontsize=8, ncol=2)
+    zx, zy = y[0] - P["c"], y[1] - P["c"]
+    env = np.sqrt(zx**2 + zy**2)
+    b, dl = P["b"], P["delta_MHz"]
+    model_env = (
+        P["A"]
+        * np.exp(-grid / P["tau_prime_us"])
+        * np.sqrt(b**2 + (1 - b) ** 2 + 2 * b * (1 - b) * np.cos(4 * np.pi * dl * grid))
+    )
+    ax = axes[2]
+    nodes = [m / (4 * dl) for m in (1, 3, 5, 7, 9, 11) if m / (4 * dl) <= 63]
+    for x in nodes:
+        ax.axvline(x, color=INK_2, lw=0.9, ls=(0, (1, 2)), zorder=1)
+    ax.plot([], [], color=INK_2, lw=0.9, ls=(0, (1, 2)), label="P's nodes, odd multiples of 1 / (4δ)")
+    ax.plot(grid, model_env, color=INK, lw=1.4, zorder=2, label="P's envelope")
+    ax.plot(t[0], env, "o", ms=4.2, color=RAMP[4], zorder=3, label="measured |z|, centred on P's c")
+    ax.axvline(10.45, color=SERIES_2, lw=1, ls=(0, (4, 3)), zorder=1)
+    ax.text(10.75, 0.53, "the wait test's own wait, 10.45 µs", fontsize=8, color=INK, va="center")
+    ax.set_ylim(0, 0.56)
+    ax.set_xlim(-1, 64)
+    ax.set_xticks(range(0, 64, 8))
+    ax.set_xlabel("wait, µs (as scheduled)")
+    ax.set_ylabel("envelope |z|")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.legend(loc="upper right", frameon=False, fontsize=8)
+    d = an["deciding"]
+    lo, hi = d["delta_ci90_kHz"]
+    blo, bhi = d["b_ci90"]
+    axes[0].set_title("Qubit 143: one line or two", loc="left", fontsize=10.5, color=INK, pad=24)
+    fig.text(
+        0.125,
+        0.955,
+        f"{an['verdict']}: held-out error {d['held_out_error_S']:.4f} (S) against {d['held_out_error_P']:.4f} (P); "
+        f"δ {P['delta_MHz'] * 1e3:.2f} kHz ({lo:.2f} to {hi:.2f}); b {P['b']:.3f} ({blo:.3f} to {bhi:.3f}).\n"
+        "ibm_fez, test 7, 16 October 2026, one job; points from the counts, fits on the even waits, as the rule fixed "
+        "them.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "two-lines-143")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1407,7 +1495,8 @@ def main(argv=None):
     diagram_wait_test_hardware(a.out)
     diagram_phase_sweep(a.out)
     diagram_leftover(a.out)
-    print(f"wrote 13 diagrams (SVG and PNG) to {a.out}")
+    diagram_two_lines(a.out)
+    print(f"wrote 14 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

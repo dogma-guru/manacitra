@@ -1105,13 +1105,18 @@ RUNS_A24 = (
 )
 
 
-@pytest.mark.parametrize("path", RUNS_A22 + RUNS_A23 + RUNS_A24)
+#: Amendment A25: test 7, the two-quadrature Ramsey on 143
+RUNS_A25 = ("ibm_fez/t7-ramsey-xy.json",)
+
+
+@pytest.mark.parametrize("path", RUNS_A22 + RUNS_A23 + RUNS_A24 + RUNS_A25)
 def test_the_runs_code_is_kept_as_verbatim_lines(path):
     """Amendment A22, 2a: each run's analysis and circuit-building code is in its data record, as verbatim line
     ranges of the script as run (named by its SHA-256): each kept text has its recorded SHA-256 and line count,
     compiles, and carries no instance or account name, dollar amount, charge, usage block or path. (From Kickoff 56 on,
     a script's table of reused files names the hand-back scanner, scan_handback.py, by its SHA-256: a file name, not a
-    path, kept as the line was run.)"""
+    path, kept as the line was run. Test 7's readings after the data, reading_t7.py, are kept whole, since its `main`
+    is the readings.)"""
     rec = archive.load(path)
     names = {s["file"]: s["sha256"] for s in rec["meta"]["source_scripts"]}
     assert rec["source_code"]
@@ -1120,11 +1125,11 @@ def test_the_runs_code_is_kept_as_verbatim_lines(path):
         text = code["text"]
         assert hashlib.sha256(text.encode()).hexdigest() == code["text_sha256"]
         assert len(text.splitlines()) == sum(b - a + 1 for a, b in code["kept_lines"])
-        assert all(b < code["lines_as_run"] for _, b in code["kept_lines"])
+        assert all(b <= code["lines_as_run"] for _, b in code["kept_lines"])
         compile(text, file, "exec")
         bad = re.findall(
             r"paid-|\bINSTANCE\b|instance_label|usd|\$|cap_|charge|\"usage\"|usage_remaining|QiskitRuntimeService"
-            r"|literature|preprint|(?<!scan_)handback|/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+",
+            r"|literature|preprint|(?<!scan_)handback|/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+|\btr[a]ce\b",
             text,
             re.I,
         )
@@ -1400,3 +1405,137 @@ def test_the_0_6_0_check_is_unchanged():
         == "(f_ref: 'float', p1_wait: 'float', p1_zero: 'float') -> 'float'"
     )
     assert wait.CHECK_PHASE_DEG == 90 and wait.SWEEP_PHASES_DEG == (0, 60, 120, 180, 240, 300)
+
+
+# --------------------------------------------------------------------------- the two-quadrature Ramsey (A25)
+T7 = "ibm_fez/t7-ramsey-xy.json"
+
+
+def _seq(circuit, q: int) -> list:
+    """The qubit's instructions in order: (name, an rz's angle in degrees, or a delay's length in dt)."""
+    out = []
+    for i in circuit.data:
+        if q not in [circuit.find_bit(b).index for b in i.qubits]:
+            continue
+        op = i.operation
+        if op.name == "rz":
+            out.append(("rz", round(math.degrees(float(op.params[0])), 6)))
+        elif op.name == "delay":
+            out.append(("delay", int(op.duration)))
+        else:
+            out.append((op.name, None))
+    return out
+
+
+def _exact_p1(circuit) -> float:
+    return sum(v for k, v in wait.exact_distribution(circuit).items() if k[-1] == "1")
+
+
+def test_the_two_quadrature_ramsey(fez):
+    """Amendment A25, 1c (the circuits): on the offline ibm_fez snapshot, at three waits, X and Y act on one qubit only;
+    X is rz, sx, rz, the delay, rz, sx, rz, measure (no delay at no wait); Y is X with one rz(-90°) right before the
+    last H (its rz, sx, rz); the delay equals even_wait of the requested wait, and so does the wait as scheduled; the
+    exact noiseless P(1) is 0 for X and 0.5 for Y at every wait. The readout circuits measure the qubit alone, P10 with
+    no gate and P01 after one X, with exact P(1) 0 and 1."""
+    waits = (0, 7, 63)
+    built = wait.ramsey_xy(143, fez, waits, readout=True)
+    assert [e["label"]["circuit"] for e in built] == ["X"] * 3 + ["Y"] * 3 + ["P10", "P01"]
+    for e in built:
+        c, lab = e["circuit"], e["label"]
+        assert {c.find_bit(b).index for i in c.data for b in i.qubits} == {143}
+        assert c.num_clbits == 1 and lab["clbit"] == 0 and lab["qubit"] == 143
+    by = {(e["label"]["circuit"], e["label"]["t_requested_us"]): e for e in built}
+    for t in waits:
+        wdt = wait.even_wait(t * 1e-6 / fez.dt, getattr(fez.target, "granularity", 1) or 1)
+        x, y = by[("X", t)], by[("Y", t)]
+        sx = _seq(x["circuit"], 143)
+        h = [("rz", 90.0), ("sx", None), ("rz", 90.0)]
+        assert sx == h + ([("delay", wdt)] if wdt else []) + h + [("measure", None)]
+        k = len(sx) - 4
+        assert _seq(y["circuit"], 143) == sx[:k] + [("rz", -90.0)] + sx[k:]
+        for e in (x, y):
+            assert e["label"]["wait_dt"] == wdt == e["label"]["scheduled_wait_dt"]
+            assert e["label"]["scheduled_wait_us"] == pytest.approx(t, abs=1e-9)
+        assert _exact_p1(x["circuit"]) == pytest.approx(0.0, abs=1e-12)
+        assert _exact_p1(y["circuit"]) == pytest.approx(0.5, abs=1e-12)
+    assert [n for n, _ in _seq(by[("P10", None)]["circuit"], 143)] == ["measure"]
+    assert [n for n, _ in _seq(by[("P01", None)]["circuit"], 143)] == ["x", "measure"]
+    assert _exact_p1(by[("P10", None)]["circuit"]) == pytest.approx(0.0, abs=1e-12)
+    assert _exact_p1(by[("P01", None)]["circuit"]) == pytest.approx(1.0, abs=1e-12)
+    with pytest.raises(ValueError, match="not negative"):
+        wait.ramsey_xy(143, fez, [-1.0])
+
+
+@pytest.fixture(scope="module")
+def t7_code():
+    """Test 7's builder, hw_t7.py, run from its data record's copy, with the modules it imports: hw_50 and hw_51
+    (Kickoffs 50 and 51's records), and an empty module for history 01's tabulate_history, which it does not use to
+    build."""
+    import sys
+    import types
+
+    names = ("hw_50", "hw_51", "tabulate_history", "hw_t7")
+    before = {k: sys.modules.get(k) for k in names}
+    _run_code("ibm_fez/k50-neighbour-test.json", "hw_50.py")
+    _run_code("ibm_fez/k51-known-offset.json", "hw_51.py")
+    sys.modules["tabulate_history"] = types.ModuleType("tabulate_history")
+    yield _run_code(T7, "hw_t7.py")
+    for k, v in before.items():
+        if v is None:
+            sys.modules.pop(k, None)
+        else:
+            sys.modules[k] = v
+
+
+def test_the_two_quadrature_ramsey_is_what_test_7_built(t7_code, fez):
+    """Amendment A25, 1c (equivalence): on the offline ibm_fez snapshot, the package's circuits for 143 at the 64 waits,
+    X and Y, are structurally identical, instruction for instruction, to what test 7's builder (hw_t7.py, from its
+    record) builds, with the same wait in dt and the same wait as scheduled; and its readout circuits put the same
+    instructions on 143 as the builder's P10 and P01. The labels' waits are those the run recorded."""
+    circ, info = t7_code.build(fez)
+    mine = wait.ramsey_xy(143, fez, range(64), readout=True)
+    assert len(mine) == len(circ) == 130
+    for e in mine:
+        lab = e["label"]
+        key = (lab["circuit"], None if lab["quadrature"] is None else int(lab["t_requested_us"]))
+        if lab["quadrature"] is None:
+            assert _on_m(e["circuit"], 143) == _on_m(circ[key], 143), key
+            continue
+        assert wait.structure(e["circuit"]) == wait.structure(circ[key]), key
+        assert lab["wait_dt"] == info[key]["wait_dt"]
+        assert lab["scheduled_wait_dt"] == info[key]["scheduled"]["T_dt"]
+    rec = archive.load(T7)
+    recorded = {(lab["circuit"], lab["t_requested_us"]): lab for lab in rec["labels"] if lab["circuit"] in ("X", "Y")}
+    for e in mine[:128]:
+        lab, r = e["label"], recorded[(e["label"]["circuit"], e["label"]["t_requested_us"])]
+        assert (lab["wait_dt"], lab["scheduled_wait_dt"]) == (r["wait_dt"], r["scheduled_wait_dt"])
+
+
+def test_the_copies_check_on_test_7():
+    """On test 7's counts, the copies check gives the reading after the data the run recorded: a sum of z² of 871.7 on
+    128 Ramsey circuits, and 0.95 on the two readout circuits."""
+    rec = archive.load(T7)
+    a = rec["archived"]["readings_after_the_data"]["A_copy_agreement"]
+    for group, keep in (("ramsey", ("X", "Y")), ("readout", ("P10", "P01"))):
+        idx = [k for k, lab in enumerate(rec["labels"]) if lab["circuit"] in keep]
+        r = wait.copies_check([rec["labels"][k] for k in idx], [rec["counts"][k] for k in idx])
+        assert r["dof"] == a[group]["n"] and r["sum_z2"] == pytest.approx(a[group]["sum_z2"], abs=1e-9)
+
+
+def test_the_earlier_builders_and_fits_are_unchanged():
+    """Amendment A25, 1b: the sweep, the peak, the survey and the one-quadrature Ramsey fit keep their signatures and
+    defaults (build_wait_test, build_wait_ramsey and predicted_fidelity: test_the_0_6_0_check_is_unchanged)."""
+    import inspect
+
+    expected = {
+        "phase_sweep": "(chain: 'Sequence[int]', backend, wait_test: 'bool' = False) -> 'list[dict]'",
+        "sweep_fit": "(y, series: 'str' = 'R1') -> 'dict'",
+        "peak_phase": "(theta_r1_deg: 'float') -> 'int'",
+        "leftover": "(theta_w_deg: 'float', theta_r1_deg: 'float') -> 'float'",
+        "peak_check": "(chain: 'Sequence[int]', backend, sweep_counts: 'dict') -> 'dict'",
+        "readout_survey": "(backend) -> 'list[dict]'",
+        "readout_errors": "(counts_zero, counts_one, limit: 'float | None' = None) -> 'dict'",
+        "ramsey_fit": "(waits_us, p1) -> 'dict | None'",
+    }
+    for name, sig in expected.items():
+        assert str(inspect.signature(getattr(wait, name))) == sig, name
