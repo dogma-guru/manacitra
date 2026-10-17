@@ -779,6 +779,7 @@ RETIRED = [
     "the twenty-one findings in full",  # A24: twenty-seven, with the table of all of them
     "the check runs with the neighbours active",  # A24: the README opens with the check at the peak phase
     "To be released as 0.7.0",  # the 0.7.0 release: released, with its date
+    "To be released as 0.8.0",  # the 0.8.0 release: released, with its date
     "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
@@ -2325,7 +2326,7 @@ def test_the_readme_opens_with_the_latest_findings():
         "not assume and the finding reports as what the counts show." in flat
     )
     assert "No cause is named." in flat
-    assert flat.endswith("To be released as 0.8.0.")  # the release pull request dates it
+    assert flat.endswith("Released as 0.8.0 on 17 October 2026.")  # the release pull request dates it
     for word in ("predict", "parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "steady"):
         assert word not in flat.lower(), word
 
@@ -3790,9 +3791,11 @@ def test_finding_28_beside_the_finding():
     data = " ".join((archive.data_dir() / "README.md").read_text().split())
     assert "| `ibm_fez/t7-ramsey-xy.json` |" in data and "**Recomputing test 7** (finding 28)" in data
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
-    assert log.index("## 0.8.0 (unreleased)") < log.index("## 0.7.0 (15 October 2026)")
+    assert log.index("## 0.8.0 (17 October 2026)") < log.index("## 0.7.0 (15 October 2026)")
+    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
     assert (
-        "## 0.8.0 (unreleased) The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was "
+        "## 0.8.0 (17 October 2026) The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, "
+        "was "
         "measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its "
         "Ramsey fringe is two fixed "
         "frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error "
@@ -3856,7 +3859,9 @@ def test_the_power_check_folder():
     assert len(rows) == 10  # R1, Q8: the grid's run record
     for name, sha in rows:
         assert hashlib.sha256((root / "t7-power-check" / name).read_bytes()).hexdigest() == sha, name
-    names = {p.name for p in (root / "t7-power-check").iterdir()} | {f"../t7/{p.name}" for p in (root / "t7").iterdir()}
+    # the signing workflow's bundles (FILE.sigstore.json) sit beside the files on main, and are not the folder's files
+    names = {p.name for p in (root / "t7-power-check").iterdir() if not archive.is_bundle(p)}
+    names |= {f"../t7/{p.name}" for p in (root / "t7").iterdir() if not archive.is_bundle(p)}
     assert names == {n for n, _ in rows} | {"README.md", "../t7/SHA256SUMS"}
     pre = hashlib.sha256((root / "t7" / "pretest_t7.py").read_bytes()).hexdigest()
     assert (root / "t7" / "SHA256SUMS").read_text() == f"{pre}  pretest_t7.py\n"

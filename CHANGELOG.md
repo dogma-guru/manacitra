@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.0 (unreleased)
+## 0.8.0 (17 October 2026)
 
 The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. Within the three-minute job the weight moved from about 0.45 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.
 
