@@ -1559,3 +1559,89 @@ def test_the_span_read_is_kept_as_verbatim_lines():
     assert jobs == [rec["job_id"]] == [archive.load("ibm_fez/t7-ramsey-xy.json")["meta"]["job_id"]]
     bad = re.findall(r"/Users|/home/|[\w.+-]+@[\w-]+\.[\w.]+|\$|instance=\"|usage_|\btr[a]ce\b|charge", text, re.I)
     assert not bad, sorted(set(bad))
+
+
+# --------------------------------------------------------------------------- the monitor and the span reading (A27)
+@pytest.fixture(scope="module")
+def kingston():
+    pytest.importorskip("qiskit_ibm_runtime")
+    from qiskit_ibm_runtime.fake_provider import FakeKingston
+
+    return FakeKingston()
+
+
+def _p1_of_clbit(circuit, clbit: int) -> float:
+    return sum(v for k, v in wait.exact_distribution(circuit).items() if k[::-1][clbit] == "1")
+
+
+def test_the_monitor_circuits(kingston):
+    """Amendment A27, 1c (the circuits): on the offline ibm_kingston snapshot, a set of three qubits at three waits. The
+    positions are in the fixed order, P10, P01, each repeat's X then Y, P10, P01, with no interleaving; each qubit
+    carries only its own sequence, Part B's Ramsey at its own wait (Y with one rz(-90°) before the last H), measured
+    into its own classical bit, the qubits in ascending order; the delay and the wait as scheduled are each qubit's own;
+    the exact noiseless P(1) of every qubit is 0 for X, 0.5 for Y, 0 for P10 and 1 for P01."""
+    waits = {134: 12.0, 11: 6.0, 43: 46.0}
+    built = wait.ramsey_monitor(waits, kingston, repeats=3)
+    labels = [e["label"] for e in built]
+    order = [("P10", None, "start"), ("P01", None, "start")]
+    order += [(q, r, "monitor") for r in (1, 2, 3) for q in ("X", "Y")] + [("P10", None, "end"), ("P01", None, "end")]
+    assert [(lab["circuit"], lab["repeat"], lab["block"]) for lab in labels] == order
+    assert [lab["position"] for lab in labels] == list(range(len(order)))
+    qs = sorted(waits)
+    assert all(lab["qubits"] == qs for lab in labels)
+    gran = getattr(kingston.target, "granularity", 1) or 1
+    h = [("rz", 90.0), ("sx", None), ("rz", 90.0)]
+    for e in built:
+        c, lab = e["circuit"], e["label"]
+        assert {c.find_bit(b).index for i in c.data for b in i.qubits} == set(qs)
+        assert all(len(i.qubits) == 1 for i in c.data)
+        for k, q in enumerate(qs):
+            meas = [i for i in c.data if i.operation.name == "measure" and c.find_bit(i.qubits[0]).index == q]
+            assert len(meas) == 1 and c.find_bit(meas[0].clbits[0]).index == k
+            want = {"X": 0.0, "Y": 0.5, "P10": 0.0, "P01": 1.0}[lab["circuit"]]
+            assert _p1_of_clbit(c, k) == pytest.approx(want, abs=1e-12), (lab["circuit"], q)
+            if lab["quadrature"] is None:
+                continue
+            wdt = wait.even_wait(waits[q] * 1e-6 / kingston.dt, gran)
+            assert lab["wait_dt"][str(q)] == wdt == lab["scheduled_wait_dt"][str(q)]
+            assert lab["t_requested_us"][str(q)] == waits[q]
+            x = h + [("delay", wdt)] + h + [("measure", None)]
+            seq = _seq(c, q)
+            assert seq == (x if lab["circuit"] == "X" else x[:-4] + [("rz", -90.0)] + x[-4:]), (lab["circuit"], q)
+    assert built[2]["circuit"] is built[4]["circuit"] and built[0]["circuit"] is built[-2]["circuit"]
+    with pytest.raises(ValueError, match="not negative"):
+        wait.ramsey_monitor({43: -1.0}, kingston, repeats=1)
+
+
+def _monitor_labels(repeats: int) -> list[dict]:
+    out = [{"circuit": c, "repeat": None} for c in ("P10", "P01")]
+    out += [{"circuit": q, "repeat": r} for r in range(1, repeats + 1) for q in ("X", "Y")]
+    return out + [{"circuit": c, "repeat": None} for c in ("P10", "P01")]
+
+
+def test_the_span_assignment_reads_the_provider_record():
+    """Amendment A27, 1c (the span assignment): on a synthetic record of three spans of 101, 100 and 99 positions, one
+    position run out of submitted order, the provider's record decides each position's span: the repeats whose two
+    circuits ran in different spans straddle, and the gaps are between spans in start order; a record that places a
+    position in two spans is refused. On test 11's own records, the straddling repeats are those its report names: 49,
+    50 and 100 in job 2, 50 and 100 in job 3."""
+    labels = _monitor_labels(148)
+    spans = [
+        {"span": 0, "positions": [*range(100), 101], "start": 0.0, "stop": 28.0},
+        {"span": 1, "positions": [100, *range(102, 201)], "start": 28.005, "stop": 56.0},
+        {"span": 2, "positions": list(range(201, 300)), "start": 70.5, "stop": 98.0},
+    ]
+    a = wait.span_assignment(spans, labels)
+    assert [len(s["positions"]) for s in a["spans"]] == [101, 100, 99]
+    assert a["span_of_position"][100] == 1 and a["span_of_position"][101] == 0 and a["positions_in_no_span"] == []
+    assert a["straddling_repeats"] == [50, 100]
+    assert a["repeats"][50]["spans_of_positions"] == [1, 0] and a["repeats"][49]["span"] == 0
+    assert [g["gap_s"] for g in a["gaps"]] == pytest.approx([0.005, 14.5])
+    with pytest.raises(ValueError, match="lies in spans"):
+        wait.span_assignment([*spans, {"span": 3, "positions": [5], "start": 99.0, "stop": 100.0}], labels)
+    rec = archive.load("ibm_fez/t11-day2-monitor.json")
+    for job, want in (("2", [49, 50, 100]), ("3", [50, 100])):
+        labs = [lab for lab in rec["labels"] if str(lab["job"]) == job]
+        got = wait.span_assignment(rec["jobs"][job]["execution_metadata"]["execution_spans"], labs)
+        assert got["straddling_repeats"] == want
+        assert [len(s["positions"]) for s in got["spans"]] == ([100, 101, 99] if job == "2" else [101, 100, 99])

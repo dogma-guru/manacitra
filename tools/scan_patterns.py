@@ -82,6 +82,16 @@ ALLOW = [
     # Amendment A7: a counts key of exactly twelve 0s and 1s (a six-pair measurement) is not an AWS account number.
     # Only a quoted string of 0s and 1s; a twelve-digit number with any other digit is still a finding.
     ("bitstring-key", r"\"[01]{12}\"", ""),
+    # Amendment A27: a bootstrap's seed list as test 8's fits record it, two four-digit seeds and the twelve-digit
+    # entropy drawn for the qubit, is not an AWS account number. Only inside such a list; a twelve-digit number
+    # anywhere else is still a finding.
+    ("bootstrap-seed-list", r"\"seeds\": \[\s*[0-9]{4},\s*[0-9]{4},\s*[0-9]{12}\s*\]", ""),
+    # Amendment A27: one field name of test 11's analysis record, forty-four letters, digits and underscores, is not
+    # an API key. Exactly this quoted name (written with a character class, so that this file does not carry it).
+    ("t11-field-name", r"\"weight_switches_within_spans_of_jobs_2_and_[3]\"", ""),
+    # Amendment A27, ruling R2: one field name of test 12's analysis record, forty-four characters, quoted as a key
+    # or, inside a script kept as JSON text, with an escaped closing quote. Exactly this name (a character class again).
+    ("t12-field-name", r"\"phase_switches_not_within_0p6_of_a_half_tur[n]\\?\"", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]

@@ -3905,3 +3905,198 @@ as what the counts show." in place of the sentence that gave the job's duration 
 weight differed between the job's execution spans" (Q6); the read kept as code, with its own test (Q7); the release date
 following the tag's UTC day, with nothing to change before the tag (Q8); and the title (Q9). The tests of the three
 sentences follow them.
+
+## 47. Amendment A27: finding 29, the gated states, and the desk model Sandhi (17 October 2026)
+
+**Why.** By the author's rulings of 17 October 2026, in chat: the findings decision ("Let's put Sandhi in the
+repository"), one finding built on test 11's record with the kingston tests as the record of how its shape was found,
+and the name Sandhi for the desk model. Finding 28's reading by execution span raised the question four tests on 17
+October asked: when does a qubit's fringe change within a job, and when does it not.
+
+**Order.** A new branch, `findings/t11-gated-states`, from `d57fe39` (0.8.0's version-DOI pull request merged), worked
+in a git worktree of its own. No hardware, no provider job, and no contact with anyone.
+
+**Sources.** The four rules (`t8-rule.md`, `t9-rule.md`, `t10-rule.md`, `t11-rule.md`), each checked against its
+`.sha256` sidecar and against the public issue that carries it (issues 53, 54, 55 and 58); the hand-backs of tests 8 to
+11 and of the span check, each file checked against its folder's `SHA256SUMS` before anything was taken from it; the
+desk model's run 3.1, its 92 files checked against its `SHA256SUMS`; the model's kickoffs and its naming ruling. Files
+not in their folder's `SHA256SUMS` (test 9's desk check and span-check write-up, the dry runs) were not copied. Nothing
+whose name contains "SEALED" or "mantri-read" was read; the model's `historical-scorecard.json`, its own output, which
+the kickoff names for publication, was read to be copied and scanned.
+
+**The data.**
+- `ibm_kingston/t8-survey.json`, `t9-day2-scan.json` and `t10-monitor.json`, `ibm_fez/t11-day2-monitor.json`: one record
+  per test, in A25's layout: the jobs' records, the estimates before submission the rules ask for, the decisions on the
+  later jobs, the analysis and readings under `archived`, the window and the calibration record, and the run's code as
+  verbatim lines of the scripts as run. Left out of the records: each estimate's rate per shot and the earlier jobs'
+  machine times, the allowance left after each job, and the snapshots' names.
+- Beside the kingston records, each job's counts as the hand-back's gzip copy, byte for byte, and test 10's analysis
+  record (`fits-t10.json.gz`), each named by its SHA-256; test 8's jobs 1 and 2 and test 9's job 1 fits as gzip copies
+  made here (`fits-t8-job1.json.gz`, `fits-t8-job2.json.gz`, `fits-t9-job1.json.gz`), each record naming both SHA-256
+  values. Test 11's counts are in its record.
+- `ibm_kingston/spans-t8-t9.json`: the span check's entries for test 9's four jobs and test 8's jobs 1 and 3, its
+  comparison of the scan's change points with the span boundaries, and its read without the line that lists test 7's
+  job.
+- The rules byte for byte, beside the records; the desk checks of tests 10 and 11 (the scripts and their reruns); test
+  11's rulings, hash check and series tables.
+- `desk/sandhi/`: the kickoffs of versions 2 and 3, version 3's errata and the naming ruling, with the desk runner's
+  service written "the desk runner" in six places; and run 3.1 as delivered, with its scripts and `SHA256SUMS`. Three of
+  its ledgers (`rates-model-01-v3.json`, `shuffled-stamp-ledger.json`, `normalized-trials.json`) are for the release's
+  assets. `run.log` and two ledgers, `events-model-01-v3.json` and `frequency-ledger.json`, are not published: each
+  carries a path of the runner's own folders, in a hashed record.
+
+**The code.** `manacitra.wait` gains `ramsey_monitor`, `span_assignment`, `monitor_phase`, `median_phase` and
+`monitor_weight`, ported from tests 10 and 11's analysis (`phase_t10.py`, `monitor_t11.py`), with the floors and
+thresholds the caller's and no verdict words. On tests 10 and 11's archived counts they give every number those analyses
+wrote, exactly. `tests/_reuse_runs.py`'s `t7_spans` takes a job's shots per position, test 7's 1,500 by default. The
+identifier scan allows two exact forms more: a bootstrap's seed list as test 8's fits record it, and one field name of
+test 11's analysis record.
+
+**The recompute.** `tests/_reuse_runs.py` and `tests/_reproduce.py` gain four cases:
+- "Test 10, the phase monitor": every qubit's verdict and numbers in all three jobs, the counts of verdicts and the
+  pooled verdicts, by `monitor_phase` with the rule's thresholds: 7,576 fields, every one exact.
+- "Test 11, day 2 and the monitor": job 1's fits, bootstrap, verdict, readings, weight per span and boundary changes by
+  the functions the run used (`t7_ramsey_xy`, `t7_readings`, `t7_spans`, `t7_span_readings`) with its seeds; jobs 2 and
+  3's phase and weight per repeat, switches, weight per span, boundary tables and verdicts by `monitor_phase` and
+  `monitor_weight`; the pooled verdicts and the gap: 8,605 fields. Job 1's analysis draws five random streams, as test
+  7's does, and A25's rule for test 7 is applied to it: the 39 fields that move by 8·10⁻⁴ or more over 200 other seeds
+  of those streams (the telegraph diagnostic's fit, the bootstrap intervals that reach 10⁻³, the counts of failed starts
+  and the periodogram's heights over its floor) are excluded with their movement, and 26 that move less are compared at
+  10⁻³; every other field is exact. The first push compared all of job 1's fields; on CI's Linux runners the largest
+  difference fell in two of the 39: S's count of failed starts, by 1, under Python 3.11, and a line of the telegraph
+  diagnostic, by 500 kHz, under 3.13.
+- "Test 9, job 1 on 43 and 134": the verdicts, the clauses and the band by `ramsey_xy_fit` with the run's seeds, exact.
+  The fits' parameters and percentiles differ from the run's by up to 3.5·10⁻⁴ (multi-threaded; 6.3·10⁻⁷ with one thread
+  per library), the run having fitted on six workers; they are excluded with that movement. Under 200 other seeds of its
+  three random streams both verdicts held every time, and on 134 the two clauses on delta's lower bound against the
+  5 kHz floor changed under 24: the bound, 35.06 kHz from the run's seeds, fell below the floor, to as low as 3.7 kHz.
+  Those two clauses are excluded with that movement; the verdicts, the band and the other clauses stay exact.
+- "Tests 8 and 9, the execution spans": each job's durations, runs of positions and gaps from the provider's record: 125
+  fields, exact.
+Test 8's record has no recompute case: its 132 qubits' fits with 2,000 bootstrap draws each are kept as the run wrote
+them, every field excluded with its reason, as test 9's scan fits are. `tests/test_sandhi.py` checks that the model's
+run is published as delivered, that its report carries the counts finding 29 quotes, and recomputes from the
+repository's records the weight boundaries they hold (test 7's, test 11's job 1 and the monitor's); given the ledgers,
+it recomputes every frequency count and the 38 shuffled weight boundaries from their rows.
+
+**The text.**
+- **`docs/findings.md`:** finding 29, in the order the records were made, each test's rule, verdicts and the numbers
+  that decide them, with its items beside the verdict in the rule's order; the span reading; what the five records show
+  together; the desk model Sandhi and the scorecard of its earlier bets. The table of findings gains its row. In what
+  has not been shown, five bullets are added.
+- **Elsewhere:** the README opens with finding 29 and its table of findings gains a tenth row; `docs/method.md` gains a
+  subsection on the monitor, reading a job by execution span and a desk model as a step; `docs/reproduce.md`, the
+  commits tests 8 to 11 were built at and the lines that reproduce them; `data/README.md`, the five records, the files
+  beside them, their formats and what was changed when copying; `CHANGELOG.md`, `## 0.9.0 (unreleased)` with the lead
+  the kickoff fixed and the A27 entry.
+- **Not made:** the two figures the kickoff offers. By ruling R1 (item 15) they stay out of 0.9.0, and come back
+  under their own ruling after test 13.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A27-review-packet.md`), with
+its reason.
+
+**The tests:** 1,007 pass and 1 is skipped (it needs the ledgers), against 981 at `d57fe39`.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the new files. The signing workflow signs them on `main` after a merge.
+
+**Ruling R1 (18 October 2026, the author's go given in chat: "I approve r1 for a27").** It answers the packet's
+twenty-two questions and adds a twenty-third. Accepted as built: test 8's hash recorded before its run and posted after
+it (1); the fits files kept in the tree as gzip copies (2); the counts as gzip (3); the model's scorecard published as
+its output (5); the spans' sizes, the floors and test 11's time as the records give them (6, 8, 9); the commits of the
+reruns (10); test 9's recompute and the scope of the recompute (12, 13); the scorecard as computed facts (14); the
+kickoffs rows, the limits line, the scan's two exact forms, Sandhi's rerun line and the title (16, 18, 19, 21, 22).
+Changed: two of the model's ledgers attached to the release as copies with their one `command` field written "[the desk
+runner's environment]", both hashes in the folder's README, and `run.log` held (4); the changelog's lead takes the
+runner's proposal (7); test 9's desk check copied as read, its SHA-256 in its record (11); A26's rerun line corrected to
+`-k "spans and 7"` (20); the figures left out of 0.9.0 (15). Item 23, from test 12's recount: every sentence that stated
+or implied that nothing changed inside a span in time, that the state held during a span, or that the monitor resolves
+time within a span is recast as what the rules counted, switches between adjacent repeats of a span above each design's
+floor and the level per span, the numbers and the verdict words unchanged: twenty sentences in finding 29, the README,
+`docs/method.md`, the changelog and Sandhi's README, listed before and after in the hand-back's `A27-R1-sentences.md`.
+Two sentences are added: test 12's place beside the record, in finding 29's close, and a bullet in what has not been
+shown on the order in which a span's shots ran. Two tests that quote recast sentences follow them. The pull request is
+held as a draft pending ruling R2, which follows test 13's per-shot read.
+
+**Ruling R2 (18 October 2026, approved by the author in chat: "I approve A27 r2"), and its step two (approved by the
+author about 07:13 UTC: "Approve and make the gated states change"; the go for it in chat: "Go as you recommend").**
+Part A committed R1 (above). Part B follows tests 13 and 15. Test 13
+([issue 61](https://github.com/dogma-guru/manacitra/issues/61)) read the per-shot results of test 11's monitor jobs and
+test 12's: within an execution span every circuit sees the same state at the same shot index (SHARED in all nine
+spans). Test 15 ([issue 63](https://github.com/dogma-guru/manacitra/issues/63)) read every monitor job on the record the
+same way and fixed the error of a span's weight as that of a time average, √(2 b(1 − b) τ_c / T); under it, all 17
+boundaries read are NO CHANGE.
+- **A correction, recorded as one.** The rules of tests 10, 11, 12 and 14, and A26's span readings, propagated the
+  shots' binomial noise as the error of a level per span. With the state shared within a span, that is not its error.
+  Every sentence built on it that read a weight level difference at a span boundary as a change is recast: in finding
+  29, the README, `docs/method.md`, the changelog and Sandhi's README. The verdict words and counts stand as their
+  rules computed them, each rule's error named as what it was. No rule file is changed. The ruling's own text erred in
+  five places, recorded in its step two: (f)'s literature, "on the record" for "of a monitor job", "1.6" for 1.16,
+  "50 to 250" for T/(2τ_c), and test 14's attribution past its NOT USABLE gate.
+- **Finding 29** is rewritten in the ruling's order: the records with their verdicts, then (a) the spans, (b) the
+  state shared within a span, (c) the two lines on 143 as two states seen in turn, (d) the error of a span's weight,
+  with test 15's table of every boundary in all its columns, the published shot-noise ratios among them, (e) the frame
+  and the stamps, and (f) Sandhi set down at version 3, its files kept as published. The ruling's comparison with the
+  literature is left out: A20's citation rule and the kickoff's word ban stand, and the comparison waits for a
+  literature pass under A20. "True by construction" is said only of the jobs that read SHARED; test 10's job 3, which
+  holds no qubit that can show the sharing, and test 9's scans keep their zero counts with the returned-order caveat.
+  Where the README, the thread row, the changelog lead, Sandhi's README and the bullet on the order of a span's shots
+  say that a span's circuits share the state, they say on which qubits: those where tests 13 and 15 read SHARED.
+  One number departs from test 15's report: the longest mean run on 143's upper line is 0.3845 s in its record, 0.38
+  at two places, where the report gives 0.39.
+- **The name, retired.** By the author's ruling the finding's first name, "the gated states", is retired, a dated
+  refusal: the record does not show gates; it shows a state shared within a span, switching in tenths of a second.
+  The finding is now "The shared state within a span: when a qubit's fringe changes within a job", in its title, its
+  row in the findings table, the README's heading, anchor and thread row, and the tests that quote them. "The gated
+  states" stays where it was the name at the time: Sandhi's version 3 (its README's heading, its kickoffs' file
+  names), this section's heading and the branch's name. The pull request's title follows the finding's.
+- **Finding 28** is not rewritten. It gains one sentence at its end, pointing to test 15's borrowed reading of test 7's
+  two boundaries (BETWEEN, 2.65; NO CHANGE, 0.71), and its two bullets in what has not been shown gain the clause
+  "read again under finding 29, part (d)".
+- **The data.** In `data/ibm_fez/`: tests 12 and 14's records, with their counts (`t12-short-monitor.json`,
+  `t14-in-phase-control.json`, test 14's job machine time left out), and tests 13 and 15's
+  (`t13-per-shot-read.json`, `t15-error-model-read.json`), each naming every per-shot array by its SHA-256, the arrays
+  not published. Beside them: the four rules byte for byte, each checked against its sidecar and its issue (59, 61, 62
+  and 63); their desk checks, hash checks, rulings, tables and test 15's logs, each checked against its hand-back's
+  `SHA256SUMS` first. The four logs are published as `.log.txt`, their content byte for byte, each record giving the
+  hand-back's name and SHA-256 beside the published name. Every file of the four hand-backs is in its `SHA256SUMS`.
+  There is no recompute case for tests 12 to 15: every field of their records is excluded with its reason, and
+  finding 29's numbers from them are checked by `tests/test_readme_numbers.py`. The identifier scan allows one exact
+  form more: a field name of test 12's analysis record.
+- **The tests.** `test_finding_29` checks the new sentences' numbers against the four records, and test 15's table
+  row by row against its `boundaries`; its word check strips exactly `` `telegraph_sd` ``, the one quoted field name.
+  The README's opening, the dates, the thread table and the data README's count of job IDs follow the recast.
+  1,019 tests pass and 1 is skipped (the ledger test), against 1,007 and 1 at `8aebe1e`.
+
+**Ruling R3 (18 October 2026, approved by the author: "I approve the changes").** An independent review of `dd769b3`,
+from the public repository alone, made seven findings, all accepted; four trace to the wording of the rules, the
+readings and the kickoff, recorded as such. No rule file, verdict word or count changes; each change is to what a sentence claims or
+what a test computes.
+- **B1.** The kingston qubits outside test 15's separable list get the word NOT SEPARABLE from its rule whatever their
+  ratio, and finding 29 no longer says their ratio is near 1 whatever the order: their median was near 1.06 in each job,
+  and 25 of 546 span readings, on 8 qubits, exceeded 3. The finding draws nothing from them, and what has not been shown
+  says the shared-state reading is drawn only from qubits with two resolved lines.
+- **S1.** "A third of one chip" becomes the population measured: about a third of the 47 kingston qubits compared
+  across two stamps (16) changed by 4 kHz or more in the one-line fit.
+- **S2.** "Every circuit sees the same state" becomes the dependence measured in the rows tested (the means at equal
+  returned shot index far beyond independent shots), with the shared state as the reading of it and "the same stretch
+  of time" conditional on that reading.
+- **S3.** Correlation lags and runs are given in sweeps, returned indices, first; seconds only if the returned indices
+  are chronological sweeps evenly spaced across the span. The duty is the fraction of a span's returned indices in the
+  high state. The kingston runs carry test 15's inflation flags.
+- **S4.** The error is named as test 15's estimated sampling standard deviation of a span's duty under its stationary
+  two-state model with exponential correlation; a NO CHANGE carries no evidence of a change under that model and does
+  not show the duties equal. The widest quarter-span duties on 143 are carried, and the 17 read boundaries are said to
+  share spans and jobs.
+- **S5.** `test_finding_29` recomputes every separable span (42) from test 15's published sweep means, recovered exactly
+  as fractions of the span's rows, and checks the read's duty, lag, word, switches, runs, quarter-span duties, middle
+  fifth, inflation flag and standard deviation against them; it then derives every cell of the boundary table from those
+  spans and from the records that published the shot-noise ratios (tests 11, 12 and 14), recomputes the three ratios
+  between 143's jobs, B1's counts and S1's 16 of 47 from the fits. Its string checks remain: the sentences it quotes,
+  the README's opening and the dates are checked as strings against the text, each number in them read from a record.
+- **M1.** A new pull request description, written around R2 and R3, with the first kept under a dated heading.
+- **The desk check** of test 15 is described in the data index as an approximate calibration of its model.
+  1,019 tests pass and 1 is skipped (the ledger test), as at `dd769b3`; R3 adds checks inside existing tests.

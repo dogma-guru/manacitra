@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.9.0 (unreleased)
+
+Nine records on ibm_kingston and ibm_fez, eight of them tests under rules hashed before each run, asked when a qubit's Ramsey fringe changes within a job. Read by the provider's execution record, every job of 248 to 300 circuits ran as three spans; read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span whose estimated error is not the shots'. Under that error all 17 weight boundaries read in the monitor jobs show NO CHANGE, where the rules' shot-noise errors had put 143's up to 35.1 apart; between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit, while the split on 143 moved by a tenth of a kilohertz between days. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. `manacitra.wait` gains the monitor circuits, the span assignment from the provider's execution record, and the per-repeat phase, length and antiphase weight; thresholds and verdicts are the caller's.
+
+- Amendment A27: `manacitra.wait` gains the monitor, `ramsey_monitor` (every qubit of a set at its own wait in one
+  circuit, X and Y, between the readout circuits, in a fixed order); the span assignment, `span_assignment` (each
+  position's span and each repeat's span or straddling from the provider's execution record, and the gaps); the
+  per-repeat phase and length, `monitor_phase` (the switch test between adjacent repeats, the time the tested pairs
+  cover, the levels and the slopes against the repeat index, with the caller's floors and thresholds); and the weight at
+  antiphase, `monitor_weight`, with `median_phase`. Everything else in the package is unchanged. Finding 29 (tests 8 to
+  15), with their data in `data/ibm_kingston/` and `data/ibm_fez/` (one record per test; the counts and the larger
+  analysis records as gzip files beside them, named in each record by their SHA-256; the posted rules published
+  unchanged; the desk checks; the run's code as verbatim lines of the scripts as run), the span record of tests 8 and 9,
+  and the desk model Sandhi in `data/desk/sandhi/` (its kickoffs and naming ruling, and its run 3.1 as delivered, its
+  ledgers attached to the release with their SHA-256 in the folder's README). `tests/_reuse_runs.py` recomputes test
+  10's verdicts, test 11's three jobs, test 9's job 1 on 43 and 134 and the kingston spans, and `tests/test_sandhi.py`
+  checks the model's counts. Tests 13 and 15 read the per-shot results of completed jobs; their records name every
+  array by its SHA-256, and the arrays are not published. By ruling R2, finding 29 reads every level per span against
+  the error of a time average, Sandhi is set down at version 3, and the finding's first name, "the gated states", is
+  retired for "the shared state within a span"; it stays as the dated name of Sandhi's version 3. The README opens with
+  finding 29, and its table of findings gains a tenth row.
+
 ## 0.8.0 (17 October 2026)
 
 The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. The weight differed between the job's three execution spans, from about 0.46 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.

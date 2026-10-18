@@ -1,0 +1,231 @@
+{
+  "kind": "Computed scorecard and separately labelled model reconstruction",
+  "note": "Intervals on event probabilities are not intervals on an observed zero or one. Failure of a named event to occur is not itself a parameter interval test.",
+  "source_limits": "The original sealed prediction files are absent. Only their quoted values in the rule and fits are available.",
+  "within_exposure_note": "The quoted design used 186 seconds; actual whole repeat exposure is 167.7355241020408 seconds.",
+  "rows": [
+    {
+      "bet": "Frequency boundaries in two monitors",
+      "quoted_source": {
+        "file": "input/t11/fits-t11.json",
+        "field": "counts_of_the_run.phase_switches_at_the_span_boundaries_of_jobs_2_and_3.model"
+      },
+      "quoted_forecast": {
+        "p_at_least_one": 0.008,
+        "interval": [
+          0.001,
+          0.026
+        ],
+        "predictive_count": 0
+      },
+      "observed_count_recomputed": 0,
+      "quoted_count_interval_status": "Quoted predictive count is zero and matches",
+      "reconstructed_from_pre_test11_ledger": {
+        "trials": 4,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.007924631287179998,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0011824743422455277,
+          0.025936755289724958
+        ],
+        "posterior_predictive_probability_at_least_one": 0.010004124728105301,
+        "expected_count_posterior_mean": 0.010067114093959731,
+        "count_at_rate_median": 0.007948290665971722,
+        "posterior_predictive_count_interval_90": [
+          0,
+          0
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 595,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 594.5
+          },
+          "q05": 0.00029574976157688683,
+          "median": 0.0019870726664929306,
+          "q95": 0.00654822742235916
+        }
+      },
+      "inside_reconstructed_count_interval": true,
+      "reconstruction_is_original_sealed_prediction": false
+    },
+    {
+      "bet": "Frequency within two monitors",
+      "quoted_source": {
+        "file": "input/t11/fits-t11.json",
+        "field": "counts_of_the_run.phase_switches_within_spans_of_jobs_2_and_3.model"
+      },
+      "quoted_forecast": {
+        "p_at_least_one": 0.002
+      },
+      "observed_count_recomputed": 0,
+      "quoted_count_interval_status": "No predictive count interval supplied; cannot score inside or outside a quoted count interval",
+      "reconstructed_from_pre_test11_ledger": {
+        "trials": null,
+        "exposure_s": 186.0,
+        "probability_at_least_one_at_median": 0.0017004758949877164,
+        "probability_at_least_one_parameter_interval_90": [
+          1.471008101623933e-05,
+          0.014268180474196585
+        ],
+        "posterior_predictive_probability_at_least_one": 0.0037201508634420177,
+        "expected_count_posterior_mean": 0.003741013598312645,
+        "count_at_rate_median": 0.0017019233452580337,
+        "posterior_predictive_count_interval_90": [
+          0,
+          0
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 28838,
+          "exposure_s": 24859.57282859034,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 24859.57282859034
+          },
+          "q05": 7.908703876635546e-08,
+          "median": 9.150125512139966e-06,
+          "q95": 7.726317035255248e-05,
+          "probability_rate_below_1e_minus_4": 0.9742378844284736
+        }
+      },
+      "inside_reconstructed_count_interval": true,
+      "reconstruction_is_original_sealed_prediction": false
+    },
+    {
+      "bet": "Weight boundaries in shuffled job",
+      "quoted_source": {
+        "file": "input/t11/fits-t11.json",
+        "field": "counts_of_the_run.weight_changes_0p10_across_job_1s_span_boundaries.model"
+      },
+      "quoted_forecast": {
+        "p_every_eligible_qubit": 0.52,
+        "interval_every_eligible": [
+          0.35,
+          0.69
+        ],
+        "p_three_span_check_qubits": 0.91,
+        "interval_three": [
+          0.69,
+          0.99
+        ]
+      },
+      "observed_count_recomputed": 0,
+      "quoted_count_interval_status": "No predictive count interval supplied; cannot score inside or outside a quoted count interval",
+      "reconstructed_from_pre_test11_ledger": {
+        "trials": 2,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.520262963316747,
+        "probability_at_least_one_parameter_interval_90": [
+          0.34918096557246914,
+          0.6865519460849205
+        ],
+        "posterior_predictive_probability_at_least_one": 0.5193812233285928,
+        "expected_count_posterior_mean": 0.6216216216216216,
+        "count_at_rate_median": 0.6147389607972756,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 11,
+          "trials": 36,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 11.5,
+            "beta": 25.5
+          },
+          "q05": 0.19326644148917985,
+          "median": 0.3073694803986378,
+          "q95": 0.44013568258453956
+        }
+      },
+      "inside_reconstructed_count_interval": true,
+      "reconstruction_is_original_sealed_prediction": false
+    },
+    {
+      "bet": "Frequency between monitor jobs",
+      "quoted_source": {
+        "file": "input/t11/fits-t11.json",
+        "field": "counts_of_the_run.phase_differs_by_more_than_5_se_across_the_gap.model"
+      },
+      "quoted_forecast": {
+        "p": "about 1 in 60"
+      },
+      "observed_count_recomputed": 0,
+      "quoted_count_interval_status": "No predictive count interval supplied; cannot score inside or outside a quoted count interval",
+      "reconstructed_from_pre_test11_ledger": {
+        "trials": 1,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.018676147395517265,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0027996696049038595,
+          0.060371654650881845
+        ],
+        "posterior_predictive_probability_at_least_one": 0.023437500000000222,
+        "expected_count_posterior_mean": 0.0234375,
+        "count_at_rate_median": 0.018676147395517265,
+        "posterior_predictive_count_interval_90": [
+          0,
+          0
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 63,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 62.5
+          },
+          "q05": 0.0027996696049038595,
+          "median": 0.018676147395517265,
+          "q95": 0.060371654650881845
+        }
+      },
+      "inside_reconstructed_count_interval": true,
+      "reconstruction_is_original_sealed_prediction": false
+    }
+  ],
+  "selected_weight_alternative": {
+    "quoted_probability": 0.91,
+    "quoted_probability_interval": [
+      0.69,
+      0.99
+    ],
+    "reconstruction": {
+      "trials": 2,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.9058592586023265,
+      "probability_at_least_one_parameter_interval_90": [
+        0.6884945125334068,
+        0.9862338173678333
+      ],
+      "posterior_predictive_probability_at_least_one": 0.8806818181818183,
+      "expected_count_posterior_mean": 1.3636363636363635,
+      "count_at_rate_median": 1.3863527352047482,
+      "posterior_predictive_count_interval_90": [
+        0,
+        2
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 7,
+        "trials": 10,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 7.5,
+          "beta": 3.5
+        },
+        "q05": 0.44187323351536595,
+        "median": 0.6931763676023741,
+        "q95": 0.8826706233197898
+      }
+    }
+  }
+}

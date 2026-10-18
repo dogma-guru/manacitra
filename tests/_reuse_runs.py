@@ -3534,10 +3534,11 @@ def _t7_fit_points(t, ph, y, n, seeds: dict = T7_SEEDS) -> dict:
 
 
 # --------------------------------------------------------------------------- test 7's execution spans (Amendment A26)
-def t7_spans(spans: dict) -> dict:
+def t7_spans(spans: dict, shots: int = 1500) -> dict:
     """The quantities test 7's span record derives from the provider's own fields (each span's start and stop, read as
     UTC, and the positions and shots it ran): each span's duration and runs of positions, the gaps between spans in
-    start order, and whether every position ran in exactly one span with all its shots."""
+    start order, and whether every position ran in exactly one span with all its shots (test 7's 1,500 unless the
+    caller names a job's own, A27)."""
     from datetime import datetime
 
     def t(s):
@@ -3549,7 +3550,6 @@ def t7_spans(spans: dict) -> dict:
     for r in rows:
         for p in r["positions"]:
             cover.setdefault(p, []).append((r["span"], r["shots_per_position"][str(p)]))
-    shots = 1500
     return {
         "n_spans": len(rows),
         "spans": [
@@ -3658,3 +3658,302 @@ def t7_span_readings(rec: dict, spans: dict) -> dict:
         "span_boundaries": bounds,
         "copies_by_span": {**split, "circuits": rows},
     }
+
+
+# --------------------------------------------------------------------------- tests 8 to 11 (A27, finding 29)
+#: Test 10's rule: the phase's floors and thresholds, the usable conditions, the verdict words
+T10_RULE = {"s_floor": 0.02, "abs_min": 0.3, "n_se": 5.0, "level_se": 3.0}
+T10_E_MAX, T10_R_MIN = 0.03, 0.08
+T10_VERDICTS = ("QUIET", "SWITCHES AT BOUNDARIES ONLY", "SWITCHES WITHIN SPANS")
+#: Test 11's rule: the monitor's wait, the weight's threshold, its words
+T11_WAIT_US, T11_W_MIN = 5.6, 0.10
+T11_WEIGHT_WORDS = {
+    "QUIET": "WEIGHT QUIET",
+    "SWITCHES AT BOUNDARIES ONLY": "WEIGHT SWITCHES AT BOUNDARIES ONLY",
+    "SWITCHES WITHIN SPANS": "WEIGHT SWITCHES WITHIN SPANS",
+}
+#: Test 11's job 1 seeds (rulings-t11.md) and test 9's job 1 seeds and rule (its analysis record's meta)
+T11_SEEDS = {
+    "S_starts": 7302,
+    "P_random_starts": 7303,
+    "bootstrap": 11304,
+    "T_random_starts": 7305,
+    "periodogram_noise": 7306,
+}
+T9_SEEDS = {"S_random_starts": 9304, "P_random_starts": 9305, "bootstrap_root": 9306}
+T9_RULE = {"margin": 0.01, "delta_floor_mhz": 0.005, "b_edges": (0.05, 0.95)}
+
+
+def _gz(name: str) -> dict:
+    """A gzip file of data/ beside a record (the counts of tests 8 to 10, their analysis records), as JSON."""
+    import gzip
+    import json
+
+    return json.loads(gzip.decompress((ar.data_dir() / name).read_bytes()))
+
+
+def _ones_per_qubit(rec: dict) -> np.ndarray:
+    """Per position and per qubit of the job's set (classical bit k is the set's k-th qubit), the shots that read 1."""
+    n = len(rec["qubits"])
+    out = np.zeros((len(rec["counts"]), n), int)
+    for pos, cts in enumerate(rec["counts"]):
+        for key, c in cts.items():
+            b = _bits(key)
+            for j in range(n):
+                if b[j] == "1":
+                    out[pos, j] += c
+    return out
+
+
+def _span_record(execution_metadata: dict) -> list[dict]:
+    return [
+        {k: s[k] for k in ("span", "positions", "start_utc", "stop_utc", "duration_s")}
+        for s in execution_metadata["execution_spans"]
+    ]
+
+
+def _verdict(usable: bool, n_within: int, n_boundary: int) -> str:
+    if not usable:
+        return "NOT USABLE"
+    if n_within >= 1:
+        return "SWITCHES WITHIN SPANS"
+    return "SWITCHES AT BOUNDARIES ONLY" if n_boundary >= 1 else "QUIET"
+
+
+def _pooled(vs) -> str:
+    vs = [v for v in vs if v and v != "NOT USABLE"]
+    if not vs:
+        return "NOT USABLE"
+    for word in ("SWITCHES WITHIN SPANS", "SWITCHES AT BOUNDARIES ONLY"):
+        if word in vs:
+            return word
+    return "QUIET"
+
+
+def t10_monitor(rec: dict) -> dict:
+    """Test 10 (finding 29): every qubit's phase per repeat, its switches within spans and at boundaries, its levels and
+    slopes, and its verdict, per job, from the counts and the provider's span record, by the package's monitor_phase
+    with the rule's thresholds; the counts of verdicts and the verdicts pooled over jobs 1 and 2."""
+    survey = rec["archived"]["survey"]["qubits"]
+    keep = (
+        "c",
+        "wait_us",
+        "kHz_per_rad",
+        "n_within",
+        "n_boundary",
+        "n_spans_not_consecutive_switches",
+        "within_time_s",
+        "within_rate_per_s",
+        "within_rate_ci90_per_s",
+        "straddling_repeats",
+        "pi_sized_differences",
+        "levels",
+        "n_levels",
+        "slopes",
+        "repeat_period_s",
+        "repeats_per_span",
+        "job_mean_phase",
+    )
+    per_job, counts = {}, {}
+    for j in ("1", "2", "3"):
+        c = _gz(f"ibm_kingston/{rec['jobs'][j]['counts_file']['file']}")
+        ones, spans = _ones_per_qubit(c), _span_record(c["execution_metadata"])
+        out = {}
+        for k, q in enumerate(c["qubits"]):
+            wait_us = float(c["waits"]["X"][str(q)]["requested_us"])
+            r = wait.monitor_phase(ones[:, k], c["labels"], spans, wait_us, shots=c["shots"][0], **T10_RULE)
+            e0 = survey.get(str(q), {}).get("e")
+            usable = (e0 is None or e0 <= T10_E_MAX) and r["median_r"] >= T10_R_MIN
+            out[str(q)] = {
+                "verdict": _verdict(usable, r["n_within"], r["n_boundary"]),
+                "usable": usable,
+                "usable_reasons": {"e_job0": e0, "median_r": r["median_r"]},
+                **{x: r[x] for x in keep},
+            }
+        per_job[j] = out
+        ok = [v for v in out.values() if v["usable"]]
+        counts[j] = {w: sum(1 for v in ok if v["verdict"] == w) for w in T10_VERDICTS} | {
+            "NOT USABLE": len(out) - len(ok)
+        }
+    pooled = {q: _pooled([per_job[j][q]["verdict"] for j in ("1", "2") if q in per_job[j]]) for q in per_job["1"]}
+    pcount = {w: sum(1 for v in pooled.values() if v == w) for w in (*T10_VERDICTS, "NOT USABLE")}
+    return {"count_by_job": counts, "count_pooled_S": pcount, "pooled": pooled, "per_job": per_job}
+
+
+def _t11_job(rec: dict, job: int) -> dict:
+    idx = [k for k, lab in enumerate(rec["labels"]) if lab["job"] == job]
+    labels = [{a: b for a, b in rec["labels"][k].items() if a != "job"} for k in idx]
+    return {"labels": labels, "counts": [rec["counts"][k] for k in idx], "shots": [rec["shots"][k] for k in idx]}
+
+
+def _ones_c0(counts) -> list[int]:
+    return [sum(n for key, n in c.items() if _bits(key)[0] == "1") for c in counts]
+
+
+def t11_monitor(rec: dict) -> dict:
+    """Test 11's jobs 2 and 3 (finding 29): the monitor's phase and weight per repeat, the switches, the weight per
+    span, the boundary table and the verdicts, per job, by the package's monitor_phase and monitor_weight with the
+    rule's thresholds and job 1's R0; the verdicts pooled over the two jobs; the gap between them."""
+    R0 = rec["archived"]["analysis"]["R0"]
+    out = {}
+    for j in (2, 3):
+        d = _t11_job(rec, j)
+        spans = _span_record(rec["jobs"][str(j)]["execution_metadata"])
+        ph = wait.monitor_phase(_ones_c0(d["counts"]), d["labels"], spans, T11_WAIT_US, shots=d["shots"][0], **T10_RULE)
+        w = wait.monitor_weight(
+            ph, R0["value"], exchange=R0["branches_exchanged"], abs_min=T11_W_MIN, n_se=T10_RULE["n_se"]
+        )
+        usable = ph["median_r"] >= T10_R_MIN
+        pv = _verdict(usable, ph["n_within"], ph["n_boundary"])
+        wv = _verdict(usable, w["n_within_w"], w["n_boundary_w"])
+        rows = [{**x, **{k: y[k] for k in ("branch", "w", "se_w")}} for x, y in zip(ph["repeats"], w["repeats"])]
+        out[str(j)] = {
+            "phase_verdict": pv,
+            "weight_verdict": T11_WEIGHT_WORDS.get(wv, wv),
+            "phase": {k: v for k, v in ph.items() if k not in ("repeats", "pairs")},
+            "weight": {k: v for k, v in w.items() if k not in ("repeats", "pairs", "boundary_table")},
+            "boundary_table": {
+                part: [
+                    {
+                        **x,
+                        "phase_over_5_se": abs(x["d_phase"]) > 5 * x["se_phase"],
+                        "w_over_5_se": abs(x["d_w"]) > 5 * x["se_w"],
+                    }
+                    for x in rows_
+                ]
+                for part, rows_ in w["boundary_table"].items()
+            },
+            "repeats": rows,
+            "series": {k: [x[k] for x in rows] for k in ("k", "theta", "r", "w", "s", "se_w", "span", "straddles")},
+        }
+    a = [x for x in out["2"]["repeats"] if not x["straddles"]][-1]
+    b = [x for x in out["3"]["repeats"] if not x["straddles"]][0]
+    se_p, se_w = math.hypot(a["s"], b["s"]), math.hypot(a["se_w"], b["se_w"])
+    d_p = wait._wrap(b["theta"] - a["theta"])
+    gap = {
+        "job2_last_k": a["k"],
+        "job3_first_k": b["k"],
+        "d_phase": d_p,
+        "se_phase": se_p,
+        "phase_differs_by_more_than_5_se": abs(d_p) > 5 * se_p,
+        "d_w": b["w"] - a["w"],
+        "se_w": se_w,
+        "w_differs_by_more_than_5_se": abs(b["w"] - a["w"]) > 5 * se_w,
+    }
+    back = {v: k for k, v in T11_WEIGHT_WORDS.items()}
+    pooled = {
+        "phase": _pooled([out[j]["phase_verdict"] for j in out]),
+        "weight": T11_WEIGHT_WORDS.get(_pooled([back.get(out[j]["weight_verdict"]) for j in out])),
+    }
+    return {"jobs": out, "pooled": pooled, "gap": gap}
+
+
+def t11_job1(rec: dict) -> dict:
+    """Test 11's job 1 (finding 29): test 7's analysis on day 2, by the functions test 11 ran (t7_ramsey_xy,
+    t7_readings, t7_spans, t7_span_readings), with the seeds of its rulings; the weight change across each span boundary
+    from the plain means of the three positions on either side (its ruling 3); R0 and the antiphase wait from P."""
+    d = _t11_job(rec, 1)
+    rows = []
+    for r in rec["calibration_record"]["stamps"]:
+        if r["kind"].startswith("job 1 "):
+            rows.append({**r, "kind": r["kind"][len("job 1 ") :]})
+    doc = {**d, "timestamps": rec["jobs"]["1"]["timestamps"], "calibration_record": {"stamps": rows}}
+    analysis, _ = t7_ramsey_xy(doc, T11_SEEDS)
+    readings = t7_readings(doc, analysis, T11_SEEDS)
+    doc["archived"] = {"readings_after_the_data": readings}
+    spans = {"spans": rec["jobs"]["1"]["execution_metadata"]["execution_spans"], "n_positions": len(d["labels"])}
+    sr = t7_span_readings(doc, spans)
+    changes = {}
+    for name, b in sr["span_boundaries"].items():
+        bw, aw = [x["weight"] for x in b["before"]], [x["weight"] for x in b["after"]]
+        ch = float(np.mean(aw) - np.mean(bw))
+        changes[name] = {
+            "between_positions": b["between_positions"],
+            "before": b["before"],
+            "after": b["after"],
+            "mean_before": float(np.mean(bw)),
+            "mean_after": float(np.mean(aw)),
+            "change": ch,
+            "at_least_0p10": abs(ch) >= T11_W_MIN,
+        }
+    P = analysis["fits"]["P"]["params"]
+    return {
+        "verdict": "CONFIRMED ON DAY 2" if analysis["verdict"] == "TWO FIXED FREQUENCIES" else "NOT CONFIRMED ON DAY 2",
+        "package_verdict": analysis["verdict"],
+        "analysis": analysis,
+        "readings_after_the_data": readings,
+        "spans_derived": t7_spans(spans),
+        "span_readings_A26": sr,
+        "weight_changes_across_boundaries": {
+            "boundaries": changes,
+            "n_at_least_0p10": sum(1 for c in changes.values() if c["at_least_0p10"]),
+            "n_boundaries": len(changes),
+        },
+        "R0_for_the_monitor": P["A"] * math.exp(-T11_WAIT_US / P["tau_prime_us"]),
+        "antiphase_wait_from_day2_split_us": 1.0 / (4 * P["delta_MHz"]),
+    }
+
+
+def t9_job1_43_134(rec: dict) -> dict:
+    """Test 9's job 1 on 43 and 134 (finding 29): test 7's rule on day 2, by the package's ramsey_xy_fit with the rule's
+    thresholds and the run's seeds (S's random starts 9304, P's 9305, the bootstrap SeedSequence([9306, qubit])), the
+    verdict read from its clauses by test 7's table."""
+    c = _gz(f"ibm_kingston/{rec['jobs']['1']['counts_file']['file']}")
+    ones = _ones_per_qubit(c)
+    quads = {"X": 0, "Y": 1}
+    n0 = int(c["shots"][0])
+    out = {}
+    for q in (43, 134):
+        j = c["qubits"].index(q)
+        y = np.zeros((2, 2, 64), int)
+        t = np.full((2, 64), np.nan)
+        for k, lab in enumerate(c["labels"]):
+            if lab["circuit"] in quads:
+                qd, i = quads[lab["circuit"]], int(lab["t_requested_us"])
+                y[lab["copy"] - 1, qd, i] = ones[k, j]
+                t[qd, i] = lab["t_requested_us"]
+        seeds = (T9_SEEDS["S_random_starts"], T9_SEEDS["P_random_starts"], T9_SEEDS["bootstrap_root"] + (q << 32))
+        r = wait.ramsey_xy_fit(t, y, n0, np.arange(0, 64, 2), seeds=seeds, n_boot=2000, **T9_RULE)
+        cl = r["clauses"]
+        pc = r["bootstrap"]["percentiles_5_50_95"]
+        if cl["S_within_the_margin_of_P_or_below"] and (
+            cl["delta_lower_bound_below_the_floor"] or cl["b_interval_reaches_an_edge"]
+        ):
+            v = "NO RESOLVED SPLIT"
+        elif (
+            cl["P_below_S_by_more_than_the_margin"]
+            and cl["delta_lower_bound_above_the_floor"]
+            and cl["b_interval_inside_the_edges"]
+        ):
+            v = "TWO FIXED FREQUENCIES"
+        else:
+            v = "NOT SETTLED"
+        out[str(q)] = {
+            "verdict": v,
+            "S": r["S"],
+            "P": r["P"],
+            "band": r["band"],
+            "clauses": cl,
+            "deciding": {
+                "held_out_error_S": r["S"]["held_out_error"],
+                "held_out_error_P": r["P"]["held_out_error"],
+                "P_minus_S": r["P"]["held_out_error"] - r["S"]["held_out_error"],
+                "delta_ci90_kHz": [pc["delta_MHz"][0] * 1e3, pc["delta_MHz"][2] * 1e3],
+                "b_ci90": [pc["b"][0], pc["b"][2]],
+            },
+            "bootstrap": {k: r["bootstrap"][k] for k in ("draws", "returned", "refits_failed", "percentiles_5_50_95")},
+        }
+    return out
+
+
+def kingston_spans(rec: dict) -> dict:
+    """Tests 8 and 9's execution spans: each job's durations, runs of positions and gaps, derived from the provider's
+    starts, stops and positions as A26 derived test 7's (t7_spans), with each job's shots per position from its
+    record (the estimate's shots over its positions)."""
+    runs = {"t8": ar.load("ibm_kingston/t8-survey.json"), "t9": ar.load("ibm_kingston/t9-day2-scan.json")}
+    out = []
+    for j in rec["jobs"]:
+        job = runs[j["test"]]["jobs"][str(j["job"])]
+        shots = job["pre_submission_estimate"]["shots"] // job["positions"]
+        out.append(t7_spans({"spans": j["spans"], "n_positions": j["n_positions"]}, shots))
+    return {"jobs": out}

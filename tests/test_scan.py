@@ -66,6 +66,21 @@ def test_amazon_patterns_leave_regions_numbers_and_counts_keys_alone():
     assert not hits("the learn: section")  # the resource-name pattern needs a word boundary
 
 
+def test_the_seed_lists_and_the_field_name_of_finding_29_pass_and_nothing_else():
+    """Amendment A27: a bootstrap's seed list as test 8's fits record it, and one field name of test 11's analysis
+    record, are not identifiers; the same twelve digits outside such a list, and another name of that length, are."""
+    entropy = "1846" + "83602036"
+    assert not hits('"seeds": [\n      8304,\n      8305,\n      ' + entropy + "\n     ]")
+    assert "aws-account-number" in hits('"seed": ' + entropy)
+    assert "aws-account-number" in hits('"seeds": [8304, ' + entropy + "]")
+    name = "weight_switches_within_spans_of_jobs_2_and_" + "3"
+    assert len(name) == 44 and not hits(f'"{name}": 0')
+    assert "ibm-api-key-44" in hits(f'"{name[:-1]}4": 0')
+    name = "phase_switches_not_within_0p6_of_a_half_tur" + "n"  # A27, ruling R2: test 12's record
+    assert len(name) == 44 and not hits(f'"{name}": []') and not hits(f'{{\\"{name}\\": x}}')
+    assert "ibm-api-key-44" in hits(f'"{name[:-1]}m": []')
+
+
 def test_the_bot_address_is_allowed_and_nothing_else():
     """Amendment A3, 4.1: GitHub's public workflow address passes; any other address, a bot's too, is flagged."""
     assert not hits('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"')

@@ -1,0 +1,11 @@
+{
+  "python": "3.14.8 (main, Sep 30 2026, 17:55:09) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "float_type": "float64",
+  "model_check_seed": 310017,
+  "model_check_draws": 1000,
+  "scientific_inputs": "input directory only",
+  "runtime_only": "Installed NumPy and SciPy environment; no project scientific files imported"
+}
