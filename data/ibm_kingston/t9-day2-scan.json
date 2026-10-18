@@ -158,7 +158,12 @@
     },
     "what": "the analysis record of one job as the run wrote it, every qubit's fits, held-out errors, bootstrap percentiles, clauses, verdict, copies check, weight in execution order and readout, compressed here with gzip (no name, time 0) from the hand-back's file, whose SHA-256 it keeps (uncompressed)"
    }
-  ]
+  ],
+  "desk_check": {
+   "file": "desk-check-t9.md",
+   "sha256": "b2115926c503296c6440451bb4b7777c31c83cdb7a2d61764f342f0aed7ca180",
+   "note": "the rule's desk check as the runner wrote it, copied as read: it is not in its hand-back's SHA256SUMS, so its SHA-256 is the one read here (Amendment A27, ruling R1, item 11)"
+  }
  },
  "jobs": {
   "0": {

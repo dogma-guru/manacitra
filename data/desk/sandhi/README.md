@@ -1,6 +1,6 @@
 # Sandhi: the gated states
 
-The desk model of finding 29 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-29)): a kinetic description of the records of tests 7 to 11 on ibm_fez and ibm_kingston, with five fitted rates: a frequency change within an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change within a span. It was fitted on the desk, from a bundle of those tests' records and nothing else, with no hardware. It is not a run record and not counts of any device. Its report carries three sentences:
+The desk model of finding 29 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-29)): a kinetic description of the records of tests 7 to 11 on ibm_fez and ibm_kingston, with five fitted rates: a frequency change between adjacent repeats of an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change between adjacent repeats of a span. It was fitted on the desk, from a bundle of those tests' records and nothing else, with no hardware. It is not a run record and not counts of any device. Its report carries three sentences:
 
 > "The model is a kinetic description; it names no cause." "A record below its own floor is censored, not absent." "The predictions are the model's, written before the run they predict, and they are what can prove it wrong."
 
@@ -75,7 +75,14 @@ The replacements:
 | `shuffled-stamp-ledger.json` | 16,905,551 | `0190303cea8602b3b665b11da00b6224523c5c46a4bbc5b70c453e2a6c00907d` |
 | `normalized-trials.json` | 25,072,515 | `184303bb1067942d39a6ab4652da31fd489f48d1dc5e94cc164bf5cce3c6fab1` |
 
-**Not published:** three files of the delivery, each listed in `v3.1/SHA256SUMS`. `run.log` is the run's command record; it names the desk runner's service and the paths of the runner's own folders. `events-model-01-v3.json` and `frequency-ledger.json`, the event ledgers, each carry one field that records the command as run, with the path of the runner's environment. The files are hashed records, so they are not edited here. Also not here: the run's copy of its input (`input/`, the records of tests 7 to 11 as the bundle held them; the published records are in `../../ibm_fez/` and `../../ibm_kingston/`), its command logs, its notes and its audits.
+Two ledgers are attached as copies, each with one change (Amendment A27, ruling R1): its one `command` field, which recorded the command as run with the path of the runner's environment, is written "[the desk runner's environment]". Every other byte is as delivered. The SHA-256 of each as the run hashed it, in `v3.1/SHA256SUMS`, and as published:
+
+| file | bytes as published | SHA-256 as hashed in the run | SHA-256 as published |
+|---|---|---|---|
+| `events-model-01-v3.json` | 56,420,073 | `1f7e1557fd5c2200d5bf7ce510eedd763e57e662ead175cffc2d3b014f066afa` | `000a75d40761f6f28ce9221134fe700d3a883538ffbb89dbd1346259e8350618` |
+| `frequency-ledger.json` | 67,327,928 | `d426efb2afc0fb1cd06c73b7e4601c76fae73d9e651132fe1929569e5888fde0` | `14ceaf554d9a843d35c72b406fd6d9b6814eb7f8f48a559f56fe2d574043b73f` |
+
+**Not published:** `run.log`, the run's command record (SHA-256 `539f846fa08b20dfc615e3cab3331a57b3f49ffa3adb91c4b5b4960d0aaec662`, in `v3.1/SHA256SUMS`); it names the desk runner's service and the paths of the runner's own folders throughout, and it is not a record anything is recomputed from. Also not here: the run's copy of its input (`input/`, the records of tests 7 to 11 as the bundle held them; the published records are in `../../ibm_fez/` and `../../ibm_kingston/`), its command logs, its notes and its audits.
 
 **Rerunning it.** The run's own `README.md` gives the commands, in order, from the run's folder with its input copy beside it, under Python 3.14.8, NumPy 2.5.4 and SciPy 1.18.1. The scripts read only that folder.
 

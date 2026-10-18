@@ -2352,7 +2352,8 @@ def test_the_readme_opens_with_the_latest_findings():
     report = (archive.data_dir() / "desk/sandhi/v3.1/report-model-01-v3.md").read_text()
     assert "Stamp pair 1 is 16 / 47" in report and abs(16 / 47 - 1 / 3) < 0.02
     assert (
-        "Read by the provider's execution record, within an execution span nothing changed above each design's floor, "
+        "Read by the provider's execution record, between adjacent repeats of an execution span nothing changed above "
+        "each design's floor, "
         "at the boundaries between spans the weight of two-line qubits did, and across a calibration stamp a third of "
         "one chip moved." in flat
     )
@@ -3984,7 +3985,7 @@ def test_finding_28_execution_spans():
     assert "A provider may execute one job as several spans" in method
     assert "the copies check is reported split by whether a circuit's two copies ran in the same span." in method
     page = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
-    assert 'pytest tests/test_reproduction.py -k "execution spans"' in page
+    assert 'pytest tests/test_reproduction.py -k "spans and 7"' in page  # A27, R1, item 20: -k selects test 7's case
     log = " ".join((ROOT / "CHANGELOG.md").read_text().split())
     assert (
         "- Amendment A26: finding 28 reads the weight per execution span, after the provider's execution record" in log
@@ -4112,7 +4113,10 @@ def test_finding_29():
     t_within = sum(q["within_time_s"] for q in recs if q["usable"])
     assert f"{round(t_within):,}" == "17,398" and "17,398 qubit-seconds" in item
     per = [v for q in recs for v in q["repeat_period_s"].values() if v]
-    assert (_q(min(per), 2), _q(max(per), 2)) == ("0.58", "0.65") and "a repeat clock of 0.58 to 0.65 s" in item
+    assert (_q(min(per), 2), _q(max(per), 2)) == (
+        "0.58",
+        "0.65",
+    ) and "a span's duration over its repeats being 0.58 to 0.65 s" in item
     # test 11
     an = t11["archived"]["analysis"]
     j1 = an["jobs"]["1"]

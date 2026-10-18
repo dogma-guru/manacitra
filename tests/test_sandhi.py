@@ -22,6 +22,12 @@ PREDICTIONS = {
     "predictions-model-01-v3.md": "745059e38db0e54f4bcef2bc8cad17a2fde40223f0a1dde75982a621817a38a3",
     "predictions-model-01-v3.json": "02b8003461f948991217be683bc0706f611da57ac4e03d53ca8745274fc019b4",
 }
+#: The two ledgers attached to the release as copies, their one `command` field written "[the desk runner's
+#: environment]" (A27, ruling R1, item 4): the SHA-256 of each copy as published
+PUBLISHED = {
+    "events-model-01-v3.json": "000a75d40761f6f28ce9221134fe700d3a883538ffbb89dbd1346259e8350618",
+    "frequency-ledger.json": "14ceaf554d9a843d35c72b406fd6d9b6814eb7f8f48a559f56fe2d574043b73f",
+}
 #: The frequency counts at 4 kHz the kickoff names, per job: (within-span events, trials, boundary events, trials)
 FREQUENCY = {
     "9, job 2": (0, 509, 0, 77),
@@ -62,6 +68,8 @@ def test_the_run_is_published_as_delivered():
         assert _sha(k) in readme, k.name
     for held in ("run.log", "events-model-01-v3.json", "frequency-ledger.json"):
         assert held in sums and not (RUN / held).exists() and f"`{held}`" in readme
+    for name, h in PUBLISHED.items():
+        assert sums[name] in readme and h in readme, name  # both hashes of each copy (A27, R1, item 4)
 
 
 def test_the_report_carries_the_counts_finding_29_quotes():
@@ -133,12 +141,13 @@ LEDGERS = os.environ.get("MANACITRA_SANDHI_LEDGERS")
 
 @pytest.mark.skipif(not LEDGERS, reason="needs the ledgers (MANACITRA_SANDHI_LEDGERS, a folder holding them)")
 def test_every_count_from_the_ledgers():
-    """From the ledgers themselves, each first checked against the run's SHA256SUMS: the frequency counts at 4 kHz per
+    """From the ledgers themselves, each first checked against the run's SHA256SUMS or, for a copy attached to the
+    release, against its published SHA-256: the frequency counts at 4 kHz per
     job, within spans and at their boundaries, and the weight boundaries of the shuffled jobs, 16 of 38 at the record's
     resolution and 11 of 38 at 0.10."""
     d, sums = Path(LEDGERS), _sums()
     for name in ("frequency-ledger.json", "shuffled-stamp-ledger.json"):
-        assert _sha(d / name) == sums[name], name
+        assert _sha(d / name) in (sums[name], PUBLISHED.get(name)), name
     rows = json.loads((d / "frequency-ledger.json").read_text())["rows"]
     for job, want in FREQUENCY.items():
         t, j = (int(x) for x in re.findall(r"\d+", job))

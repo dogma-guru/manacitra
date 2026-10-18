@@ -3989,7 +3989,8 @@ it recomputes every frequency count and the 38 shuffled weight boundaries from t
   commits tests 8 to 11 were built at and the lines that reproduce them; `data/README.md`, the five records, the files
   beside them, their formats and what was changed when copying; `CHANGELOG.md`, `## 0.9.0 (unreleased)` with the lead
   the kickoff fixed and the A27 entry.
-- **Not made:** the two figures the kickoff offers. They are left for a later amendment.
+- **Not made:** the two figures the kickoff offers. By ruling R1 (item 15) they stay out of 0.9.0, and come back
+  under their own ruling after test 13.
 
 **Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A27-review-packet.md`), with
 its reason.
@@ -4001,3 +4002,21 @@ its reason.
 - **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
 - **The DCO check:** clean on the branch.
 - **`data/SHA256SUMS`:** gains the new files. The signing workflow signs them on `main` after a merge.
+
+**Ruling R1 (18 October 2026, the author's go given in chat: "I approve r1 for a27").** It answers the packet's
+twenty-two questions and adds a twenty-third. Accepted as built: test 8's hash recorded before its run and posted after
+it (1); the fits files kept in the tree as gzip copies (2); the counts as gzip (3); the model's scorecard published as
+its output (5); the spans' sizes, the floors and test 11's time as the records give them (6, 8, 9); the commits of the
+reruns (10); test 9's recompute and the scope of the recompute (12, 13); the scorecard as computed facts (14); the
+kickoffs rows, the limits line, the scan's two exact forms, Sandhi's rerun line and the title (16, 18, 19, 21, 22).
+Changed: two of the model's ledgers attached to the release as copies with their one `command` field written "[the desk
+runner's environment]", both hashes in the folder's README, and `run.log` held (4); the changelog's lead takes the
+runner's proposal (7); test 9's desk check copied as read, its SHA-256 in its record (11); A26's rerun line corrected to
+`-k "spans and 7"` (20); the figures left out of 0.9.0 (15). Item 23, from test 12's recount: every sentence that stated
+or implied that nothing changed inside a span in time, that the state held during a span, or that the monitor resolves
+time within a span is recast as what the rules counted, switches between adjacent repeats of a span above each design's
+floor and the level per span, the numbers and the verdict words unchanged: twenty sentences in finding 29, the README,
+`docs/method.md`, the changelog and Sandhi's README, listed before and after in the hand-back's `A27-R1-sentences.md`.
+Two sentences are added: test 12's place beside the record, in finding 29's close, and a bullet in what has not been
+shown on the order in which a span's shots ran. Two tests that quote recast sentences follow them. The pull request is
+held as a draft pending ruling R2, which follows test 13's per-shot read.
