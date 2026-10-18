@@ -807,6 +807,7 @@ RETIRED = [
     "the check runs with the neighbours active",  # A24: the README opens with the check at the peak phase
     "To be released as 0.7.0",  # the 0.7.0 release: released, with its date
     "To be released as 0.8.0",  # the 0.8.0 release: released, with its date
+    "To be released as 0.9.0",  # the 0.9.0 release: released, with its date
     "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
@@ -2321,7 +2322,7 @@ def test_the_readme_opens_with_the_latest_findings():
     that every weight boundary read in the monitor jobs shows no change against a time average's error, that a third of
     one chip moved across a stamp, that the desk model is set down, and that no cause is named, in at most five
     sentences, each claim checked here against the records. It carries none of the words the kickoff keeps out, and
-    carries "To be released as 0.9.0." until the release pull request dates it."""
+    carries "Released as 0.9.0 on 18 October 2026.", as the release pull request dated it."""
     import re
 
     front = (ROOT / "README.md").read_text()
@@ -2401,7 +2402,10 @@ def test_the_readme_opens_with_the_latest_findings():
         "named." in flat
     )
     assert (archive.data_dir() / "desk/sandhi/v3.1/predictions-model-01-v3.md").exists()
-    assert flat.endswith("To be released as 0.9.0.")  # the release pull request dates it
+    assert flat.endswith("Released as 0.9.0 on 18 October 2026.")  # the release pull request dated it
+    log = (ROOT / "CHANGELOG.md").read_text()
+    assert log.index("## 0.9.0 (18 October 2026)") < log.index("## 0.8.0 (17 October 2026)")
+    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
     for word in ("parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "steady", "telegraph", "defect"):
         assert word not in flat.lower(), word
 

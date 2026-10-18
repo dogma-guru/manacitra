@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 (unreleased)
+## 0.9.0 (18 October 2026)
 
 Nine records on ibm_kingston and ibm_fez, eight of them tests under rules hashed before each run, asked when a qubit's Ramsey fringe changes within a job. Read by the provider's execution record, every job of 248 to 300 circuits ran as three spans; read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span whose estimated error is not the shots'. Under that error all 17 weight boundaries read in the monitor jobs show NO CHANGE, where the rules' shot-noise errors had put 143's up to 35.1 apart; between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit, while the split on 143 moved by a tenth of a kilohertz between days. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. `manacitra.wait` gains the monitor circuits, the span assignment from the provider's execution record, and the per-repeat phase, length and antiphase weight; thresholds and verdicts are the caller's.
 

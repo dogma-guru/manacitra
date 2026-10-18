@@ -4100,3 +4100,63 @@ what a test computes.
 - **M1.** A new pull request description, written around R2 and R3, with the first kept under a dated heading.
 - **The desk check** of test 15 is described in the data index as an approximate calibration of its model.
   1,019 tests pass and 1 is skipped (the ledger test), as at `dd769b3`; R3 adds checks inside existing tests.
+
+## 48. Release v0.9.0 (18 October 2026)
+
+**What it carries.** Amendment A27 (pull request 60), section 47: finding 29, "The shared state within a span: when a
+qubit's fringe changes within a job", on tests 8 to 15; the records of those tests; and the desk model Sandhi, set down
+at version 3, under rulings R1 to R3, the last applying an independent review. Pull request 60 was merged as `be85d22`
+with a merge commit, on the author's go ("merge it") after every check had passed on its head, `04b8e72`. Its new and
+changed data files were signed on `main` in the bundle commit `374cbc4`, which changes bundles only (94 new, 2 signed
+again).
+
+**The tree check on `374cbc4`,** by the author's next go:
+- All 382 files in `data/` have a bundle, and all 382 verified offline against `…/sign.yml@refs/heads/main`.
+- The negative control, a data file against `@refs/tags/v0.7.0`, fails as it should.
+- The tool was `sigstore` 4.5.0, installed by the author's standing leave (A20, C2) in a throwaway environment
+  outside the repository, with the same wheel as 0.7.0's and 0.8.0's checks.
+- The git identity scan is clean.
+- The sign-off check over `d57fe39..374cbc4` flags only GitHub's merge commit `be85d22`, as at 0.8.0 (section 45); the
+  bot's bundle commit is exempt, and every contributor commit is signed off.
+
+**The version, by the author's rulings** (17 and 18 October: the kickoff of A27, its rulings R1 to R3, and the goes
+for the merge, the tree check and this pull request, given in chat), is 0.9.0.
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (`version`, and `date-released` 2026-10-18)
+  and the README's citation. The changelog heading `## 0.9.0 (unreleased)` becomes `## 0.9.0 (18 October 2026)`, and
+  the README's "To be released as 0.9.0." becomes "Released as 0.9.0 on 18 October 2026.". The date is the UTC date,
+  as every date of a run and a record here is.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`.
+  The README's sentence and the changelog heading are checked by `test_the_readme_opens_with_the_latest_findings`, and
+  "To be released as 0.9.0" joins the retired phrases.
+- **The package.** Since 0.8.0, `src/` changes only in `manacitra.wait` and in the version line. `manacitra.wait` gains
+  five public functions (`ramsey_monitor`, `span_assignment`, `monitor_phase`, `median_phase` and `monitor_weight`),
+  one constant (`RAMSEY_MONITOR_READOUT`) and three private helpers. The packages build as `manacitra-0.9.0`, and
+  neither the wheel nor the sdist contains `data/`.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.8.0's DOI until Zenodo has minted v0.9.0's
+(release step 4).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+
+**One test fixed.** `test_the_run_is_published_as_delivered` checked every file of Sandhi's `kickoffs/` folder
+against the folder README. Once the sign run on `main` had put a bundle beside each file, it read the bundles as
+kickoffs and failed on `main`'s head, `374cbc4`, since pull request 60's checks had run before the bundles existed. It
+now leaves out the signing workflow's bundles, as `manacitra.archive.is_bundle` names them, as 0.8.0's release did
+for the power check's folder (section 45).
+
+**The release assets.** The desk model's three large ledgers and the two ledger copies of ruling R1, as Sandhi's
+folder README lists them with their sizes and SHA-256. They are attached to the release at step 3, and each is checked
+from a fresh download against the SHA-256 that README gives. The workflow's `build-release` job signs the packages it
+builds and their `SHA256SUMS`; it does not build these files.
+
+**The release path** is the release steps in `docs/index.md` section 9, each on the author's go:
+1. the merge of this pull request with a merge commit, then signing on `main`;
+2. the tree check against `…/sign.yml@refs/heads/main` and the git identity scan, then the annotated tag, on the bundle
+   commit if there is one, otherwise on the merge commit;
+3. the release, with its assets' signatures checked from a fresh download against `@refs/tags/v0.9.0`, and the
+   negative control against `@refs/tags/v0.8.0`, and the five model assets checked against their SHA-256;
+4. the version DOI, once Zenodo has minted it (`docs/v0.9.0-doi`).
+
+The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken. The
+hand-back is `release-0.9.0-report.md`.
