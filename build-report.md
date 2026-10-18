@@ -4160,3 +4160,44 @@ builds and their `SHA256SUMS`; it does not build these files.
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken. The
 hand-back is `release-0.9.0-report.md`.
+
+**The release (18 October 2026), each step by the author's go given in chat on 18 October (UTC).**
+- **The merge of the amendment.** Pull request 60 (A27) was marked ready and merged as `be85d22` with a merge commit,
+  at 11:29:24 UTC, after every check had passed on its head, `04b8e72`. Signing on `main` wrote the bundles of its new
+  and changed data files in `374cbc4`.
+- **The first tree check,** at 12:39:01 to 12:40:14 UTC, on `374cbc4`: all 382 files in `data/` have a bundle, and all
+  382 gave OK offline against `…/sign.yml@refs/heads/main`. The negative control: `data/ibm_fez/t15-error-model-read.json`
+  against `…/sign.yml@refs/tags/v0.7.0` fails (exit status 1), its certificate naming `…/sign.yml@refs/heads/main`. The
+  git identity scan was clean (174 reachable commits).
+- **The merge of the release.** Pull request 64 (this release) was merged as `1dd778c` with a merge commit, at 14:01:45
+  UTC, after every check had passed on its head, `ef7c39b`. No signed file changed, and the signing run on `1dd778c`
+  committed nothing, so the tag is on the merge commit.
+- **The tree check, before tagging,** at 15:29:15 to 15:30:26 UTC, on `1dd778c`: all 382 files in `data/` have a bundle,
+  and all 382 gave OK offline against `…/sign.yml@refs/heads/main`; `data/` is unchanged since `374cbc4`. The negative
+  control: `data/ibm_fez/t13-per-shot-read.json` against `…/sign.yml@refs/tags/v0.8.0` fails (exit status 1). The git
+  identity scan was clean (176 reachable commits). The DCO check over `d57fe39..1dd778c` names GitHub's two merge
+  commits, `be85d22` and `1dd778c`, which have no Signed-off-by line, as at 0.8.0; every contributor commit is signed off.
+- **The tool.** `sigstore` 4.5.0 (wheel `f045b207…`), with Python 3.14.8 and pip 26.2.1 on macOS (arm64), installed by
+  the author's standing leave (A20, C2) into a throwaway environment outside the repository: its 31 wheels downloaded
+  first, then installed from that folder alone, `pip check` clean, no credentials. The same environment served both
+  tree checks and the release's verification, and was deleted afterwards.
+- **The tag and the release.** `v0.9.0` is annotated and unsigned, as every earlier tag (tag object `8400a6e`, message
+  "Manacitra 0.9.0"), on `1dd778c`, at 15:31:37 UTC. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.9.0>, published at 15:39:25 UTC, with the changelog's 0.9.0
+  entry as its notes and the desk model's five ledgers attached. Before they were attached, each one's size and SHA-256
+  were checked against Sandhi's folder README at the tag, and the identifier scan was clean on all five.
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, GitHub's two source archives and the five ledgers, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 15:41:37 UTC, each file checked one at a time:
+  - All ten files gave exit status 0 offline against `…/sign.yml@refs/tags/v0.9.0`: the wheel (151,606 bytes), the sdist
+    (321,084 bytes), `SHA256SUMS`, the five ledgers and GitHub's two source archives.
+  - `shasum -a 256 -c SHA256SUMS` passes on both packages, and each ledger's SHA-256 is Sandhi's README's.
+  - The negative control: against `…@refs/tags/v0.8.0`, all ten fail (exit status 1).
+  - The wheel carries version 0.9.0, and neither package contains `data/`.
+- **Zenodo.** GitHub's release events reached Zenodo: `created` (at 15:34:39 UTC, when the release was begun) and
+  `released` were answered with HTTP 202, and `published` with HTTP 409, as at 0.8.0. Zenodo archived v0.9.0 with its own
+  DOI, `10.5281/zenodo.23454906` (record created 15:39:40 UTC, its publication date 2026-10-18, linked to the `v0.9.0`
+  tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it. It is the only v0.9.0 record under
+  the concept DOI.
+- **Step 4.** The README's version-DOI parenthetical names v0.9.0's DOI, `CITATION.cff` lists it among its `identifiers`
+  beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
