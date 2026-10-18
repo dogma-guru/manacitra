@@ -1,6 +1,10 @@
 # Sandhi: the gated states
 
-The desk model of finding 29 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-29)): a kinetic description of the records of tests 7 to 11 on ibm_fez and ibm_kingston, with five fitted rates: a frequency change between adjacent repeats of an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change between adjacent repeats of a span. It was fitted on the desk, from a bundle of those tests' records and nothing else, with no hardware. It is not a run record and not counts of any device. Its report carries three sentences:
+The desk model of finding 29 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-29)): a kinetic description of the records of tests 7 to 11 on ibm_fez and ibm_kingston, with five fitted rates: a frequency change between adjacent repeats of an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change between adjacent repeats of a span. It was fitted on the desk, from a bundle of those tests' records and nothing else, with no hardware. It is not a run record and not counts of any device.
+
+**Set down at version 3.** By ruling R2 of Amendment A27 (18 October 2026), after tests 13 and 15 read the per-shot record, the model is set down at version 3, its files kept here as published. Where tests 13 and 15 read every circuit of a span sharing the state at the same shot index, adjacent repeats of a span average the same stretch of time, so there its two channels within a span count what the design cannot make nonzero; and its channel for the weight at a span boundary was fitted to level differences read at the shots' binomial error, where the error of a span's weight is that of a time average (finding 29, part (d)). No later version is published here.
+
+Its report carries three sentences:
 
 > "The model is a kinetic description; it names no cause." "A record below its own floor is censored, not absent." "The predictions are the model's, written before the run they predict, and they are what can prove it wrong."
 
@@ -13,7 +17,7 @@ The desk model of finding 29 ([`../../../docs/findings.md`](../../../docs/findin
 | `v3.1/predictions-model-01-v3.md` | `745059e38db0e54f4bcef2bc8cad17a2fde40223f0a1dde75982a621817a38a3` |
 | `v3.1/predictions-model-01-v3.json` | `02b8003461f948991217be683bc0706f611da57ac4e03d53ca8745274fc019b4` |
 
-The author posts these two digests as a public issue before the next hardware run on 143; at this writing that issue is pending.
+The author posted these two digests with test 12's rule in [issue 59](https://github.com/dogma-guru/manacitra/issues/59), before test 12's run on 143 on 18 October 2026.
 
 ## The kickoffs
 

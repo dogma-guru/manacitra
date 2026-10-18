@@ -4020,3 +4020,53 @@ floor and the level per span, the numbers and the verdict words unchanged: twent
 Two sentences are added: test 12's place beside the record, in finding 29's close, and a bullet in what has not been
 shown on the order in which a span's shots ran. Two tests that quote recast sentences follow them. The pull request is
 held as a draft pending ruling R2, which follows test 13's per-shot read.
+
+**Ruling R2 (18 October 2026, approved by the author in chat: "I approve A27 r2"), and its step two (approved by the
+author about 07:13 UTC: "Approve and make the gated states change"; the go for it in chat: "Go as you recommend").**
+Part A committed R1 (above). Part B follows tests 13 and 15. Test 13
+([issue 61](https://github.com/dogma-guru/manacitra/issues/61)) read the per-shot results of test 11's monitor jobs and
+test 12's: within an execution span every circuit sees the same state at the same shot index (SHARED in all nine
+spans). Test 15 ([issue 63](https://github.com/dogma-guru/manacitra/issues/63)) read every monitor job on the record the
+same way and fixed the error of a span's weight as that of a time average, √(2 b(1 − b) τ_c / T); under it, all 17
+boundaries read are NO CHANGE.
+- **A correction, recorded as one.** The rules of tests 10, 11, 12 and 14, and A26's span readings, propagated the
+  shots' binomial noise as the error of a level per span. With the state shared within a span, that is not its error.
+  Every sentence built on it that read a weight level difference at a span boundary as a change is recast: in finding
+  29, the README, `docs/method.md`, the changelog and Sandhi's README. The verdict words and counts stand as their
+  rules computed them, each rule's error named as what it was. No rule file is changed. The ruling's own text erred in
+  five places, recorded in its step two: (f)'s literature, "on the record" for "of a monitor job", "1.6" for 1.16,
+  "50 to 250" for T/(2τ_c), and test 14's attribution past its NOT USABLE gate.
+- **Finding 29** is rewritten in the ruling's order: the records with their verdicts, then (a) the spans, (b) the
+  state shared within a span, (c) the two lines on 143 as two states seen in turn, (d) the error of a span's weight,
+  with test 15's table of every boundary in all its columns, the published shot-noise ratios among them, (e) the frame
+  and the stamps, and (f) Sandhi set down at version 3, its files kept as published. The ruling's comparison with the
+  literature is left out: A20's citation rule and the kickoff's word ban stand, and the comparison waits for a
+  literature pass under A20. "True by construction" is said only of the jobs that read SHARED; test 10's job 3, which
+  holds no qubit that can show the sharing, and test 9's scans keep their zero counts with the returned-order caveat.
+  Where the README, the thread row, the changelog lead, Sandhi's README and the bullet on the order of a span's shots
+  say that a span's circuits share the state, they say on which qubits: those where tests 13 and 15 read SHARED.
+  One number departs from test 15's report: the longest mean run on 143's upper line is 0.3845 s in its record, 0.38
+  at two places, where the report gives 0.39.
+- **The name, retired.** By the author's ruling the finding's first name, "the gated states", is retired, a dated
+  refusal: the record does not show gates; it shows a state shared within a span, switching in tenths of a second.
+  The finding is now "The shared state within a span: when a qubit's fringe changes within a job", in its title, its
+  row in the findings table, the README's heading, anchor and thread row, and the tests that quote them. "The gated
+  states" stays where it was the name at the time: Sandhi's version 3 (its README's heading, its kickoffs' file
+  names), this section's heading and the branch's name. The pull request's title follows the finding's.
+- **Finding 28** is not rewritten. It gains one sentence at its end, pointing to test 15's borrowed reading of test 7's
+  two boundaries (BETWEEN, 2.65; NO CHANGE, 0.71), and its two bullets in what has not been shown gain the clause
+  "read again under finding 29, part (d)".
+- **The data.** In `data/ibm_fez/`: tests 12 and 14's records, with their counts (`t12-short-monitor.json`,
+  `t14-in-phase-control.json`, test 14's job machine time left out), and tests 13 and 15's
+  (`t13-per-shot-read.json`, `t15-error-model-read.json`), each naming every per-shot array by its SHA-256, the arrays
+  not published. Beside them: the four rules byte for byte, each checked against its sidecar and its issue (59, 61, 62
+  and 63); their desk checks, hash checks, rulings, tables and test 15's logs, each checked against its hand-back's
+  `SHA256SUMS` first. The four logs are published as `.log.txt`, their content byte for byte, each record giving the
+  hand-back's name and SHA-256 beside the published name. Every file of the four hand-backs is in its `SHA256SUMS`.
+  There is no recompute case for tests 12 to 15: every field of their records is excluded with its reason, and
+  finding 29's numbers from them are checked by `tests/test_readme_numbers.py`. The identifier scan allows one exact
+  form more: a field name of test 12's analysis record.
+- **The tests.** `test_finding_29` checks the new sentences' numbers against the four records, and test 15's table
+  row by row against its `boundaries`; its word check strips exactly `` `telegraph_sd` ``, the one quoted field name.
+  The README's opening, the dates, the thread table and the data README's count of job IDs follow the recast.
+  1,019 tests pass and 1 is skipped (the ledger test), against 1,007 and 1 at `8aebe1e`.

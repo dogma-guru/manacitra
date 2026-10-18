@@ -76,6 +76,9 @@ def test_the_seed_lists_and_the_field_name_of_finding_29_pass_and_nothing_else()
     name = "weight_switches_within_spans_of_jobs_2_and_" + "3"
     assert len(name) == 44 and not hits(f'"{name}": 0')
     assert "ibm-api-key-44" in hits(f'"{name[:-1]}4": 0')
+    name = "phase_switches_not_within_0p6_of_a_half_tur" + "n"  # A27, ruling R2: test 12's record
+    assert len(name) == 44 and not hits(f'"{name}": []') and not hits(f'{{\\"{name}\\": x}}')
+    assert "ibm-api-key-44" in hits(f'"{name[:-1]}m": []')
 
 
 def test_the_bot_address_is_allowed_and_nothing_else():

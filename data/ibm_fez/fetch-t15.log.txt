@@ -1,0 +1,6 @@
+2026-10-18T02:22:38Z shots-t15-t10-job1: job db9q7phgv2cc73e5tqb0 status DONE; 300 positions; per-shot data available True; register ['c']; shots per position [1000]; num_bits [68]
+2026-10-18T02:22:41Z shots-t15-t10-job2: job db9q9i7i0auc73912jrg status DONE; 300 positions; per-shot data available True; register ['c']; shots per position [1000]; num_bits [68]
+2026-10-18T02:22:43Z shots-t15-t10-job3: job db9qb0ni0auc73912ljg status DONE; 300 positions; per-shot data available True; register ['c']; shots per position [1000]; num_bits [56]
+2026-10-18T02:22:48Z shots-t15-t14-job1: job dba2c1s24mrc7384pvdg status DONE; 248 positions; per-shot data available True; register ['c']; shots per position [500]; num_bits [1]
+2026-10-18T02:22:49Z shots-t15-t11-job1: job db9t6ek24mrc7384i83g status DONE; 260 positions; per-shot data available True; register ['c']; shots per position [1500]; num_bits [1]
+2026-10-18T02:22:50Z shots-t15-t9-job2: job db9obroc77vs7381pqe0 status DONE; 292 positions; per-shot data available True; register ['c']; shots per position [1000]; num_bits [67]

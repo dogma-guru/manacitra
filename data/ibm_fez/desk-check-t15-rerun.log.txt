@@ -1,0 +1,9 @@
+start 2026-10-18T02:36:14Z
+b 0.344 tau_c 0.17s T 14.4s: duty mean 0.350; empirical sd of the span duty 0.071; formula with true tau 0.073; median of the rule's sd 0.073; recovered tau_c median 0.173s
+b 0.344 tau_c 0.5s T 14.4s: duty mean 0.349; empirical sd of the span duty 0.121; formula with true tau 0.125; median of the rule's sd 0.113; recovered tau_c median 0.432s
+b 0.206 tau_c 0.15s T 14.4s: duty mean 0.216; empirical sd of the span duty 0.059; formula with true tau 0.058; median of the rule's sd 0.060; recovered tau_c median 0.144s
+b 0.45 tau_c 0.17s T 14.4s: duty mean 0.450; empirical sd of the span duty 0.070; formula with true tau 0.076; median of the rule's sd 0.077; recovered tau_c median 0.173s
+boundary, no change (shift 0.000): {np.str_('BETWEEN'): np.float64(4.0), np.str_('CHANGE'): np.float64(0.5), np.str_('NO CHANGE'): np.float64(95.5)} percent
+boundary, change of three sd (shift 0.219): {np.str_('BETWEEN'): np.float64(30.8), np.str_('CHANGE'): np.float64(9.5), np.str_('NO CHANGE'): np.float64(59.8)} percent
+boundary, change of 0.137 (shift 0.137): {np.str_('BETWEEN'): np.float64(21.0), np.str_('CHANGE'): np.float64(4.8), np.str_('NO CHANGE'): np.float64(74.2)} percent
+end 2026-10-18T02:36:16Z

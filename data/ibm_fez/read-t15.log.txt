@@ -1,0 +1,77 @@
+t10-job1: counts check True
+t10-job2: counts check True
+t10-job3: counts check True
+t11-job2: counts check True
+t11-job3: counts check True
+t12-job1: counts check True
+t14-job1: counts check True
+t11-job1 beside: counts check True
+t9-job2 beside: counts check True
+{
+ "words": {
+  "t10-job1": "MIXED",
+  "t10-job2": "MIXED",
+  "t10-job3": "NOT SEPARABLE",
+  "t11-job2": "SHARED",
+  "t11-job3": "SHARED",
+  "t12-job1": "SHARED",
+  "t14-job1": "SHARED"
+ },
+ "table_counts": {
+  "ibm_fez|t11-job2": {
+   "NO CHANGE": 2
+  },
+  "ibm_fez|t11-job3": {
+   "NO CHANGE": 2
+  },
+  "ibm_fez|t12-job1": {
+   "NO CHANGE": 2
+  },
+  "ibm_fez|t14-job1": {
+   "NO CHANGE": 2
+  },
+  "ibm_kingston|t10-job1": {
+   "NO CHANGE": 4,
+   "NOT READ": 6
+  },
+  "ibm_kingston|t10-job2": {
+   "NO CHANGE": 5,
+   "NOT READ": 5
+  }
+ },
+ "by_processor": {
+  "ibm_kingston": {
+   "NO CHANGE": 9,
+   "NOT READ": 11
+  },
+  "ibm_fez": {
+   "NO CHANGE": 8
+  }
+ },
+ "between_jobs": [
+  [
+   [
+    "t11-job2",
+    "t11-job3"
+   ],
+   "NO CHANGE",
+   1.7654834301879758
+  ],
+  [
+   [
+    "t11-job3",
+    "t12-job1"
+   ],
+   "NO CHANGE",
+   0.1358711281929609
+  ],
+  [
+   [
+    "t12-job1",
+    "t14-job1"
+   ],
+   "NO CHANGE",
+   1.5566533392817323
+  ]
+ ]
+}
