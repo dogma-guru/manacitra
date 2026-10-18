@@ -8,7 +8,7 @@
 
 ## Latest finding: the shared state within a span
 
-Nine records on ibm_kingston and ibm_fez, eight of them tests under rules fixed before each run, asked when a qubit's fringe changes within a job ([finding 29](docs/findings.md#finding-29)). Read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span. Against that average's estimated error all 17 weight boundaries read in the monitor jobs show NO CHANGE, which is no evidence of a change and does not show the levels equal, while between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. To be released as 0.9.0.
+Nine records on ibm_kingston and ibm_fez, eight of them tests under rules fixed before each run, asked when a qubit's fringe changes within a job ([finding 29](docs/findings.md#finding-29)). Read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span. Against that average's estimated error all 17 weight boundaries read in the monitor jobs show NO CHANGE, which is no evidence of a change and does not show the levels equal, while between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. Released as 0.9.0 on 18 October 2026.
 
 ## What it does
 
@@ -126,7 +126,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.8.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.9.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.8.0: [10.5281/zenodo.23440342](https://doi.org/10.5281/zenodo.23440342)).
 

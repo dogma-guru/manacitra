@@ -55,14 +55,13 @@ def test_the_run_is_published_as_delivered():
     """Every file of the run here matches its line in the run's own SHA256SUMS, the two prediction files carry the
     digests the folder's README gives, and the kickoffs carry no name of the desk runner's service."""
     sums = _sums()
-    files = [
-        p for p in RUN.rglob("*") if p.is_file() and p.name != "SHA256SUMS" and not p.name.endswith(".sigstore.json")
-    ]
+    files = [p for p in RUN.rglob("*") if p.is_file() and p.name != "SHA256SUMS" and not archive.is_bundle(p)]
     assert files and all(_sha(p) == sums[p.relative_to(RUN).as_posix()] for p in files)
     readme = (ROOT / "README.md").read_text()
     for name, h in PREDICTIONS.items():
         assert _sha(RUN / name) == h == sums[name] and h in readme
-    for k in (ROOT / "kickoffs").iterdir():
+    # the signing workflow's bundles (FILE.sigstore.json) sit beside the files on main, and are not the folder's files
+    for k in (p for p in (ROOT / "kickoffs").iterdir() if not archive.is_bundle(p)):
         text = k.read_text()
         assert not re.search(r"chat\s*gpt|open\s*ai", text, re.I), k.name
         assert _sha(k) in readme, k.name
