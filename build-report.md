@@ -3958,10 +3958,19 @@ test 11's analysis record.
 - "Test 11, day 2 and the monitor": job 1's fits, bootstrap, verdict, readings, weight per span and boundary changes by
   the functions the run used (`t7_ramsey_xy`, `t7_readings`, `t7_spans`, `t7_span_readings`) with its seeds; jobs 2 and
   3's phase and weight per repeat, switches, weight per span, boundary tables and verdicts by `monitor_phase` and
-  `monitor_weight`; the pooled verdicts and the gap: 8,644 fields, every one exact.
+  `monitor_weight`; the pooled verdicts and the gap: 8,605 fields. Job 1's analysis draws five random streams, as test
+  7's does, and A25's rule for test 7 is applied to it: the 39 fields that move by 8·10⁻⁴ or more over 200 other seeds
+  of those streams (the telegraph diagnostic's fit, the bootstrap intervals that reach 10⁻³, the counts of failed starts
+  and the periodogram's heights over its floor) are excluded with their movement, and 26 that move less are compared at
+  10⁻³; every other field is exact. The first push compared all of job 1's fields; on CI's Linux runners the largest
+  difference fell in two of the 39: S's count of failed starts, by 1, under Python 3.11, and a line of the telegraph
+  diagnostic, by 500 kHz, under 3.13.
 - "Test 9, job 1 on 43 and 134": the verdicts, the clauses and the band by `ramsey_xy_fit` with the run's seeds, exact.
   The fits' parameters and percentiles differ from the run's by up to 3.5·10⁻⁴ (multi-threaded; 6.3·10⁻⁷ with one thread
-  per library), the run having fitted on six workers; they are excluded with that movement.
+  per library), the run having fitted on six workers; they are excluded with that movement. Under 200 other seeds of its
+  three random streams both verdicts held every time, and on 134 the two clauses on delta's lower bound against the
+  5 kHz floor changed under 24: the bound, 35.06 kHz from the run's seeds, fell below the floor, to as low as 3.7 kHz.
+  Those two clauses are excluded with that movement; the verdicts, the band and the other clauses stay exact.
 - "Tests 8 and 9, the execution spans": each job's durations, runs of positions and gaps from the provider's record: 125
   fields, exact.
 Test 8's record has no recompute case: its 132 qubits' fits with 2,000 bootstrap draws each are kept as the run wrote
@@ -3985,7 +3994,7 @@ it recomputes every frequency count and the 38 shuffled weight boundaries from t
 **Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A27-review-packet.md`), with
 its reason.
 
-**The tests:** 1,007 pass and 1 is skipped (it needs the ledgers) pass, against 981 at `d57fe39`.
+**The tests:** 1,007 pass and 1 is skipped (it needs the ledgers), against 981 at `d57fe39`.
 
 **After the amendment.**
 - **Ruff:** clean.

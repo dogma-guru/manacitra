@@ -24992,8 +24992,6 @@
      "archived/analysis/jobs/1/analysis/deciding/held_out_error_S": {},
      "archived/analysis/jobs/1/analysis/deciding/held_out_error_P": {},
      "archived/analysis/jobs/1/analysis/deciding/P_minus_S": {},
-     "archived/analysis/jobs/1/analysis/deciding/delta_ci90_kHz": {},
-     "archived/analysis/jobs/1/analysis/deciding/b_ci90": {},
      "archived/analysis/jobs/1/analysis/deciding/clauses/S_within_0.01_of_P_or_smaller": {},
      "archived/analysis/jobs/1/analysis/deciding/clauses/P_smaller_than_S_by_more_than_0.01": {},
      "archived/analysis/jobs/1/analysis/deciding/clauses/delta_lower_bound_below_5_kHz": {},
@@ -25004,18 +25002,26 @@
      "archived/analysis/jobs/1/analysis/deciding/bootstrap_refits_failed_to_converge": {},
      "archived/analysis/jobs/1/analysis/fits/S/params/c": {},
      "archived/analysis/jobs/1/analysis/fits/S/params/A": {},
-     "archived/analysis/jobs/1/analysis/fits/S/params/tau_us": {},
+     "archived/analysis/jobs/1/analysis/fits/S/params/tau_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/fits/S/params/Delta_MHz": {},
-     "archived/analysis/jobs/1/analysis/fits/S/params/phi0_rad": {},
+     "archived/analysis/jobs/1/analysis/fits/S/params/phi0_rad": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/fits/S/chi2": {},
      "archived/analysis/jobs/1/analysis/fits/S/n_points": {},
      "archived/analysis/jobs/1/analysis/fits/S/dof": {},
      "archived/analysis/jobs/1/analysis/fits/S/chi2_per_dof": {},
-     "archived/analysis/jobs/1/analysis/fits/S/largest_abs_residual_sigma": {},
+     "archived/analysis/jobs/1/analysis/fits/S/largest_abs_residual_sigma": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/fits/S/n_starts": {},
      "archived/analysis/jobs/1/analysis/fits/P/params/c": {},
      "archived/analysis/jobs/1/analysis/fits/P/params/A": {},
-     "archived/analysis/jobs/1/analysis/fits/P/params/tau_prime_us": {},
+     "archived/analysis/jobs/1/analysis/fits/P/params/tau_prime_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/fits/P/params/Delta0_MHz": {},
      "archived/analysis/jobs/1/analysis/fits/P/params/phi0_rad": {},
      "archived/analysis/jobs/1/analysis/fits/P/params/delta_MHz": {},
@@ -25031,33 +25037,17 @@
      "archived/analysis/jobs/1/analysis/fits/P_lines/P_presses_band": {},
      "archived/analysis/jobs/1/analysis/fits/P_lines/P_b_at_edge": {},
      "archived/analysis/jobs/1/analysis/fits/starts/S/run": {},
-     "archived/analysis/jobs/1/analysis/fits/starts/S/failed_to_converge": {},
      "archived/analysis/jobs/1/analysis/fits/starts/P/run": {},
-     "archived/analysis/jobs/1/analysis/fits/starts/P/failed_to_converge": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/c": {},
+     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/c": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/A": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/tau_prime_us": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/Delta0_MHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/phi0_rad": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/gamma_per_us": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/delta_MHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/chi2": {},
+     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/params/phi0_rad": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/n_points": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/dof": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/chi2_per_dof": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/largest_abs_residual_sigma": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/fit/n_starts": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/held_out_error": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/gamma_per_us": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/gamma_ci90_per_us": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/gamma_per_s": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/gamma_ci90_per_s": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/delta_T_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/delta_T_ci90_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/lines_against_the_band/T_lines_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/lines_against_the_band/T_reach_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/lines_against_the_band/T_outside_band": {},
-     "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/lines_against_the_band/T_presses_band": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/published_rates_per_s/parity switching on IBM Falcon devices": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/published_rates_per_s/Riste et al.": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/published_rates_per_s/two-level-system fluctuators": {},
@@ -25066,7 +25056,6 @@
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/refits_failed": {},
      "archived/analysis/jobs/1/analysis/beside/1_telegraph_T/note": {},
      "archived/analysis/jobs/1/analysis/beside/2_weight/b": {},
-     "archived/analysis/jobs/1/analysis/beside/2_weight/b_ci90": {},
      "archived/analysis/jobs/1/analysis/beside/2_weight/equal_weight": {},
      "archived/analysis/jobs/1/analysis/beside/2_weight/shirizly_exception": {},
      "archived/analysis/jobs/1/analysis/beside/2_weight/ci_contains_0.5": {},
@@ -25105,78 +25094,89 @@
      "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/wait_test_wait_us": {},
      "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/t_max_us": {},
      "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/split_with_first_node_at_the_span_end_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/delta_ci90_upper_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/decay_absorbed_per_us": {},
-     "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/tau_S_us": {},
-     "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/tau_prime_P_us": {},
+     "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/tau_S_us": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/3_beat_nodes/tau_prime_P_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/means/20_22": {},
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/means/31_33": {},
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/means/41_43": {},
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/means/52_54": {},
-     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se": {},
-     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se": {},
-     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se": {},
-     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se": {},
+     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/reading": {},
      "archived/analysis/jobs/1/analysis/beside/4_reading_23p7_kHz/note": {},
-     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/S_Delta_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz": {},
+     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/S_Delta_kHz": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/P_Delta0_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/P_lines_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/archive_kHz/2026-10-11": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/archive_kHz/2026-10-13": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/archive_note": {},
-     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/tau_S_us": {},
-     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/tau_prime_P_us": {},
+     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/tau_S_us": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/tau_prime_P_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/published_at_submission/stamp_utc": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/published_at_submission/q143_T1_us": {},
      "archived/analysis/jobs/1/analysis/beside/5_detuning_and_T2/published_at_submission/q143_T2_us": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/f_kHz": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/X": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/Y": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/complex": {},
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/X": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/Y": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/floors_95/complex": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[0]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[0]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[0]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[1]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[1]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[1]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[2]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[2]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[2]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[3]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[3]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/X/[3]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[0]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[0]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[0]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[1]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[1]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[1]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[2]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[2]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/Y/[2]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[0]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[0]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[0]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[1]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[1]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[1]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[2]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[2]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[2]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[3]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[3]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[3]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[4]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[4]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[4]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[5]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[5]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[5]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[6]/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[6]/height": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/peaks_above_floor/complex/[6]/over_floor": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/largest/X/f_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/largest/X/height": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/largest/Y/f_kHz": {},
@@ -25187,7 +25187,9 @@
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/periodogram/resolution_kHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/c": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/A": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us": {},
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/Delta_MHz": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/phi0_rad": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/fit/params/w144": {},
@@ -25204,9 +25206,12 @@
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights/w144": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights/w142": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights/wboth": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w144": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142": {},
-     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights_ci90/wboth": {},
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w144": {
+      "compare": "resampled-shots"
+     },
+     "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/resolved": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/reading": {},
      "archived/analysis/jobs/1/analysis/beside/6_more_than_two/sideband_check/published_neighbour_prob_meas1_prep0_at_submission/q142_prob_meas1_prep0": {},
@@ -27994,7 +27999,9 @@
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/n_points": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/chi2": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/dof": {},
-     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz": {},
+     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/c": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/chi2": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/dof": {},
@@ -28002,13 +28009,17 @@
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/b": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/delta_kHz": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/Delta0_kHz": {},
-     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us": {},
+     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/c": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/A": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/n_points": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/chi2": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/dof": {},
-     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz": {},
+     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/c": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/chi2": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/dof": {},
@@ -28016,7 +28027,9 @@
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/b": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/delta_kHz": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/Delta0_kHz": {},
-     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us": {},
+     "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us": {
+      "compare": "resampled-shots"
+     },
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/c": {},
      "archived/analysis/jobs/1/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/A": {},
      "archived/analysis/jobs/1/readings_after_the_data/D_envelope_recentred_on_P_c/centre": {},
@@ -33655,8 +33668,6 @@
      "archived/fits_job1_43_134/qubits/134/band/delta_bound_MHz": {},
      "archived/fits_job1_43_134/qubits/134/clauses/P_below_S_by_more_than_the_margin": {},
      "archived/fits_job1_43_134/qubits/134/clauses/S_within_the_margin_of_P_or_below": {},
-     "archived/fits_job1_43_134/qubits/134/clauses/delta_lower_bound_above_the_floor": {},
-     "archived/fits_job1_43_134/qubits/134/clauses/delta_lower_bound_below_the_floor": {},
      "archived/fits_job1_43_134/qubits/134/clauses/b_interval_inside_the_edges": {},
      "archived/fits_job1_43_134/qubits/134/clauses/b_interval_reaches_an_edge": {}
     }

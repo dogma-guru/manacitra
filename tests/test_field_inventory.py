@@ -288,8 +288,8 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
     """Amendment A8, R6: the relaxed fields are a list, marked one by one in tests/expected_fields.json, not a pattern
     on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, (Amendment A17) the
     283 interval fields of Kickoffs 43 to 47, (Amendment A19) Kickoff 48's 75, (Amendment A22) Kickoffs 49 to 53's
-    336, (Amendment A23) Kickoffs 54 and 55's 147, (Amendment A24) Kickoffs 56 to 62's 385 and (Amendment A25) test
-    7's 32, enumerated below."""
+    336, (Amendment A23) Kickoffs 54 and 55's 147, (Amendment A24) Kickoffs 56 to 62's 385, (Amendment A25) test 7's
+    32 and (Amendment A27) test 11's job 1's 26, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -316,9 +316,12 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for p in ("94-95", "42-43", "18-19")
             for fam in "AB"
         }
-    assert marked == shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED | A25_MARKED
+    assert marked == (
+        shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED | A25_MARKED | A27_MARKED
+    )
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
     assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED), len(A25_MARKED)) == (336, 147, 385, 32)
+    assert len(A27_MARKED) == 26
 
 
 def _reuse_marked() -> set:
@@ -728,6 +731,43 @@ A25_MARKED = {
         "archived/readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/"
         "P/tau_prime_us",
         "archived/readings_after_the_data/D_envelope_recentred_on_P_c/running_mean_max_rise_in_se",
+    )
+}
+
+
+#: Amendment A27: test 11's job 1, test 7's analysis on day 2, compared at 10⁻³ by A25's rule for test 7: the fields
+#: that moved by 10⁻⁶ or more, and less than 8·10⁻⁴, over 200 other seeds of the five random streams its analysis
+#: draws, and its intervals that move less than 8·10⁻⁴; the fields that moved more are excluded with their reasons
+J1 = "archived/analysis/jobs/1/"
+A27_MARKED = {
+    ("ibm_fez/t11-day2-monitor.json", f, "resampled-shots")
+    for f in (
+        J1 + "analysis/fits/S/params/tau_us",
+        J1 + "analysis/fits/S/params/phi0_rad",
+        J1 + "analysis/fits/S/largest_abs_residual_sigma",
+        J1 + "analysis/fits/P/params/tau_prime_us",
+        J1 + "analysis/beside/1_telegraph_T/fit/params/c",
+        J1 + "analysis/beside/1_telegraph_T/fit/params/phi0_rad",
+        J1 + "analysis/beside/3_beat_nodes/tau_S_us",
+        J1 + "analysis/beside/3_beat_nodes/tau_prime_P_us",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se",
+        J1 + "analysis/beside/5_detuning_and_T2/S_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_S_us",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_prime_P_us",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/X",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/Y",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/complex",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/weights_ci90/w144",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us",
     )
 }
 
