@@ -1,0 +1,1096 @@
+{
+  "kind": "Model predictions for a future unobserved run",
+  "written_utc": "2026-10-17T22:40:39.420022+00:00",
+  "source_hashes": {
+    "events-model-01-v3.json": "1f7e1557fd5c2200d5bf7ce510eedd763e57e662ead175cffc2d3b014f066afa",
+    "rates-model-01-v3.json": "90fd456ed792ebcb1feaf784eb205e93b0c7da924f772a2287711c56f8101302",
+    "dependence-model-01-v3.json": "869540b208d010870984a6ad333c1960f92261be8b98e88ea265d650338676f9",
+    "model-check-model-01-v3.json": "336d92fe528b8a18e7dffc67ac1ee679d72ec3a156a12a71dfc9b31570abfb60",
+    "estimators-model-01-v3.json": "b9761b7547eda81db969630587a15011a8fe90b11c594e8970f3fdac1185502a",
+    "report-model-01-v3.md": "03607747e5396660d1cefa57c8f722aa8fe224e75e4251bde2f7b2a3b5e3509d",
+    "historical-scorecard.json": "99793bdf9cb09ebf837f998d3fd2a6a3d1a2762e240b374d979140facb716567",
+    "normalized-trials.json": "184303bb1067942d39a6ab4652da31fd489f48d1dc5e94cc164bf5cce3c6fab1",
+    "monitor11-ledger.json": "68b19fe84e39b917147804739e7faa5492d9bbcab3ce9faa430d74156f0df686",
+    "shuffled-stamp-ledger.json": "0190303cea8602b3b665b11da00b6224523c5c46a4bbc5b70c453e2a6c00907d",
+    "scripts/write_predictions.py": "37c1e1c7e23340317d35764825b403952b4be810d3a99b49360c5131d9eff8af",
+    "scripts/statistics_core.py": "2a99447dfe5f7b0fe972ad9382d8f7c831b05dc24f5e3f61b583c486f1aaae07"
+  },
+  "seed": 310018,
+  "draws_for_joint_parameter_interval": 100000,
+  "interval_conventions": "Parameter probability intervals are transformations of posterior 5th and 95th percentiles. Count intervals integrate over the parameter posterior.",
+  "B_prediction_rule": "Each B prediction uses its matching design posterior. No pooled B prediction is made.",
+  "third_day": {
+    "weight_boundaries_shuffled": {
+      "channel": "B",
+      "floor": "own",
+      "design": "shuffled",
+      "estimator": "shuffled",
+      "rate_path": "classes.B|own.design.shuffled",
+      "trials": 2,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.6656255822814983,
+      "probability_at_least_one_parameter_interval_90": [
+        0.5053646238977026,
+        0.801086112771852
+      ],
+      "posterior_predictive_probability_at_least_one": 0.6610576923076923,
+      "expected_count_posterior_mean": 0.8461538461538461,
+      "count_at_rate_median": 0.8434976563473783,
+      "posterior_predictive_count_interval_90": [
+        0,
+        2
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 16,
+        "trials": 38,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 16.5,
+          "beta": 22.5
+        },
+        "q05": 0.29669681068382936,
+        "median": 0.42174882817368914,
+        "q95": 0.554002368584599
+      }
+    },
+    "weight_boundaries_shuffled_fixed_beside": {
+      "channel": "B",
+      "floor": "fixed0.10",
+      "design": "shuffled",
+      "estimator": "shuffled",
+      "rate_path": "classes.B|fixed0.10.design.shuffled",
+      "trials": 2,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.4977930606291204,
+      "probability_at_least_one_parameter_interval_90": [
+        0.3315960166681104,
+        0.6629163219835406
+      ],
+      "posterior_predictive_probability_at_least_one": 0.49759615384615297,
+      "expected_count_posterior_mean": 0.5897435897435898,
+      "count_at_rate_median": 0.5826687904785564,
+      "posterior_predictive_count_interval_90": [
+        0,
+        2
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 11,
+        "trials": 38,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 11.5,
+          "beta": 27.5
+        },
+        "q05": 0.1824402264470875,
+        "median": 0.2913343952392782,
+        "q95": 0.4194109215491051
+      }
+    },
+    "weight_boundaries_monitor": {
+      "channel": "B",
+      "floor": "own",
+      "design": "monitor",
+      "estimator": "monitor",
+      "rate_path": "classes.B|own.design.monitor",
+      "trials": 4,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.9999926800950268,
+      "probability_at_least_one_parameter_interval_90": [
+        0.9827349100073193,
+        0.9999999999999546
+      ],
+      "posterior_predictive_probability_at_least_one": 0.99609375,
+      "expected_count_posterior_mean": 3.6,
+      "count_at_rate_median": 3.7919410741091255,
+      "posterior_predictive_count_interval_90": [
+        2,
+        4
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 4,
+        "trials": 4,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 4.5,
+          "beta": 0.5
+        },
+        "q05": 0.637513187235506,
+        "median": 0.9479852685272814,
+        "q95": 0.9995382958845127
+      }
+    },
+    "weight_boundaries_monitor_fixed_beside": {
+      "channel": "B",
+      "floor": "fixed0.10",
+      "design": "monitor",
+      "estimator": "monitor",
+      "rate_path": "classes.B|fixed0.10.design.monitor",
+      "trials": 4,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.7188185842262689,
+      "probability_at_least_one_parameter_interval_90": [
+        0.17171383334340584,
+        0.9851146705254241
+      ],
+      "posterior_predictive_probability_at_least_one": 0.6648437500000002,
+      "expected_count_posterior_mean": 1.2,
+      "count_at_rate_median": 1.0872269704111426,
+      "posterior_predictive_count_interval_90": [
+        0,
+        3
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 1,
+        "trials": 4,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 1.5,
+          "beta": 3.5
+        },
+        "q05": 0.04600718890369171,
+        "median": 0.27180674260278564,
+        "q95": 0.6507072165866749
+      }
+    },
+    "weight_within": {
+      "channel": "W_B",
+      "floor": "max 0.10 and five combined errors",
+      "design": "monitor",
+      "estimator": "monitor",
+      "rate_path": "pooled.W_B|fixed0.10",
+      "trials": null,
+      "exposure_s": 170.0,
+      "probability_at_least_one_at_median": 0.20589461134100726,
+      "probability_at_least_one_parameter_interval_90": [
+        0.001990628553661054,
+        0.8572499082656554
+      ],
+      "posterior_predictive_probability_at_least_one": 0.29526773850689714,
+      "expected_count_posterior_mean": 0.5067501380822038,
+      "count_at_rate_median": 0.23053909523446697,
+      "posterior_predictive_count_interval_90": [
+        0,
+        3
+      ],
+      "source_rate": {
+        "family": "poisson",
+        "events": 0,
+        "trials": 285,
+        "exposure_s": 167.7355241020408,
+        "posterior": {
+          "shape": 0.5,
+          "rate": 167.7355241020408
+        },
+        "q05": 1.1721249929226175e-05,
+        "median": 0.0013561123249086293,
+        "q95": 0.011450939928375559,
+        "probability_rate_below_1e_minus_4": 0.1453264914678115
+      }
+    },
+    "frequency_boundaries": {
+      "channel": "F",
+      "floor": "each record own threshold",
+      "design": "monitor",
+      "estimator": "phase",
+      "rate_path": "pooled.F|own",
+      "pooling_reason": "The design contrasts do not distinguish the observed frequency counts",
+      "transfer_limit": "The fitted own floor pools unequal thresholds. This is not an independently calibrated rate for a universal 23 kHz floor.",
+      "trials": 4,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.00787189901972467,
+      "probability_at_least_one_parameter_interval_90": [
+        0.0011745793611477521,
+        0.02576573421226824
+      ],
+      "posterior_predictive_probability_at_least_one": 0.009937845387079203,
+      "expected_count_posterior_mean": 0.01,
+      "count_at_rate_median": 0.007895243853905,
+      "posterior_predictive_count_interval_90": [
+        0,
+        0
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 1,
+        "trials": 599,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 1.5,
+          "beta": 598.5
+        },
+        "q05": 0.0002937742699176032,
+        "median": 0.00197381096347625,
+        "q95": 0.00650462398895276
+      }
+    },
+    "frequency_within": {
+      "channel": "W",
+      "floor": "each record own threshold",
+      "design": "monitor",
+      "estimator": "phase",
+      "rate_path": "pooled.W|own",
+      "trials": null,
+      "exposure_s": 170.0,
+      "probability_at_least_one_at_median": 0.0015439030310533909,
+      "probability_at_least_one_parameter_interval_90": [
+        1.3354599045175787e-05,
+        0.012961969246204953
+      ],
+      "posterior_predictive_probability_at_least_one": 0.0033790852967745533,
+      "expected_count_posterior_mean": 0.003396290116466156,
+      "count_at_rate_median": 0.0015450960774614677,
+      "posterior_predictive_count_interval_90": [
+        0,
+        0
+      ],
+      "source_rate": {
+        "family": "poisson",
+        "events": 0,
+        "trials": 29123,
+        "exposure_s": 25027.30835269238,
+        "posterior": {
+          "shape": 0.5,
+          "rate": 25027.30835269238
+        },
+        "q05": 7.855698952133844e-08,
+        "median": 9.088800455655692e-06,
+        "q95": 7.674534485608928e-05,
+        "probability_rate_below_1e_minus_4": 0.9747325364860289
+      }
+    },
+    "any_frequency_boundary_or_within": {
+      "channels": [
+        "F",
+        "W"
+      ],
+      "boundary_trials": 4,
+      "within_exposure_s": 170.0,
+      "probability_at_median_rates": 0.00940364860202136,
+      "probability_posterior_median": 0.011204880141693142,
+      "probability_parameter_interval_90": [
+        0.002384670902961583,
+        0.03127209619773958
+      ],
+      "posterior_predictive_probability_at_least_one": 0.013283349856624493,
+      "assumption": "Conditional independence of the channels, with the own floor transfer caveat"
+    },
+    "monitor_only_frequency_sensitivity": {
+      "boundary": {
+        "trials": 4,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.01228692303854713,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0018368293229778052,
+          0.040012168647706
+        ],
+        "posterior_predictive_probability_at_least_one": 0.015473725750673961,
+        "expected_count_posterior_mean": 0.015625,
+        "count_at_rate_median": 0.012343945444929288,
+        "posterior_predictive_count_interval_90": [
+          0,
+          0
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 383,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 382.5
+          },
+          "q05": 0.0004595239771498288,
+          "median": 0.003085986361232322,
+          "q95": 0.010156735989700355
+        }
+      },
+      "within": {
+        "trials": null,
+        "exposure_s": 170.0,
+        "probability_at_least_one_at_median": 0.002211404686901612,
+        "probability_at_least_one_parameter_interval_90": [
+          1.913475815192987e-05,
+          0.018520017356133706
+        ],
+        "posterior_predictive_probability_at_least_one": 0.004831056414899448,
+        "expected_count_posterior_mean": 0.0048662919488255746,
+        "count_at_rate_median": 0.002213853453054278,
+        "posterior_predictive_count_interval_90": [
+          0,
+          0
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 27679,
+          "exposure_s": 17467.098335625713,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 17467.098335625713
+          },
+          "q05": 1.1255847778676469e-07,
+          "median": 1.302266737090752e-05,
+          "q95": 0.00010996270665228698,
+          "probability_rate_below_1e_minus_4": 0.9383868122792379
+        }
+      },
+      "status": "Design posterior beside the pooled forecast"
+    },
+    "between_monitor_jobs_weight": {
+      "status": "Not identified by the specified model",
+      "channel": "gap class reported separately",
+      "observed_events": 1,
+      "observed_trials": 1,
+      "estimator": "monitor",
+      "reason": "No gap probability is one of the fitted channels. B is per span boundary and cannot be substituted for a gap trial.",
+      "source": "monitor11-ledger.json:trials channel B_gap"
+    },
+    "within_span_scatter": {
+      "status": "No scatter distribution is specified by the kinetic rates",
+      "reading": "Observed scatter and slopes are descriptive. A no event Poisson rate does not imply a Gaussian noise model.",
+      "conditional_noise_only_reading": [
+        {
+          "job": 2,
+          "span": 0,
+          "n": 48,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.016238683232112375,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.686545138935604,
+            1.3617257866429366
+          ],
+          "observed_chi2_per_dof": 0.5852185522083148
+        },
+        {
+          "job": 2,
+          "span": 1,
+          "n": 49,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.016456236434189322,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.6895432797809643,
+            1.3577243521577047
+          ],
+          "observed_chi2_per_dof": 0.5683584638397651
+        },
+        {
+          "job": 2,
+          "span": 2,
+          "n": 48,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.016330834655337082,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.686545138935604,
+            1.3617257866429366
+          ],
+          "observed_chi2_per_dof": 0.4621557418970296
+        },
+        {
+          "job": 3,
+          "span": 0,
+          "n": 49,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.016131761110441227,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.6895432797809643,
+            1.3577243521577047
+          ],
+          "observed_chi2_per_dof": 0.5683144632528639
+        },
+        {
+          "job": 3,
+          "span": 1,
+          "n": 49,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.01627423549238696,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.6895432797809643,
+            1.3577243521577047
+          ],
+          "observed_chi2_per_dof": 0.5965624533148861
+        },
+        {
+          "job": 3,
+          "span": 2,
+          "n": 48,
+          "sqrt_expected_sample_variance_noise_scale_if_recorded_independent_errors_recur": 0.015515263492172013,
+          "chi2_per_dof_reference_mean_under_extra_equal_variance_gaussian_approximation": 1.0,
+          "chi2_per_dof_interval_90_under_extra_equal_variance_gaussian_approximation": [
+            0.686545138935604,
+            1.3617257866429366
+          ],
+          "observed_chi2_per_dof": 0.5829046587512074
+        }
+      ],
+      "reference_caveat": "The reported noise scale is the square root of expected sample variance, not the expected sample standard deviation. Chi squared about an arithmetic mean uses an equal variance Gaussian approximation because the recorded errors are slightly unequal.",
+      "extra_assumption_is_fitted_kinetic_prediction": false,
+      "source": "monitor11-ledger.json:per_span"
+    },
+    "stamp_composite": {
+      "channel": "S",
+      "observable": "S detuning moves by at least 4 kHz or the verdict kind changes",
+      "rate_path": "pooled.S|4kHz",
+      "trials": 1,
+      "exposure_s": null,
+      "probability_at_least_one_at_median": 0.35518435264701953,
+      "probability_at_least_one_parameter_interval_90": [
+        0.24898280609495796,
+        0.47200171919182204
+      ],
+      "posterior_predictive_probability_at_least_one": 0.35714285714285343,
+      "expected_count_posterior_mean": 0.35714285714285715,
+      "count_at_rate_median": 0.35518435264701953,
+      "posterior_predictive_count_interval_90": [
+        0,
+        1
+      ],
+      "source_rate": {
+        "family": "binomial",
+        "events": 17,
+        "trials": 48,
+        "exposure_s": 0.0,
+        "posterior": {
+          "alpha": 17.5,
+          "beta": 31.5
+        },
+        "q05": 0.24898280609495796,
+        "median": 0.35518435264701953,
+        "q95": 0.47200171919182204
+      },
+      "P_frame_probability_status": "Not separately identified. The composite S probability is not a probability for P Delta0 alone."
+    },
+    "split_near_44p7": {
+      "status": "Reading only; no fitted probability",
+      "requested_band_kHz": [
+        44.2,
+        45.2
+      ],
+      "eligible_crossings": 1,
+      "recorded_change_kHz": -0.11823431700968712,
+      "observed_values_kHz": [
+        44.82320222659665,
+        44.70496790958696
+      ],
+      "reason": "One eligible crossing does not identify a between stamp split spread or a sampling law.",
+      "source": "shuffled-stamp-ledger.json:split_observable"
+    }
+  },
+  "scan_monitor": {
+    "set_S": {
+      "qubits": [
+        0,
+        2,
+        4,
+        7,
+        9,
+        11,
+        13,
+        15,
+        16,
+        20,
+        22,
+        24,
+        26,
+        28,
+        31,
+        33,
+        35,
+        36,
+        37,
+        38,
+        40,
+        43,
+        47,
+        50,
+        52,
+        54,
+        58,
+        59,
+        60,
+        62,
+        64,
+        67,
+        69,
+        73,
+        77,
+        80,
+        82,
+        84,
+        87,
+        89,
+        91,
+        93,
+        95,
+        96,
+        101,
+        104,
+        106,
+        108,
+        110,
+        114,
+        118,
+        119,
+        120,
+        122,
+        125,
+        128,
+        130,
+        132,
+        134,
+        136,
+        137,
+        138,
+        140,
+        142,
+        144,
+        149,
+        152,
+        155
+      ],
+      "n_qubits": 68,
+      "source": "input/t10/fits-t10.json.gz:jobs.1.qubits"
+    },
+    "floor": "4 kHz; eligible observations only",
+    "rate_choice": "Pooled F and W are primary because the specified design contrasts do not distinguish the counts. Design specific sensitivity is beside.",
+    "scan": {
+      "design": "scan",
+      "source_template": {
+        "test": 9,
+        "job": 2
+      },
+      "template_boundary_trials": 77,
+      "template_within_exposure_s": 2692.0583909,
+      "source_template_qubits_present": [
+        0,
+        2,
+        4,
+        7,
+        9,
+        11,
+        13,
+        15,
+        16,
+        20,
+        22,
+        24,
+        26,
+        28,
+        31,
+        33,
+        35,
+        36,
+        37,
+        38,
+        40,
+        43,
+        47,
+        50,
+        52,
+        54,
+        58,
+        59,
+        60,
+        62,
+        64,
+        67,
+        69,
+        73,
+        77,
+        80,
+        82,
+        87,
+        89,
+        91,
+        93,
+        95,
+        96,
+        101,
+        104,
+        106,
+        108,
+        110,
+        114,
+        118,
+        119,
+        120,
+        122,
+        125,
+        128,
+        130,
+        132,
+        134,
+        136,
+        137,
+        138,
+        140,
+        142,
+        144,
+        149,
+        152,
+        155
+      ],
+      "scenario": "Reuse the source eligible mask and exposure on the common qubits. Future errors may change eligibility.",
+      "boundary": {
+        "trials": 77,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.1732611145251642,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0278981516023939,
+          0.46657843383872455
+        ],
+        "posterior_predictive_probability_at_least_one": 0.20045311572532964,
+        "expected_count_posterior_mean": 0.240625,
+        "count_at_rate_median": 0.19003149102352307,
+        "posterior_predictive_count_interval_90": [
+          0,
+          1
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 479,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 478.5
+          },
+          "q05": 0.0003673961001271865,
+          "median": 0.002467941441863936,
+          "q95": 0.008128385038693191
+        }
+      },
+      "within": {
+        "trials": null,
+        "exposure_s": 2692.0583909,
+        "probability_at_least_one_at_median": 0.02954412023376991,
+        "probability_at_least_one_parameter_interval_90": [
+          0.00025917247051734086,
+          0.22370942158512352
+        ],
+        "posterior_predictive_probability_at_least_one": 0.060043965916568576,
+        "expected_count_posterior_mean": 0.06591984555606431,
+        "count_at_rate_median": 0.029989338749870514,
+        "posterior_predictive_count_interval_90": [
+          0,
+          1
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 26064,
+          "exposure_s": 20419.180052617277,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 20419.180052617277
+          },
+          "q05": 9.628545293902511e-08,
+          "median": 1.113992878135328e-05,
+          "q95": 9.406496271630976e-05,
+          "probability_rate_below_1e_minus_4": 0.9567047378848771
+        }
+      },
+      "design_specific_boundary_beside": {
+        "trials": 77,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.12404335931119845,
+        "probability_at_least_one_parameter_interval_90": [
+          0.001144049190803158,
+          0.6731660143606782
+        ],
+        "posterior_predictive_probability_at_least_one": 0.20500327418727549,
+        "expected_count_posterior_mean": 0.2894736842105263,
+        "count_at_rate_median": 0.1323248553328104,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 0,
+          "trials": 132,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 0.5,
+            "beta": 132.5
+          },
+          "q05": 1.4866176700369495e-05,
+          "median": 0.0017185046147118234,
+          "q95": 0.014418458560681276
+        }
+      },
+      "all_set_S_boundaries_eligible_scenario": {
+        "trials": 136,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.28541611788796944,
+        "probability_at_least_one_parameter_interval_90": [
+          0.04874684250361752,
+          0.6704336779986397
+        ],
+        "posterior_predictive_probability_at_least_one": 0.3127491018300158,
+        "expected_count_posterior_mean": 0.425,
+        "count_at_rate_median": 0.3356400360934953,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 479,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 478.5
+          },
+          "q05": 0.0003673961001271865,
+          "median": 0.002467941441863936,
+          "q95": 0.008128385038693191
+        }
+      },
+      "bridge_rule": "Last whole repeat before the provider boundary and first whole repeat after; straddles excluded"
+    },
+    "monitor": {
+      "design": "monitor",
+      "source_template": {
+        "test": 10,
+        "job": 1
+      },
+      "template_boundary_trials": 125,
+      "template_within_exposure_s": 5839.950878666123,
+      "source_template_qubits_present": [
+        0,
+        2,
+        4,
+        7,
+        9,
+        11,
+        13,
+        15,
+        16,
+        20,
+        22,
+        24,
+        26,
+        28,
+        31,
+        33,
+        35,
+        36,
+        37,
+        38,
+        40,
+        43,
+        47,
+        50,
+        52,
+        54,
+        58,
+        59,
+        60,
+        62,
+        64,
+        67,
+        69,
+        73,
+        77,
+        80,
+        82,
+        84,
+        87,
+        89,
+        91,
+        93,
+        95,
+        96,
+        101,
+        104,
+        106,
+        108,
+        110,
+        114,
+        118,
+        119,
+        120,
+        122,
+        125,
+        128,
+        130,
+        132,
+        134,
+        136,
+        137,
+        138,
+        140,
+        142,
+        144,
+        149,
+        152,
+        155
+      ],
+      "scenario": "Reuse the source eligible mask and exposure on the common qubits. Future errors may change eligibility.",
+      "boundary": {
+        "trials": 125,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.265726701688367,
+        "probability_at_least_one_parameter_interval_90": [
+          0.044894000887952916,
+          0.6394771929967633
+        ],
+        "posterior_predictive_probability_at_least_one": 0.2938817928205111,
+        "expected_count_posterior_mean": 0.390625,
+        "count_at_rate_median": 0.308492680232992,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 479,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 478.5
+          },
+          "q05": 0.0003673961001271865,
+          "median": 0.002467941441863936,
+          "q95": 0.008128385038693191
+        }
+      },
+      "within": {
+        "trials": null,
+        "exposure_s": 5839.950878666123,
+        "probability_at_least_one_at_median": 0.06298560769242824,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0005621442531746779,
+          0.42266625279873477
+        ],
+        "posterior_predictive_probability_at_least_one": 0.11818196861065189,
+        "expected_count_posterior_mean": 0.14300160103435625,
+        "count_at_rate_median": 0.06505663687494212,
+        "posterior_predictive_count_interval_90": [
+          0,
+          1
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 26064,
+          "exposure_s": 20419.180052617277,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 20419.180052617277
+          },
+          "q05": 9.628545293902511e-08,
+          "median": 1.113992878135328e-05,
+          "q95": 9.406496271630976e-05,
+          "probability_rate_below_1e_minus_4": 0.9567047378848771
+        }
+      },
+      "design_specific_boundary_beside": {
+        "trials": 125,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.3471811176033993,
+        "probability_at_least_one_parameter_interval_90": [
+          0.061449500698280556,
+          0.7555069111834604
+        ],
+        "posterior_predictive_probability_at_least_one": 0.3698314692848331,
+        "expected_count_posterior_mean": 0.5387931034482759,
+        "count_at_rate_median": 0.4257289197345807,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 347,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 346.5
+          },
+          "q05": 0.0005072202473129034,
+          "median": 0.0034058313578766456,
+          "q95": 0.011205293643125565
+        }
+      },
+      "all_set_S_boundaries_eligible_scenario": {
+        "trials": 136,
+        "exposure_s": null,
+        "probability_at_least_one_at_median": 0.28541611788796944,
+        "probability_at_least_one_parameter_interval_90": [
+          0.04874684250361752,
+          0.6704336779986397
+        ],
+        "posterior_predictive_probability_at_least_one": 0.3127491018300158,
+        "expected_count_posterior_mean": 0.425,
+        "count_at_rate_median": 0.3356400360934953,
+        "posterior_predictive_count_interval_90": [
+          0,
+          2
+        ],
+        "source_rate": {
+          "family": "binomial",
+          "events": 1,
+          "trials": 479,
+          "exposure_s": 0.0,
+          "posterior": {
+            "alpha": 1.5,
+            "beta": 478.5
+          },
+          "q05": 0.0003673961001271865,
+          "median": 0.002467941441863936,
+          "q95": 0.008128385038693191
+        }
+      },
+      "bridge_rule": "Last whole repeat before the provider boundary and first whole repeat after; straddles excluded"
+    }
+  },
+  "even_odds": {
+    "W|4kHz": {
+      "unit": "qubit seconds",
+      "at_posterior_median_rate": 62221.868215188144,
+      "parameter_interval_90": [
+        7368.813642656786,
+        7198877.498129401
+      ],
+      "posterior_predictive_even_odds_time": 61257.540157851836,
+      "rate_path": "pooled.W|4kHz",
+      "distinction": "The parameter transformed time and the integrated posterior predictive time answer different questions."
+    },
+    "W|own": {
+      "unit": "qubit seconds",
+      "at_posterior_median_rate": 76263.87925907431,
+      "parameter_interval_90": [
+        9031.781430648536,
+        8823494.698351007
+      ],
+      "posterior_predictive_even_odds_time": 75081.92505807715,
+      "rate_path": "pooled.W|own",
+      "distinction": "The parameter transformed time and the integrated posterior predictive time answer different questions."
+    },
+    "W_B|fixed0.10": {
+      "unit": "qubit seconds",
+      "at_posterior_median_rate": 511.1281475940036,
+      "parameter_interval_90": [
+        60.531902611969755,
+        59135.944096851636
+      ],
+      "posterior_predictive_even_odds_time": 503.20657230612244,
+      "rate_path": "pooled.W_B|fixed0.10",
+      "distinction": "The parameter transformed time and the integrated posterior predictive time answer different questions."
+    },
+    "W_B|own": {
+      "unit": "qubit seconds",
+      "at_posterior_median_rate": 511.1281475940036,
+      "parameter_interval_90": [
+        60.531902611969755,
+        59135.944096851636
+      ],
+      "posterior_predictive_even_odds_time": 503.20657230612244,
+      "rate_path": "pooled.W_B|own",
+      "distinction": "The parameter transformed time and the integrated posterior predictive time answer different questions."
+    }
+  },
+  "counterconditions": [
+    {
+      "channel": "W_B",
+      "rule": "Any within span weight event in the next 1000 eligible monitor pairs at the specified max 0.10 and five error floor",
+      "declared_pairs": 1000,
+      "period_s_from_this_record": 0.588545698603652,
+      "exposure_s": 588.545698603652,
+      "prediction": {
+        "trials": null,
+        "exposure_s": 588.545698603652,
+        "probability_at_least_one_at_median": 0.549831839331584,
+        "probability_at_least_one_parameter_interval_90": [
+          0.006874751258850133,
+          0.9988166447459844
+        ],
+        "posterior_predictive_probability_at_least_one": 0.5290542671724453,
+        "expected_count_posterior_mean": 1.7543859649122808,
+        "count_at_rate_median": 0.7981340756483719,
+        "posterior_predictive_count_interval_90": [
+          0,
+          7
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 285,
+          "exposure_s": 167.7355241020408,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 167.7355241020408
+          },
+          "q05": 1.1721249929226175e-05,
+          "median": 0.0013561123249086293,
+          "q95": 0.011450939928375559,
+          "probability_rate_below_1e_minus_4": 0.1453264914678115
+        }
+      },
+      "standing": "This is the kickoff chosen countercondition. It is stricter than simply falling outside the posterior predictive interval."
+    },
+    {
+      "channel": "split",
+      "rule": "An absolute split change above 1 kHz across a stamp on a qubit confirmed as two lines on both records",
+      "standing": "A stated future countercondition, not a consequence of a fitted split rate"
+    },
+    {
+      "channels": [
+        "W",
+        "F",
+        "B",
+        "S"
+      ],
+      "rule": "Counts outside the declared posterior predictive intervals in either direction count against the corresponding model transfer",
+      "interval_sources": [
+        "third_day",
+        "scan_monitor"
+      ],
+      "minimum_eligible_exposure_required": true,
+      "frequency_extra": {
+        "declared_uncensored_qubit_seconds": 10000.0,
+        "trials": null,
+        "exposure_s": 10000.0,
+        "probability_at_least_one_at_median": 0.10541851787638726,
+        "probability_at_least_one_parameter_interval_90": [
+          0.0009623911337073443,
+          0.6096258446863445
+        ],
+        "posterior_predictive_probability_at_least_one": 0.18069539174440974,
+        "expected_count_posterior_mean": 0.24486781482487163,
+        "count_at_rate_median": 0.11139928781353281,
+        "posterior_predictive_count_interval_90": [
+          0,
+          1
+        ],
+        "source_rate": {
+          "family": "poisson",
+          "events": 0,
+          "trials": 26064,
+          "exposure_s": 20419.180052617277,
+          "posterior": {
+            "shape": 0.5,
+            "rate": 20419.180052617277
+          },
+          "q05": 9.628545293902511e-08,
+          "median": 1.113992878135328e-05,
+          "q95": 9.406496271630976e-05,
+          "probability_rate_below_1e_minus_4": 0.9567047378848771
+        }
+      }
+    },
+    {
+      "channel": "W",
+      "rule": "If enough within events accumulate, a dwell distribution inconsistent with the exponential assumption counts against the Poisson model",
+      "current_status": "No observed dwell distribution can be fitted from zero within events"
+    }
+  ]
+}

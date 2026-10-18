@@ -1,0 +1,294 @@
+{
+  "checks": [
+    {
+      "check": "Python syntax frequency.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax export_run_log.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax shuffled_stamp.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax validate_output.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax prediction_audit.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax normalize.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax fit_model.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax package_output.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax frequency_stat_audit.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax scorecard.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax check_input.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax statistics_core.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax monitor11.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax write_predictions.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Python syntax write_report.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required frequency comparison t9j2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required frequency comparison t9j3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required frequency comparison t10j1",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required frequency comparison t10j2",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required frequency comparison t10j3",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Six monitor means",
+      "pass": true,
+      "detail": [
+        0.34,
+        0.392,
+        0.36,
+        0.323,
+        0.35,
+        0.237
+      ]
+    },
+    {
+      "check": "Monitor within pair count",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input events-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input rates-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input dependence-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input model-check-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input estimators-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input report-model-01-v3.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input historical-scorecard.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input normalized-trials.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input monitor11-ledger.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input shuffled-stamp-ledger.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input scripts/write_predictions.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Frozen prediction input scripts/statistics_core.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "B class shuffled",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "B prediction class shuffled",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "B class monitor",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "B prediction class monitor",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Model check has 1000 draws per eligible cell",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Test 11 frequency censor cells explicit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Prose word restrictions report-model-01-v3.md",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "check": "No prose dashes report-model-01-v3.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Prose word restrictions predictions-model-01-v3.md",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "check": "No prose dashes predictions-model-01-v3.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable report-model-01-v3.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable events-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable rates-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable dependence-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable model-check-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable estimators-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable predictions-model-01-v3.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Required deliverable predictions-model-01-v3.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Independent frequency statistical audit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Independent prediction audit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Prediction audit covers delivered JSON",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "check": "Prediction audit covers delivered prose",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "all_pass": true,
+  "count": 56,
+  "scope": "Input identity, required counts, model selection, forecast source identity, syntax and prose. Independent scientific audits remain separate."
+}

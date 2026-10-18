@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.9.0 (unreleased)
+
+Five records on ibm_kingston and ibm_fez, each under a rule hashed before its run, asked when a qubit's Ramsey fringe changes within a job. Read by the provider's execution record, every job ran as three spans; within a span no qubit's phase or weight changed above its design's floor on a 0.6 s clock; at the boundaries between spans the weight of two-line qubits did, and across a calibration stamp a third of one chip moved by 4 kHz or more while the split on 143 moved by a tenth of a kilohertz. A desk model, Sandhi, describes the records with five rates and names no cause; its bets for the next run are published with their digests. `manacitra.wait` gains the monitor circuits, the span assignment from the provider's execution record, and the per-repeat phase, length and antiphase weight; thresholds and verdicts are the caller's.
+
+- Amendment A27: `manacitra.wait` gains the monitor, `ramsey_monitor` (every qubit of a set at its own wait in one
+  circuit, X and Y, between the readout circuits, in a fixed order); the span assignment, `span_assignment` (each
+  position's span and each repeat's span or straddling from the provider's execution record, and the gaps); the
+  per-repeat phase and length, `monitor_phase` (the switch test, the time within spans, the levels and the slopes, with
+  the caller's floors and thresholds); and the weight at antiphase, `monitor_weight`, with `median_phase`. Everything
+  else in the package is unchanged. Finding 29 (tests 8 to 11), with their data in `data/ibm_kingston/` and
+  `data/ibm_fez/` (one record per test; the counts and the larger analysis records as gzip files beside them, named in
+  each record by their SHA-256; the posted rules published unchanged; the desk checks; the run's code as verbatim lines
+  of the scripts as run), the span record of tests 8 and 9, and the desk model Sandhi in `data/desk/sandhi/` (its
+  kickoffs and naming ruling, and its run 3.1 as delivered, its ledgers attached to the release with their SHA-256 in
+  the folder's README). `tests/_reuse_runs.py` recomputes test 10's verdicts, test 11's three jobs, test 9's job 1 on 43
+  and 134 and the kingston spans, and `tests/test_sandhi.py` checks the model's counts. The README opens with finding
+  29, and its table of findings gains a tenth row.
+
 ## 0.8.0 (17 October 2026)
 
 The qubit that waited in the circuits of findings 13 to 18 and 21, ibm_fez's 143, was measured at every wait from 0 to 63 µs in two quadratures under a rule fixed and hashed before the job. Its Ramsey fringe is two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying: the two-line model's held-out error was a quarter of the one-line model's, the split 44.8 kHz, the upper line's weight 0.36 averaged over the job. The weight differed between the job's three execution spans, from about 0.46 to 0.27, which the rule did not assume and finding 28 reports as what the counts show. No cause is named. `manacitra.wait` gains the two-quadrature Ramsey, the one-line and two-line fit with a held-out error and a bootstrap, and a copies check; the rule's thresholds are the caller's. The desk power check that preceded the rule is published beside the data.

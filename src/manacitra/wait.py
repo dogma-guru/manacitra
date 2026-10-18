@@ -39,6 +39,12 @@ from job 1's counts: the check at phi*, with 0.6.0's check at +90 beside it, and
 runs. `readout_survey` and `readout_errors` measure every qubit's readout error (Kickoff 62's survey); the threshold of
 any screen on it is the caller's.
 
+**The monitor and the execution spans** (Amendment A27). `ramsey_monitor` builds every qubit of a set at its own wait
+in one circuit, in two quadratures, repeated in a fixed order between the readout circuits. `span_assignment` reads
+the provider's execution record: each position's span, each repeat's span or its straddling, and the gaps.
+`monitor_phase` gives each repeat's phase and length and the switches between consecutive repeats, within a span or at
+a boundary, and `monitor_weight` the weight at the antiphase wait; the floors and thresholds are the caller's.
+
 **The boundary (D-02).** Nothing here is a reuse compiler, a port of a published reuse-compilation method, a
 restore-and-route step, or an algorithm that decides where to measure and reset. The wait test's measures and resets are
 written by hand and fixed in its definition, the same for every chain, and the user names the chain. The peak phase is
@@ -50,6 +56,7 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 from collections.abc import Sequence
+from datetime import UTC
 
 import numpy as np
 
@@ -1238,6 +1245,511 @@ def copies_check(labels: Sequence[dict], counts: Sequence[dict], clbit: int = 0)
         lab = {name: v for name, v in labels[k1].items() if name != "copy"}
         rows.append({"label": lab, "copies": [c1, c2], "positions": [k1, k2], "P1": [p1, p2], "z": z})
     return {"sum_z2": total, "dof": len(rows), "per_dof": total / len(rows) if rows else math.nan, "circuits": rows}
+
+
+# --------------------------------------------------------------------------- the monitor and the span reading (A27)
+#: The monitor's fixed order: the readout circuits, then each repeat's X then Y, then the readout circuits again
+RAMSEY_MONITOR_READOUT = ("P10", "P01")
+
+
+def ramsey_monitor(waits_us: dict, backend, repeats: int) -> list[dict]:
+    """The monitor (tests 10 and 11, finding 29): every qubit of a set at its own wait in one circuit, in two
+    quadratures, repeated in a fixed order. waits_us maps each qubit to its wait in µs; the qubits are taken in
+    ascending order, qubit k of that order measured into classical bit k. X is `ramsey_xy`'s X on every qubit at its own
+    wait, Y the same with the S-dagger before each final H, so the circuit lasts as long as its longest-wait qubit's
+    sequence; P10 measures every qubit with no gate and P01 applies X to every qubit, then measures. Each wait is made
+    even with the backend's dt and granularity, as `ramsey_xy` makes it. Each distinct circuit is translated once onto
+    the set by `to_backend`.
+
+    Returns one entry per position, in the fixed order with no interleaving: P10, P01, then `repeats` repeats of X then
+    Y, then P10, P01. Each entry is its label (the position, the block, "start", "monitor" or "end", the repeat from 1,
+    the circuit, the quadrature, the qubits and, for X and Y, each qubit's requested wait, wait in dt and wait as
+    scheduled from the end of its first SX to the start of its last, in dt) and the circuit."""
+    from qiskit import QuantumCircuit
+    from qiskit.circuit import CircuitInstruction
+    from qiskit.circuit.library import SdgGate
+
+    qs = sorted(int(q) for q in waits_us)
+    if not qs or int(repeats) < 1:
+        raise ValueError("the set holds at least one qubit and the monitor at least one repeat")
+    waits = {q: float(waits_us[q]) for q in qs}
+    if not all(math.isfinite(w) and w >= 0 for w in waits.values()):
+        raise ValueError(f"the waits are finite and not negative, in µs; got {waits}")
+    t, dt = backend.target, backend.dt
+    gran = getattr(t, "granularity", 1) or 1
+    wait_dt = {q: even_wait(waits[q] * 1e-6 / dt, gran) for q in qs}
+    n = len(qs)
+    circuits, waits_of = {}, {}
+    for quad in RAMSEY_XY_QUADRATURES:
+        qc = QuantumCircuit(n, n, name=f"{quad}-monitor-n{n}")
+        for k, q in enumerate(qs):
+            one = part_b_circuit(1, wait_dt[q], "R")
+            if quad == "Y":
+                j = max(i for i, x in enumerate(one.data) if x.operation.name == "h")
+                one.data.insert(j, CircuitInstruction(SdgGate(), (one.qubits[0],)))
+            qc.compose(one, qubits=[k], clbits=[k], inplace=True)
+        isa = to_backend(qc, qs, backend)
+        tl = _timeline(_chain_schedule(isa, backend, qs), t, dt, qs)
+        circuits[quad] = isa
+        waits_of[quad] = {
+            "t_requested_us": {str(q): waits[q] for q in qs},
+            "wait_dt": {str(q): wait_dt[q] for q in qs},
+            "scheduled_wait_dt": {str(q): _window(tl, q)["T_dt"] for q in qs},
+        }
+    for name in RAMSEY_MONITOR_READOUT:
+        qc = QuantumCircuit(n, n, name=f"{name}-n{n}")
+        if name == "P01":
+            qc.x(range(n))
+        qc.measure(range(n), range(n))
+        circuits[name] = to_backend(qc, qs, backend)
+    order = [(name, None, "start") for name in RAMSEY_MONITOR_READOUT]
+    for r in range(1, int(repeats) + 1):
+        order += [(quad, r, "monitor") for quad in RAMSEY_XY_QUADRATURES]
+    order += [(name, None, "end") for name in RAMSEY_MONITOR_READOUT]
+    out = []
+    for pos, (name, r, block) in enumerate(order):
+        label = {
+            "position": pos,
+            "block": block,
+            "repeat": r,
+            "circuit": name,
+            "quadrature": name if name in RAMSEY_XY_QUADRATURES else None,
+            "qubits": qs,
+        }
+        if name in waits_of:
+            label.update(waits_of[name])
+        out.append({"label": label, "circuit": circuits[name]})
+    return out
+
+
+def _seconds(x):
+    """A span's start or stop as seconds: a number as it is, a datetime or an ISO 8601 string as its POSIX time (a
+    string without a zone read as UTC)."""
+    from datetime import datetime
+
+    if isinstance(x, (int, float)):
+        return float(x)
+    if isinstance(x, str):
+        x = datetime.fromisoformat(x.replace("Z", "+00:00"))
+    if x.tzinfo is None:
+        x = x.replace(tzinfo=UTC)
+    return x.timestamp()
+
+
+def span_assignment(spans: Sequence[dict], labels: Sequence[dict] | None = None) -> dict:
+    """Which execution span ran each position, as the provider's record says (A26, finding 29). spans is that record for
+    one job, one entry per span: its "positions", its "start" and "stop" (or "start_utc" and "stop_utc"; ISO 8601,
+    datetimes or seconds), optionally its "span" (else its place in the list) and "duration_s" (else stop minus
+    start). The record decides, whatever the position numbers: a span need not be a run of consecutive positions.
+
+    Returns the spans in start order with their durations, the gaps between consecutive spans in seconds, each
+    position's span, and the positions in no span. If labels are given, those carrying a "repeat" are grouped by it:
+    each repeat's positions, and its span if they all ran in one, else its spans, a straddling repeat. Refuses
+    (ValueError) a record that places one position in two spans."""
+    rows = []
+    for i, s in enumerate(spans):
+        start = _seconds(s["start"] if "start" in s else s["start_utc"])
+        stop = _seconds(s["stop"] if "stop" in s else s["stop_utc"])
+        dur = float(s["duration_s"]) if s.get("duration_s") is not None else stop - start
+        rows.append(
+            {
+                "span": s.get("span", i),
+                "start_s": start,
+                "stop_s": stop,
+                "duration_s": dur,
+                "positions": sorted(int(p) for p in s["positions"]),
+            }
+        )
+    rows.sort(key=lambda r: r["start_s"])
+    for rank, r in enumerate(rows):
+        r["rank"] = rank
+    span_of: dict = {}
+    for r in rows:
+        for p in r["positions"]:
+            if p in span_of:
+                raise ValueError(f"position {p} lies in spans {span_of[p]} and {r['span']}")
+            span_of[p] = r["span"]
+    gaps = [{"between": [a["span"], b["span"]], "gap_s": b["start_s"] - a["stop_s"]} for a, b in zip(rows, rows[1:])]
+    out = {"spans": rows, "gaps": gaps, "span_of_position": span_of}
+    if labels is not None:
+        out["positions_in_no_span"] = [p for p in range(len(labels)) if p not in span_of]
+        reps: dict = {}
+        for p, lab in enumerate(labels):
+            if lab.get("repeat") is not None:
+                reps.setdefault(lab["repeat"], []).append(p)
+        repeats = {}
+        for k, ps in reps.items():
+            sp = [span_of.get(p) for p in ps]
+            one = len(set(sp)) == 1 and sp[0] is not None
+            repeats[k] = {
+                "positions": ps,
+                "span": sp[0] if one else None,
+                "spans_of_positions": sp,
+                "straddles": not one,
+            }
+        out["repeats"] = repeats
+        out["straddling_repeats"] = sorted(k for k, r in repeats.items() if r["straddles"])
+    return out
+
+
+def _poisson90(n: int, t: float) -> list:
+    """The 90% interval of a Poisson rate, n events in time t (Garwood's: chi2(0.05; 2n) / 2 and chi2(0.95; 2n + 2) /
+    2, over t; 0 below when n is 0)."""
+    from scipy.stats import chi2
+
+    if t <= 0:
+        return [None, None]
+    lo = 0.0 if n == 0 else chi2.ppf(0.05, 2 * n) / 2
+    return [lo / t, chi2.ppf(0.95, 2 * n + 2) / 2 / t]
+
+
+def _wrap(x: float) -> float:
+    """An angle wrapped to (-pi, pi]."""
+    y = (x + math.pi) % (2 * math.pi) - math.pi
+    return math.pi if y == -math.pi else y
+
+
+def monitor_phase(
+    ones: Sequence[int],
+    labels: Sequence[dict],
+    spans: Sequence[dict],
+    wait_us: float,
+    *,
+    shots: int,
+    s_floor: float,
+    abs_min: float,
+    n_se: float,
+    level_se: float,
+) -> dict:
+    """The monitor's phase and length per repeat, on one qubit of one job, as test 10's rule reads them (finding 29).
+    ones: per position, the shots that read 1 on this qubit; labels: per position, its "circuit" (P10, P01, X or Y) and
+    for X and Y its "repeat"; spans: the provider's record (`span_assignment`). The thresholds are the caller's:
+
+      1. c, the midpoint: the mean P(1) of the readout circuits.
+      2. Per repeat k: theta_k = atan2(P_Y - c, P_X - c); r_k, the vector's length; s_k = sigma_k / r_k, sigma_k^2 =
+         (P_X (1 - P_X) + P_Y (1 - P_Y)) / (2 shots), floored at s_floor; the repeat's span, or straddling.
+      3. The pairs of consecutive repeats, neither straddling: the wrapped difference of theta, and a switch where its
+         size exceeds max(abs_min, n_se sqrt(s_k^2 + s_(k+1)^2)): within a span, at a boundary (spans consecutive in
+         start order), or neither (spans not consecutive).
+      4. The within-span time: per span, its tested within-span pairs times its repeat period, its duration over the
+         repeats it ran whole; the within-span rate per second with its 90% Poisson interval.
+      5. The plateaus between switches, each with its weighted mean phase; the levels, plateaus whose means differ by
+         no more than level_se combined errors, linked transitively; the slope of the unwrapped phase in each span.
+
+    The median r_k is returned for the caller's usable rule. Words for what the counts mean are the caller's."""
+    p = np.asarray(ones, float) / shots
+    asg = span_assignment(spans, labels)
+    info = {r["span"]: r for r in asg["spans"]}
+    rank = {r["span"]: r["rank"] for r in asg["spans"]}
+    ro = [k for k, lab in enumerate(labels) if lab["circuit"] in RAMSEY_MONITOR_READOUT]
+    c = float(np.mean(p[ro]))
+    xpos, ypos = {}, {}
+    for k, lab in enumerate(labels):
+        if lab["circuit"] == "X":
+            xpos[lab["repeat"]] = k
+        elif lab["circuit"] == "Y":
+            ypos[lab["repeat"]] = k
+    rows = []
+    for k in sorted(xpos):
+        px, py = p[xpos[k]], p[ypos[k]]
+        vx, vy = px - c, py - c
+        r = math.hypot(vx, vy)
+        sig = math.sqrt((px * (1 - px) + py * (1 - py)) / (2 * shots))
+        rep = asg["repeats"][k]
+        rows.append(
+            {
+                "k": k,
+                "PX": float(px),
+                "PY": float(py),
+                "theta": math.atan2(vy, vx),
+                "r": r,
+                "sigma": sig,
+                "s": max(sig / r, s_floor) if r > 0 else math.inf,
+                "span": rep["span"],
+                "straddles": rep["straddles"],
+                "spans_of_circuits": rep["spans_of_positions"],
+            }
+        )
+    nrep = {sp: sum(1 for x in rows if x["span"] == sp) for sp in info}
+    period = {sp: (info[sp]["duration_s"] / nrep[sp] if nrep[sp] else None) for sp in info}
+    inc = [x for x in rows if not x["straddles"]]
+    pairs = []
+    for a, b in zip(rows, rows[1:]):
+        if a["straddles"] or b["straddles"]:
+            continue
+        d = _wrap(b["theta"] - a["theta"])
+        se = math.sqrt(a["s"] ** 2 + b["s"] ** 2)
+        thr = max(abs_min, n_se * se)
+        if a["span"] == b["span"]:
+            kind = "within"
+        elif abs(rank[a["span"]] - rank[b["span"]]) == 1:
+            kind = "boundary"
+        else:
+            kind = "spans not consecutive"
+        pairs.append(
+            {
+                "k": a["k"],
+                "k1": b["k"],
+                "span_a": a["span"],
+                "span_b": b["span"],
+                "kind": kind,
+                "d": d,
+                "se": se,
+                "threshold": thr,
+                "switch": abs(d) > thr,
+                "size_is_pi": abs(abs(d) - math.pi) < 1e-12,
+            }
+        )
+    phi = {}
+    if inc:
+        phi[inc[0]["k"]] = inc[0]["theta"]
+    for a, b in zip(inc, inc[1:]):
+        phi[b["k"]] = phi[a["k"]] + _wrap(b["theta"] - a["theta"])
+    for x in rows:
+        x["phi"] = phi.get(x["k"])
+    sw = [q for q in pairs if q["switch"]]
+    n_within = sum(1 for q in sw if q["kind"] == "within")
+    n_boundary = sum(1 for q in sw if q["kind"] == "boundary")
+    within_pairs = {sp: sum(1 for q in pairs if q["kind"] == "within" and q["span_a"] == sp) for sp in info}
+    t_within = sum(within_pairs[sp] * period[sp] for sp in info if period[sp])
+    sw_after = {q["k"]: q for q in sw}
+    tested = {(q["k"], q["k1"]) for q in pairs}
+    runs, cur = [], []
+    for i, x in enumerate(inc):
+        cur.append(x)
+        nxt = inc[i + 1] if i + 1 < len(inc) else None
+        if nxt is None or (x["k"] in sw_after and sw_after[x["k"]]["k1"] == nxt["k"]):
+            runs.append(cur)
+            cur = []
+    plateaus = []
+    for run in runs:
+        w = np.array([1 / x["s"] ** 2 for x in run])
+        ks = [x["k"] for x in run]
+        before = next((q for q in sw if q["k1"] == ks[0]), None)
+        after = next((q for q in sw if q["k"] == ks[-1]), None)
+        plateaus.append(
+            {
+                "first_k": ks[0],
+                "last_k": ks[-1],
+                "n": len(run),
+                "mean": float(np.sum(w * np.array([x["phi"] for x in run])) / np.sum(w)),
+                "se": float(1 / math.sqrt(np.sum(w))),
+                "spans": sorted({x["span"] for x in run}, key=lambda z: rank[z]),
+                "untested_pair_inside": any((a, b) not in tested for a, b in zip(ks, ks[1:])),
+                "opened_by": before["kind"] if before else None,
+                "closed_by": after["kind"] if after else None,
+            }
+        )
+    parent = list(range(len(plateaus)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i in range(len(plateaus)):
+        for j in range(i + 1, len(plateaus)):
+            a, b = plateaus[i], plateaus[j]
+            if abs(_wrap(a["mean"] - b["mean"])) <= level_se * math.sqrt(a["se"] ** 2 + b["se"] ** 2):
+                parent[find(i)] = find(j)
+    groups: dict = {}
+    for i in range(len(plateaus)):
+        groups.setdefault(find(i), []).append(i)
+    levels = []
+    for g in groups.values():
+        ref = plateaus[g[0]]["mean"]
+        w = np.array([1 / plateaus[i]["se"] ** 2 for i in g])
+        rel = np.array([_wrap(plateaus[i]["mean"] - ref) for i in g])
+        levels.append(
+            {
+                "plateaus": g,
+                "n_repeats": int(sum(plateaus[i]["n"] for i in g)),
+                "mean": _wrap(ref + float(np.sum(w * rel) / np.sum(w))),
+                "se": float(1 / math.sqrt(np.sum(w))),
+            }
+        )
+    levels.sort(key=lambda lv: -lv["n_repeats"])
+    khz_per_rad = 1000.0 / (2 * math.pi * wait_us)
+    slopes = {}
+    for sp in sorted(info, key=lambda z: rank[z]):
+        xs = [x for x in inc if x["span"] == sp]
+        if len(xs) < 3:
+            slopes[str(sp)] = None
+            continue
+        k = np.array([x["k"] for x in xs], float)
+        y = np.array([x["phi"] for x in xs])
+        w = np.array([1 / x["s"] ** 2 for x in xs])
+        X = np.stack([np.ones_like(k), k], axis=1)
+        G = X.T @ (X * w[:, None])
+        _, b0 = np.linalg.solve(G, X.T @ (w * y))
+        slopes[str(sp)] = {
+            "rad_per_repeat": float(b0),
+            "se_rad_per_repeat": math.sqrt(np.linalg.inv(G)[1, 1]),
+            "kHz_per_minute": float(b0) * khz_per_rad * 60.0 / period[sp] if period[sp] else None,
+            "n_repeats": len(xs),
+        }
+    dwell = [
+        {
+            "first_k": q["first_k"],
+            "last_k": q["last_k"],
+            "n_repeats": q["n"],
+            "span": q["spans"][0],
+            "seconds": q["n"] * period[q["spans"][0]],
+        }
+        for q in plateaus
+        if q["opened_by"] == "within"
+        and q["closed_by"] == "within"
+        and len(q["spans"]) == 1
+        and not q["untested_pair_inside"]
+    ]
+    wmean = None
+    if inc:
+        w = np.array([1 / x["s"] ** 2 for x in inc])
+        wmean = float(np.sum(w * np.array([x["phi"] for x in inc])) / np.sum(w))
+    return {
+        "c": c,
+        "wait_us": float(wait_us),
+        "kHz_per_rad": khz_per_rad,
+        "median_r": float(np.median([x["r"] for x in rows])),
+        "n_within": n_within,
+        "n_boundary": n_boundary,
+        "n_spans_not_consecutive_switches": sum(1 for q in sw if q["kind"] == "spans not consecutive"),
+        "within_time_s": t_within,
+        "within_rate_per_s": n_within / t_within if t_within > 0 else None,
+        "within_rate_ci90_per_s": _poisson90(n_within, t_within),
+        "switches": [{**q, "size_kHz": q["d"] * khz_per_rad} for q in sw],
+        "straddling_repeats": [x["k"] for x in rows if x["straddles"]],
+        "pi_sized_differences": [q["k"] for q in pairs if q["size_is_pi"]],
+        "plateaus": plateaus,
+        "levels": levels,
+        "n_levels": len(levels),
+        "slopes": slopes,
+        "dwell": dwell,
+        "repeat_period_s": {str(k): v for k, v in period.items()},
+        "repeats_per_span": {str(k): v for k, v in nrep.items()},
+        "job_mean_phase": wmean,
+        "repeats": rows,
+        "pairs": pairs,
+    }
+
+
+def median_phase(theta: Sequence[float]) -> float:
+    """The median of the angles on one sheet of the circle (test 11's ruling): each wrapped to within pi of their
+    circular mean, the median taken, and the result wrapped. On a job whose phase stays in one place it is the
+    ordinary median."""
+    th = np.asarray(theta, float)
+    ref = float(np.angle(np.mean(np.exp(1j * th))))
+    return _wrap(ref + float(np.median([_wrap(x - ref) for x in th])))
+
+
+def monitor_weight(phase: dict, R0: float, *, exchange: bool = False, abs_min: float, n_se: float) -> dict:
+    """The weight at antiphase, per repeat, from `monitor_phase`'s result, as test 11's rule reads it (finding 29). At
+    the wait 1 / (4 delta) two fixed lines of weights w and 1 - w point in opposite directions, so the fringe's length
+    is R0 |1 - 2 w|, R0 the length one line would have there (the caller's, from a fit): w_k = (1 - r_k / R0) / 2 for a
+    repeat whose theta_k lies within pi/2 of the job's median phase (`median_phase`), (1 + r_k / R0) / 2 for one a half
+    turn away, the two exchanged when exchange is True (a weight above one half on the line the caller names); its
+    standard error sigma_k / (2 R0). The pairs are `monitor_phase`'s; a weight switch where |w_(k+1) - w_k| exceeds
+    max(abs_min, n_se combined errors), within a span or at a boundary. Per span: the mean of w_k over its repeats that
+    ran whole, the standard deviation over the square root of their number, and the propagated error. Beside: the
+    boundary table, each pair of included repeats on either side of a span boundary, a straddling repeat between them
+    left out, and the pair at each span's middle (test 10's control), in phase and in weight. The thresholds and any
+    words are the caller's."""
+    rows = phase["repeats"]
+    med = median_phase([x["theta"] for x in rows])
+    cmean = float(np.angle(np.mean(np.exp(1j * np.asarray([x["theta"] for x in rows])))))
+    out_rows, branch_differs = [], []
+    for x in rows:
+        near = abs(_wrap(x["theta"] - med)) <= math.pi / 2
+        if near != (abs(_wrap(x["theta"] - cmean)) <= math.pi / 2):
+            branch_differs.append(x["k"])
+        lo, hi = (1 - x["r"] / R0) / 2, (1 + x["r"] / R0) / 2
+        if exchange:
+            lo, hi = hi, lo
+        out_rows.append(
+            {
+                "k": x["k"],
+                "span": x["span"],
+                "straddles": x["straddles"],
+                "branch": "near the median phase" if near else "a half turn away",
+                "w": lo if near else hi,
+                "se_w": x["sigma"] / (2 * R0),
+            }
+        )
+    by_k = {x["k"]: x for x in out_rows}
+    pairs = []
+    for q in phase["pairs"]:
+        a, b = by_k[q["k"]], by_k[q["k1"]]
+        se = math.sqrt(a["se_w"] ** 2 + b["se_w"] ** 2)
+        thr = max(abs_min, n_se * se)
+        dw = b["w"] - a["w"]
+        pairs.append(
+            {
+                "k": q["k"],
+                "k1": q["k1"],
+                "span_a": q["span_a"],
+                "span_b": q["span_b"],
+                "kind": q["kind"],
+                "dw": dw,
+                "se": se,
+                "threshold": thr,
+                "switch": abs(dw) > thr,
+            }
+        )
+    sw = [q for q in pairs if q["switch"]]
+    spans_in_order = list(dict.fromkeys(x["span"] for x in rows if not x["straddles"]))
+    per_span = []
+    for sp in spans_in_order:
+        xs = [x for x in out_rows if x["span"] == sp and not x["straddles"]]
+        w = np.array([x["w"] for x in xs])
+        se = np.array([x["se_w"] for x in xs])
+        per_span.append(
+            {
+                "span": sp,
+                "n_repeats": len(xs),
+                "mean_w": float(np.mean(w)),
+                "se_sd_over_sqrt_n": float(np.std(w, ddof=1) / math.sqrt(len(w))) if len(w) > 1 else None,
+                "se_propagated": float(math.sqrt(np.sum(se**2)) / len(w)),
+                "sd_w": float(np.std(w, ddof=1)) if len(w) > 1 else None,
+            }
+        )
+    ph = {x["k"]: x for x in rows}
+    inc = [x for x in out_rows if not x["straddles"]]
+
+    def across(a, b):
+        pa, pb = ph[a["k"]], ph[b["k"]]
+        d = _wrap(pb["theta"] - pa["theta"])
+        se_p = math.sqrt(pa["s"] ** 2 + pb["s"] ** 2)
+        dw = b["w"] - a["w"]
+        se_w = math.sqrt(a["se_w"] ** 2 + b["se_w"] ** 2)
+        return {"k": a["k"], "k1": b["k"], "d_phase": d, "se_phase": se_p, "d_w": dw, "se_w": se_w}
+
+    boundaries = [
+        {"between_spans": [a["span"], b["span"]], **across(a, b)}
+        for a, b in zip(inc, inc[1:])
+        if a["span"] != b["span"]
+    ]
+    controls = []
+    for sp in spans_in_order:
+        xs = [x for x in inc if x["span"] == sp]
+        if len(xs) >= 2:
+            m = len(xs) // 2 - 1
+            controls.append({"span": sp, **across(xs[m], xs[m + 1])})
+    return {
+        "R0": float(R0),
+        "branches_exchanged": bool(exchange),
+        "median_phase": med,
+        "circular_mean_phase": cmean,
+        "repeats_whose_branch_differs_under_the_circular_mean": branch_differs,
+        "n_within_w": sum(1 for q in sw if q["kind"] == "within"),
+        "n_boundary_w": sum(1 for q in sw if q["kind"] == "boundary"),
+        "switches_w": sw,
+        "per_span": per_span,
+        "median_w": float(np.median([x["w"] for x in out_rows])),
+        "boundary_table": {"boundaries": boundaries, "control_pairs_at_each_spans_middle": controls},
+        "repeats": out_rows,
+        "pairs": pairs,
+    }
 
 
 # --------------------------------------------------------------------------- a run: the job and its analysis

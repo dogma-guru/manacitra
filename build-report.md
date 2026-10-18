@@ -3905,3 +3905,90 @@ as what the counts show." in place of the sentence that gave the job's duration 
 weight differed between the job's execution spans" (Q6); the read kept as code, with its own test (Q7); the release date
 following the tag's UTC day, with nothing to change before the tag (Q8); and the title (Q9). The tests of the three
 sentences follow them.
+
+## 47. Amendment A27: finding 29, the gated states, and the desk model Sandhi (17 October 2026)
+
+**Why.** By the author's rulings of 17 October 2026, in chat: the findings decision ("Let's put Sandhi in the
+repository"), one finding built on test 11's record with the kingston tests as the record of how its shape was found,
+and the name Sandhi for the desk model. Finding 28's reading by execution span raised the question four tests on 17
+October asked: when does a qubit's fringe change within a job, and when does it not.
+
+**Order.** A new branch, `findings/t11-gated-states`, from `d57fe39` (0.8.0's version-DOI pull request merged), worked
+in a git worktree of its own. No hardware, no provider job, and no contact with anyone.
+
+**Sources.** The four rules (`t8-rule.md`, `t9-rule.md`, `t10-rule.md`, `t11-rule.md`), each checked against its
+`.sha256` sidecar and against the public issue that carries it (issues 53, 54, 55 and 58); the hand-backs of tests 8 to
+11 and of the span check, each file checked against its folder's `SHA256SUMS` before anything was taken from it; the
+desk model's run 3.1, its 92 files checked against its `SHA256SUMS`; the model's kickoffs and its naming ruling. Files
+not in their folder's `SHA256SUMS` (test 9's desk check and span-check write-up, the dry runs) were not copied. Nothing
+whose name contains "SEALED" or "mantri-read" was read; the model's `historical-scorecard.json`, its own output, which
+the kickoff names for publication, was read to be copied and scanned.
+
+**The data.**
+- `ibm_kingston/t8-survey.json`, `t9-day2-scan.json` and `t10-monitor.json`, `ibm_fez/t11-day2-monitor.json`: one record
+  per test, in A25's layout: the jobs' records, the estimates before submission the rules ask for, the decisions on the
+  later jobs, the analysis and readings under `archived`, the window and the calibration record, and the run's code as
+  verbatim lines of the scripts as run. Left out of the records: each estimate's rate per shot and the earlier jobs'
+  machine times, the allowance left after each job, and the snapshots' names.
+- Beside the kingston records, each job's counts as the hand-back's gzip copy, byte for byte, and test 10's analysis
+  record (`fits-t10.json.gz`), each named by its SHA-256; test 8's jobs 1 and 2 and test 9's job 1 fits as gzip copies
+  made here (`fits-t8-job1.json.gz`, `fits-t8-job2.json.gz`, `fits-t9-job1.json.gz`), each record naming both SHA-256
+  values. Test 11's counts are in its record.
+- `ibm_kingston/spans-t8-t9.json`: the span check's entries for test 9's four jobs and test 8's jobs 1 and 3, its
+  comparison of the scan's change points with the span boundaries, and its read without the line that lists test 7's
+  job.
+- The rules byte for byte, beside the records; the desk checks of tests 10 and 11 (the scripts and their reruns); test
+  11's rulings, hash check and series tables.
+- `desk/sandhi/`: the kickoffs of versions 2 and 3, version 3's errata and the naming ruling, with the desk runner's
+  service written "the desk runner" in six places; and run 3.1 as delivered, with its scripts and `SHA256SUMS`. Three of
+  its ledgers (`rates-model-01-v3.json`, `shuffled-stamp-ledger.json`, `normalized-trials.json`) are for the release's
+  assets. `run.log` and two ledgers, `events-model-01-v3.json` and `frequency-ledger.json`, are not published: each
+  carries a path of the runner's own folders, in a hashed record.
+
+**The code.** `manacitra.wait` gains `ramsey_monitor`, `span_assignment`, `monitor_phase`, `median_phase` and
+`monitor_weight`, ported from tests 10 and 11's analysis (`phase_t10.py`, `monitor_t11.py`), with the floors and
+thresholds the caller's and no verdict words. On tests 10 and 11's archived counts they give every number those analyses
+wrote, exactly. `tests/_reuse_runs.py`'s `t7_spans` takes a job's shots per position, test 7's 1,500 by default. The
+identifier scan allows two exact forms more: a bootstrap's seed list as test 8's fits record it, and one field name of
+test 11's analysis record.
+
+**The recompute.** `tests/_reuse_runs.py` and `tests/_reproduce.py` gain four cases:
+- "Test 10, the phase monitor": every qubit's verdict and numbers in all three jobs, the counts of verdicts and the
+  pooled verdicts, by `monitor_phase` with the rule's thresholds: 7,576 fields, every one exact.
+- "Test 11, day 2 and the monitor": job 1's fits, bootstrap, verdict, readings, weight per span and boundary changes by
+  the functions the run used (`t7_ramsey_xy`, `t7_readings`, `t7_spans`, `t7_span_readings`) with its seeds; jobs 2 and
+  3's phase and weight per repeat, switches, weight per span, boundary tables and verdicts by `monitor_phase` and
+  `monitor_weight`; the pooled verdicts and the gap: 8,644 fields, every one exact.
+- "Test 9, job 1 on 43 and 134": the verdicts, the clauses and the band by `ramsey_xy_fit` with the run's seeds, exact.
+  The fits' parameters and percentiles differ from the run's by up to 3.5·10⁻⁴ (multi-threaded; 6.3·10⁻⁷ with one thread
+  per library), the run having fitted on six workers; they are excluded with that movement.
+- "Tests 8 and 9, the execution spans": each job's durations, runs of positions and gaps from the provider's record: 125
+  fields, exact.
+Test 8's record has no recompute case: its 132 qubits' fits with 2,000 bootstrap draws each are kept as the run wrote
+them, every field excluded with its reason, as test 9's scan fits are. `tests/test_sandhi.py` checks that the model's
+run is published as delivered, that its report carries the counts finding 29 quotes, and recomputes from the
+repository's records the weight boundaries they hold (test 7's, test 11's job 1 and the monitor's); given the ledgers,
+it recomputes every frequency count and the 38 shuffled weight boundaries from their rows.
+
+**The text.**
+- **`docs/findings.md`:** finding 29, in the order the records were made, each test's rule, verdicts and the numbers
+  that decide them, with its items beside the verdict in the rule's order; the span reading; what the five records show
+  together; the desk model Sandhi and the scorecard of its earlier bets. The table of findings gains its row. In what
+  has not been shown, five bullets are added.
+- **Elsewhere:** the README opens with finding 29 and its table of findings gains a tenth row; `docs/method.md` gains a
+  subsection on the monitor, reading a job by execution span and a desk model as a step; `docs/reproduce.md`, the
+  commits tests 8 to 11 were built at and the lines that reproduce them; `data/README.md`, the five records, the files
+  beside them, their formats and what was changed when copying; `CHANGELOG.md`, `## 0.9.0 (unreleased)` with the lead
+  the kickoff fixed and the A27 entry.
+- **Not made:** the two figures the kickoff offers. They are left for a later amendment.
+
+**Readings, logged.** Every departure from the kickoff's wording is in the review packet (`A27-review-packet.md`), with
+its reason.
+
+**The tests:** 1,007 pass and 1 is skipped (it needs the ledgers) pass, against 981 at `d57fe39`.
+
+**After the amendment.**
+- **Ruff:** clean.
+- **The identifier scan:** clean on the tree, on the staged files and on the git metadata.
+- **The DCO check:** clean on the branch.
+- **`data/SHA256SUMS`:** gains the new files. The signing workflow signs them on `main` after a merge.

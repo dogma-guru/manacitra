@@ -288,6 +288,9 @@ def clear_caches() -> None:
         k59_recomputed,
         k61_recomputed,
         k62_recomputed,
+        t9_recomputed,
+        t10_recomputed,
+        t11_recomputed,
     ):
         fn.cache_clear()
 
@@ -1961,6 +1964,106 @@ def t7_spans():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- tests 8 to 11 (A27, finding 29)
+T9_SCAN = "ibm_kingston/t9-day2-scan.json"
+T8_T9_SPANS = "ibm_kingston/spans-t8-t9.json"
+T10_MONITOR = "ibm_kingston/t10-monitor.json"
+T11_MONITOR = "ibm_fez/t11-day2-monitor.json"
+
+
+@cache
+def t10_recomputed() -> dict:
+    return reuse.t10_monitor(reuse_doc(T10_MONITOR))
+
+
+@cache
+def t11_recomputed() -> tuple[dict, dict]:
+    doc = reuse_doc(T11_MONITOR)
+    return reuse.t11_job1(doc), reuse.t11_monitor(doc)
+
+
+@cache
+def t9_recomputed() -> dict:
+    return reuse.t9_job1_43_134(reuse_doc(T9_SCAN))
+
+
+def t10():
+    """Test 10, the phase monitor: every qubit's phase switches within spans and at their boundaries, its levels,
+    slopes and verdict per job, the counts of verdicts and the verdicts pooled over jobs 1 and 2, from the counts and
+    the provider's span record by manacitra.wait.monitor_phase."""
+    m = t10_recomputed()
+    docs = {T10_MONITOR: reuse_doc(T10_MONITOR)}
+    leaves = compare("Test 10, the phase monitor", {T10_MONITOR: {"archived": {"analysis": m}}}, docs)
+    a = docs[T10_MONITOR]["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            (f"job {j}, {w}", a["count_by_job"][j][w], m["count_by_job"][j][w])
+            for j in ("1", "2", "3")
+            for w in ("QUIET", "SWITCHES AT BOUNDARIES ONLY", "SWITCHES WITHIN SPANS", "NOT USABLE")
+        ]
+    )
+    return rows, leaves
+
+
+def t11():
+    """Test 11, day 2 and the monitor: job 1's fits, held-out errors, bootstrap, verdict, readings and weight per
+    span by the functions the run used (t7_ramsey_xy, t7_readings, t7_spans, t7_span_readings) with its seeds; jobs
+    2 and 3's phase and weight per repeat, switches, weight per span, boundary table and verdicts by
+    manacitra.wait.monitor_phase and monitor_weight; the pooled verdicts and the gap between the jobs."""
+    j1, mon = t11_recomputed()
+    docs = {T11_MONITOR: reuse_doc(T11_MONITOR)}
+    mine = {"jobs": {"1": j1, **mon["jobs"]}, "pooled": mon["pooled"], "gap_between_jobs_2_and_3": mon["gap"]}
+    leaves = compare("Test 11, day 2 and the monitor", {T11_MONITOR: {"archived": {"analysis": mine}}}, docs)
+    a = docs[T11_MONITOR]["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("job 1, verdict", a["jobs"]["1"]["verdict"], j1["verdict"]),
+            (
+                "job 1, delta (MHz)",
+                a["jobs"]["1"]["analysis"]["fits"]["P"]["params"]["delta_MHz"],
+                j1["analysis"]["fits"]["P"]["params"]["delta_MHz"],
+            ),
+            (
+                "job 1, b",
+                a["jobs"]["1"]["analysis"]["fits"]["P"]["params"]["b"],
+                j1["analysis"]["fits"]["P"]["params"]["b"],
+            ),
+            *((f"job {j}, phase", a["jobs"][j]["phase_verdict"], mon["jobs"][j]["phase_verdict"]) for j in ("2", "3")),
+            *(
+                (f"job {j}, weight", a["jobs"][j]["weight_verdict"], mon["jobs"][j]["weight_verdict"])
+                for j in ("2", "3")
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def t9_job1():
+    """Test 9, job 1 on 43 and 134: test 7's rule on day 2 by manacitra.wait.ramsey_xy_fit with the rule's thresholds
+    and the run's seeds, the verdict read from its clauses."""
+    m = t9_recomputed()
+    docs = {T9_SCAN: reuse_doc(T9_SCAN)}
+    leaves = compare("Test 9, job 1 on 43 and 134", {T9_SCAN: {"archived": {"fits_job1_43_134": {"qubits": m}}}}, docs)
+    a = docs[T9_SCAN]["archived"]["fits_job1_43_134"]["qubits"]
+    rows = _rows(lambda: [(f"qubit {q}, verdict", a[q]["verdict"], m[q]["verdict"]) for q in ("43", "134")])
+    return rows, leaves
+
+
+def t8_t9_spans():
+    """Tests 8 and 9's execution spans: each job's durations, runs of positions and gaps, derived from the provider's
+    starts, stops and positions (t7_spans, A26's derivation)."""
+    m = reuse.kingston_spans(reuse_doc(T8_T9_SPANS))
+    docs = {T8_T9_SPANS: reuse_doc(T8_T9_SPANS)}
+    leaves = compare("Tests 8 and 9, the execution spans", {T8_T9_SPANS: m}, docs)
+    a = docs[T8_T9_SPANS]["jobs"]
+    rows = _rows(
+        lambda: [
+            (f"test {x['test'][1:]} job {x['job']}, spans", x["n_spans"], y["n_spans"]) for x, y in zip(a, m["jobs"])
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -2021,6 +2124,10 @@ CASES = {
     "Kickoff 62, the check at the peak phase on ibm_fez": k62,
     "Test 7, two frequencies on qubit 143": t7,
     "Test 7, the execution spans": t7_spans,
+    "Tests 8 and 9, the execution spans": t8_t9_spans,
+    "Test 9, job 1 on 43 and 134": t9_job1,
+    "Test 10, the phase monitor": t10,
+    "Test 11, day 2 and the monitor": t11,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)

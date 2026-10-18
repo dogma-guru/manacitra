@@ -94,4 +94,16 @@ The one-quadrature fit beside Part B, `ramsey_fit`, is unchanged.
 
 **The desk power check before a rule.** Before a design's rule is fixed and hashed, the design and the rule are run on simulated qubits, with the shot noise the job will have, across the values the run might meet; the rule is kept only if it returns the verdict that generated the data often enough. The keep criterion says how often: for test 7, the generating verdict in at least 80% of 200 draws at three quarters of the counted points of a grid of 135 simulated qubits ([the record](../data/desk/t7-power-check/README.md)).
 
+### The monitor and the execution spans
+
+A shuffled job averages a fringe over its whole run. The monitor reads it in time, at one wait, as often as the job allows (Amendment A27; [finding 29](findings.md#finding-29)):
+
+1. **The circuits** (`manacitra.wait.ramsey_monitor`): every qubit of a set at its own wait in one circuit, X and Y as the two-quadrature Ramsey builds them, each qubit measured into its own classical bit, so that the circuit lasts as long as its longest-wait qubit's sequence; and the two readout circuits on every qubit. A job is the readout circuits, a number of repeats of X then Y, and the readout circuits again, in that fixed order and not interleaved, and the result's execution record is saved at the fetch.
+2. **The phase and the length** (`monitor_phase`): from each repeat's two P(1) and the readout circuits' midpoint, the fringe's phase θ_k and length r_k, with their standard errors, floored where the caller says. Consecutive repeats are compared by the wrapped difference of their phases; the caller's thresholds name a switch, within a span or at a boundary between spans, and the time within spans comes from the span record.
+3. **The weight at antiphase** (`monitor_weight`). At the wait 1/(4δ) two fixed lines point in opposite directions, so the fringe's length is R0 |1 − 2w|, R0 the length one line would have there, from a fit. Each repeat's weight w_k follows from r_k and R0, on the branch its phase gives, with the same pairs and the caller's threshold.
+
+**Reading a job by execution span** (`span_assignment`). A provider may execute one job as several spans, each a run of the submitted circuits, with gaps between them; its record gives each span's positions, start and stop. A position belongs to the span the record places it in, whatever its number, and a repeat whose circuits ran in different spans straddles. A26 read finding 28's job this way after the data; from tests 10 and 11 on, the record is saved with the counts, and a design reads its quantities per span: the weight per span, the copies check split by span, and the changes within spans set apart from those at their boundaries.
+
+**A desk model as a step** (`data/desk/sandhi/`). A kinetic description fits rates of change to the records: per channel, the events counted against the trials or the time each record can see, at the record's own floor, a record below its floor being censored and not counted as nothing. It describes; it names no cause. Its bets for the next run are written from the fitted rates alone and hashed before that run, so the run can score them, and they are the first test the model has not seen.
+
 Back to the [README](../README.md).
