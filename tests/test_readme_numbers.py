@@ -2374,21 +2374,28 @@ def test_the_readme_opens_with_the_latest_findings():
     assert shared == {"143", "11", "95", "120"}
     assert all(ws == ["SHARED"] * len(ws) for (k, q), ws in words.items() if q in ("11", "95"))
     assert [w for k in ("t10-job1", "t10-job2") for w in words[(k, "120")]].count("SHARED") == 3
+    lags13 = [s_["Y"]["lag_1_over_e"] for k in ("t11-job2", "t11-job3", "t12-job1") for s_ in f13["jobs"][k]["spans"]]
+    secs13 = [
+        s_["Y"]["correlation_time_s"] for k in ("t11-job2", "t11-job3", "t12-job1") for s_ in f13["jobs"][k]["spans"]
+    ]
+    assert (min(lags13), max(lags13), round(min(secs13), 1), round(max(secs13), 1)) == (4, 10, 0.1, 0.2)
     assert (
         "Read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), "
-        "every circuit of an execution span sees the same state at the same shot index, and on those four qubits the "
-        "fringe switches between its two lines within tenths of a second, so a span's weight is an average over time."
-        in flat
-    )
+        "the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as "
+        "a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 "
+        "to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average "
+        "over the span." in flat
+    )  # A27, R3 (S2, S3)
     # every weight boundary read in the monitor jobs: NO CHANGE under test 15's error; the stamp
     read = [b for b in f15["boundaries"] if b["word"] != "NOT READ"]
     assert len(read) == 17 and {b["word"] for b in read} == {"NO CHANGE"}
     report = (archive.data_dir() / "desk/sandhi/v3.1/report-model-01-v3.md").read_text()
     assert "Stamp pair 1 is 16 / 47" in report and abs(16 / 47 - 1 / 3) < 0.02
     assert (
-        "Against that average's own error all 17 weight boundaries read in the monitor jobs show NO CHANGE, while "
-        "across a calibration stamp a third of one chip moved." in flat
-    )
+        "Against that average's estimated error all 17 weight boundaries read in the monitor jobs show NO CHANGE, "
+        "which is no evidence of a change and does not show the levels equal, while between two calibration stamps "
+        "about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit." in flat
+    )  # A27, R3 (S1, S4); the 16 of 47 recomputed from the fits in test_finding_29
     assert (
         "A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is "
         "named." in flat
@@ -4320,10 +4327,73 @@ def test_finding_29():
     _finding_29_r2(item, t12, t14)
 
 
-def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
-    """A27, ruling R2: finding 29's sentences from tests 12 to 15, each number against its record."""
+def _t15_word(z: float) -> str:
+    """Test 15's boundary word from its rule: NO CHANGE at or under 2, BETWEEN over 2 to 3, CHANGE over 3."""
+    return "NO CHANGE" if z <= 2 else ("BETWEEN" if z <= 3 else "CHANGE")
+
+
+def _t15_span(r: dict) -> dict:
+    """A27, ruling R3 (S5): a separable span's statistics recomputed from test 15's published sweep means, as its
+    read_t15.py computes them: the sharing ratio over the recorded independent share, the 1/e lag (lags 1 to 200), the
+    threshold midway between the 10th and 90th percentiles, the duty, the switches and runs, the quarter-span duties,
+    the middle fifth, and the estimated sampling standard deviation at the lag used (three sweeps as a ceiling). Each
+    sweep mean is a mean over the span's rows, published at four places, and is recovered exactly as k/n, so that a
+    value on the threshold falls as it fell in the read."""
+    import math
 
     import numpy as np
+
+    n = r["n_rows"]
+    k = np.rint(np.array(r["sweep_means"], float) * n)
+    assert np.all(np.abs(k / n - np.array(r["sweep_means"])) < 6e-5)
+    mj = k / n
+    big_n = len(mj)
+    sweep = r["duration_s"] / big_n
+    v_obs = float(mj.var(ddof=1))
+    ratio = v_obs / r["v_ind"]
+    word = "SHARED" if ratio > 3 else ("INDEPENDENT" if ratio < 1.5 else "UNDECIDED")
+    x = mj - mj.mean()
+    v0 = float(np.sum(x * x))
+    acf = [float(np.sum(x[lag:] * x[:-lag]) / v0) for lag in range(1, 201)]
+    excess = 1 - r["v_ind"] / v_obs
+    below = [i for i, a in enumerate(acf) if a < excess / math.e]
+    lag = below[0] + 1 if below else 201
+    p10, p90 = (float(v) for v in np.percentile(mj, [10, 90]))
+    high = mj > (p10 + p90) / 2
+    idx = np.flatnonzero(np.diff(high.astype(np.int8)))
+    bounds = np.concatenate([[0], idx + 1, [big_n]])
+    lens, states = np.diff(bounds), high[bounds[:-1]]
+    lo5, hi5 = p10 + 0.4 * (p90 - p10), p10 + 0.6 * (p90 - p10)
+    mid5 = float(np.mean((mj >= lo5) & (mj <= hi5)))
+    b = float(high.mean())
+    used = (3 if lag < 3 else lag) if word == "SHARED" else None
+    return {
+        "n_shots": big_n,
+        "sweep_s": sweep,
+        "ratio": ratio,
+        "word": word,
+        "lag": lag,
+        "duty": b,
+        "switches": len(idx),
+        "runs_high": float(lens[states].mean()),
+        "runs_low": float(lens[~states].mean()),
+        "quarters": [float(c.mean()) for c in np.array_split(high, 4)],
+        "mid5": mid5,
+        "lag_used": used,
+        "ceiling": (lag < 3) if used else None,
+        "sd": math.sqrt(2 * b * (1 - b) * used * sweep / r["duration_s"]) if used else None,
+        "inflated": bool(big_n == 1000 and mid5 > 0.10),
+    }
+
+
+def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
+    """A27, ruling R2: finding 29's sentences from tests 12 to 15, each number against its record; ruling R3: the
+    table of every boundary derived from the published sweep means, the unlisted kingston qubits, the stamp's 16 of 47,
+    and the lags and runs in returned indices."""
+    import math
+
+    import numpy as np
+    from _reuse_runs import _gz
 
     q = _q
     # test 12
@@ -4368,7 +4438,8 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
     assert (q(min(b13), 2), q(max(b13), 2)) == ("0.86", "1.24")
     for s_ in (
         "All nine spans read SHARED, with ratios of 16.4 to 37.6, so each job is SHARED.",
-        "(a span's duration over its shots per position, 15 to 35 ms), was 0.12 to 0.19 s, 4 to 10 sweeps.",
+        "was 4 to 10 sweeps (returned indices), or 0.12 to 0.19 s if the returned indices are chronological sweeps "
+        "evenly spaced across the span (a span's duration over its shots per position, 15 to 35 ms).",
         "read ratios of 0.86 to 1.24, with no word.",
     ):
         assert s_ in item, s_
@@ -4405,6 +4476,52 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
     rows = [r_.strip() for r_ in block.splitlines() if r_.strip().startswith("| test ")]
     bs = f15["boundaries"]
     assert len(rows) == len(bs) == 28
+    # A27, R3 (S5): every separable span recomputed from its published sweep means, against the read's numbers
+    stats = {}
+    for jk, j in f15["jobs"].items():
+        for qb, qq in j["qubits"].items():
+            if not qq["listed_separable"]:
+                continue
+            for wk, w in qq["waits"].items():
+                if wk == "control":
+                    continue
+                for sp in w["spans"]:
+                    r_ = sp[w["quadrature_of_record"]]
+                    st = _t15_span(r_)
+                    stats[(jk, qb, sp["span"])] = st
+                    assert (st["word"], st["lag"], st["duty"], st["switches"], st["quarters"]) == (
+                        r_["word"],
+                        r_["lag_1_over_e"],
+                        r_["duty_b"],
+                        r_["switches"],
+                        r_["quarter_span_duties"],
+                    ), (jk, qb, sp["span"])
+                    assert (
+                        abs(st["ratio"] / r_["ratio"] - 1) < 1e-3
+                        and abs(st["mid5"] - r_["mid_sweep_fraction_middle_fifth"]) < 1e-12
+                    )
+                    assert abs(st["runs_high"] * st["sweep_s"] - r_["dwell_high_s"]) < 1e-9
+                    assert abs(st["runs_low"] * st["sweep_s"] - r_["dwell_low_s"]) < 1e-9
+                    assert st["inflated"] == r_["switch_counts_inflated"]
+                    assert (st["sd"] is None) == (r_.get("telegraph_sd") is None)
+                    if st["sd"] is not None:
+                        assert abs(st["sd"] - r_["telegraph_sd"]) < 1e-12 and st["lag_used"] == r_["tau_c_sweeps_used"]
+    assert len(stats) == 42
+    # the published ratios, each from the record that published it
+    an11 = archive.load("ibm_fez/t11-day2-monitor.json")["archived"]["analysis"]["jobs"]
+    published = {}
+    for jn in ("2", "3"):
+        ps_ = an11[jn]["weight"]["per_span"]
+        for x, y_ in zip(ps_, ps_[1:]):
+            d_ = y_["mean_w"] - x["mean_w"]
+            published[(f"t11-job{jn}", (x["span"], y_["span"]))] = (
+                d_,
+                d_ / math.hypot(x["se_propagated"], y_["se_propagated"]),
+            )
+    for x in t12["archived"]["analysis"]["analysis"]["level_changes"]:
+        published[("t12-job1", tuple(x["spans"]))] = (x["difference"], x["in_errors"])
+    for x in t14["archived"]["analysis"]["analysis"]["level_changes"]["w"]:
+        published[("t14-job1", tuple(x["spans"]))] = (x["difference"], x["in_errors"])
     names = {
         "t10-job1": "test 10, job 1",
         "t10-job2": "test 10, job 2",
@@ -4413,21 +4530,36 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
         "t12-job1": "test 12",
         "t14-job1": "test 14",
     }
+    derived = []
     for row, b in zip(rows, bs):
         cells = [c_.strip() for c_ in row.strip("|").split("|")]
+        assert len(cells) == 12, row
+        sa, sb = (stats[(b["job"], str(b["qubit"]), sp_)] for sp_ in b["spans"])
+        d_ = sb["duty"] - sa["duty"]
+        both = sa["word"] == sb["word"] == "SHARED"
+        sd_ = math.hypot(sa["sd"], sb["sd"]) if both else None
+        word = _t15_word(abs(d_) / sd_) if both else "NOT READ"
+        derived.append(word)
         assert (cells[0], cells[1], cells[2]) == (
             names[b["job"]],
             str(b["qubit"]),
             f"{b['spans'][0]} to {b['spans'][1]}",
         )
-        assert cells[3] == ", ".join(f"{x:.3f}" for x in b["duties"]) and cells[8] == f"**{b['word']}**", row
-        assert cells[5] == q(b["difference"], 3)
-        if b["word"] != "NOT READ":
-            assert cells[6].rstrip("‡") == q(b["combined_sd"], 4) and cells[7] == q(b["ratio"], 2), row
-            assert cells[6].endswith("‡") == bool(b["any_ceiling"]), row
-        if b["published"]:
-            assert cells[9] == q(b["published"]["difference"], 3), row
-    counts = {k: sum(b["word"] == k for b in bs) for k in ("CHANGE", "BETWEEN", "NO CHANGE", "NOT READ")}
+        assert cells[3] == f"{sa['duty']:.3f}, {sb['duty']:.3f}" and cells[4] == f"{sa['word']}, {sb['word']}", row
+        assert cells[5] == q(d_, 3) and cells[8] == f"**{word}**" and word == b["word"], row
+        if both:
+            ceiling = "‡" if (sa["ceiling"] or sb["ceiling"]) else ""
+            assert cells[6] == q(sd_, 4) + ceiling and cells[7] == q(abs(d_) / sd_, 2), row
+        else:
+            assert cells[6] == cells[7] == "", row
+        pub_ = published.get((b["job"], tuple(b["spans"])))
+        if pub_ is None:
+            assert b["processor"] == "ibm_kingston" and cells[9:] == ["none published", "", ""], row
+        else:
+            zp = abs(pub_[0]) / sd_
+            assert cells[9] == q(pub_[0], 3) and cells[10] == q(pub_[1], 1), row
+            assert cells[11] == f"{q(zp, 2)}, {_t15_word(zp)}", row
+    counts = {k: derived.count(k) for k in ("CHANGE", "BETWEEN", "NO CHANGE", "NOT READ")}
     assert counts == {"CHANGE": 0, "BETWEEN": 0, "NO CHANGE": 17, "NOT READ": 11}
     assert f15["table_counts_by_processor"] == {
         "ibm_kingston": {"NO CHANGE": 9, "NOT READ": 11},
@@ -4442,8 +4574,16 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
     assert q(max(sens), 2) == "1.81" and not any(b["word_changes_under_sensitivity"] for b in read)
     sds = [b["combined_sd"] for b in read]
     assert (q(min(sds), 3), q(max(sds), 3)) == ("0.044", "0.174") and "0.044 to 0.174 combined at a boundary" in item
-    bj = f15["between_jobs_143"]["pairs"] if "pairs" in f15["between_jobs_143"] else f15["between_jobs_143"]["rows"]
+    bj = f15["between_jobs_143"]["rows"]
     assert [q(x["ratio"], 2) for x in bj] == ["1.77", "0.14", "1.56"] and {x["word"] for x in bj} == {"NO CHANGE"}
+    means, job_sd = {}, {}
+    for jk in ("t11-job2", "t11-job3", "t12-job1", "t14-job1"):
+        sts = [stats[(jk, "143", sp_)] for sp_ in (0, 1, 2)]
+        means[jk] = sum(x["duty"] for x in sts) / 3
+        job_sd[jk] = math.sqrt(sum(x["sd"] ** 2 for x in sts)) / 3
+    order = ["t11-job2", "t11-job3", "t12-job1", "t14-job1"]
+    zj = [abs(means[b_] - means[a_]) / math.hypot(job_sd[a_], job_sd[b_]) for a_, b_ in zip(order, order[1:])]
+    assert [q(z, 2) for z in zj] == ["1.77", "0.14", "1.56"] and {_t15_word(z) for z in zj} == {"NO CHANGE"}
     assert "(ratios 1.77, 0.14 and 1.56)" in item and "(1.81 at most)" in item
     # the borrowed rows
     sb = {(r_["job"], tuple(r_["spans"])): r_ for r_ in f15["shuffled_borrowed"]["rows"]}
@@ -4497,7 +4637,7 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
     sd = [r_[1]["telegraph_sd"] for r_ in y]
     assert (q(min(sd[:9]), 3), q(max(sd[:9]), 3), q(max(sd[9:]), 3)) == ("0.043", "0.081", "0.158")
     for s_ in (
-        "correlation times of 0.121 to 0.191 s in tests 11 and 12 and of 0.174, 0.174 and 0.375 s in test 14",
+        "these are correlation times of 0.121 to 0.191 s and of 0.174, 0.174 and 0.375 s",
         "with 0.2 to 9.4 percent of sweeps in the middle fifth",
         "the duty differs from the published weight by 0.000 to 0.011",
         "25 to 125 in the spans of tests 11 and 12 and 10 to 42 in test 14's",
@@ -4569,6 +4709,93 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
     # Sandhi's bets, posted with test 12's rule
     assert t12["meta"]["rule"]["posted"]["issue"] == 59
     assert "posted the two digests with test 12's rule, before its run ([issue 59]" in item
+    # A27, R3 (S3): lags and runs in returned indices, seconds only on the stated condition; the inflation flags
+    lags = {jk: [stats[(jk, "143", sp_)]["lag"] for sp_ in (0, 1, 2)] for jk in order}
+    early_l = lags["t11-job2"] + lags["t11-job3"] + lags["t12-job1"]
+    assert (min(early_l), max(early_l), lags["t14-job1"]) == (4, 10, [6, 6, 25])
+    s143 = [stats[(jk, "143", sp_)] for jk in order for sp_ in (0, 1, 2)]
+    assert [q(f(x["runs_high"] for x in s143), 1) for f in (min, max)] == ["3.3", "25.7"]
+    assert [q(f(x["runs_low"] for x in s143), 1) for f in (min, max)] == ["5.9", "44.1"]
+    assert (
+        "with correlation lags of 4 to 10 sweeps in tests 11 and 12 and of 6, 6 and 25 in test 14, and mean runs of "
+        "3.3 to 25.7 sweeps on the upper line and 5.9 to 44.1 on the lower" in item
+    )
+    assert "If the returned indices are chronological sweeps evenly spaced across the span" in item
+    king = {
+        qb: [stats[(jk, qb, sp_)] for jk in ("t10-job1", "t10-job2") for sp_ in (0, 1, 2)] for qb in ("11", "95", "120")
+    }
+    assert {x["lag"] for qb in ("11", "95") for x in king[qb]} == {1}
+    assert all(x["ceiling"] for qb in ("11", "95") for x in king[qb])
+    assert [q(np.mean([x[k] for x in king[qb]]), 1) for qb in ("11", "95") for k in ("runs_high", "runs_low")] == [
+        "1.5",
+        "5.7",
+        "1.4",
+        "5.2",
+    ]
+    shared120 = [x for x in king["120"] if x["word"] == "SHARED"]
+    assert [x["lag"] for x in shared120] == [11, 11, 22] and all(x["inflated"] for x in shared120)
+    assert sum(x["inflated"] for x in king["95"]) == 3 and not any(x["inflated"] for x in king["11"])
+    assert "mean runs of about 1.5 and 1.4 sweeps high and 5.7 and 5.2 low" in item
+    assert "lags of 11, 11 and 22 sweeps (0.349, 0.348 and 0.698 s)" in item
+    assert "on 95 in three of its spans and on 120 in all three of its SHARED spans" in item
+    mid143 = [x["mid5"] * 100 for x in s143]
+    assert (q(min(mid143), 1), q(max(mid143), 1)) == ("0.2", "9.4")
+    assert "(0.2 to 9.4 percent in the middle fifth)" in item
+    # A27, R3 (S4): the widest quarter-span duties on 143, and the 17 read boundaries not independent
+    spread = sorted(
+        (
+            (max(stats[(jk, "143", sp_)]["quarters"]) - min(stats[(jk, "143", sp_)]["quarters"]), jk, sp_)
+            for jk in order
+            for sp_ in (0, 1, 2)
+        ),
+        reverse=True,
+    )
+    assert [(jk, sp_) for _, jk, sp_ in spread[:2]] == [("t11-job3", 2), ("t12-job1", 0)]
+    assert [f"{v:.3f}" for v in stats[("t11-job3", "143", 2)]["quarters"]] == ["0.180", "0.432", "0.260", "0.048"]
+    assert [f"{v:.3f}" for v in stats[("t12-job1", "143", 0)]["quarters"]] == ["0.528", "0.176", "0.312", "0.408"]
+    assert (
+        "in test 11's job 3, span 2 (0.180, 0.432, 0.260 and 0.048) and in test 12's span 0 (0.528, 0.176, 0.312 and "
+        "0.408)" in item
+    )
+    assert "The 17 read boundaries share spans and jobs and are not 17 independent tests." in item
+    assert "does not show the duties equal" in item and "scatter of a time average" not in item
+    # A27, R3 (B1): the kingston qubits outside the separable list, read as the record gives them
+    unl, per_job = [], {}
+    for jk in ("t10-job1", "t10-job2", "t10-job3"):
+        for qb, qq in f15["jobs"][jk]["qubits"].items():
+            if qq["listed_separable"]:
+                continue
+            for w in qq["waits"].values():
+                for sp in w["spans"]:
+                    ratio = sp[w["quadrature_of_record"]]["ratio"]
+                    unl.append((int(qb), ratio))
+                    per_job.setdefault(jk, []).append(ratio)
+    assert [q(np.median(v_), 2) for v_ in per_job.values()] == ["1.06", "1.06", "1.06"]
+    over = [qb for qb, r_ in unl if r_ > 3]
+    assert (len(unl), len(over), sorted(set(over))) == (546, 25, [29, 34, 36, 47, 62, 77, 80, 104])
+    assert (
+        "their ratios had a median near 1.06 in each job, and 25 of 546 span readings, on 8 qubits (29, 34, 36, 47, "
+        "62, 77, 80, 104), exceeded 3" in item
+    )
+    assert "the finding draws nothing from their ratios" in item
+    fits = [
+        _gz(f"ibm_kingston/{f}")["qubits"]
+        for f in ("fits-t8-job1.json.gz", "fits-t8-job2.json.gz", "fits-t9-job1.json.gz")
+    ]
+    for qb in ("29", "34", "36", "47", "62", "77", "80", "104"):  # no two-line verdict on the record
+        assert all(f[qb]["verdict"] == "NO RESOLVED SPLIT" for f in fits if qb in f), qb
+    flat_all = " ".join(findings.split())
+    assert "- **The shared-state reading is drawn only from qubits with two resolved lines.**" in flat_all
+    # A27, R3 (S1): 16 of the 47 qubits compared across the two stamps, from the fits
+    f81, f91 = fits[0], fits[2]
+    both = set(f81) & set(f91)
+    moved = {x for x in both if abs(f91[x]["S"]["params"]["Delta_MHz"] - f81[x]["S"]["params"]["Delta_MHz"]) * 1e3 >= 4}
+    verdict = {x for x in both if f81[x]["verdict"] != f91[x]["verdict"]}
+    assert (len(both), len(moved), len(verdict), verdict <= moved) == (47, 16, 3, True)
+    assert (
+        "about a third of the 47 qubits compared across them (16) changed by 4 kHz or more in the one-line fit" in item
+    )
+    assert "the 3 that changed verdict among them" in item and "third of one chip" not in item
     # finding 28's pointer (A27, R2, question 9), after its last paragraph
     f28 = findings.split('<a id="finding-28"></a>', 1)[1].split('<a id="finding-29"></a>', 1)[0].rsplit("\n29. ", 1)[0]
     assert f28.rstrip().splitlines()[-1].strip() == (

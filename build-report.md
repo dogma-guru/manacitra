@@ -4070,3 +4070,33 @@ boundaries read are NO CHANGE.
   row by row against its `boundaries`; its word check strips exactly `` `telegraph_sd` ``, the one quoted field name.
   The README's opening, the dates, the thread table and the data README's count of job IDs follow the recast.
   1,019 tests pass and 1 is skipped (the ledger test), against 1,007 and 1 at `8aebe1e`.
+
+**Ruling R3 (18 October 2026, approved by the author: "I approve the changes").** An independent review of `dd769b3`,
+from the public repository alone, made seven findings, all accepted; four trace to the wording of the rules, the
+readings and the kickoff, recorded as such. No rule file, verdict word or count changes; each change is to what a sentence claims or
+what a test computes.
+- **B1.** The kingston qubits outside test 15's separable list get the word NOT SEPARABLE from its rule whatever their
+  ratio, and finding 29 no longer says their ratio is near 1 whatever the order: their median was near 1.06 in each job,
+  and 25 of 546 span readings, on 8 qubits, exceeded 3. The finding draws nothing from them, and what has not been shown
+  says the shared-state reading is drawn only from qubits with two resolved lines.
+- **S1.** "A third of one chip" becomes the population measured: about a third of the 47 kingston qubits compared
+  across two stamps (16) changed by 4 kHz or more in the one-line fit.
+- **S2.** "Every circuit sees the same state" becomes the dependence measured in the rows tested (the means at equal
+  returned shot index far beyond independent shots), with the shared state as the reading of it and "the same stretch
+  of time" conditional on that reading.
+- **S3.** Correlation lags and runs are given in sweeps, returned indices, first; seconds only if the returned indices
+  are chronological sweeps evenly spaced across the span. The duty is the fraction of a span's returned indices in the
+  high state. The kingston runs carry test 15's inflation flags.
+- **S4.** The error is named as test 15's estimated sampling standard deviation of a span's duty under its stationary
+  two-state model with exponential correlation; a NO CHANGE carries no evidence of a change under that model and does
+  not show the duties equal. The widest quarter-span duties on 143 are carried, and the 17 read boundaries are said to
+  share spans and jobs.
+- **S5.** `test_finding_29` recomputes every separable span (42) from test 15's published sweep means, recovered exactly
+  as fractions of the span's rows, and checks the read's duty, lag, word, switches, runs, quarter-span duties, middle
+  fifth, inflation flag and standard deviation against them; it then derives every cell of the boundary table from those
+  spans and from the records that published the shot-noise ratios (tests 11, 12 and 14), recomputes the three ratios
+  between 143's jobs, B1's counts and S1's 16 of 47 from the fits. Its string checks remain: the sentences it quotes,
+  the README's opening and the dates are checked as strings against the text, each number in them read from a record.
+- **M1.** A new pull request description, written around R2 and R3, with the first kept under a dated heading.
+- **The desk check** of test 15 is described in the data index as an approximate calibration of its model.
+  1,019 tests pass and 1 is skipped (the ledger test), as at `dd769b3`; R3 adds checks inside existing tests.
