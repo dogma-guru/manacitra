@@ -5410,3 +5410,41 @@ def test_the_round_5c_gaps_are_whole_counts():
                 gaps.append(g * 192_000)
     assert len(gaps) == 393 and max(abs(x - round(x)) for x in gaps) < 0.05
     assert [t for t in range(1, 64, 2) if abs(math.cos(2 * math.pi * 0.050 * t)) < 1e-9] == [5, 15, 25, 35, 45, 55]
+
+
+def test_the_changelog_0_10_0():
+    """Amendment A28, section 5: the changelog's 0.10.0 heading above 0.9.0, unreleased until the release pull request
+    dates it, with the lead the kickoff fixed, word for word, and the A28 entry naming the package's new functions,
+    finding 30's data, Sandhi's versions 4 and 4.1 and round 5c; no dashes."""
+    log = (ROOT / "CHANGELOG.md").read_text()
+    assert log.index("## 0.10.0 (unreleased)") < log.index("## 0.9.0 (18 October 2026)")
+    entry = " ".join(log.split("## 0.10.0 (unreleased)", 1)[1].split("\n## ", 1)[0].split())
+    lead = (
+        "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
+        "hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans the duty "
+        "held within its error at every boundary; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and "
+        "0.313, while the switching time moved between those days. A pattern noticed in the published weights, a job's "
+        "middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk "
+        "model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of "
+        "its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the "
+        "per-shot read of a span: the sweep series, the sharing ratio, the duty and correlation time, and the error of "
+        "a time average; thresholds and words are the caller's. No cause is named."
+    )
+    assert entry.startswith(lead + " - Amendment A28:")
+    _, d3, t16, t17 = _t30_records()
+    spans = [
+        s
+        for k in ("d3-job2", "d3-job3")
+        for s in t16["archived"]["analysis"]["jobs"][k]["qubits"]["143"]["waits"]["monitor"]["spans"]
+    ]
+    spans += [
+        s
+        for k in ("A1", "A2", "B1")
+        for s in t17["archived"]["per_shot_read"]["jobs"][k]["qubits"]["143"]["waits"]["monitor"]["spans"]
+    ]
+    assert len(spans) == 18 and {s["Y"]["word"] for s in spans} == {"SHARED"}  # "all eighteen monitor spans"
+    for name in ("sweep_series", "sharing_ratio", "two_state_reading", "time_average_sd", "boundary_ratio"):
+        assert f"`{name}`" in entry, name
+    for path in ("`data/desk/sandhi/v4/`", "`data/desk/t7-power-check-round5c/`", "`t17-middle-note-excerpt.md`"):
+        assert path in entry, path
+    assert "—" not in entry and "–" not in entry

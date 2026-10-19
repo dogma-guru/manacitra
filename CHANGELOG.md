@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.10.0 (unreleased)
+
+Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans the duty held within its error at every boundary; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313, while the switching time moved between those days. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the per-shot read of a span: the sweep series, the sharing ratio, the duty and correlation time, and the error of a time average; thresholds and words are the caller's. No cause is named.
+
+- Amendment A28: `manacitra.wait` gains the per-shot read of a span, ported from test 15's read, which tests 16 and 17
+  ran unchanged: `sweep_series` (one qubit's shots per position, in returned order, made into each span's bit matrix
+  of whole repeats and its column means, by `span_assignment`), `sharing_ratio`, `two_state_reading` (the threshold
+  between two caller-given percentiles, the duty, the correlation lag and time, the switches, dwells, quarter-span
+  duties and mid-sweep fraction), `time_average_sd` (with test 15's ceiling at three sweeps), `boundary_ratio` and
+  `sweep_autocorrelation`. Everything else in the package is unchanged. Finding 30 (test 11 on a third day, tests 16
+  and 17), with their data in `data/ibm_fez/` (one record per test, in A27's layout; the per-shot arrays named by their
+  SHA-256 and not published; the posted rules of tests 16 and 17 published unchanged; the desk checks, hash checks and
+  rulings; the run's code as verbatim lines of the scripts as run), and the line of the note of 19 October that test
+  17's rule tests, as a dated excerpt (`t17-middle-note-excerpt.md`). `tests/_reuse_runs.py` recomputes day 3's three
+  jobs as day 2's are recomputed, and tests 16's and 17's spans, boundaries, jobs and middle test through the package
+  from the sweep means their reads published; `tests/test_wait.py` recovers a planted duty and correlation time, and,
+  given test 17's arrays (`MANACITRA_SHOTS`), reproduces its long job's read. The desk model Sandhi's versions 4 and 4.1
+  in `data/desk/sandhi/v4/` and `v4.1/` (their reports, predictions, fits, hierarchies, checks, scorers with their
+  tests and C source, run logs and sums, and their scorecards on test 16 and test 17, the local paths the scorer wrote
+  replaced; their large files attached to the release, with their SHA-256 in the folder's README), checked by
+  `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
+  `data/desk/t7-power-check-round5c/` beside round 5b, its results attached to the release. The README opens with
+  finding 30, and its table of findings gains an eleventh row.
+
 ## 0.9.0 (18 October 2026)
 
 Nine records on ibm_kingston and ibm_fez, eight of them tests under rules hashed before each run, asked when a qubit's Ramsey fringe changes within a job. Read by the provider's execution record, every job of 248 to 300 circuits ran as three spans; read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span whose estimated error is not the shots'. Under that error all 17 weight boundaries read in the monitor jobs show NO CHANGE, where the rules' shot-noise errors had put 143's up to 35.1 apart; between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit, while the split on 143 moved by a tenth of a kilohertz between days. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. `manacitra.wait` gains the monitor circuits, the span assignment from the provider's execution record, and the per-repeat phase, length and antiphase weight; thresholds and verdicts are the caller's.
