@@ -1,0 +1,56 @@
+t7 v5.1, desk power check, round 5c: the second machine's environment
+
+Step 1, read only, before anything was copied (2026-10-16, 17:05:13 UTC)
+  platform            macOS 26.6.2 (Darwin 25.6.0), x86_64
+  processor           Intel Core i9-9980HK, 2.40 GHz; 8 physical cores, 16 logical (nproc reports 16)
+  memory              64 GiB; 42 GiB unused at the check, 4.1 GiB wired, nothing compressed (macOS has no free -g)
+  uptime              2 h 10 min (the machine had shut down at about 13:58 UTC that day when its battery emptied on a
+                      35 W adapter; see the round's report); load averages 1.54, 1.66, 2.00
+  already running     98.9% idle over a two-second top sample; no process above 1% CPU except top itself (12.7%);
+                      the largest were the kernel (0.8%), a Grafana server (0.8%) and the system's own daemons. No
+                      process of this test was running: the version-5 run had been stopped at 16:41:36 UTC
+                      (tests/handback/t7v5/second-machine-stopped-2026-10-16.md). Nothing was stopped or restarted at this check.
+  power               mains adapter negotiating 60 W (20 V, 3 A); battery at 80%, "AC attached; not charging" (macOS
+                      holding the charge), current 0 mA; CPU speed limit 100 (no throttling)
+  free disk (home)    833 GiB
+  workers used        3 of the 16 logical cores, on the author's instruction of October 16 to limit the processors
+                      until the second machine's power is fixed (the prompt's 14 was not used). Three was the level the battery held
+                      on 60 W in the stopped version-5 run (charging at 2 and 3 workers, draining at 4). A battery guard
+                      (battery_guard*.py) paused and resumed those 3 by the battery's current; see the report.
+
+Step 2, the copy of the repository and the virtual environment
+  round 3's copy      gone: round 3's folder was moved to the second machine's Trash on October 16 at the author's request, so the
+                      repository was copied afresh, as round 3's prompt describes, into a new folder in the second machine's home
+  commit              9b260fb5f0537736a3de400eca7cafd043ae815b (the branch findings/k56-k62-peak-placement has since
+                      moved to 8063610, of which 9b260fb is an ancestor; pretest_t7.py refuses any other HEAD)
+  how                 a depth-1 fetch of that commit with blobs filtered, then a sparse checkout leaving out every
+                      path whose name contains "sealed" in any case (docs/diagrams/sealed-prediction.png and .svg,
+                      whose contents were never fetched); the working tree equals git archive of 9b260fb less those
+                      two files, byte for byte; remote, reflog and hooks removed before the copy. 663 of 665 files.
+  python              3.13.15 (a separately installed Python on the second machine; the system's 3.9.6 is below the package's 3.11)
+  install             pip install -e ".[aer]" numpy scipy "qiskit==2.5.2" in the copy. The qiskit pin is a departure:
+                      unpinned, pip took 2.6.0 (released October 16); the main machine's round 5b ran 2.5.2, and
+                      qiskit does not enter a draw.
+  manacitra           0.6.0 (editable, from the copy)
+  numpy               2.5.4      (main machine: 2.5.4)
+  scipy               1.18.1     (main machine: 1.18.1)
+  qiskit              2.5.2      (main machine: 2.5.2)
+  qiskit-aer          0.17.2
+  rustworkx 0.18.1, dill 0.4.1, psutil 7.2.2, python-dateutil 2.9.0.post0, six 1.17.0, stevedore 5.9.1,
+  typing_extensions 4.16.0, pip 26.2.1
+  threads             one per worker process (OMP, OpenBLAS, vecLib and MKL thread counts set to 1)
+  main machine        Python 3.14.8 on arm64, 10 workers; the only version difference is Python's
+
+Step 3, what was copied from the main machine (read only at the source)
+  tests/handback/t7v51/power_t7v51.py   SHA-256 663280741fe5dcb6728e4bca5ef55afc759dac5823225b02981bd88929e4b41a, the
+                                         script round 5b's fit check and grid ran; unchanged
+  tests/handback/t7/pretest_t7.py and tests/handback/t7/SHA256SUMS (the hash checks on the second machine)
+  the six kickoffs of test 7 (v1 to v5.1)
+  and, as run control written for this round: run_t7v51_round5c.py, battery_guard.py, battery_guard_v2.py,
+  battery_guard_v3.py, start.sh, status.sh. Nothing from other hand-backs, nothing from [the private working folder], no key,
+  token, .env file or credential.
+
+The run
+  under nohup, with caffeinate -i -s (a per-process assertion against idle and system sleep that ends with the process;
+  no setting changed); PYTHONDONTWRITEBYTECODE=1; no network call during the run (pip's downloads in step 2 were the
+  only network use; no provider was called).

@@ -5318,3 +5318,95 @@ def test_finding_30_the_desk_model():
         "The predictions are the model's, written before the run they predict, and they are what can count against it.",
     ):
         assert s in rep and f'"{s}"' in item
+
+
+def _round5c():
+    import json
+
+    root = archive.data_dir() / "desk" / "t7-power-check-round5c"
+    return root, (root / "README.md").read_text(), json.loads((root / "compare-t7v51-round5c.json").read_text())
+
+
+def test_the_round_5c_folder():
+    """Amendment A28, section 4 (the author's answer 3 and ruling of 19 October 2026): round 5c beside round 5b. Every
+    file the folder's README lists has the SHA-256 it gives, as published and as handed back; no file names the second
+    machine; and the README's sentences of computed fact hold on the published comparison: KEPT on both machines, 106
+    of 117; 8 of 27,000 draws differing in verdict, all at tau 150 us and delta 30 kHz, each with one machine's P fit
+    in a distant minimum; at the two points with lines at 25 and 125 kHz, S's held-out error differing while every
+    chi-square agrees; no point's 80% test moving."""
+    import hashlib
+    import re
+
+    root, readme, cmp_ = _round5c()
+    rows = re.findall(r"^\| `([^`]+)` \| [^|]+ \| `([0-9a-f]{64})` \| (?:`([0-9a-f]{64})`|the same) \|$", readme, re.M)
+    assert len(rows) == 6
+    for name, handed, published in rows:
+        assert hashlib.sha256((root / name).read_bytes()).hexdigest() == (published or handed), name
+    names = {p.name for p in root.iterdir() if not archive.is_bundle(p)}
+    assert names == {n for n, *_ in rows} | {"README.md"}
+    for p in root.iterdir():
+        assert not re.search(r"d[o]gma", p.read_text(), re.I), p.name
+    assert "`f37ca5ccb03e9a3d22b62a17011a32d8296892624d5ae0866c7ba5f9d7f9dd45`" in readme
+    assert "`663280741fe5dcb6728e4bca5ef55afc759dac5823225b02981bd88929e4b41a`" in readme
+    flat = " ".join(readme.split())
+    for k in ("keep_round5c", "keep_main"):
+        kp = cmp_[k]
+        assert (kp["verdict"], kp["passing"], kp["counted_written"], kp["needed"]) == ("KEPT", 106, 117, 88)
+    assert "KEPT on both machines: 106 of the 117 counted points" in flat
+    grid = {}
+    tables = (root / "tables-t7v51-on-round5c-draws.md").read_text()
+    for m in re.finditer(r"^\| (\d+) \| (\d+) \| (\d+) \| (\d+) \|", tables, re.M):
+        grid[int(m.group(1))] = (int(m.group(3)), int(m.group(4)))
+    assert len(grid) == 135
+    diff = [(p["index"], d) for p in cmp_["points"] for d in p["draws_verdict_differs_detail"]]
+    assert cmp_["draws_whose_verdict_differs"] == len(diff) == 8
+    assert {grid[i] for i, _ in diff} == {(150, 30)}
+    chi = [sorted((d["round5c_fit"]["chi2_P"], d["main_fit"]["chi2_P"])) for _, d in diff]
+    assert min(c[1] for c in chi) > 10_000 and max(c[0] for c in chi) < 80
+    assert (round(min(c[1] for c in chi)), round(max(c[1] for c in chi))) == (10614, 19473)
+    assert (round(min(c[0] for c in chi)), round(max(c[0] for c in chi))) == (44, 75)
+    assert "8 of the 27,000 draws differ in verdict, all at τ = 150 µs and δ = 30 kHz" in flat
+    assert "(P's χ² of 10,614 to 19,473 there, against 44 to 75 on the other)" in flat
+    two = [p for p in cmp_["points"] if p["index"] in (118, 133)]
+    assert [grid[p["index"]] for p in two] == [(60, 50), (150, 50)]
+    assert all(
+        p["largest_abs_difference"]["chi2_S"] < 3e-6 and p["largest_abs_difference"]["chi2_P"] < 1e-9 for p in two
+    )
+    assert all(p["draws_verdict_differs"] == [] for p in two)
+    assert "while every χ² agrees to 3·10⁻⁶" in flat
+    fr = [p for p in cmp_["points"] if not p["fractions_equal"]]
+    assert [p["index"] for p in fr] == [42, 86, 87, 132]
+    assert "No verdict moved:" in flat and "—" not in readme and "–" not in readme
+
+
+ROUND5C = __import__("os").environ.get("MANACITRA_ROUND5C")
+
+
+@pytest.mark.skipif(not ROUND5C, reason="needs both rounds' result files (MANACITRA_ROUND5C, a folder holding them)")
+def test_the_round_5c_gaps_are_whole_counts():
+    """Amendment A28, section 4, sentence 3, recounted from the two result files attached to releases 0.8.0 and 0.10.0:
+    at the two points with lines at 25 and 125 kHz, 393 draws differ in S's held-out error, each gap a whole multiple of
+    1/192,000 (64 held-out points of 3,000 shots) to within 0.05 of one; the true probability is exactly one half at
+    six held-out waits, where the 50 kHz factor of the two lines' sum is zero."""
+    import hashlib
+    import json
+    import math
+
+    folder = Path(ROUND5C)
+    files = {"results-t7v51.jsonl": "27c29bc2c242312ff9b2ab3b22c987263aa2900ebdcf966c24e0fcc1369b1a48"}
+    files["results-t7v51-round5c.jsonl"] = "f37ca5ccb03e9a3d22b62a17011a32d8296892624d5ae0866c7ba5f9d7f9dd45"
+    load = {}
+    for name, sha in files.items():
+        b = (folder / name).read_bytes()
+        assert hashlib.sha256(b).hexdigest() == sha, name
+        load[name] = {r["index"]: r for r in map(json.loads, b.decode().splitlines()) if r}
+    main, second = load["results-t7v51.jsonl"], load["results-t7v51-round5c.jsonl"]
+    gaps = []
+    for i in (118, 133):
+        dm = {r["draw"]: r for r in main[i]["draws"]}
+        for r in second[i]["draws"]:
+            g = r["mae_S"] - dm[r["draw"]]["mae_S"]
+            if abs(g) > 1e-6:
+                gaps.append(g * 192_000)
+    assert len(gaps) == 393 and max(abs(x - round(x)) for x in gaps) < 0.05
+    assert [t for t in range(1, 64, 2) if abs(math.cos(2 * math.pi * 0.050 * t)) < 1e-9] == [5, 15, 25, 35, 45, 55]
