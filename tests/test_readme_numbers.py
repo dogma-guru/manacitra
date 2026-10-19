@@ -4903,6 +4903,13 @@ def test_finding_30_the_records():
         ph = wait.monitor_phase(ones, labels, spans3[str(j)], 5.6, shots=1000, **rr.T10_RULE)
         pairs += len(ph["pairs"])
         t_within += ph["within_time_s"]
+        if j == 2:
+            R0 = a3["R0"]
+            w2 = wait.monitor_weight(
+                ph, R0["value"], exchange=R0["branches_exchanged"], abs_min=rr.T11_W_MIN, n_se=rr.T10_RULE["n_se"]
+            )
+            (bp,) = [x for x in w2["pairs"] if (x["k"], x["k1"]) == (99, 100)]
+            assert bp["kind"] == "boundary" and (q(bp["dw"], 3), q(bp["threshold"], 3)) == ("−0.072", "0.115")
     assert lab3 and (pairs, q(t_within, 1)) == (287, "161.8")
     assert "no phase switch and no weight switch in 287 consecutive pairs, over 161.8 s within spans" in item
     bt = {j: a3["jobs"][j]["boundary_table"]["boundaries"] for j in "23"}
