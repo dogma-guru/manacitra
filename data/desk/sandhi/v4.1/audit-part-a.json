@@ -1,0 +1,1064 @@
+{
+  "comparison_125": {
+    "count": 125,
+    "exact_equal_count": 120,
+    "within_1e12_count": 125,
+    "max_absolute_difference": 2.7755575615628914e-17,
+    "rows": [
+      {
+        "field": "day3-job2.span0.X.ratio",
+        "computed": 5.796510946805621,
+        "published": 5.796510946805621,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.threshold",
+        "computed": 0.48854166666666676,
+        "published": 0.48854166666666676,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.duty_b",
+        "computed": 0.348,
+        "published": 0.348,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.lag_1_over_e",
+        "computed": 9,
+        "published": 9,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.tau_c_s",
+        "computed": 0.24753152699999997,
+        "published": 0.24753152699999997,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.telegraph_sd",
+        "computed": 0.06390718269490527,
+        "published": 0.06390718269490528,
+        "exact_equal": false,
+        "absolute_difference": 1.3877787807814457e-17,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.069,
+        "published": 0.069,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.ratio",
+        "computed": 33.55735109614838,
+        "published": 33.55735109614838,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.threshold",
+        "computed": 0.4791666666666667,
+        "published": 0.4791666666666667,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.duty_b",
+        "computed": 0.332,
+        "published": 0.332,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.lag_1_over_e",
+        "computed": 8,
+        "published": 8,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.tau_c_s",
+        "computed": 0.220028024,
+        "published": 0.220028024,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.telegraph_sd",
+        "computed": 0.05956858232323479,
+        "published": 0.05956858232323479,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.016,
+        "published": 0.016,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.None.whole_repeats",
+        "computed": 48,
+        "published": 48,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span0.None.duration_s",
+        "computed": 27.503503,
+        "published": 27.503503,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.ratio",
+        "computed": 5.819805732046214,
+        "published": 5.819805732046214,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.threshold",
+        "computed": 0.5,
+        "published": 0.5,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.duty_b",
+        "computed": 0.392,
+        "published": 0.392,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.lag_1_over_e",
+        "computed": 7,
+        "published": 7,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.tau_c_s",
+        "computed": 0.19261571,
+        "published": 0.19261571,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.telegraph_sd",
+        "computed": 0.05776421037285977,
+        "published": 0.05776421037285977,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.035,
+        "published": 0.035,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.ratio",
+        "computed": 34.924529140159585,
+        "published": 34.924529140159585,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.threshold",
+        "computed": 0.4897959183673469,
+        "published": 0.4897959183673469,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.duty_b",
+        "computed": 0.385,
+        "published": 0.385,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.lag_1_over_e",
+        "computed": 7,
+        "published": 7,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.tau_c_s",
+        "computed": 0.19261571,
+        "published": 0.19261571,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.telegraph_sd",
+        "computed": 0.05757473404193892,
+        "published": 0.05757473404193892,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.009,
+        "published": 0.009,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.None.whole_repeats",
+        "computed": 49,
+        "published": 49,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span1.None.duration_s",
+        "computed": 27.51653,
+        "published": 27.51653,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.ratio",
+        "computed": 5.844229965106762,
+        "published": 5.844229965106762,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.threshold",
+        "computed": 0.4897959183673469,
+        "published": 0.4897959183673469,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.duty_b",
+        "computed": 0.32,
+        "published": 0.32,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.lag_1_over_e",
+        "computed": 7,
+        "published": 7,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.tau_c_s",
+        "computed": 0.19259550099999997,
+        "published": 0.19259550099999997,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.telegraph_sd",
+        "computed": 0.05519420259411309,
+        "published": 0.05519420259411308,
+        "exact_equal": false,
+        "absolute_difference": 6.938893903907228e-18,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.056,
+        "published": 0.056,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.ratio",
+        "computed": 34.05957215941603,
+        "published": 34.05957215941603,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.threshold",
+        "computed": 0.4795918367346939,
+        "published": 0.4795918367346939,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.duty_b",
+        "computed": 0.319,
+        "published": 0.319,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.lag_1_over_e",
+        "computed": 7,
+        "published": 7,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.tau_c_s",
+        "computed": 0.19259550099999997,
+        "published": 0.19259550099999997,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.telegraph_sd",
+        "computed": 0.055148399795460976,
+        "published": 0.055148399795460976,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.013,
+        "published": 0.013,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.None.whole_repeats",
+        "computed": 49,
+        "published": 49,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.span2.None.duration_s",
+        "computed": 27.513643,
+        "published": 27.513643,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.ratio",
+        "computed": 6.101038172871683,
+        "published": 6.101038172871683,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.threshold",
+        "computed": 0.4897959183673469,
+        "published": 0.4897959183673469,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.duty_b",
+        "computed": 0.332,
+        "published": 0.332,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.lag_1_over_e",
+        "computed": 12,
+        "published": 12,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.tau_c_s",
+        "computed": 0.33371934,
+        "published": 0.33371934,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.telegraph_sd",
+        "computed": 0.07295631569644948,
+        "published": 0.07295631569644948,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.06,
+        "published": 0.06,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.ratio",
+        "computed": 33.941120831264236,
+        "published": 33.941120831264236,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.threshold",
+        "computed": 0.489795918367347,
+        "published": 0.489795918367347,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.duty_b",
+        "computed": 0.328,
+        "published": 0.328,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.lag_1_over_e",
+        "computed": 12,
+        "published": 12,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.tau_c_s",
+        "computed": 0.33371934,
+        "published": 0.33371934,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.telegraph_sd",
+        "computed": 0.07273227619152312,
+        "published": 0.07273227619152312,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.009,
+        "published": 0.009,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.None.whole_repeats",
+        "computed": 49,
+        "published": 49,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span0.None.duration_s",
+        "computed": 27.809945,
+        "published": 27.809945,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.ratio",
+        "computed": 6.137576617879996,
+        "published": 6.137576617879996,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.threshold",
+        "computed": 0.4897959183673469,
+        "published": 0.4897959183673469,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.duty_b",
+        "computed": 0.37,
+        "published": 0.37,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.lag_1_over_e",
+        "computed": 9,
+        "published": 9,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.tau_c_s",
+        "computed": 0.247862169,
+        "published": 0.247862169,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.telegraph_sd",
+        "computed": 0.0647749951756077,
+        "published": 0.0647749951756077,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.081,
+        "published": 0.081,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.ratio",
+        "computed": 33.76394085823697,
+        "published": 33.76394085823697,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.threshold",
+        "computed": 0.489795918367347,
+        "published": 0.489795918367347,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.duty_b",
+        "computed": 0.359,
+        "published": 0.359,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.lag_1_over_e",
+        "computed": 9,
+        "published": 9,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.tau_c_s",
+        "computed": 0.247862169,
+        "published": 0.247862169,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.telegraph_sd",
+        "computed": 0.0643594748269437,
+        "published": 0.0643594748269437,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.009,
+        "published": 0.009,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.None.whole_repeats",
+        "computed": 49,
+        "published": 49,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span1.None.duration_s",
+        "computed": 27.540241,
+        "published": 27.540241,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.ratio",
+        "computed": 5.357304730232225,
+        "published": 5.357304730232225,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.threshold",
+        "computed": 0.47916666666666663,
+        "published": 0.47916666666666663,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.duty_b",
+        "computed": 0.347,
+        "published": 0.347,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.lag_1_over_e",
+        "computed": 8,
+        "published": 8,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.tau_c_s",
+        "computed": 0.218358888,
+        "published": 0.218358888,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.telegraph_sd",
+        "computed": 0.06021175964875964,
+        "published": 0.06021175964875964,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.X.mid_sweep_fraction_middle_fifth",
+        "computed": 0.089,
+        "published": 0.089,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.ratio",
+        "computed": 32.94378878314571,
+        "published": 32.94378878314571,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.threshold",
+        "computed": 0.4791666666666667,
+        "published": 0.4791666666666667,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.duty_b",
+        "computed": 0.324,
+        "published": 0.324,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.lag_1_over_e",
+        "computed": 8,
+        "published": 8,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.tau_c_s",
+        "computed": 0.218358888,
+        "published": 0.218358888,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.telegraph_sd",
+        "computed": 0.05919783779835206,
+        "published": 0.05919783779835206,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.Y.mid_sweep_fraction_middle_fifth",
+        "computed": 0.008,
+        "published": 0.008,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.None.whole_repeats",
+        "computed": 48,
+        "published": 48,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.None.quadrature_of_record",
+        "computed": "Y",
+        "published": "Y",
+        "exact_equal": true,
+        "absolute_difference": null,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.span2.None.duration_s",
+        "computed": 27.294861,
+        "published": 27.294861,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.boundary[0, 1]",
+        "computed": {
+          "ratio": 0.63975023487491,
+          "word": "NO CHANGE"
+        },
+        "published": {
+          "ratio": 0.63975023487491,
+          "word": "NO CHANGE"
+        },
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job2.boundary[1, 2]",
+        "computed": {
+          "ratio": 0.8278378806645273,
+          "word": "NO CHANGE"
+        },
+        "published": {
+          "ratio": 0.8278378806645273,
+          "word": "NO CHANGE"
+        },
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.boundary[0, 1]",
+        "computed": {
+          "ratio": 0.319195600636631,
+          "word": "NO CHANGE"
+        },
+        "published": {
+          "ratio": 0.319195600636631,
+          "word": "NO CHANGE"
+        },
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "day3-job3.boundary[1, 2]",
+        "computed": {
+          "ratio": 0.4002542569132472,
+          "word": "NO CHANGE"
+        },
+        "published": {
+          "ratio": 0.4002542569132472,
+          "word": "NO CHANGE"
+        },
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "between_jobs",
+        "computed": {
+          "ratio": 0.16541743867859224,
+          "word": "NO CHANGE"
+        },
+        "published": {
+          "ratio": 0.16541743867859224,
+          "word": "NO CHANGE"
+        },
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.Y.ratio",
+        "computed": 2.030341352458089,
+        "published": 2.030341352458089,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.Y.row_lag1_autocorrelation_mean",
+        "computed": 0.17055988830633673,
+        "published": 0.17055988830633673,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.Y.n_rows",
+        "computed": 51,
+        "published": 51,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.X.ratio",
+        "computed": 1.1911886356756287,
+        "published": 1.1911886356756287,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.X.row_lag1_autocorrelation_mean",
+        "computed": 0.1363535677818037,
+        "published": 0.13635356778180366,
+        "exact_equal": false,
+        "absolute_difference": 2.7755575615628914e-17,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.0.X.n_rows",
+        "computed": 48,
+        "published": 48,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.Y.ratio",
+        "computed": 0.8362120147958537,
+        "published": 0.8362120147958537,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.Y.row_lag1_autocorrelation_mean",
+        "computed": 0.1615044924255968,
+        "published": 0.1615044924255968,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.Y.n_rows",
+        "computed": 45,
+        "published": 45,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.X.ratio",
+        "computed": 0.815658924621634,
+        "published": 0.815658924621634,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.X.row_lag1_autocorrelation_mean",
+        "computed": 0.13922496735876605,
+        "published": 0.13922496735876605,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.1.X.n_rows",
+        "computed": 52,
+        "published": 52,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.Y.ratio",
+        "computed": 0.8563411130896249,
+        "published": 0.8563411130896249,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.Y.row_lag1_autocorrelation_mean",
+        "computed": 0.14638169378575203,
+        "published": 0.146381693785752,
+        "exact_equal": false,
+        "absolute_difference": 2.7755575615628914e-17,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.Y.n_rows",
+        "computed": 32,
+        "published": 32,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.X.ratio",
+        "computed": 0.8989070083283147,
+        "published": 0.8989070083283147,
+        "exact_equal": true,
+        "absolute_difference": 0.0,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.X.row_lag1_autocorrelation_mean",
+        "computed": 0.1515311122423051,
+        "published": 0.15153111224230506,
+        "exact_equal": false,
+        "absolute_difference": 2.7755575615628914e-17,
+        "equal_at_1e12": true
+      },
+      {
+        "field": "shuffled.2.X.n_rows",
+        "computed": 28,
+        "published": 28,
+        "exact_equal": true,
+        "absolute_difference": 0,
+        "equal_at_1e12": true
+      }
+    ]
+  },
+  "unaffected_v4_scorecard": {
+    "compared_leaves": 107393,
+    "exact_equal": 107393,
+    "within_1e12": 107393,
+    "max_absolute_difference": 0.0,
+    "differences": [],
+    "excluded_fields": [
+      "computed_utc",
+      "definitions",
+      "families",
+      "matching_scenario",
+      "prediction_comparisons",
+      "prediction_file",
+      "prediction_scores",
+      "prediction_sha256",
+      "scenario_applicability",
+      "scenario_comparisons",
+      "scenario_scores",
+      "unavailable_outcomes",
+      "versions"
+    ],
+    "note": "Only C1 C2 C3 products, execution provenance, and relocated source paths excluded. Presentation strings normalized to internal review language as required by its label; no numerical value normalized. Original fit, path, record, dwell and boundary outputs compared."
+  },
+  "C1_design_invariant_to_observed_values": true
+}

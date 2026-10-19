@@ -1,0 +1,2453 @@
+{
+  "schema": "model01_v4_predictions_1",
+  "created_utc": "2026-10-19T03:18:08.751639+00:00",
+  "planned_run": "20 October 2026, qubit 143, test 11 design, shuffled job then two monitor jobs",
+  "primary_status": "not issued for an unrestricted third date",
+  "conditional_extension_scope": "conditional_empirical_day_extension",
+  "assumptions": {
+    "scope": "conditional_empirical_day_extension",
+    "frozen_before_predictive_simulation": true,
+    "hierarchy_only_status": "not issued for an unrestricted third date",
+    "identification_limit": "The fitted hierarchy has fixed means for two observed UTC dates and no distribution of means for a third date. It also has no population for emissions, future span membership or future durations.",
+    "alternative": "For a conditional numerical forecast choose one of the two observed UTC dates with equal probability once per complete future day. For each transformed parameter choose one of its 400 hierarchy bootstrap vectors, shared by both future jobs. Conditional on that vector and date, draw span parameters independently with the fitted between span spread. The two transformed parameters are independent in this extension.",
+    "emissions": "For each future job choose a monitor job from the selected date uniformly and one of its 400 parametric bootstrap emission vectors. That vector is shared across all spans of that future job. This is an empirical donor extension, not an identified third date emission population.",
+    "future_design": "Two jobs of 300 positions and 1000 shots. For each scenario divide the 300 submitted positions into two, three or four contiguous nearly equal blocks. Remove the two readout positions at either end and any repeat straddling a block. These are conditional row allocations, not a prediction of provider membership. Sample seconds per sweep from the selected date record independently per span; all seconds remain conditional.",
+    "draws_per_scenario": 2000,
+    "interval_training_draws": 1000,
+    "joint_family_calibration_draws": 1000,
+    "family_calibration": "First 1000 draws give marginal 90 percent intervals. Last 1000 independent days give miss count probabilities preserving shared day and job parameters. Primary cutoff is the smallest miss count with the one sided 95 percent binomial upper confidence bound below 0.05. Point probability cutoff and independent binomial cutoff are listed beside.",
+    "predictive_LR_trials_per_scenario": 100,
+    "null_bootstrap_draws_per_predictive_boundary": 400,
+    "predictive_LR_scope": "First 100 complete simulated days per scenario, each scored with the same exact likelihood tests and 400 null draws. Includes all within job boundaries and the between job boundary. Monte Carlo probability intervals are reported.",
+    "boundary_counts": "Primary counts cover within job span boundaries across both jobs; between job duty difference is separate. Any likelihood rejection includes the between job comparison.",
+    "shuffled_assumption": "The A26 weight is assumed within 0.011 of a time averaged duty on a shuffled span. This second estimator has not been compared against threshold duty on one job. A supplied complete A26 implementation is absent, so its future computed score is unavailable. Population ell is converted to seconds with the monitor donor sweep and evaluated at the archived shuffled span duration; resulting sd is conditional.",
+    "returned_order": "Primary real future returned order probability is not issued because chronology is not established by the record. A conditional predictive fit preference is calculated assuming the model chain is generated in returned order.",
+    "seeds": {
+      "scenario_base": 40118600,
+      "predictive_LR_base": 40118900
+    },
+    "no_outcome_based_selection": true
+  },
+  "record_basis": {
+    "spans": 9,
+    "jobs": 3,
+    "UTC_dates": 2,
+    "test14": "Excluded from primary prediction class; retained beside"
+  },
+  "entries": [
+    {
+      "id": "hierarchy_only_sharing",
+      "quantity": "sharing",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_duty",
+      "quantity": "duty",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_correlation_time",
+      "quantity": "correlation_time",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_emissions",
+      "quantity": "emissions",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_boundaries",
+      "quantity": "boundaries",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_job_mean_duty_difference",
+      "quantity": "job_mean_duty_difference",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_shuffled_weight",
+      "quantity": "shuffled_weight",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "hierarchy_only_returned_order",
+      "quantity": "returned_order",
+      "status": "not issued",
+      "reason": "The stated hierarchy has fixed means for the two observed dates and no distribution for a third date mean or the additional future quantities",
+      "interval_90": null,
+      "class": "Primary 143 hierarchy with fixed observed date means",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "prediction_scope": "hierarchy_only"
+    },
+    {
+      "id": "conditional_2_threshold_duty",
+      "quantity": "threshold_duty",
+      "interval_90": [
+        0.242,
+        0.453
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_model_duty",
+      "quantity": "model_duty",
+      "interval_90": [
+        0.2421341091761186,
+        0.453205132519607
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_t15_tau_sweeps",
+      "quantity": "t15_tau_sweeps",
+      "interval_90": [
+        3.0,
+        12.0
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_t15_tau_seconds",
+      "quantity": "t15_tau_seconds",
+      "interval_90": [
+        0.081828555,
+        0.35006985999999995
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_2_model_ell_sweeps",
+      "quantity": "model_ell_sweeps",
+      "interval_90": [
+        1.997382351368844,
+        11.502953236205947
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_model_ell_seconds",
+      "quantity": "model_ell_seconds",
+      "interval_90": [
+        0.053552273320713585,
+        0.3317738689481827
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_2_q_H_X",
+      "quantity": "q_H_X",
+      "interval_90": [
+        0.6406605435242602,
+        0.7350360165551153
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_q_L_X",
+      "quantity": "q_L_X",
+      "interval_90": [
+        0.2645461624585922,
+        0.36523698415403866
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_q_H_Y",
+      "quantity": "q_H_Y",
+      "interval_90": [
+        0.7724525411906527,
+        0.9203056890177636
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_q_L_Y",
+      "quantity": "q_L_Y",
+      "interval_90": [
+        0.0543125686071014,
+        0.13664731343029576
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_job_mean_duty_difference",
+      "quantity": "job_mean_duty_difference",
+      "interval_90": [
+        -0.08802499999999996,
+        0.08309999999999992
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "job_mean_duty_difference",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_2_shuffled_weight_A26",
+      "quantity": "shuffled_weight_A26",
+      "interval_90": [
+        0.23792624421216105,
+        0.45389531226841096
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_weight_A26",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    },
+    {
+      "id": "conditional_2_shuffled_sd",
+      "quantity": "shuffled_sd",
+      "interval_90": [
+        0.024063050870385086,
+        0.06359919736288111
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 2,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_sd",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    },
+    {
+      "id": "conditional_3_threshold_duty",
+      "quantity": "threshold_duty",
+      "interval_90": [
+        0.244,
+        0.452
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_model_duty",
+      "quantity": "model_duty",
+      "interval_90": [
+        0.24333152230014124,
+        0.45319096080947807
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_t15_tau_sweeps",
+      "quantity": "t15_tau_sweeps",
+      "interval_90": [
+        3.0,
+        13.0
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_t15_tau_seconds",
+      "quantity": "t15_tau_seconds",
+      "interval_90": [
+        0.081828555,
+        0.37495312399999997
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_3_model_ell_sweeps",
+      "quantity": "model_ell_sweeps",
+      "interval_90": [
+        1.9565357928265823,
+        12.070446879605512
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_model_ell_seconds",
+      "quantity": "model_ell_seconds",
+      "interval_90": [
+        0.052830517588225115,
+        0.3522452531021187
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_3_q_H_X",
+      "quantity": "q_H_X",
+      "interval_90": [
+        0.6407179101919536,
+        0.7353429561763036
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_q_L_X",
+      "quantity": "q_L_X",
+      "interval_90": [
+        0.2647063435589055,
+        0.36499601113806707
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_q_H_Y",
+      "quantity": "q_H_Y",
+      "interval_90": [
+        0.7725314129125451,
+        0.9203575861704153
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_q_L_Y",
+      "quantity": "q_L_Y",
+      "interval_90": [
+        0.05437984837514598,
+        0.13670584664338464
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_job_mean_duty_difference",
+      "quantity": "job_mean_duty_difference",
+      "interval_90": [
+        -0.07434999999999992,
+        0.0637499999999999
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "job_mean_duty_difference",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_3_shuffled_weight_A26",
+      "quantity": "shuffled_weight_A26",
+      "interval_90": [
+        0.24239918028059376,
+        0.45539825981558185
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_weight_A26",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    },
+    {
+      "id": "conditional_3_shuffled_sd",
+      "quantity": "shuffled_sd",
+      "interval_90": [
+        0.023862483248962566,
+        0.06324325656923342
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 3,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_sd",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    },
+    {
+      "id": "conditional_4_threshold_duty",
+      "quantity": "threshold_duty",
+      "interval_90": [
+        0.25,
+        0.456
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_model_duty",
+      "quantity": "model_duty",
+      "interval_90": [
+        0.2501402342679839,
+        0.45578694320646645
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "duty",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_t15_tau_sweeps",
+      "quantity": "t15_tau_sweeps",
+      "interval_90": [
+        3.0,
+        12.0
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_t15_tau_seconds",
+      "quantity": "t15_tau_seconds",
+      "interval_90": [
+        0.081828555,
+        0.35006985999999995
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_4_model_ell_sweeps",
+      "quantity": "model_ell_sweeps",
+      "interval_90": [
+        1.9919807044219382,
+        11.2372288562982
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_model_ell_seconds",
+      "quantity": "model_ell_seconds",
+      "interval_90": [
+        0.05370719658908846,
+        0.3260498162836809
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "correlation",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available",
+      "seconds_condition": "Chronological returned order, even sweep spacing and sampled donor span duration assumption"
+    },
+    {
+      "id": "conditional_4_q_H_X",
+      "quantity": "q_H_X",
+      "interval_90": [
+        0.6407183962785407,
+        0.7354367132840377
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_q_L_X",
+      "quantity": "q_L_X",
+      "interval_90": [
+        0.2644808708994821,
+        0.3651341193565248
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_q_H_Y",
+      "quantity": "q_H_Y",
+      "interval_90": [
+        0.7722537573834486,
+        0.9200814845185549
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_q_L_Y",
+      "quantity": "q_L_Y",
+      "interval_90": [
+        0.05428886594714403,
+        0.1366013013052536
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "emissions",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_job_mean_duty_difference",
+      "quantity": "job_mean_duty_difference",
+      "interval_90": [
+        -0.06074999999999997,
+        0.05999999999999994
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "job_mean_duty_difference",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "available"
+    },
+    {
+      "id": "conditional_4_shuffled_weight_A26",
+      "quantity": "shuffled_weight_A26",
+      "interval_90": [
+        0.24880156442436913,
+        0.45624120713981764
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_weight_A26",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    },
+    {
+      "id": "conditional_4_shuffled_sd",
+      "quantity": "shuffled_sd",
+      "interval_90": [
+        0.023988989962458174,
+        0.06184351283928363
+      ],
+      "class": "Primary 143 record under conditional empirical day extension",
+      "n_spans": 9,
+      "n_jobs": 3,
+      "n_dates": 2,
+      "spans_per_job": 4,
+      "prediction_scope": "conditional_empirical_day_extension",
+      "status": "issued",
+      "family": "shuffled_sd",
+      "definition_source": "forecast-plan.json and predictive-summary.json",
+      "future_scoring_status": "unavailable because complete A26 estimator is absent",
+      "definition": "Assumption about an unobserved second estimator; interval includes an absolute 0.011 estimator allowance for weight and borrowed population length for sd"
+    }
+  ],
+  "scenarios": {
+    "2": {
+      "n_spans_per_job": 2,
+      "n_jobs": 2,
+      "scope": "conditional_empirical_day_extension",
+      "row_allocations": [
+        [
+          74.0,
+          74.0
+        ],
+        [
+          74.0,
+          74.0
+        ]
+      ],
+      "draws": 2000,
+      "interval_training_draws": 1000,
+      "joint_calibration_draws": 1000,
+      "intervals": {
+        "threshold_duty": [
+          0.242,
+          0.453
+        ],
+        "model_duty": [
+          0.2421341091761186,
+          0.453205132519607
+        ],
+        "t15_tau_sweeps": [
+          3.0,
+          12.0
+        ],
+        "t15_tau_seconds": [
+          0.081828555,
+          0.35006985999999995
+        ],
+        "model_ell_sweeps": [
+          1.997382351368844,
+          11.502953236205947
+        ],
+        "model_ell_seconds": [
+          0.053552273320713585,
+          0.3317738689481827
+        ],
+        "q_H_X": [
+          0.6406605435242602,
+          0.7350360165551153
+        ],
+        "q_L_X": [
+          0.2645461624585922,
+          0.36523698415403866
+        ],
+        "q_H_Y": [
+          0.7724525411906527,
+          0.9203056890177636
+        ],
+        "q_L_Y": [
+          0.0543125686071014,
+          0.13664731343029576
+        ],
+        "job_mean_duty_difference": [
+          -0.08802499999999996,
+          0.08309999999999992
+        ],
+        "shuffled_weight_A26": [
+          0.23792624421216105,
+          0.45389531226841096
+        ],
+        "shuffled_sd": [
+          0.024063050870385086,
+          0.06359919736288111
+        ],
+        "returned_order_probability": [
+          1.0,
+          1.0
+        ]
+      },
+      "family_miss_thresholds": {
+        "duty": {
+          "cutoff": 5,
+          "point_probability_cutoff": 5,
+          "k": 8,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.285,
+              "one_sided_95_mc_upper": 0.3094314548702341
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.263,
+              "one_sided_95_mc_upper": 0.28690116491997864
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.078,
+              "one_sided_95_mc_upper": 0.09339413873529111
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.073,
+              "one_sided_95_mc_upper": 0.08798997591736038
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.022,
+              "one_sided_95_mc_upper": 0.031266631392580166
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.017,
+              "one_sided_95_mc_upper": 0.025390748776180874
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3
+        },
+        "correlation": {
+          "cutoff": 8,
+          "point_probability_cutoff": 7,
+          "k": 16,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.484,
+              "one_sided_95_mc_upper": 0.5105039567398875
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.36,
+              "one_sided_95_mc_upper": 0.38575042204411825
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.195,
+              "one_sided_95_mc_upper": 0.21676544462354322
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.153,
+              "one_sided_95_mc_upper": 0.17298090659368107
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.081,
+              "one_sided_95_mc_upper": 0.09662856143454333
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.061,
+              "one_sided_95_mc_upper": 0.07494207683768803
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.039,
+              "one_sided_95_mc_upper": 0.05063400679488798
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.032,
+              "one_sided_95_mc_upper": 0.04274549921339733
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.019,
+              "one_sided_95_mc_upper": 0.027755286045479104
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.014,
+              "one_sided_95_mc_upper": 0.02180013152550217
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.008,
+              "one_sided_95_mc_upper": 0.0143882249520919
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.006,
+              "one_sided_95_mc_upper": 0.011807823003840638
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            }
+          ],
+          "independent_binomial_cutoff_beside": 5
+        },
+        "emissions": {
+          "cutoff": 3,
+          "point_probability_cutoff": 3,
+          "k": 8,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.589,
+              "one_sided_95_mc_upper": 0.6148731107909737
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.181,
+              "one_sided_95_mc_upper": 0.20221652001542573
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.038,
+              "one_sided_95_mc_upper": 0.04951287025592598
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.007,
+              "one_sided_95_mc_upper": 0.013107715416593313
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3
+        }
+      },
+      "sharing_all_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "boundary_counts": {
+        "NO CHANGE": {
+          "expected_count": 1.895,
+          "interval_90": [
+            1.0,
+            2.0
+          ]
+        },
+        "BETWEEN": {
+          "expected_count": 0.09,
+          "interval_90": [
+            0.0,
+            1.0
+          ]
+        },
+        "CHANGE": {
+          "expected_count": 0.015,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        },
+        "NOT READ": {
+          "expected_count": 0.0,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "boundary_change_probability": {
+        "probability": 0.0075,
+        "mc_interval_90_cluster": [
+          0.00525,
+          0.00975
+        ],
+        "day_draws": 2000,
+        "cluster_bootstrap_draws": 4000,
+        "seed": 40118802
+      },
+      "returned_order_all_preference_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "elapsed_seconds": 42.66548337507993,
+      "boundary_change_probabilities": [
+        {
+          "index": 0,
+          "job_index": 2,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.006,
+          "count": 12,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.003465642024523098,
+            0.009703194529571085
+          ]
+        },
+        {
+          "index": 1,
+          "job_index": 3,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.009,
+          "count": 18,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0058249812618962555,
+            0.013316866928408297
+          ]
+        }
+      ],
+      "any_LR_reject_probability": {
+        "probability": 0.62,
+        "mc_interval_90": [
+          0.5332465200204253,
+          0.7012897297269307
+        ],
+        "trials": 100,
+        "null_draws_per_comparison": 400,
+        "per_boundary": {
+          "between_job2_job3": {
+            "reject_count": 34,
+            "trials": 100,
+            "probability": 0.34,
+            "mc_interval_90": [
+              0.26150983893536334,
+              0.4257876973470125
+            ]
+          },
+          "within_job2_span0_span1": {
+            "reject_count": 25,
+            "trials": 100,
+            "probability": 0.25,
+            "mc_interval_90": [
+              0.18015704677970465,
+              0.33132155374566175
+            ]
+          },
+          "within_job3_span0_span1": {
+            "reject_count": 29,
+            "trials": 100,
+            "probability": 0.29,
+            "mc_interval_90": [
+              0.21587965718930613,
+              0.3737283508457947
+            ]
+          }
+        }
+      },
+      "assumptions": "conditional_empirical_day_extension",
+      "n_source_spans": 9,
+      "n_source_jobs": 3,
+      "n_source_dates": 2,
+      "n_shots_per_position": 1000,
+      "circuit_schema": [
+        {
+          "quadrature": "X",
+          "wait_us": 5.6
+        },
+        {
+          "quadrature": "Y",
+          "wait_us": 5.6
+        }
+      ],
+      "sweep_seconds_donor_support": [
+        0.015113056,
+        0.027276185,
+        0.027477044,
+        0.027794493,
+        0.028071666000000002,
+        0.028842548,
+        0.030174083,
+        0.030473404,
+        0.035006986
+      ],
+      "seconds_scope": "Conditional empirical donor duration mixture; values outside support have uncalibrated seconds comparisons",
+      "applicability": "Calibrated verdicts require matching row allocations, shot count and circuit design. Raw comparisons outside the template remain available without a calibrated verdict."
+    },
+    "3": {
+      "n_spans_per_job": 3,
+      "n_jobs": 2,
+      "scope": "conditional_empirical_day_extension",
+      "row_allocations": [
+        [
+          49.0,
+          49.0
+        ],
+        [
+          50.0,
+          50.0
+        ],
+        [
+          49.0,
+          49.0
+        ]
+      ],
+      "draws": 2000,
+      "interval_training_draws": 1000,
+      "joint_calibration_draws": 1000,
+      "intervals": {
+        "threshold_duty": [
+          0.244,
+          0.452
+        ],
+        "model_duty": [
+          0.24333152230014124,
+          0.45319096080947807
+        ],
+        "t15_tau_sweeps": [
+          3.0,
+          13.0
+        ],
+        "t15_tau_seconds": [
+          0.081828555,
+          0.37495312399999997
+        ],
+        "model_ell_sweeps": [
+          1.9565357928265823,
+          12.070446879605512
+        ],
+        "model_ell_seconds": [
+          0.052830517588225115,
+          0.3522452531021187
+        ],
+        "q_H_X": [
+          0.6407179101919536,
+          0.7353429561763036
+        ],
+        "q_L_X": [
+          0.2647063435589055,
+          0.36499601113806707
+        ],
+        "q_H_Y": [
+          0.7725314129125451,
+          0.9203575861704153
+        ],
+        "q_L_Y": [
+          0.05437984837514598,
+          0.13670584664338464
+        ],
+        "job_mean_duty_difference": [
+          -0.07434999999999992,
+          0.0637499999999999
+        ],
+        "shuffled_weight_A26": [
+          0.24239918028059376,
+          0.45539825981558185
+        ],
+        "shuffled_sd": [
+          0.023862483248962566,
+          0.06324325656923342
+        ],
+        "returned_order_probability": [
+          1.0,
+          1.0
+        ]
+      },
+      "family_miss_thresholds": {
+        "duty": {
+          "cutoff": 7,
+          "point_probability_cutoff": 6,
+          "k": 12,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.369,
+              "one_sided_95_mc_upper": 0.3948622268020234
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.345,
+              "one_sided_95_mc_upper": 0.3705428972235811
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.156,
+              "one_sided_95_mc_upper": 0.17612290092611213
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.137,
+              "one_sided_95_mc_upper": 0.15617998463438973
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.056,
+              "one_sided_95_mc_upper": 0.06946767615388329
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.049,
+              "one_sided_95_mc_upper": 0.06175857882817405
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.019,
+              "one_sided_95_mc_upper": 0.027755286045479104
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.017,
+              "one_sided_95_mc_upper": 0.025390748776180874
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            }
+          ],
+          "independent_binomial_cutoff_beside": 4
+        },
+        "correlation": {
+          "cutoff": 9,
+          "point_probability_cutoff": 8,
+          "k": 24,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.549,
+              "one_sided_95_mc_upper": 0.5752501865718928
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.42,
+              "one_sided_95_mc_upper": 0.44632283382901394
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.248,
+              "one_sided_95_mc_upper": 0.2714978065765029
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.181,
+              "one_sided_95_mc_upper": 0.20221652001542573
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.121,
+              "one_sided_95_mc_upper": 0.1392975608921778
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.095,
+              "one_sided_95_mc_upper": 0.11165153645820058
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.062,
+              "one_sided_95_mc_upper": 0.07603407387212642
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.042,
+              "one_sided_95_mc_upper": 0.053987205411418486
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.032,
+              "one_sided_95_mc_upper": 0.04274549921339733
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.024,
+              "one_sided_95_mc_upper": 0.033587428098608846
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.019,
+              "one_sided_95_mc_upper": 0.027755286045479104
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.011,
+              "one_sided_95_mc_upper": 0.018141892240076254
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.006,
+              "one_sided_95_mc_upper": 0.011807823003840638
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.005,
+              "one_sided_95_mc_upper": 0.010484076911415651
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 17,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 18,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 19,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 20,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 21,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 22,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 23,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 24,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 6
+        },
+        "emissions": {
+          "cutoff": 3,
+          "point_probability_cutoff": 3,
+          "k": 8,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.609,
+              "one_sided_95_mc_upper": 0.6346195550619653
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.182,
+              "one_sided_95_mc_upper": 0.20325715560030883
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.026,
+              "one_sided_95_mc_upper": 0.03589434150359929
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.004,
+              "one_sided_95_mc_upper": 0.009129952563871467
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3
+        }
+      },
+      "sharing_all_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "boundary_counts": {
+        "NO CHANGE": {
+          "expected_count": 3.7765,
+          "interval_90": [
+            3.0,
+            4.0
+          ]
+        },
+        "BETWEEN": {
+          "expected_count": 0.1985,
+          "interval_90": [
+            0.0,
+            1.0
+          ]
+        },
+        "CHANGE": {
+          "expected_count": 0.025,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        },
+        "NOT READ": {
+          "expected_count": 0.0,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "boundary_change_probability": {
+        "probability": 0.00625,
+        "mc_interval_90_cluster": [
+          0.00475,
+          0.007875
+        ],
+        "day_draws": 2000,
+        "cluster_bootstrap_draws": 4000,
+        "seed": 40118803
+      },
+      "returned_order_all_preference_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "elapsed_seconds": 78.67728575039655,
+      "boundary_change_probabilities": [
+        {
+          "index": 0,
+          "job_index": 2,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.007,
+          "count": 14,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.004236780498405858,
+            0.010921660754660173
+          ]
+        },
+        {
+          "index": 1,
+          "job_index": 2,
+          "left_span": 1,
+          "right_span": 2,
+          "probability": 0.0045,
+          "count": 9,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.002349556759577519,
+            0.007839446211579703
+          ]
+        },
+        {
+          "index": 2,
+          "job_index": 3,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.0065,
+          "count": 13,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0038489424981443874,
+            0.010314468121596716
+          ]
+        },
+        {
+          "index": 3,
+          "job_index": 3,
+          "left_span": 1,
+          "right_span": 2,
+          "probability": 0.007,
+          "count": 14,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.004236780498405858,
+            0.010921660754660173
+          ]
+        }
+      ],
+      "any_LR_reject_probability": {
+        "probability": 0.8,
+        "mc_interval_90": [
+          0.7227997503290864,
+          0.8633386747541327
+        ],
+        "trials": 100,
+        "null_draws_per_comparison": 400,
+        "per_boundary": {
+          "between_job2_job3": {
+            "reject_count": 22,
+            "trials": 100,
+            "probability": 0.22,
+            "mc_interval_90": [
+              0.15388900687522575,
+              0.29901179589287813
+            ]
+          },
+          "within_job2_span0_span1": {
+            "reject_count": 33,
+            "trials": 100,
+            "probability": 0.33,
+            "mc_interval_90": [
+              0.25230347704062545,
+              0.4154542670135246
+            ]
+          },
+          "within_job2_span1_span2": {
+            "reject_count": 23,
+            "trials": 100,
+            "probability": 0.23,
+            "mc_interval_90": [
+              0.1625908713764863,
+              0.30983361699732903
+            ]
+          },
+          "within_job3_span0_span1": {
+            "reject_count": 35,
+            "trials": 100,
+            "probability": 0.35,
+            "mc_interval_90": [
+              0.27075446181155555,
+              0.4360836408199371
+            ]
+          },
+          "within_job3_span1_span2": {
+            "reject_count": 35,
+            "trials": 100,
+            "probability": 0.35,
+            "mc_interval_90": [
+              0.27075446181155555,
+              0.4360836408199371
+            ]
+          }
+        }
+      },
+      "assumptions": "conditional_empirical_day_extension",
+      "n_source_spans": 9,
+      "n_source_jobs": 3,
+      "n_source_dates": 2,
+      "n_shots_per_position": 1000,
+      "circuit_schema": [
+        {
+          "quadrature": "X",
+          "wait_us": 5.6
+        },
+        {
+          "quadrature": "Y",
+          "wait_us": 5.6
+        }
+      ],
+      "sweep_seconds_donor_support": [
+        0.015113056,
+        0.027276185,
+        0.027477044,
+        0.027794493,
+        0.028071666000000002,
+        0.028842548,
+        0.030174083,
+        0.030473404,
+        0.035006986
+      ],
+      "seconds_scope": "Conditional empirical donor duration mixture; values outside support have uncalibrated seconds comparisons",
+      "applicability": "Calibrated verdicts require matching row allocations, shot count and circuit design. Raw comparisons outside the template remain available without a calibrated verdict."
+    },
+    "4": {
+      "n_spans_per_job": 4,
+      "n_jobs": 2,
+      "scope": "conditional_empirical_day_extension",
+      "row_allocations": [
+        [
+          36.0,
+          36.0
+        ],
+        [
+          37.0,
+          37.0
+        ],
+        [
+          37.0,
+          37.0
+        ],
+        [
+          36.0,
+          36.0
+        ]
+      ],
+      "draws": 2000,
+      "interval_training_draws": 1000,
+      "joint_calibration_draws": 1000,
+      "intervals": {
+        "threshold_duty": [
+          0.25,
+          0.456
+        ],
+        "model_duty": [
+          0.2501402342679839,
+          0.45578694320646645
+        ],
+        "t15_tau_sweeps": [
+          3.0,
+          12.0
+        ],
+        "t15_tau_seconds": [
+          0.081828555,
+          0.35006985999999995
+        ],
+        "model_ell_sweeps": [
+          1.9919807044219382,
+          11.2372288562982
+        ],
+        "model_ell_seconds": [
+          0.05370719658908846,
+          0.3260498162836809
+        ],
+        "q_H_X": [
+          0.6407183962785407,
+          0.7354367132840377
+        ],
+        "q_L_X": [
+          0.2644808708994821,
+          0.3651341193565248
+        ],
+        "q_H_Y": [
+          0.7722537573834486,
+          0.9200814845185549
+        ],
+        "q_L_Y": [
+          0.05428886594714403,
+          0.1366013013052536
+        ],
+        "job_mean_duty_difference": [
+          -0.06074999999999997,
+          0.05999999999999994
+        ],
+        "shuffled_weight_A26": [
+          0.24880156442436913,
+          0.45624120713981764
+        ],
+        "shuffled_sd": [
+          0.023988989962458174,
+          0.06184351283928363
+        ],
+        "returned_order_probability": [
+          1.0,
+          1.0
+        ]
+      },
+      "family_miss_thresholds": {
+        "duty": {
+          "cutoff": 9,
+          "point_probability_cutoff": 9,
+          "k": 16,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.491,
+              "one_sided_95_mc_upper": 0.5174977401437695
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.474,
+              "one_sided_95_mc_upper": 0.5005039974145418
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.248,
+              "one_sided_95_mc_upper": 0.2714978065765029
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.23,
+              "one_sided_95_mc_upper": 0.252965797278459
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.132,
+              "one_sided_95_mc_upper": 0.15091355736150866
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.121,
+              "one_sided_95_mc_upper": 0.1392975608921778
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.075,
+              "one_sided_95_mc_upper": 0.090153732158219
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.062,
+              "one_sided_95_mc_upper": 0.07603407387212642
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.023,
+              "one_sided_95_mc_upper": 0.032428870441319126
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.02,
+              "one_sided_95_mc_upper": 0.028930122851398708
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.013,
+              "one_sided_95_mc_upper": 0.020589286529908307
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.009,
+              "one_sided_95_mc_upper": 0.015652573749606477
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            }
+          ],
+          "independent_binomial_cutoff_beside": 5
+        },
+        "correlation": {
+          "cutoff": 13,
+          "point_probability_cutoff": 12,
+          "k": 32,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.655,
+              "one_sided_95_mc_upper": 0.6798643245189683
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.548,
+              "one_sided_95_mc_upper": 0.5742574329297394
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.397,
+              "one_sided_95_mc_upper": 0.42315086919834577
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.318,
+              "one_sided_95_mc_upper": 0.3431003054246508
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.219,
+              "one_sided_95_mc_upper": 0.24161325238447856
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.171,
+              "one_sided_95_mc_upper": 0.19179746229488231
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.138,
+              "one_sided_95_mc_upper": 0.1572323064661355
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.114,
+              "one_sided_95_mc_upper": 0.13188245770876914
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.084,
+              "one_sided_95_mc_upper": 0.09985729905177676
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.074,
+              "one_sided_95_mc_upper": 0.08907221105799837
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.055,
+              "one_sided_95_mc_upper": 0.06836974864905238
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.043,
+              "one_sided_95_mc_upper": 0.05510172661346017
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.034,
+              "one_sided_95_mc_upper": 0.045009535721700765
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.027,
+              "one_sided_95_mc_upper": 0.03704306937436179
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.02,
+              "one_sided_95_mc_upper": 0.028930122851398708
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.017,
+              "one_sided_95_mc_upper": 0.025390748776180874
+            },
+            {
+              "misses_at_least": 17,
+              "estimated_probability": 0.012,
+              "one_sided_95_mc_upper": 0.019370199285059248
+            },
+            {
+              "misses_at_least": 18,
+              "estimated_probability": 0.011,
+              "one_sided_95_mc_upper": 0.018141892240076254
+            },
+            {
+              "misses_at_least": 19,
+              "estimated_probability": 0.007,
+              "one_sided_95_mc_upper": 0.013107715416593313
+            },
+            {
+              "misses_at_least": 20,
+              "estimated_probability": 0.005,
+              "one_sided_95_mc_upper": 0.010484076911415651
+            },
+            {
+              "misses_at_least": 21,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 22,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 23,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 24,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 25,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 26,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 27,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 28,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 29,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 30,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 31,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 32,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 7
+        },
+        "emissions": {
+          "cutoff": 3,
+          "point_probability_cutoff": 3,
+          "k": 8,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.609,
+              "one_sided_95_mc_upper": 0.6346195550619653
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.185,
+              "one_sided_95_mc_upper": 0.20637771814742886
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.03,
+              "one_sided_95_mc_upper": 0.040472237280866234
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.005,
+              "one_sided_95_mc_upper": 0.010484076911415651
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3
+        }
+      },
+      "sharing_all_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "boundary_counts": {
+        "NO CHANGE": {
+          "expected_count": 5.6745,
+          "interval_90": [
+            4.0,
+            6.0
+          ]
+        },
+        "BETWEEN": {
+          "expected_count": 0.282,
+          "interval_90": [
+            0.0,
+            1.0
+          ]
+        },
+        "CHANGE": {
+          "expected_count": 0.0435,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        },
+        "NOT READ": {
+          "expected_count": 0.0,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "boundary_change_probability": {
+        "probability": 0.00725,
+        "mc_interval_90_cluster": [
+          0.005833333333333333,
+          0.008833333333333332
+        ],
+        "day_draws": 2000,
+        "cluster_bootstrap_draws": 4000,
+        "seed": 40118804
+      },
+      "returned_order_all_preference_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "elapsed_seconds": 141.1824285001494,
+      "boundary_change_probabilities": [
+        {
+          "index": 0,
+          "job_index": 2,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.005,
+          "count": 10,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0027151317438211405,
+            0.00846634820551852
+          ]
+        },
+        {
+          "index": 1,
+          "job_index": 2,
+          "left_span": 1,
+          "right_span": 2,
+          "probability": 0.008,
+          "count": 16,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.005024224204600523,
+            0.012125364173913439
+          ]
+        },
+        {
+          "index": 2,
+          "job_index": 2,
+          "left_span": 2,
+          "right_span": 3,
+          "probability": 0.0045,
+          "count": 9,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.002349556759577519,
+            0.007839446211579703
+          ]
+        },
+        {
+          "index": 3,
+          "job_index": 3,
+          "left_span": 0,
+          "right_span": 1,
+          "probability": 0.01,
+          "count": 20,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.006636879397604511,
+            0.014498062606976633
+          ]
+        },
+        {
+          "index": 4,
+          "job_index": 3,
+          "left_span": 1,
+          "right_span": 2,
+          "probability": 0.01,
+          "count": 20,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.006636879397604511,
+            0.014498062606976633
+          ]
+        },
+        {
+          "index": 5,
+          "job_index": 3,
+          "left_span": 2,
+          "right_span": 3,
+          "probability": 0.006,
+          "count": 12,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.003465642024523098,
+            0.009703194529571085
+          ]
+        }
+      ],
+      "any_LR_reject_probability": {
+        "probability": 0.84,
+        "mc_interval_90": [
+          0.7671841649934806,
+          0.8969888004843476
+        ],
+        "trials": 100,
+        "null_draws_per_comparison": 400,
+        "per_boundary": {
+          "between_job2_job3": {
+            "reject_count": 35,
+            "trials": 100,
+            "probability": 0.35,
+            "mc_interval_90": [
+              0.27075446181155555,
+              0.4360836408199371
+            ]
+          },
+          "within_job2_span0_span1": {
+            "reject_count": 31,
+            "trials": 100,
+            "probability": 0.31,
+            "mc_interval_90": [
+              0.23400915015035478,
+              0.39467165402416754
+            ]
+          },
+          "within_job2_span1_span2": {
+            "reject_count": 39,
+            "trials": 100,
+            "probability": 0.39,
+            "mc_interval_90": [
+              0.30810066338879655,
+              0.4769060785531618
+            ]
+          },
+          "within_job2_span2_span3": {
+            "reject_count": 23,
+            "trials": 100,
+            "probability": 0.23,
+            "mc_interval_90": [
+              0.1625908713764863,
+              0.30983361699732903
+            ]
+          },
+          "within_job3_span0_span1": {
+            "reject_count": 35,
+            "trials": 100,
+            "probability": 0.35,
+            "mc_interval_90": [
+              0.27075446181155555,
+              0.4360836408199371
+            ]
+          },
+          "within_job3_span1_span2": {
+            "reject_count": 33,
+            "trials": 100,
+            "probability": 0.33,
+            "mc_interval_90": [
+              0.25230347704062545,
+              0.4154542670135246
+            ]
+          },
+          "within_job3_span2_span3": {
+            "reject_count": 33,
+            "trials": 100,
+            "probability": 0.33,
+            "mc_interval_90": [
+              0.25230347704062545,
+              0.4154542670135246
+            ]
+          }
+        }
+      },
+      "assumptions": "conditional_empirical_day_extension",
+      "n_source_spans": 9,
+      "n_source_jobs": 3,
+      "n_source_dates": 2,
+      "n_shots_per_position": 1000,
+      "circuit_schema": [
+        {
+          "quadrature": "X",
+          "wait_us": 5.6
+        },
+        {
+          "quadrature": "Y",
+          "wait_us": 5.6
+        }
+      ],
+      "sweep_seconds_donor_support": [
+        0.015113056,
+        0.027276185,
+        0.027477044,
+        0.027794493,
+        0.028071666000000002,
+        0.028842548,
+        0.030174083,
+        0.030473404,
+        0.035006986
+      ],
+      "seconds_scope": "Conditional empirical donor duration mixture; values outside support have uncalibrated seconds comparisons",
+      "applicability": "Calibrated verdicts require matching row allocations, shot count and circuit design. Raw comparisons outside the template remain available without a calibrated verdict."
+    }
+  },
+  "recovery_limits": [],
+  "record_limits": {
+    "dwell_failures_143": 2,
+    "dwell_testable_all": 25,
+    "middle_fifth_mismatch": "Retained from test 11 job 2; predictions remain conditional despite this strain",
+    "undefined_model_length": "Unrestricted transitions can make real positive length unavailable; scorer never treats that as a numerical interval miss"
+  },
+  "counts_against": {
+    "families": "Scenario specific conservative Monte Carlo cutoff with estimated smallest cutoff beside; calibrations are joint across shared day and job parameters",
+    "sharing": "Any monitor span INDEPENDENT or UNDECIDED under test 15 sharing ratio",
+    "dwell": "More than one monitor span with the declared dwell p below 0.01",
+    "boundary": "A matching boundary reads CHANGE where its own conditional predicted CHANGE probability is below 0.05",
+    "undefined_quantity": "Not fully testable, retained with reason; no reduced family cutoff substituted"
+  },
+  "scorer": "score_model_01_v4.py",
+  "scorer_training_rehearsal": "scorer-test.json",
+  "readiness": "For the author to hash before the planned run; no claim of external publication or adoption",
+  "source_files": [
+    "fits-model-01-v4.json",
+    "checks-model-01-v4.json",
+    "predictive-summary.json",
+    "predictive-lr-results.json",
+    "forecast-estimator-audit.json"
+  ]
+}

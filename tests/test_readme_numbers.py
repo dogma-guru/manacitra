@@ -5265,3 +5265,56 @@ def test_finding_30_beside_the_finding():
     sec = br.split("## 49. Amendment A28:", 1)[1]
     assert not re.search(r"\b\d{10,11}\b", sec)  # no CI run IDs
     assert "—" not in sec and "–" not in sec
+
+
+def test_finding_30_the_desk_model():
+    """Finding 30's desk model, versions 4 and 4.1: against their kickoffs (published, the service's name replaced),
+    their posted issues, version 4's scorecard on day 3 and version 4.1's on test 17's long job, and the three
+    sentences its report carries."""
+    import json
+
+    item = _item30()
+    sandhi = archive.data_dir() / "desk" / "sandhi"
+    k4 = (sandhi / "kickoffs" / "kickoff-model-01-v4-2026-10-18.md").read_text()
+    k41 = (sandhi / "kickoffs" / "kickoff-model-01-v4.1-errata-2026-10-19.md").read_text()
+    assert "fixed whole-repeat counts of 49, 50, 49 per span" in k41 and "48 or 49 whole repeats" in k41
+    assert "a list of nine donor sweep times compared exactly" in k41
+    assert (
+        "the template fixed whole repeats of 49 and 50 per span, where the 1,000-shot monitor jobs keep 48 or 49 once "
+        "straddling repeats are left out, and it compared sweep times with a list of nine exactly" in item
+    )
+    assert "widened by 10 percent on each side" in k41 and "widened by a tenth at each end (C2)" in item
+    assert (
+        "tests 10 to 15" in k4 and "fitted on the desk on 18 October to the per-shot records of tests 10 to 15" in item
+    )
+    for n in (66, 68):
+        assert f"[issue {n}](https://github.com/dogma-guru/manacitra/issues/{n})" in item
+    card16 = json.loads((sandhi / "v4" / "scorecard-t16.json").read_text())
+    assert {f["status"] for f in card16["families"]} == {"not fully testable"}
+    assert sum(f["bets_scored"] for f in card16["families"]) == 0
+    card = json.loads((sandhi / "v4.1" / "scorecard-t17.json").read_text())
+    fam = {f["family"]: f for f in card["families"]}
+    got = [(fam[k]["misses"], fam[k]["bets_scored"], fam[k]["smallest_miss_count_under_0p05"]) for k in fam]
+    assert got == [(0, 12, 5), (0, 24, 9), (2, 4, 3)] and not any(f["counts_against"] for f in fam.values())
+    assert (
+        "duty, 0 misses of 12 (cutoff 5); correlation, 0 of 24 (cutoff 9); emissions, 2 of 4 (cutoff 3), the two "
+        "misses the X quadrature's two levels" in item
+    )
+    missed = [
+        s["quantity"]
+        for s in card["prediction_scores"]
+        if s["quantity"].startswith("q_") and not all(o["inside_90"] for o in s["observations"])
+    ]
+    assert sorted(missed) == ["q_H_X", "q_L_X"], missed
+    (actual,) = [x for x in card["scenario_scores"] if x["scenario"] == "actual"]
+    (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
+    assert (lr["probability"], lr["observed"], card["any_monitor_boundary_LR_p_under_0p01"]) == (0.62, False, False)
+    assert "no likelihood rejection at 1 percent, against its stated probability of 0.62 for any" in item
+    assert "D1 is not yet scored." in item
+    rep = (sandhi / "v4.1" / "report-model-01-v4.1.md").read_text()
+    for s in (
+        "The model is a kinetic description; it names no cause.",
+        "The sweep clock is the returned order; seconds are conditional on that order being chronological.",
+        "The predictions are the model's, written before the run they predict, and they are what can count against it.",
+    ):
+        assert s in rep and f'"{s}"' in item

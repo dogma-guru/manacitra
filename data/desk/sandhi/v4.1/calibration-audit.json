@@ -1,0 +1,609 @@
+{
+  "independent_recount": [
+    {
+      "file": "part-a-calibration.json",
+      "draws": 2000,
+      "interval_draws": 1000,
+      "family_draws": 1000,
+      "LR_trials": 100,
+      "null_draws_per_LR": 400,
+      "seed": 41119001,
+      "checks": [
+        {
+          "field": "interval.threshold_duty",
+          "equal": true,
+          "recomputed": [
+            0.244,
+            0.452
+          ]
+        },
+        {
+          "field": "interval.model_duty",
+          "equal": true,
+          "recomputed": [
+            0.24402258898174373,
+            0.45231900499382766
+          ]
+        },
+        {
+          "field": "interval.t15_tau_sweeps",
+          "equal": true,
+          "recomputed": [
+            3.0,
+            13.0
+          ]
+        },
+        {
+          "field": "interval.t15_tau_seconds",
+          "equal": true,
+          "recomputed": [
+            0.082510509,
+            0.354833193
+          ]
+        },
+        {
+          "field": "interval.model_ell_sweeps",
+          "equal": true,
+          "recomputed": [
+            1.9759274087031313,
+            11.612825841634606
+          ]
+        },
+        {
+          "field": "interval.model_ell_seconds",
+          "equal": true,
+          "recomputed": [
+            0.054261162795155596,
+            0.31983651385940604
+          ]
+        },
+        {
+          "field": "interval.q_H_X",
+          "equal": true,
+          "recomputed": [
+            0.6403948169466576,
+            0.7354216139434054
+          ]
+        },
+        {
+          "field": "interval.q_L_X",
+          "equal": true,
+          "recomputed": [
+            0.26458122487428287,
+            0.3650007374529434
+          ]
+        },
+        {
+          "field": "interval.q_H_Y",
+          "equal": true,
+          "recomputed": [
+            0.7721047730710425,
+            0.9199847879869738
+          ]
+        },
+        {
+          "field": "interval.q_L_Y",
+          "equal": true,
+          "recomputed": [
+            0.05439280807538836,
+            0.136836083491898
+          ]
+        },
+        {
+          "field": "interval.job_mean_duty_difference",
+          "equal": true,
+          "recomputed": [
+            -0.07038333333333335,
+            0.06901666666666666
+          ]
+        },
+        {
+          "field": "interval.shuffled_weight_A26",
+          "equal": true,
+          "recomputed": [
+            0.23703798329409426,
+            0.4535146560636754
+          ]
+        },
+        {
+          "field": "interval.shuffled_sd",
+          "equal": true,
+          "recomputed": [
+            0.02519295778723747,
+            0.063537089784859
+          ]
+        },
+        {
+          "field": "cutoff.duty",
+          "equal": true,
+          "recomputed": 7
+        },
+        {
+          "field": "cutoff.correlation",
+          "equal": true,
+          "recomputed": 9
+        },
+        {
+          "field": "cutoff.emissions",
+          "equal": true,
+          "recomputed": 4
+        },
+        {
+          "field": "boundary.NO CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.BETWEEN",
+          "equal": true
+        },
+        {
+          "field": "boundary.CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.NOT READ",
+          "equal": true
+        },
+        {
+          "field": "sharing_probability",
+          "equal": true
+        },
+        {
+          "field": "LR_probability",
+          "equal": true
+        }
+      ],
+      "all_equal": true,
+      "optimizer_failures": 0,
+      "finite_values": true
+    },
+    {
+      "file": "rehearsal-day2-calibration.json",
+      "draws": 2000,
+      "interval_draws": 1000,
+      "family_draws": 1000,
+      "LR_trials": 100,
+      "null_draws_per_LR": 400,
+      "seed": 41119300,
+      "checks": [
+        {
+          "field": "interval.threshold_duty",
+          "equal": true,
+          "recomputed": [
+            0.242,
+            0.451
+          ]
+        },
+        {
+          "field": "interval.model_duty",
+          "equal": true,
+          "recomputed": [
+            0.24200004796407354,
+            0.4503834552707119
+          ]
+        },
+        {
+          "field": "interval.t15_tau_sweeps",
+          "equal": true,
+          "recomputed": [
+            3.0,
+            13.0
+          ]
+        },
+        {
+          "field": "interval.t15_tau_seconds",
+          "equal": true,
+          "recomputed": [
+            0.083383479,
+            0.3849008303000008
+          ]
+        },
+        {
+          "field": "interval.model_ell_sweeps",
+          "equal": true,
+          "recomputed": [
+            2.3515504955620994,
+            11.978704641044548
+          ]
+        },
+        {
+          "field": "interval.model_ell_seconds",
+          "equal": true,
+          "recomputed": [
+            0.06680596842182839,
+            0.3415702955418914
+          ]
+        },
+        {
+          "field": "interval.q_H_X",
+          "equal": true,
+          "recomputed": [
+            0.6413591632284168,
+            0.7341373684623366
+          ]
+        },
+        {
+          "field": "interval.q_L_X",
+          "equal": true,
+          "recomputed": [
+            0.2652169613839885,
+            0.3643546797843622
+          ]
+        },
+        {
+          "field": "interval.q_H_Y",
+          "equal": true,
+          "recomputed": [
+            0.7735981628810005,
+            0.9194504851443734
+          ]
+        },
+        {
+          "field": "interval.q_L_Y",
+          "equal": true,
+          "recomputed": [
+            0.054713299432746804,
+            0.1361803757492819
+          ]
+        },
+        {
+          "field": "interval.job_mean_duty_difference",
+          "equal": true,
+          "recomputed": [
+            -0.06566666666666665,
+            0.07971666666666667
+          ]
+        },
+        {
+          "field": "interval.shuffled_weight_A26",
+          "equal": true,
+          "recomputed": [
+            0.24634368864020706,
+            0.4512475428005847
+          ]
+        },
+        {
+          "field": "interval.shuffled_sd",
+          "equal": true,
+          "recomputed": [
+            0.02663512488915127,
+            0.0637474918450661
+          ]
+        },
+        {
+          "field": "cutoff.duty",
+          "equal": true,
+          "recomputed": 6
+        },
+        {
+          "field": "cutoff.correlation",
+          "equal": true,
+          "recomputed": 9
+        },
+        {
+          "field": "cutoff.emissions",
+          "equal": true,
+          "recomputed": 4
+        },
+        {
+          "field": "boundary.NO CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.BETWEEN",
+          "equal": true
+        },
+        {
+          "field": "boundary.CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.NOT READ",
+          "equal": true
+        },
+        {
+          "field": "sharing_probability",
+          "equal": true
+        },
+        {
+          "field": "LR_probability",
+          "equal": true
+        }
+      ],
+      "all_equal": true,
+      "optimizer_failures": 0,
+      "finite_values": true
+    },
+    {
+      "file": "rehearsal-day3-calibration.json",
+      "draws": 2000,
+      "interval_draws": 1000,
+      "family_draws": 1000,
+      "LR_trials": 100,
+      "null_draws_per_LR": 400,
+      "seed": 41119301,
+      "checks": [
+        {
+          "field": "interval.threshold_duty",
+          "equal": true,
+          "recomputed": [
+            0.242,
+            0.452
+          ]
+        },
+        {
+          "field": "interval.model_duty",
+          "equal": true,
+          "recomputed": [
+            0.24248554154304813,
+            0.4512249710921999
+          ]
+        },
+        {
+          "field": "interval.t15_tau_sweeps",
+          "equal": true,
+          "recomputed": [
+            3.0,
+            13.0
+          ]
+        },
+        {
+          "field": "interval.t15_tau_seconds",
+          "equal": true,
+          "recomputed": [
+            0.08254092899999999,
+            0.35754553899999997
+          ]
+        },
+        {
+          "field": "interval.model_ell_sweeps",
+          "equal": true,
+          "recomputed": [
+            2.3052640881874535,
+            11.632873350675064
+          ]
+        },
+        {
+          "field": "interval.model_ell_seconds",
+          "equal": true,
+          "recomputed": [
+            0.06322052927096107,
+            0.3206894101690002
+          ]
+        },
+        {
+          "field": "interval.q_H_X",
+          "equal": true,
+          "recomputed": [
+            0.6417424725708339,
+            0.7341236637592583
+          ]
+        },
+        {
+          "field": "interval.q_L_X",
+          "equal": true,
+          "recomputed": [
+            0.2656059599003586,
+            0.36442102961263795
+          ]
+        },
+        {
+          "field": "interval.q_H_Y",
+          "equal": true,
+          "recomputed": [
+            0.7733916801819475,
+            0.9197933940414095
+          ]
+        },
+        {
+          "field": "interval.q_L_Y",
+          "equal": true,
+          "recomputed": [
+            0.05450923410220885,
+            0.13634659852326275
+          ]
+        },
+        {
+          "field": "interval.job_mean_duty_difference",
+          "equal": true,
+          "recomputed": [
+            -0.07101666666666673,
+            0.07168333333333331
+          ]
+        },
+        {
+          "field": "interval.shuffled_weight_A26",
+          "equal": true,
+          "recomputed": [
+            0.24520836228696413,
+            0.45495891863793797
+          ]
+        },
+        {
+          "field": "interval.shuffled_sd",
+          "equal": true,
+          "recomputed": [
+            0.026854253155360185,
+            0.06516598499641138
+          ]
+        },
+        {
+          "field": "cutoff.duty",
+          "equal": true,
+          "recomputed": 6
+        },
+        {
+          "field": "cutoff.correlation",
+          "equal": true,
+          "recomputed": 9
+        },
+        {
+          "field": "cutoff.emissions",
+          "equal": true,
+          "recomputed": 4
+        },
+        {
+          "field": "boundary.NO CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.BETWEEN",
+          "equal": true
+        },
+        {
+          "field": "boundary.CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.NOT READ",
+          "equal": true
+        },
+        {
+          "field": "sharing_probability",
+          "equal": true
+        },
+        {
+          "field": "LR_probability",
+          "equal": true
+        }
+      ],
+      "all_equal": true,
+      "optimizer_failures": 0,
+      "finite_values": true
+    },
+    {
+      "file": "nominal-D2.json",
+      "draws": 2000,
+      "interval_draws": 1000,
+      "family_draws": 1000,
+      "LR_trials": 100,
+      "null_draws_per_LR": 400,
+      "seed": 41119302,
+      "checks": [
+        {
+          "field": "interval.threshold_duty",
+          "equal": true,
+          "recomputed": [
+            0.242,
+            0.448
+          ]
+        },
+        {
+          "field": "interval.model_duty",
+          "equal": true,
+          "recomputed": [
+            0.2415230396303645,
+            0.44775745193977873
+          ]
+        },
+        {
+          "field": "interval.t15_tau_sweeps",
+          "equal": true,
+          "recomputed": [
+            3.0,
+            13.0
+          ]
+        },
+        {
+          "field": "interval.t15_tau_seconds",
+          "equal": true,
+          "recomputed": [
+            0.08308163760000001,
+            0.3600204296
+          ]
+        },
+        {
+          "field": "interval.model_ell_sweeps",
+          "equal": true,
+          "recomputed": [
+            2.344420586090511,
+            11.850756258002212
+          ]
+        },
+        {
+          "field": "interval.model_ell_seconds",
+          "equal": true,
+          "recomputed": [
+            0.06492610050518381,
+            0.3281934122377573
+          ]
+        },
+        {
+          "field": "interval.q_H_X",
+          "equal": true,
+          "recomputed": [
+            0.6411246247489629,
+            0.7342149374722922
+          ]
+        },
+        {
+          "field": "interval.q_L_X",
+          "equal": true,
+          "recomputed": [
+            0.26538520835865226,
+            0.36389997533540963
+          ]
+        },
+        {
+          "field": "interval.q_H_Y",
+          "equal": true,
+          "recomputed": [
+            0.773514607231406,
+            0.9196237584733621
+          ]
+        },
+        {
+          "field": "interval.q_L_Y",
+          "equal": true,
+          "recomputed": [
+            0.0546199168702532,
+            0.13624226001755127
+          ]
+        },
+        {
+          "field": "cutoff.duty",
+          "equal": true,
+          "recomputed": 6
+        },
+        {
+          "field": "cutoff.correlation",
+          "equal": true,
+          "recomputed": 9
+        },
+        {
+          "field": "cutoff.emissions",
+          "equal": true,
+          "recomputed": 3
+        },
+        {
+          "field": "boundary.NO CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.BETWEEN",
+          "equal": true
+        },
+        {
+          "field": "boundary.CHANGE",
+          "equal": true
+        },
+        {
+          "field": "boundary.NOT READ",
+          "equal": true
+        },
+        {
+          "field": "sharing_probability",
+          "equal": true
+        },
+        {
+          "field": "LR_probability",
+          "equal": true
+        }
+      ],
+      "all_equal": true,
+      "optimizer_failures": 0,
+      "finite_values": true
+    }
+  ],
+  "method": "Standalone recount of intervals, family cutoffs and boundary counts using saved trials; no import of the calibration implementation."
+}

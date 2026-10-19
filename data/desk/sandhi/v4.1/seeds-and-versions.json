@@ -1,0 +1,69 @@
+{
+  "libraries": {
+    "python": "3.14.8",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "dtype": "float64"
+  },
+  "observed_record_seed": 104196401,
+  "observed_dwell_seed_formula": "104196401 + 1000 + job_index * 100 + span_index",
+  "observed_within_job_LR_seed_formula": "104196401 + 10000 + job_index * 1000 + boundary_index",
+  "observed_between_job_LR_seed_formula": "104196401 + 50000 + job_pair_index",
+  "calibration_base_seeds": {
+    "part_A": 41119001,
+    "day2_rehearsal": 41119300,
+    "day3_rehearsal_and_D1_nominal": 41119301,
+    "D2_nominal": 41119302
+  },
+  "calibration_rng": "NumPy PCG64 SeedSequence([base_seed, trial_index])",
+  "predictive_LR_seed_formulas": {
+    "within_job": "base_seed + 1000000 + trial_index * 10000 + job_index * 100 + boundary_index",
+    "between_jobs": "base_seed + 2000000 + trial_index * 10000 + job_pair_index"
+  },
+  "new_fit_bootstraps": [
+    41119100,
+    41119101
+  ],
+  "new_hierarchy_bootstraps": {
+    "primary_logit_b": 41119200,
+    "primary_log_ell": 41119201,
+    "with14_logit_b": 41119210,
+    "with14_log_ell": 41119211
+  },
+  "new_within_job_boundary_seeds": [
+    41119400,
+    41119401,
+    41119410,
+    41119411
+  ],
+  "new_between_job_boundary_seeds": [
+    41119500,
+    41119501
+  ],
+  "inherited_bootstrap_seeds": {
+    "bootstrap-t10-job1-q120.json": 40118102,
+    "bootstrap-day3-job3-q143.json": 41119101,
+    "bootstrap-t11-job2-q143.json": 40118106,
+    "bootstrap-t10-job2-q95.json": 40118104,
+    "bootstrap-day3-job2-q143.json": 41119100,
+    "bootstrap-t10-job2-q11.json": 40118103,
+    "bootstrap-t11-job3-q143.json": 40118107,
+    "bootstrap-t10-job1-q95.json": 40118101,
+    "bootstrap-t14-job1-q143.json": 40118109,
+    "bootstrap-t12-job1-q143.json": 40118108,
+    "bootstrap-t10-job2-q120.json": 40118105,
+    "bootstrap-t10-job1-q11.json": 40118100
+  },
+  "draws": {
+    "job_bootstrap": 400,
+    "hierarchy_parameter_bootstrap": 400,
+    "new_boundary_null": 400,
+    "new_boundary_alternative": 400,
+    "dwell_permutations": 2000,
+    "calibration_complete_days": 2000,
+    "interval_days": 1000,
+    "family_days": 1000,
+    "predictive_LR_days": 100,
+    "predictive_LR_null_draws": 400
+  }
+}
