@@ -4,11 +4,11 @@
 
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
-**Contents:** [Latest finding](#latest-finding-the-shared-state-within-a-span) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+**Contents:** [Latest finding](#latest-finding-the-duty-across-spans-jobs-and-days) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
 
-## Latest finding: the shared state within a span
+## Latest finding: the duty across spans, jobs and days
 
-Nine records on ibm_kingston and ibm_fez, eight of them tests under rules fixed before each run, asked when a qubit's fringe changes within a job ([finding 29](docs/findings.md#finding-29)). Read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), the means at equal returned shot index across a span's circuits varied far beyond independent shots, read as a state the circuits share, and on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), so a span's weight reads as an average over the span. Against that average's estimated error all 17 weight boundaries read in the monitor jobs show NO CHANGE, which is no evidence of a change and does not show the levels equal, while between two calibration stamps about a third of the 47 kingston qubits compared (16) changed by 4 kHz or more in the one-line fit. A desk model, Sandhi, described the earlier records with five rates and is set down at version 3; no cause is named. Released as 0.9.0 on 18 October 2026.
+Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30](docs/findings.md#finding-30)). The duty held within its error across the six spans of one job (NO CHANGE at every boundary, which does not show the duties equal), and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313, while the switching time moved between those days. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and not seen. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted against it, with its bets for the other design not yet scored; no cause is named. To be released as 0.10.0.
 
 ## What it does
 
@@ -22,7 +22,7 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Findings
 
-Twenty-nine findings, from runs on 5 to 18 October 2026. Here the findings on one thread share a row, and each number links to its finding; each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md), which also has [the full table](docs/findings.md#the-findings-in-one-table), one row per finding. What has *not* been shown is there too.
+Thirty findings, from runs on 5 to 19 October 2026. Here the findings on one thread share a row, and each number links to its finding; each is given in full, with its caveats, in [`docs/findings.md`](docs/findings.md), which also has [the full table](docs/findings.md#the-findings-in-one-table), one row per finding. What has *not* been shown is there too.
 
 | thread | findings | where | where it stands | verdicts |
 |---|---|---|---|---|
@@ -36,6 +36,7 @@ Twenty-nine findings, from runs on 5 to 18 October 2026. Here the findings on on
 | The check at the peak phase | [22](docs/findings.md#finding-22), [23](docs/findings.md#finding-23), [24](docs/findings.md#finding-24), [25](docs/findings.md#finding-25), [27](docs/findings.md#finding-27) | ibm_kingston, ibm_fez | Read at the active-neighbour Ramsey's loss maximum, the check predicted the wait test within ±0.15 on twelve of twelve cells over three runs on new chains, on two processors; its residual was not smaller than at +90° on every chain. | LARGE, NOT SETTLED and SMALL; AGREE in three runs; PEAK SMALLER and NOT SEPARATED |
 | The fringe on 143: one line or two | [28](docs/findings.md#finding-28) | ibm_fez | Measured at every wait from 0 to 63 µs in two quadratures, 143's Ramsey fringe was two fixed frequencies about 90 kHz apart at unequal weight, not one line decaying; the weight differed between the job's execution spans. | TWO FIXED FREQUENCIES |
 | When a qubit's fringe changes: the shared state within a span | [29](docs/findings.md#finding-29) | ibm_kingston, ibm_fez | Read per shot, on every qubit where tests 13 and 15 read SHARED (143; 11 and 95 in every span, 120 in half), a span's circuits are dependent at equal returned shot index, read as a shared state; on 143 the fringe switches between its two lines with correlation lags of 4 to 10 sweeps (about 0.1 to 0.2 s if returned order is chronological), a span's weight reads as an average over the span, and against its estimated error all 17 boundaries read show no change; about a third of the 47 kingston qubits compared across two calibration stamps (16) changed by 4 kHz or more; the desk model Sandhi is set down at version 3. | QUIET between adjacent repeats; SWITCHES AT BOUNDARIES ONLY on one qubit; STEADY, STEPPED and MOVING; CONFIRMED ON DAY 2 on 143; LEVELS DIFFER AT SOME at the shots' error; SHARED; NO CHANGE at 17 of 17 |
+| The duty across spans, jobs and days | [30](docs/findings.md#finding-30) | ibm_fez | Read per shot on 19 October 2026, every monitor span of 143 read SHARED; across the six spans of one job the duty read NO CHANGE at every boundary, and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313 while the switching time moved; a pattern noticed in the published weights was not seen on new data; the desk model Sandhi's version 4.1 had its bets for one design hashed before the run, and none counted against it. | CONFIRMED ON DAY 2, QUIET and WEIGHT QUIET; SHARED; NO CHANGE at five of five; NOT SEEN |
 
 What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT verdict (the published figures already carry it), NOT USEFUL (it picks no better pairs), or FADES (it does not last long enough to plan by).
 
@@ -50,6 +51,7 @@ What would discredit the map: a NOISE verdict (it does not repeat), a REDUNDANT 
 - **Two processors, two calibration days, for the check at the peak phase.** On ibm_kingston it has run on eight waiting qubits of new chains, under the daily calibrations of 14 and 15 October 2026 (findings 23 and 25), and on finding 20's three chains (finding 24); on ibm_fez on four, on 15 October (finding 27).
 - **One qubit, one job, one day, for finding 28.** Finding 28 is from one job on ibm_fez on 16 October 2026, on qubit 143 alone, under one published calibration stamp.
 - **Two processors, two days, for finding 29.** Finding 29 is from eight tests on ibm_kingston and ibm_fez on 17 and 18 October 2026, six of them jobs, each under one published calibration stamp but for three reads at test 10's first job, and two of them reads of jobs already run, beside test 7's job of the day before; the desk model Sandhi, set down at version 3, describes tests 7 to 11 and no others.
+- **One qubit, one processor, for finding 30.** Finding 30 is from two runs on ibm_fez's qubit 143 on 19 October 2026, each under one published calibration stamp, and one read of jobs already run, beside the runs of 17 October; the desk model Sandhi's versions 4 and 4.1 describe the records of tests 10 to 16 and no others, and version 4.1 has been scored on one run.
 - **Two routes to one processor.** The Rigetti findings through Open Quantum (2, 6) and through Amazon Braket (8 to 10) are from the same processor, but only the Braket route records where each pair ran. The difference between them is a difference between the two platforms' placement records, not between the vendors' machines.
 - **Small absolute differences.** The gap is 0.038 in P(11), and the payoff is about a tenth of a percentage point of fidelity on the random workload.
 - **No claim about any device's design.** A pair's kept share is a measurement of what it did with these circuits; it says nothing about why, or about how the processor was built.
@@ -113,7 +115,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 ## Documentation
 
-- [`docs/findings.md`](docs/findings.md): the twenty-nine findings in full, with a table of all of them, what was known before them, and what has not been shown.
+- [`docs/findings.md`](docs/findings.md): the thirty findings in full, with a table of all of them, what was known before them, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.
 - [`docs/kickoffs.md`](docs/kickoffs.md): how the results were made, and every run.
 - [`docs/install.md`](docs/install.md): installing without a clone, the extras, the provider backends and their guards.
