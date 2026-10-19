@@ -4277,3 +4277,29 @@ the duties by span of day 3 and the long job with their errors and the day means
 **Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
 vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
 added line checked for dashes, the kickoff's words to avoid and the two offset words.
+
+**CI on the first push.** Both test jobs failed three tests on `795a2ea`, and 1,047 passed: the check of
+`data/SHA256SUMS`, and Sandhi's test of versions 4 and 4.1. A git ignore rule outside the repository (`*.log`) had kept
+the two versions' `run.log` files out of `37f46ee`, while they stayed in the working tree, where every check passed.
+`ef853d2` adds both as published, with the SHA-256 that `data/SHA256SUMS` and the folder's README already gave; the full
+suite passed in a clean clone of the branch.
+
+**Ruling R1 (19 October 2026, given by the author in chat: "Yes, these four are my rulings, the amendment of the
+changelog's fixed lead included.").** It answers four of the packet's questions:
+- Q1, the correlation time. The packet said the per-span correlation times of 17 and 19 October did not overlap; they
+  do, once test 17's spans are counted: 0.121 to 0.191 s on 17 October, 0.143 to 0.349 s on 19 October (day 3 alone,
+  0.193 to 0.334 s). "Moved" rested on test 16's read, which set day 2 beside day 3 only, and the kickoff's fixed lead
+  carried it. The finding now gives both ranges and the job medians, 0.137 to 0.248 s, and says that the ranges overlap
+  and that no rule on the record tests a change; the job-median table stays and "near 0.2 s" goes. The switching-time
+  clause is deleted from the changelog's lead, an amendment of the kickoff's fixed text by this ruling, from the
+  README's opening and from its eleventh row.
+- Q2, the README's limits line stays and names the model's records as those "of tests 10 to 15 and of test 11's third
+  day", since test 16 is a read of day 3, not a separate record. The opening of Sandhi's folder README, which said
+  "tests 10 to 16", is corrected the same way.
+- Q5, the plan words in test 17's record stay as its hand-back made them: the published rule carries "pay-as-you-go",
+  "open plan" is in five earlier records, and none is an identifier.
+- Q14, day 3's record names its report under `meta.not_copied` by SHA-256, as tests 16 and 17's do, with
+  `numbers-t11-day3.json`, so that the list names every hand-back file the record does not carry (`48cbc3a`). Day 2's
+  record, released in 0.9.0 and signed, stays as released.
+
+The tests check each new sentence against the records, and that the old wording is gone.

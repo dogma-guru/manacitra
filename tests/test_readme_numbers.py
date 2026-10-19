@@ -2330,9 +2330,10 @@ def test_finding_15_in_the_persistence_bullet():
 def test_the_readme_opens_with_the_latest_findings():
     """A28 (A27's section, replaced): a short section at the top of the README, after the opening description and
     before what it does, the findings table and installation, says that two runs on 143 on 19 October were read per
-    shot under rules hashed before them, that the duty held within its error across one job's six spans while the
-    switching time moved between days, the monitor means of three runs, that the pattern noticed in the published
-    weights was not seen on new data, and the desk model's record, in at most five sentences, each claim checked here
+    shot under rules hashed before them, that the duty held within its error across one job's six spans, the monitor
+    means of three runs (with no clause on the switching time, by the author's ruling R1, Q1: the per-span
+    correlation times of 17 and 19 October overlap), that the pattern noticed in the published weights was not seen
+    on new data, and the desk model's record, in at most five sentences, each claim checked here
     against the records. It carries none of the words the kickoff keeps out, and ends "To be released as 0.10.0."."""
     import re
 
@@ -2363,14 +2364,12 @@ def test_the_readme_opens_with_the_latest_findings():
     assert {b["word"] for b in m17["boundaries"][4:]} == {"NO CHANGE"} and len(m17["boundaries"][4:]) == 5
     means = [*m16["beside_day_means"]["day_mean_duties"], m17["between_jobs_job_rows"]["B1"]["job_mean_w_duty"]]
     assert [_q(x, 3) for x in means] == ["0.330", "0.341", "0.313"]
-    tau2 = [s["Y"]["tau_c_s"] for j in m16["day2"].values() for s in j["spans"]]
-    tau3 = [s["Y"]["tau_c_s"] for j in m16["jobs"].values() for s in j["spans"]]
-    assert max(tau2) < min(tau3)  # the switching time moved: day 2's spans all below day 3's
     assert (
         "The duty held within its error across the six spans of one job (NO CHANGE at every boundary, which does not "
-        "show the duties equal), and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313, while "
-        "the switching time moved between those days." in flat
+        "show the duties equal), and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A "
+        "pattern" in flat
     )
+    assert "switching time" not in flat and "moved" not in flat
     assert m17["middle_test"]["pooled"]["word"] == "NOT SEEN"
     assert (
         "A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under "
@@ -5061,22 +5060,47 @@ def test_finding_30_the_records():
         "| test 17, job B1 | 19 October, 17:10 to 17:12, about 13 hours later | 0.313 | 0.024 | 0.208 s |",
     ):
         assert row in item, row
-    lags2 = [s["Y"]["lag_1_over_e"] for k in day2 for s in day2[k]["spans"]]
-    assert (min(lags2), max(lags2)) == (4, 7)
-    tau2 = [s["Y"]["tau_c_s"] for k in day2 for s in day2[k]["spans"]]
+    # the correlation time per span on each day and the job medians, by the author's ruling R1, Q1: 19 October's spans
+    # (day 3 and test 17's three jobs) reach below 17 October's highest, so the ranges overlap
+    tau17 = [s["Y"]["tau_c_s"] for k in ("t11-job2", "t11-job3") for s in day2[k]["spans"]]
+    tau19 = [x["tau_c_s"] for x in sp16] + [x["tau_c_s"] for k in ("A1", "A2", "B1") for x in s17[k]]
+    meds = [*med2, *(x["tau_c_median_s"] for x in jobs3)]
+    meds += [m17["between_jobs_job_rows"][k]["tau_c_median_s"] for k in ("A1", "A2", "B1")]
+    assert (len(tau17), len(tau19), len(meds)) == (6, 18, 7)
+    assert (_rng(tau17, 3), _rng(tau19, 3), _rng(meds, 3)) == ("0.121 to 0.191", "0.143 to 0.349", "0.137 to 0.248")
+    assert min(tau19) < max(tau17)
     assert (
-        "the lags were 4 to 7 sweeps in day 2's six monitor spans and 7 to 12 in day 3's, τ_c "
-        + _rng(tau2, 2)
-        + " s against "
-        + _rng([x["tau_c_s"] for x in sp16], 2)
-        + " s"
-        in item
+        "The correlation time per span was 0.121 to 0.191 s on 17 October and 0.143 to 0.349 s on 19 October, with "
+        "job medians of 0.137 to 0.248 s. The ranges overlap, and no rule on the record tests a change in it." in item
     )
-    shorts = [m17["between_jobs_job_rows"][k]["tau_c_median_s"] for k in ("A1", "A2")]
-    assert [q(x, 3) for x in shorts] == ["0.201", "0.172"]
-    assert "(0.19 to 0.25 s in B1's six spans; 0.201 and 0.172 s by job in the short monitors)" in item
-    assert "No rule on the record tests a change of the correlation time" in item
+    assert "moved" not in item and "near 0.2 s" not in item
     assert math.isfinite(b1["job_sd"])
+
+
+def test_finding_30_records_name_their_reports():
+    """A28 R1, Q14: each of finding 30's three records names its hand-back's report, which is not published, by
+    SHA-256 under meta.not_copied (day 3's by the author's ruling, with numbers-t11-day3.json, the output of its kept
+    numbers_t11_day3.py, so that the list names every hand-back file the record does not carry, as tests 16 and 17's
+    do); day 2's record stays as released in 0.9.0."""
+    for name, report, digest in (
+        (
+            "t11-day3-monitor.json",
+            "report-t11-day3.md",
+            "fcbd85fec7ccd0e6b6005b4c54c966503684a7023313e2b4bc269a75337d124a",
+        ),
+        (
+            "t16-day3-per-shot-read.json",
+            "report-t16.md",
+            "42fcec518834c4b3f14f4da4fb63cb7bf0a9e2b08f4e2d75e121c6dcb9c1e5b0",
+        ),
+        ("t17-long-monitor.json", "report-t17.md", "71f523c26b6c4eac345e51c553b2f38cab6f408e25ad9aac7856b0d4c3d1fab7"),
+    ):
+        rows = {x["file"]: x["sha256"] for x in archive.load(f"ibm_fez/{name}")["meta"]["not_copied"]}
+        assert rows[report] == digest, name
+        assert not (ROOT / "data" / "ibm_fez" / report).exists()
+    day3 = {x["file"] for x in archive.load("ibm_fez/t11-day3-monitor.json")["meta"]["not_copied"]}
+    assert day3 == {"report-t11-day3.md", "numbers-t11-day3.json"}
+    assert "not_copied" not in archive.load("ibm_fez/t11-day2-monitor.json")["meta"]
 
 
 def test_finding_30_the_middle_test():
@@ -5242,6 +5266,20 @@ def test_finding_30_beside_the_finding():
     assert (
         "- **One qubit, one processor, for finding 30.** Finding 30 is from two runs on ibm_fez's qubit 143" in readme
     )
+    # by the author's rulings R1, Q1 and Q2: no switching-time clause in row eleven; the model's records named as
+    # tests 10 to 15 and test 11's third day, since test 16 is a read of day 3, not a separate record
+    assert (
+        "and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313; a pattern noticed in the "
+        "published weights was not seen on new data;" in readme
+    )
+    assert "switching time" not in readme and "tests 10 to 16" not in readme
+    assert (
+        "the desk model Sandhi's versions 4 and 4.1 describe the records of tests 10 to 15 and of test 11's third day "
+        "and no others, and version 4.1 has been scored on one run." in readme
+    )
+    sandhi = " ".join((ROOT / "data" / "desk" / "sandhi" / "README.md").read_text().split())
+    assert "the per-shot records of tests 10 to 15 and of test 11's third day" in sandhi
+    assert "tests 10 to 16" not in sandhi
     method = " ".join((ROOT / "docs" / "method.md").read_text().split())
     assert "### Reading a span per shot" in method and "### A test fixed after a pattern is noticed" in method
     for f in ("sweep_series", "sharing_ratio", "two_state_reading", "time_average_sd", "boundary_ratio"):
@@ -5421,7 +5459,8 @@ def test_the_round_5c_gaps_are_whole_counts():
 
 def test_the_changelog_0_10_0():
     """Amendment A28, section 5: the changelog's 0.10.0 heading above 0.9.0, unreleased until the release pull request
-    dates it, with the lead the kickoff fixed, word for word, and the A28 entry naming the package's new functions,
+    dates it, with the lead the kickoff fixed, word for word but for the switching-time clause, deleted by the author's
+    ruling R1, Q1, and the A28 entry naming the package's new functions,
     finding 30's data, Sandhi's versions 4 and 4.1 and round 5c; no dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
     assert log.index("## 0.10.0 (unreleased)") < log.index("## 0.9.0 (18 October 2026)")
@@ -5430,7 +5469,7 @@ def test_the_changelog_0_10_0():
         "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
         "hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans the duty "
         "held within its error at every boundary; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and "
-        "0.313, while the switching time moved between those days. A pattern noticed in the published weights, a job's "
+        "0.313. A pattern noticed in the published weights, a job's "
         "middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk "
         "model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of "
         "its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the "
