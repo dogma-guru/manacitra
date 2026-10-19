@@ -188,6 +188,16 @@
     "why": "it writes the run's private record, not the analysis"
    }
   ],
+  "not_copied": [
+   {
+    "file": "report-t11-day3.md",
+    "sha256": "fcbd85fec7ccd0e6b6005b4c54c966503684a7023313e2b4bc269a75337d124a"
+   },
+   {
+    "file": "numbers-t11-day3.json",
+    "sha256": "8a3209bb4dad2935b4826e1d67e75c573b4db90225ca75539d0da0ce2f8cd34a"
+   }
+  ],
   "files_beside": [
    {
     "published": "hash-check-t11-day3.md",
