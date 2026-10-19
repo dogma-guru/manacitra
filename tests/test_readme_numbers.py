@@ -4813,3 +4813,26 @@ def _finding_29_r2(item: str, t12: dict, t14: dict) -> None:
         "NO "
         "CHANGE (0.71)."
     )
+
+
+def test_the_middle_note_is_published_as_one_dated_line():
+    """Amendment A28, 2c (the author's answer 2): the note of 19 October that test 17's rule says is published with the
+    run enters as one quoted line, the line test 17's rule tests, with three sentences: the note's name and SHA-256 (as
+    ruling 4 of test 17 names it), when the line was written, and that the rest is kept outside the repository."""
+    import re
+
+    text = (archive.data_dir() / "ibm_fez" / "t17-middle-note-excerpt.md").read_text()
+    quoted = [x for x in text.splitlines() if x.startswith(">")]
+    assert quoted == [
+        "> - **The middle span (not a test):** middle minus ends positive in all four monitor jobs, 0.41 to 1.11 "
+        "telegraph sd."
+    ]
+    body = [x for x in text.splitlines() if x and not x.startswith(("#", ">"))]
+    assert len(body) == 1 and len(re.findall(r"[.!?](?:\s|$)", body[0])) == 3
+    assert "`t16-mantri-read-and-scorecard-2026-10-19.md`" in body[0]
+    assert "31808acd2d115991f4695cbccafe84db075e6a2eea2647ca01774ce5e897352d" in body[0]
+    assert "It was written on 19 October 2026, before test 17's rule was hashed." in body[0]
+    assert body[0].endswith("The rest of the file is a working read kept outside the repository.")
+    rulings = (archive.data_dir() / "ibm_fez" / "rulings-t17.md").read_text()
+    assert "`tests/handback/t16-mantri-read-and-scorecard-2026-10-19.md`" in rulings
+    assert "—" not in text and "–" not in text
