@@ -10,6 +10,7 @@ import copy
 import hashlib
 import json
 import math
+import os
 import re
 from pathlib import Path
 from types import SimpleNamespace
@@ -1758,3 +1759,53 @@ def test_the_per_shot_read_leaves_its_words_to_the_caller():
         params = inspect.signature(f).parameters.values()
         defaults = {p.default for p in params if isinstance(p.default, float)}
         assert not {1.5, 2.0, 3.0} & defaults, f.__name__
+
+
+SHOTS = os.environ.get("MANACITRA_SHOTS")
+
+
+@pytest.mark.skipif(
+    not SHOTS, reason="needs test 17's per-shot arrays, which are not published (MANACITRA_SHOTS, a folder)"
+)
+def test_the_per_shot_read_reproduces_test_17s_long_job():
+    """Amendment A28, 1 (the tests): test 17's long job (B1), rebuilt from its archived per-shot array, which its record
+    names by SHA-256 and which is not published. Every span's whole repeats in Y, the quadrature of record: the
+    package's sweep series, sharing ratio, two-state reading and error of a time average reproduce the read's ratio,
+    duty, lag, correlation time and sd, and every sweep mean, as fits-t17-shots.json records them."""
+    rec = archive.load("ibm_fez/t17-long-monitor.json")
+    arr = next(a for a in rec["meta"]["arrays_not_published"] if a["file"] == "shots-t17-B1.npz")
+    path = Path(SHOTS) / arr["file"]
+    if not path.exists():
+        pytest.skip(f"{arr['file']} is not in MANACITRA_SHOTS")
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == arr["sha256"]
+    z = np.load(path)
+    idx = [k for k, lab in enumerate(rec["labels"]) if lab["job"] == "B1"]
+    labels = [rec["labels"][k] for k in idx]
+    bits = [z[f"p{i:03d}"].reshape(-1) for i in range(len(labels))]
+    assert [int(b.sum()) for b in bits] == [
+        sum(n for key, n in rec["counts"][k].items() if key[-1] == "1") for k in idx
+    ]
+    spans = rec["jobs"]["B1"]["execution_metadata"]["execution_spans"]
+    want = rec["archived"]["per_shot_read"]["jobs"]["B1"]["qubits"]["143"]["waits"]["monitor"]["spans"]
+    got = wait.sweep_series(bits, labels, spans, "Y")
+    assert [s["span"] for s in got] == [s["span"] for s in want] and len(got) == 6
+    for s, w in zip(got, want):
+        y = w["Y"]
+        sr = wait.sharing_ratio(s["M"])
+        r = wait.two_state_reading(s["m"], s["sweep_s"], v_ind=sr["v_ind"])
+        e = wait.time_average_sd(r["duty"], r["lag"], s["sweep_s"], s["duration_s"])
+        assert (
+            s["n_rows"] == y["n_rows"] == w["n_whole_repeats"]
+            and [round(float(v), 4) for v in s["m"]] == y["sweep_means"]
+        )
+        assert (r["duty"], r["lag"], e["sweeps_used"]) == (y["duty_b"], y["lag_1_over_e"], y["tau_c_sweeps_used"])
+        got_v = (sr["ratio"], sr["v_ind"], r["threshold"], e["tau_c_s"], e["sd"], r["mid_sweep_fraction"])
+        want_v = (
+            y["ratio"],
+            y["v_ind"],
+            y["threshold"],
+            y["tau_c_s"],
+            y["telegraph_sd"],
+            y["mid_sweep_fraction_middle_fifth"],
+        )
+        assert got_v == pytest.approx(want_v, rel=1e-12, abs=1e-15)

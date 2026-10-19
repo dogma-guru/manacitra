@@ -252,7 +252,12 @@ def test_the_findings_dates():
         "2026-10-16",
         "2026-10-17",
         "2026-10-18",
+        "2026-10-19",
     }
+    # Amendment A28: finding 30, test 11 on a third day, test 16's read of it and test 17, on 19 October 2026
+    day10 = sorted(p.name for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-19")
+    assert day10 == ["t11-day3-monitor.json", "t16-day3-per-shot-read.json", "t17-long-monitor.json"]
+    assert sum("counts" in archive.load(p) for p in runs if p.name in day10) == 2
     # Amendment A27: finding 29, four tests on 17 October 2026 on two processors, and the span check's record
     day8 = sorted(p.name for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-17")
     assert day8 == [
@@ -2935,11 +2940,11 @@ def test_findings_20_and_21_beside_the_findings():
     many = [j for p in ar.records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
     assert (len([i for i in ids if i]), len(many)) == (
         30,
-        24,
-    )  # A24: 56 and 61; 57 to 59, 62; A25: test 7; A27: 8 to 11; A27, R2: tests 12 and 14
+        30,
+    )  # A24: 56 and 61; 57 to 59, 62; A25: test 7; A27: 8 to 11; A27, R2: tests 12 and 14; A28: day 3 and test 17
     data = " ".join((ar.data_dir() / "README.md").read_text().split())
-    assert "the thirty IBM `meta.job_id` values and the twenty-four of the runs with several jobs" in data
-    assert "as do the job IDs that tests 13 and 15 read (`per_shot_results`)" in data
+    assert "the thirty IBM `meta.job_id` values and the thirty of the runs with several jobs" in data
+    assert "as do the job IDs that tests 13, 15 and 16 read (`per_shot_results`; test 16's `meta.jobs_read`)" in data
     assert "(`first_submission.job_id`)" in data
 
 

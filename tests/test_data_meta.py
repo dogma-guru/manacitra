@@ -41,6 +41,7 @@ def test_coupling_maps_name_their_snapshot(path):
 def test_run_records_name_a_kickoff_and_a_time(path):
     m = archive.load(path)["meta"]
     tests = ("Test 7", "Test 8", "Test 9", "Test 10", "Test 11", "Test 12", "Test 13", "Test 14", "Test 15")  # A25, A27
+    tests += ("Test 11, day 3", "Test 16", "Test 17")  # A28
     assert (m["kickoff"].startswith("Kickoff") or m["kickoff"] in tests) and m["utc"][:10] in (
         "2026-10-05",
         "2026-10-06",
@@ -53,6 +54,7 @@ def test_run_records_name_a_kickoff_and_a_time(path):
         "2026-10-16",
         "2026-10-17",
         "2026-10-18",
+        "2026-10-19",
     )
     assert m["shots_per_circuit"] == NA or isinstance(m["shots_per_circuit"], int)
 

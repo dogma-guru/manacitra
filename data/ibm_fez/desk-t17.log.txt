@@ -1,0 +1,16 @@
+{
+ "fractions": {
+  "MIDDLE HIGH": 0.019,
+  "UNDECIDED": 0.1265,
+  "NOT SEEN": 0.8545,
+  "None": 0.0
+ },
+ "false_alarm_rate_MIDDLE_HIGH": 0.019,
+ "its_binomial_se": 0.003052785613173647,
+ "contributing_jobs_per_set": {
+  "3": 2000
+ },
+ "Z_mean": -0.061801566465764485,
+ "Z_sd": 0.9873738647034896
+}
+elapsed 18.2 s

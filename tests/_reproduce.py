@@ -2064,6 +2064,118 @@ def t8_t9_spans():
     return rows, leaves
 
 
+T11_DAY3 = "ibm_fez/t11-day3-monitor.json"
+T15_READ = "ibm_fez/t15-error-model-read.json"
+T16_READ = "ibm_fez/t16-day3-per-shot-read.json"
+T17_RUN = "ibm_fez/t17-long-monitor.json"
+
+
+@cache
+def t11_day3_recomputed() -> tuple[dict, dict]:
+    doc = reuse_doc(T11_DAY3)
+    return reuse.t11_job1(doc), reuse.t11_monitor(doc)
+
+
+@cache
+def t16_recomputed() -> dict:
+    return reuse.t16_day3_read(reuse_doc(T16_READ), reuse_doc(T15_READ), reuse_doc(T11_DAY3))
+
+
+@cache
+def t17_recomputed() -> dict:
+    return reuse.t17_read(reuse_doc(T17_RUN))
+
+
+def t11_day3():
+    """Test 11 on a third day: job 1's fits, held-out errors, bootstrap, verdict, readings and weight per span by the
+    functions day 2 used, with day 2's seeds; jobs 2 and 3's phase and weight per repeat, switches, weight per span,
+    boundary table and verdicts by manacitra.wait.monitor_phase and monitor_weight; the pooled verdicts and the gap
+    between the jobs (Amendment A28)."""
+    j1, mon = t11_day3_recomputed()
+    docs = {T11_DAY3: reuse_doc(T11_DAY3)}
+    mine = {"jobs": {"1": j1, **mon["jobs"]}, "pooled": mon["pooled"], "gap_between_jobs_2_and_3": mon["gap"]}
+    leaves = compare("Test 11 on a third day", {T11_DAY3: {"archived": {"analysis": mine}}}, docs)
+    a = docs[T11_DAY3]["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["jobs"]["1"]["verdict"], j1["verdict"]),
+            (
+                "job 1, delta (MHz)",
+                a["jobs"]["1"]["analysis"]["fits"]["P"]["params"]["delta_MHz"],
+                j1["analysis"]["fits"]["P"]["params"]["delta_MHz"],
+            ),
+            (
+                "job 1, b",
+                a["jobs"]["1"]["analysis"]["fits"]["P"]["params"]["b"],
+                j1["analysis"]["fits"]["P"]["params"]["b"],
+            ),
+            *((f"job {j}, phase", a["jobs"][j]["phase_verdict"], mon["jobs"][j]["phase_verdict"]) for j in ("2", "3")),
+            *(
+                (f"job {j}, weight", a["jobs"][j]["weight_verdict"], mon["jobs"][j]["weight_verdict"])
+                for j in ("2", "3")
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def _mirror_jobs(jobs: dict) -> dict:
+    return {k: {"qubits": {"143": {"waits": {"monitor": {"spans": j["spans"]}}}}} for k, j in jobs.items()}
+
+
+def t16():
+    """Test 16, the per-shot read of day 3: every monitor span's ratio, duty, lag, correlation time and sd, the four
+    boundaries with their sensitivities, the jobs and the day means, recomputed through manacitra.wait's
+    two_state_reading, time_average_sd and boundary_ratio from the sweep means the read published (Amendment A28)."""
+    m = t16_recomputed()
+    docs = {T16_READ: reuse_doc(T16_READ)}
+    mine = {
+        "jobs": _mirror_jobs(m["jobs"]),
+        **{
+            k: m[k]
+            for k in ("boundaries", "between_jobs", "beside_day_means", "beside_middle_minus_ends", "job1_borrowed")
+        },
+    }
+    leaves = compare("Test 16, the per-shot read of day 3", {T16_READ: {"archived": {"analysis": mine}}}, docs)
+    a = docs[T16_READ]["archived"]["analysis"]
+    rows = _rows(
+        lambda: [
+            *(
+                (f"boundary {i}", b["word"], x["word"])
+                for i, (b, x) in enumerate(zip(a["boundaries"], m["boundaries"]))
+            ),
+            ("between jobs 2 and 3", a["between_jobs"]["rows"][0]["word"], m["between_jobs"]["rows"][0]["word"]),
+        ]
+    )
+    return rows, leaves
+
+
+def t17():
+    """Test 17, the per-shot read and the middle test: every monitor span of jobs A1, A2 and B1, the nine boundaries,
+    the jobs, and the middle test's contrasts, Z and word, recomputed through manacitra.wait from the sweep means the
+    read published and the provider's span times (Amendment A28)."""
+    m = t17_recomputed()
+    docs = {T17_RUN: reuse_doc(T17_RUN)}
+    mine = {
+        "jobs": _mirror_jobs(m["jobs"]),
+        **{k: m[k] for k in ("boundaries", "between_jobs", "between_jobs_job_rows", "middle_test")},
+    }
+    leaves = compare(
+        "Test 17, the per-shot read and the middle test", {T17_RUN: {"archived": {"per_shot_read": mine}}}, docs
+    )
+    a = docs[T17_RUN]["archived"]["per_shot_read"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["middle_test"]["pooled"]["word"], m["middle_test"]["pooled"]["word"]),
+            *(
+                (f"boundary {i}", b["word"], x["word"])
+                for i, (b, x) in enumerate(zip(a["boundaries"], m["boundaries"]))
+            ),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -2128,6 +2240,9 @@ CASES = {
     "Test 9, job 1 on 43 and 134": t9_job1,
     "Test 10, the phase monitor": t10,
     "Test 11, day 2 and the monitor": t11,
+    "Test 11 on a third day": t11_day3,
+    "Test 16, the per-shot read of day 3": t16,
+    "Test 17, the per-shot read and the middle test": t17,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -2170,4 +2285,6 @@ REQUIRED = {
     "Kickoff 61, the readout check on ibm_fez": "PUBLISHED NOT READABLE",
     "Kickoff 62, the check at the peak phase on ibm_fez": "AGREE",
     "Test 7, two frequencies on qubit 143": "TWO FIXED FREQUENCIES",
+    "Test 11 on a third day": "CONFIRMED ON DAY 2",
+    "Test 17, the per-shot read and the middle test": "NOT SEEN",
 }
