@@ -23,6 +23,8 @@ Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run 
   `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
   `data/desk/t7-power-check-round5c/` beside round 5b, its results attached to the release. The README opens with
   finding 30, and its table of findings gains an eleventh row.
+- Documentation: a glossary, page headers, a reading order, timings, and the quick start's pick matched to `manacitra
+  pick`'s default, from a first reader's notes.
 
 ## 0.9.0 (18 October 2026)
 

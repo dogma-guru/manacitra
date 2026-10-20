@@ -25,3 +25,7 @@ Extras: `[ibm]` for IBM Quantum, `[aer]` for Qiskit Aer, `[docs]` for the diagra
 ## Before anything is sent to a provider
 
 The estimate and the ledger entry are printed; a job already sent once is refused unless `--allow-resubmit` (in Python, `allow_resubmit=True`) is given, and that is logged, whether it is sent from the command line or through a backend's `submit()`; the check and the reservation are made under one lock that every process shares, so two commands started together cannot both send one job; on Open Quantum, the balance, the quote and the budget across waves are checked again immediately before sending, and the balance floor counts every credit reserved on the account and not yet settled; on IBM the usage is read, and the job is refused if the usage plus the estimates of jobs not yet counted plus this one would pass a cap (540 s of the 600 s window by default); and any transpiled circuit without exactly three CZ on every pair is refused. Credentials come only from each provider's own saved account, never from this repository.
+
+## How long the tests take
+
+The reproduction subset, `pytest tests/test_reproduction.py tests/test_field_inventory.py`, about 6 minutes on one laptop with 10 cores, and the full suite, `pytest`, about 14 minutes on the same; a first reader reported about 10 minutes for the tests on theirs.

@@ -102,6 +102,8 @@ pip install -e ".[aer]"
 
 To run the tests, and with them the reproductions, install `pip install -e ".[dev,aer]"` instead, which adds `pytest`.
 
+How long the tests take: the reproduction subset, `pytest tests/test_reproduction.py tests/test_field_inventory.py`, about 6 minutes on one laptop with 10 cores, and the full suite, `pytest`, about 14 minutes on the same; a first reader reported about 10 minutes for the tests on theirs.
+
 **As a plain package**, installed with `pip install ".[aer]"` from a clone or with `pip install "git+https://github.com/dogma-guru/manacitra"`, Manacitra comes without the dataset. [`docs/install.md`](docs/install.md) says how to point it at a clone's `data/`, and covers the extras, the provider backends and the checks made before anything is sent.
 
 Point an install at a clone's data with `manacitra --data /path/to/manacitra/data verdict ibm_fez/k31-map.json` or `MANACITRA_DATA`; `--data` goes before the subcommand. A provider backend sends nothing unless `--submit` is given; the simulator runs at once, on your machine, and sends nothing.

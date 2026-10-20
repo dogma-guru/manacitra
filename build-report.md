@@ -4347,3 +4347,28 @@ runner's recount found their numbers did not hold as written: items 6 and 9.
 - Item 8 is a check for release step 4: before the version-DOI pull request, all four named assets on the 0.10.0 release
   with the digests their folders' READMEs give. Not taken: an equivalence margin for the duty, and count-vector digests
   for round 5c.
+
+**Ruling R4 (20 October 2026, approved by the author in chat: "Looks good"; item 7's wording confirmed by the author,
+three of its clauses amended after the runner's check).** A first reader from outside the field installed Manacitra,
+reproduced the results and ran the examples, and sent notes, which the author relayed: the instructions for reproducing
+the results were clear; the quick start's pick and the text's kept share looked like two different functions; several
+words were unfamiliar; the documentation was a lot to take in at once; it was not clear which numbers to check after a
+run; and the tests took about 10 minutes. The reader added that they are not in the field and may not be the audience.
+- Items 1 and 4. The quick start picks with `pick_by_kept_share`, `manacitra pick`'s default since Amendment A15, rather
+  than `pick_pairs`, Kickoff 33's highest-first rule, and prints the four statistics the map rule tests, each with its
+  threshold, and the over-rotation the simulator planted on each of the 27 pairs beside the kept share it measured, with
+  their correlation, r = −0.89. Its output is in the README as it printed, and a test runs the README's block and
+  compares.
+- Items 2 and 3. A glossary, "Words used here", takes each of its twelve entries from the page it links to, and no two
+  pages define one differently; each page in `docs/` opens with what it holds, whom it is for and what to read first;
+  the README gives a reading order.
+- Item 5. The reproduction subset took about 6 minutes and the full suite about 14 minutes, once each in a clean clone
+  on one laptop with 10 cores; the README and `docs/install.md` give both, the fast command first, with the reader's
+  figure beside them.
+- Item 7. "Who it is for", with how Manacitra and Sandhi relate, in the wording the author confirmed. The author amended
+  three of its clauses after the runner found them false or too broad as written: test 8's rule was posted after its
+  run; the timings are numbers no test can check against the published files, so the claim covers every number the runs
+  measured; and Sandhi is a two-state model since version 4, version 3 having been set down for not describing the
+  record. The README's and `docs/index.md`'s own statements of what the tests check are scoped the same way.
+- Not taken: a change to make the command line print more, which would be new package behaviour and can be proposed for
+  0.11.0, and shortening the long pages, whose length is the record.

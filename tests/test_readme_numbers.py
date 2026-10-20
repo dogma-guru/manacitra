@@ -2428,6 +2428,29 @@ def test_the_readme_for_a_first_reader():
     assert "—" not in who + words and "–" not in who + words
 
 
+def test_how_long_the_tests_take():
+    """Ruling R4, item 5: the README's install section and docs/install.md say how long the reproduction subset and
+    the full suite take, the fast command first, each timed once in a clean clone on one laptop (build report section
+    49, ruling R4), with the first reader's figure beside them; and the changelog's 0.10.0 entry names the change."""
+    line = (
+        "the reproduction subset, `pytest tests/test_reproduction.py tests/test_field_inventory.py`, about 6 "
+        "minutes on one laptop with 10 cores, and the full suite, `pytest`, about 14 minutes on the same; a first "
+        "reader reported about 10 minutes for the tests on theirs."
+    )
+    readme = " ".join((ROOT / "README.md").read_text().split())
+    install = " ".join((ROOT / "docs" / "install.md").read_text().split())
+    assert "How long the tests take: " + line in readme
+    assert "## How long the tests take The " + line.removeprefix("the ") in install
+    assert readme.index("How long the tests take") < readme.index("## Reproducing the numbers")
+    report = " ".join((ROOT / "build-report.md").read_text().split())
+    assert "The reproduction subset took about 6 minutes and the full suite about 14 minutes" in report
+    log = " ".join((ROOT / "CHANGELOG.md").read_text().split("## 0.9.0", 1)[0].split())
+    assert (
+        "- Documentation: a glossary, page headers, a reading order, timings, and the quick start's pick matched to "
+        "`manacitra pick`'s default, from a first reader's notes." in log
+    )
+
+
 def test_the_quick_start_prints_what_the_readme_shows():
     """Ruling R4, items 1 and 4: the README's quick start picks with `pick_by_kept_share`, `manacitra pick`'s default
     since Amendment A15, and prints the numbers its verdict rests on, each with the map rule's threshold (docs/index.md,
