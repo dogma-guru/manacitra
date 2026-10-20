@@ -81,6 +81,15 @@ def test_the_seed_lists_and_the_field_name_of_finding_29_pass_and_nothing_else()
     assert "ibm-api-key-44" in hits(f'"{name[:-1]}m": []')
 
 
+def test_the_desk_models_matrix_products_pass_and_an_address_does_not():
+    """Amendment A28: the three matrix products of Sandhi's hmm_model.py are not email addresses; an address with the
+    same shape of name is still one."""
+    code = "np.ascontiguousarray((n.T" + "@np.log(q).T+(R[:,None]-n).T" + "@np.log1p(-q).T),dtype=np.float64)"
+    assert not hits(code) and not hits("gq+=weights" + "@n.T-weights.sum(axis=1)")
+    assert "email-address" in hits("n.T" + "@np.logs") or "email-address" in hits("someone" + "@np.log")
+    assert "email-address" in hits("n.T" + "@example.org")
+
+
 def test_the_bot_address_is_allowed_and_nothing_else():
     """Amendment A3, 4.1: GitHub's public workflow address passes; any other address, a bot's too, is flagged."""
     assert not hits('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"')

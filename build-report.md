@@ -4201,3 +4201,204 @@ hand-back is `release-0.9.0-report.md`.
   the concept DOI.
 - **Step 4.** The README's version-DOI parenthetical names v0.9.0's DOI, `CITATION.cff` lists it among its `identifiers`
   beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
+
+## 49. Amendment A28: finding 30, the duty across spans, jobs and days, and release 0.10.0 (19 October 2026)
+
+**Why.** By the author's approval of A28 on 19 October 2026 ("A28 is approved", in chat) and three answers given in
+chat that day: 0.10.0 adds the per-shot read to the package; the 19 October note that test 17's rule says is
+"published with the run" enters the repository as a dated excerpt, not as the whole file; and round 5c of the desk
+power check is published beside round 5b. Two rulings were given in chat while the amendment was drafted: round 5c's
+files are published under "round5c" names, with "the second machine" for the machine's name; and finding 30's title
+reads "the desk model's scored bets", without the word "first", since finding 29 records bets of the model scored
+earlier. The author named the issues that carry Sandhi's prediction digests: 66 (version 4) and 68 (version 4.1).
+
+**Order.** A new branch, `findings/t17-the-duty-held`, from `f88ee7b` (0.9.0's version-DOI pull request merged),
+worked in a git worktree of its own. No hardware, no provider job, and no contact with anyone. One commit per step:
+the package, the data, the finding and the pages beside it, Sandhi, round 5c, the changelog.
+
+**Sources.** The three rules (`t11-rule.md`, run unchanged on day 3; `t16-rule.md`; `t17-rule.md`), each checked
+against its `.sha256` sidecar and against the public issue that carries it (issues 58, 67 and 69); the hand-backs of
+day 3 and tests 16 and 17, every file checked against its folder's `SHA256SUMS` before anything was taken from it; the
+model's two folders, checked against their `SHA256SUMS` and `FORECAST-SHA256SUMS`, and their prediction digests
+against issues 66 and 68; round 5c's folder against its `SHA256SUMS`. Nothing whose name contains "SEALED",
+"mantri-read", "mantri-check" or "scorecard-and" was read. The one exception the kickoff names, the note of 19 October,
+was checked by its SHA-256 (`31808acd…352d`, as ruling 4 of test 17 names it) and by an exact byte search for its one
+line, which occurs once, without the file being opened.
+
+**The data.**
+- `ibm_fez/t11-day3-monitor.json`, `t16-day3-per-shot-read.json` and `t17-long-monitor.json`: one record per test, in
+  A27's layout. Left out of the records: each estimate's rate per shot; on day 3, the machine times of day 2's jobs set
+  beside each estimate; the snapshots' names; and one line of test 17's go record, the author's message that names an
+  allowance figure. The per-shot arrays are named by their SHA-256 and not published.
+- The rules of tests 16 and 17 byte for byte; day 3's, 16's and 17's hash checks, rulings, tables and desk-check reruns
+  beside them, the logs renamed `.log.txt`; `t17-middle-note-excerpt.md`, the note's one line with three sentences.
+- `desk/sandhi/v4/` and `v4.1/` and two more kickoffs (see below), and `desk/t7-power-check-round5c/` (see below).
+
+**The code.** `manacitra.wait` gains `sweep_series`, `sharing_ratio`, `two_state_reading`, `time_average_sd`,
+`boundary_ratio` and `sweep_autocorrelation`, ported from test 15's `read_t15.py`, which tests 16 and 17 ran unchanged.
+On the archived arrays of tests 16 and 17 they reproduce the fits files' 8,964 and 14,676 compared quantities, the
+largest difference 1.4·10⁻¹⁷. The words, their thresholds and the branch rule stay with the caller.
+
+**The recompute.** `tests/_reuse_runs.py` and `tests/_reproduce.py` gain three cases:
+- "Test 11 on a third day": day 3's three jobs by the functions day 2's recompute uses, with day 2's seeds: 8,627
+  fields. Job 1's analysis draws five random streams; under A25's rule for test 7, applied as A27 applied it to day 2,
+  200 other seeds of those streams moved 41 of its fields by 8·10⁻⁴ or more: 11 fields are excluded with their
+  movement, the periodogram's list of peaks over its floor is excluded whole (its last peaks sit within 0.03 to 0.06 of
+  the floor, so its length can change on another stream), and 30 fields that move less are compared at 10⁻³. Every
+  other field is exact, and the case passes under A25's other random stream.
+- "Test 16, the per-shot read of day 3": 289 fields, recomputed through the package from the sweep means the read
+  published (each recovered exactly as a count over the span's rows): every span's ratio, duty, lag, correlation time
+  and sd, the four boundaries with their sensitivities, the jobs, the day means, the middle span against the ends, and
+  job 1's borrowed rows, each within 5·10⁻¹⁵ of the record.
+- "Test 17, the per-shot read and the middle test": 613 fields the same way, with the middle test's span positions,
+  contrasts, Z and word; Z is −0.9707.
+`tests/test_wait.py` plants a two-state process and recovers its duty and correlation time within their sampling error,
+and, given test 17's arrays in `MANACITRA_SHOTS`, reproduces its long job's read; the test is skipped where the arrays
+are absent, as they are on CI.
+
+**Sandhi, versions 4 and 4.1.** Each version's report, predictions, fits, hierarchy, checks, scorer with its
+dependencies and tests, C source, runtime record, run log, README and sums, and the scorecards of tests 16 and 17. The
+compiled library is not committed. Local paths that the scorer or the runner wrote are written "[local path]", and the
+desk runner's service "the desk runner", in the files the folder's README lists, each with both SHA-256 values. Files
+over 5 MB (the two versions' fits and version 4's checks) are for the release's assets.
+
+**Round 5c.** Its report, environment record, comparison script and output, and tables, under "round5c" names, with
+"the second machine" for the machine's name and the private folder's name replaced, each with both SHA-256 values in the
+folder's README; its results for the release's assets; the battery guard and the other run control left out and
+listed. The README's four sentences were recounted from the two result files.
+
+**The text.** Finding 30 in `docs/findings.md`, with its table row and four edits to what has not been shown; the
+README's opening, its eleventh thread row, the count of thirty and one line under its limits; `docs/method.md`, two
+subsections; `docs/reproduce.md`, the commits and lines; `docs/kickoffs.md`, three rows; `docs/index.md`, one row;
+`data/README.md`, the records and folders; `CHANGELOG.md`, `## 0.10.0 (unreleased)` with the lead fixed in the kickoff.
+Two figures, made from the data by `docs/make_diagrams.py`: the long job's sweep series by span with each threshold, and
+the duties by span of day 3 and the long job with their errors and the day means.
+
+**Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
+vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
+added line checked for dashes, the kickoff's words to avoid and the two offset words.
+
+**CI on the first push.** Both test jobs failed three tests on `795a2ea`, and 1,047 passed: the check of
+`data/SHA256SUMS`, and Sandhi's test of versions 4 and 4.1. A git ignore rule outside the repository (`*.log`) had kept
+the two versions' `run.log` files out of `37f46ee`, while they stayed in the working tree, where every check passed.
+`ef853d2` adds both as published, with the SHA-256 that `data/SHA256SUMS` and the folder's README already gave; the full
+suite passed in a clean clone of the branch.
+
+**Ruling R1 (19 October 2026, given by the author in chat: "Yes, these four are my rulings, the amendment of the
+changelog's fixed lead included.").** It answers four of the packet's questions:
+- Q1, the correlation time. The packet said the per-span correlation times of 17 and 19 October did not overlap; they
+  do, once test 17's spans are counted: 0.121 to 0.191 s on 17 October, 0.143 to 0.349 s on 19 October (day 3 alone,
+  0.193 to 0.334 s). "Moved" rested on test 16's read, which set day 2 beside day 3 only, and the kickoff's fixed lead
+  carried it. The finding now gives both ranges and the job medians, 0.137 to 0.248 s, and says that the ranges overlap
+  and that no rule on the record tests a change; the job-median table stays and "near 0.2 s" goes. The switching-time
+  clause is deleted from the changelog's lead, an amendment of the kickoff's fixed text by this ruling, from the
+  README's opening and from its eleventh row.
+- Q2, the README's limits line stays and names the model's records as those "of tests 10 to 15 and of test 11's third
+  day", since test 16 is a read of day 3, not a separate record. The opening of Sandhi's folder README, which said
+  "tests 10 to 16", is corrected the same way.
+- Q5, the plan words in test 17's record stay as its hand-back made them: the published rule carries "pay-as-you-go",
+  "open plan" is in five earlier records, and none is an identifier.
+- Q14, day 3's record names its report under `meta.not_copied` by SHA-256, as tests 16 and 17's do, with
+  `numbers-t11-day3.json`, so that the list names every hand-back file the record does not carry (`48cbc3a`). Day 2's
+  record, released in 0.9.0 and signed, stays as released.
+
+The tests check each new sentence against the records, and that the old wording is gone.
+
+**Ruling R2 (20 October 2026, approved by the author in chat: "Give me a prompt to update the PR as recommended"),**
+after a review of pull request 70 at `8d11bd5`. The rulings of R1 stand.
+- The desk runner's session variable. Three lines of version 4.1's run log carried the name of the variable that holds
+  the desk runner's session identifier, a name that identifies its service. Each is written "[the desk runner's session
+  variable]", and nothing else in the log changed. The folder's README lists the replacement, and its table gives the
+  log's SHA-256 as published, `9e3680c2…a0c9` in place of `c70740d2…517d`, beside the delivered one; `data/SHA256SUMS`
+  is rewritten. The two checks in `tests/test_sandhi.py` that refuse the service's names in Sandhi's files refuse this
+  one too, in the same scope.
+- Round 5c's untraced gap. The report, published as handed back, calls the held-out gaps a fact not traced; the folder's
+  README traces them in its third sentence. The README now says so, in the ruling's sentence, directly after that
+  paragraph, and a test checks it there. The report is not edited.
+
+**Ruling R3 (20 October 2026, approved by the author in chat: "Approved"),** after an independent review of pull request
+70 at `8d11bd5`. The rulings of R1 and R2 stand. The author amended two of its items the same day, in chat, after the
+runner's recount found their numbers did not hold as written: items 6 and 9.
+- Item 1, the command sessions' handles. Version 4.1's run log carried, on 14 lines, the handles of the command sessions
+  its polling calls read: six five-digit values, 30 occurrences in three forms. Each is written "[a command session]",
+  and nothing else in the log changed. The folder's README lists the replacement, and its table gives the log's SHA-256
+  as published, `d0f1f54c…aee7` in place of `9e3680c2…a0c9`. `tests/test_sandhi.py` refuses a handle in any of those
+  forms, with a negative control.
+- Item 2, "the duty held". A NO CHANGE fails to detect a change at a boundary; it is not a test of constancy. The
+  README's second sentence and the changelog's lead, the kickoff's fixed text amended by this ruling, say that every
+  boundary read NO CHANGE, which does not show the duties equal; finding 30's limits bullet says the duty measurements
+  and boundary tests are the record. No other "held" or "hold" in the new text is said of the duty.
+- Item 3. Finding 30's opening scopes finding 29's boundaries to the monitor boundaries that could be read, all
+  seventeen NO CHANGE (nine on ibm_kingston, eight on ibm_fez), the eleven others NOT READ, with test 7's shuffled job
+  read beside them at a borrowed correlation time. Amended by R5, item 1: R3 had ruled "every weight boundary of the
+  monitor jobs on the record, 17 of 17", which lost the word "read".
+- Item 4. The scorecard tests recount version 4.1's scorecard on test 17's long job from its published files by the
+  scorer's own definitions (the intervals, each bet's miss, each family's cutoff, and the likelihood probability, 62 of
+  100), assert the stored summaries against the recount, and fail on an in-memory copy with one duty observation moved
+  outside its interval. No published file changed.
+- Item 5. Round 5c's README says that the report's sentence on the simulated data being the same rests on S's χ² over
+  the fitted waits, while the held-out counts differ at the two points the README explains.
+- Item 6, as amended. On the weight's branch the per-shot duty agrees with the monitor's weight by less than 0.012 on
+  finding 29's twelve spans of 143 and by less than 0.015 on seventeen of finding 30's eighteen (largest 0.0112 and
+  0.0141); A1's last span, which the per-shot read places on the other branch, is given both ways, 0.066 from the duty
+  on that branch and 0.014 from the raw duty. The ruling's sentence had read 0.014 over all eighteen on the weight's
+  branch, which holds only on the raw duty. Amended by R5, item 3: R3 had ruled "within 0.011" and "within 0.014",
+  rounded maxima stated as bounds, false by a few ten-thousandths.
+- Item 9, as amended. The method and `time_average_sd`'s docstring name the long-duration form and the exact variance,
+  and bound the exact sd's shortfall at less than 2.6 percent on finding 29's spans (2.53, at test 14's antiphase wait)
+  and less than 1.6 percent on finding 30's (1.51). The ruling had said at most 1.5 percent on both. No code changed.
+- Item 10. Test 17's beside paragraph adds A2's first span, the run's lowest duty, at both thresholds, 0.142 and 0.446.
+- Item 8 is a check for release step 4: before the version-DOI pull request, all four named assets on the 0.10.0 release
+  with the digests their folders' READMEs give. Not taken: an equivalence margin for the duty, and count-vector digests
+  for round 5c.
+
+**Ruling R4 (20 October 2026, approved by the author in chat: "Looks good"; item 7's wording confirmed by the author,
+three of its clauses amended after the runner's check).** A first reader from outside the field installed Manacitra,
+reproduced the results and ran the examples, and sent notes, which the author relayed: the instructions for reproducing
+the results were clear; the quick start's pick and the text's kept share looked like two different functions; several
+words were unfamiliar; the documentation was a lot to take in at once; it was not clear which numbers to check after a
+run; and the tests took about 10 minutes. The reader added that they are not in the field and may not be the audience.
+- Items 1 and 4. The quick start picks with `pick_by_kept_share`, `manacitra pick`'s default since Amendment A15, rather
+  than `pick_pairs`, Kickoff 33's highest-first rule, and prints the four statistics the map rule tests, each with its
+  threshold, and the over-rotation the simulator planted on each of the 27 pairs beside the kept share it measured, with
+  their correlation, r = −0.89. Its output is in the README as it printed, and a test runs the README's block and
+  compares.
+- Items 2 and 3. A glossary, "Words used here", takes each of its twelve entries from the page it links to, and no two
+  pages define one differently; each page in `docs/` opens with what it holds, whom it is for and what to read first;
+  the README gives a reading order.
+- Item 5. The reproduction subset took about 6 minutes and the full suite about 14 minutes, once each in a clean clone
+  on one laptop with 10 cores; the README and `docs/install.md` give both, the fast command first, with the reader's
+  figure beside them.
+- Item 7. "Who it is for", with how Manacitra and Sandhi relate, in the wording the author confirmed. The author amended
+  three of its clauses after the runner found them false or too broad as written: test 8's rule was posted after its
+  run; the timings are numbers no test can check against the published files, so the claim covers every number the runs
+  measured; and Sandhi is a two-state model since version 4, version 3 having been set down for not describing the
+  record. The README's and `docs/index.md`'s own statements of what the tests check are scoped the same way.
+- Not taken: a change to make the command line print more, which would be new package behaviour and can be proposed for
+  0.11.0, and shortening the long pages, whose length is the record.
+
+**Ruling R5 (20 October 2026, approved by the author in chat: "approved"),** after a second independent review from a
+separate service (not an empty context) of `051e43d`. The rulings of R1 to R4 stand. The author gave the wording for two
+parts after the runner's check: the method page's header and three entries of the glossary.
+- Item 1. Finding 30's opening counts finding 29's monitor boundaries as test 15's record holds them: of 28, the
+  seventeen that could be read returned NO CHANGE, nine on ibm_kingston and eight on ibm_fez, and the eleven others, on
+  ibm_kingston, were NOT READ, each with a span not read SHARED. R3 had written "17 of 17", losing the word "read"; its
+  entry above carries a note. A test counts the rows.
+- Item 2. The headers of `docs/index.md` and `docs/method.md` no longer say the long version holds every rule and
+  threshold: it holds the three map rules with their thresholds, and each later test's rule is in its rule file, named
+  in its row of the kickoffs, in the author's wording, since the findings name rule files only as paths and tests 12 to
+  14's not at all. A line under `docs/index.md`'s section 3 says where the later per-shot words are defined, each
+  checked in its rule file.
+- Item 3. The two estimators' agreement is stated as bounds that hold: less than 0.012 on finding 29's twelve spans and
+  less than 0.015 on seventeen of finding 30's eighteen, the largest 0.011194 and 0.014059. R3 had written "within
+  0.011" and "within 0.014", rounded maxima stated as bounds; its entry above carries a note. The A1 exception stands as
+  it was.
+- Item 4. The glossary gains P(11), quadrature, monitor, antiphase and shot index, each from its page, the shot index
+  keeping the returned-order condition; and a shot, P(1) and H, which no page defines, in the author's wording, without
+  a link.
+- Item 5. Until the release, the four 0.10.0 assets are written as to be attached to the 0.10.0 release, in the nine
+  places a search of the tree found: Sandhi's README, round 5c's README, `data/README.md` and the changelog twice each,
+  and a test's docstring. At release step 4, after the check that the four are on the release with the digests their
+  READMEs give, the version-DOI pull request returns them to the present tense.
+- The reviewer stated that its session was not empty-context, as the first review's had not been; the record calls it an
+  independent review from a separate service, not from an empty context.

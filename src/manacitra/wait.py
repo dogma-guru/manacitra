@@ -45,6 +45,14 @@ the provider's execution record: each position's span, each repeat's span or its
 `monitor_phase` gives each repeat's phase and length and the switches between consecutive repeats, within a span or at
 a boundary, and `monitor_weight` the weight at the antiphase wait; the floors and thresholds are the caller's.
 
+**The per-shot read of a span** (Amendment A28), ported from test 15's read. `sweep_series` takes one qubit's shots per
+position, in the order the provider returns them, and builds each span's bit matrix, one row per whole repeat and one
+column per returned shot index, with its column means, the sweep series. `sharing_ratio` compares the variance of those
+means with the share independent shots would give; `two_state_reading` reads the series as two states (the threshold,
+the duty, the correlation lag and time, the switches, dwells, quarter-span duties and the mid-sweep fraction);
+`time_average_sd` gives the error of a span's duty as a time average, and `boundary_ratio` the difference of two duties
+over their combined error. The words, their thresholds and the branch that maps a duty to a weight are the caller's.
+
 **The boundary (D-02).** Nothing here is a reuse compiler, a port of a published reuse-compilation method, a
 restore-and-route step, or an algorithm that decides where to measure and reset. The wait test's measures and resets are
 written by hand and fixed in its definition, the same for every chain, and the user names the chain. The peak phase is
@@ -1750,6 +1758,164 @@ def monitor_weight(phase: dict, R0: float, *, exchange: bool = False, abs_min: f
         "repeats": out_rows,
         "pairs": pairs,
     }
+
+
+# --------------------------------------------------------------------------- the per-shot read of a span (A28)
+#: The two percentiles of the sweep means whose midpoint is the threshold between the two states (test 15's)
+SWEEP_PERCENTILES = (10, 90)
+#: The lags searched for the 1/e crossing (test 15's: 1 to 200)
+SWEEP_MAX_LAG = 200
+#: A lag under this many sweeps is read at it, as a ceiling, in the error of a time average (test 15's three)
+SWEEP_LAG_CEILING = 3
+
+
+def sweep_series(
+    bits: Sequence, labels: Sequence[dict], spans: Sequence[dict], circuit: str, *, where: dict | None = None
+) -> list[dict]:
+    """Each span's sweep series on one qubit, as tests 13 and 15 build it (finding 30). bits: per position, the shots
+    that qubit returned, in the order the provider returns them, as 0 and 1; labels: per position, its "circuit" and,
+    for a repeated circuit, its "repeat"; spans: the provider's record (`span_assignment`). The rows are the positions
+    of one circuit (a quadrature, "X" or "Y"), each label also equal to `where` on the fields it names, in the repeats
+    that ran whole in the span; a repeat that straddles two spans is left out.
+
+    Returns one entry per span, in start order: its whole repeats, in repeat order; the bit matrix M (one row per
+    repeat, one column per returned shot index); its column means m, the sweep series; its duration and the sweep time,
+    the duration over the shots per position. A span with fewer than two such rows has no M and says so."""
+    asg = span_assignment(spans, labels)
+    sel = dict(where or {})
+    rows_of: dict = {}
+    for p, lab in enumerate(labels):
+        if lab.get("circuit") != circuit or lab.get("repeat") is None:
+            continue
+        if all(lab.get(k) == v for k, v in sel.items()):
+            rows_of[lab["repeat"]] = p
+    out = []
+    for s in asg["spans"]:
+        ks = sorted(k for k, r in asg["repeats"].items() if r["span"] == s["span"] and k in rows_of)
+        row = {"span": s["span"], "duration_s": s["duration_s"], "repeats": ks}
+        if len(ks) < 2:
+            out.append({**row, "M": None, "note": "fewer than two whole repeats; not read"})
+            continue
+        M = np.stack([np.asarray(bits[rows_of[k]]).reshape(-1) for k in ks]).astype(float)
+        n_shots = M.shape[1]
+        out.append(
+            {
+                **row,
+                "M": M,
+                "m": M.mean(axis=0),
+                "n_rows": len(ks),
+                "n_shots": n_shots,
+                "sweep_s": s["duration_s"] / n_shots,
+            }
+        )
+    return out
+
+
+def sharing_ratio(M) -> dict:
+    """Test 13's reading (a) of a span's bit matrix M (`sweep_series`): the variance of its column means over the
+    share independent shots would give it, the mean of p_i (1 - p_i) over the rows' means p_i divided by the number of
+    rows. Near 1 the rows' shots at equal index are independent; far above it they share a state. The words and their
+    thresholds are the caller's."""
+    M = np.asarray(M, float)
+    n, n_shots = M.shape
+    p = M.mean(axis=1)
+    v_obs = float(M.mean(axis=0).var(ddof=1))
+    v_ind = float((p * (1 - p)).mean() / n)
+    return {
+        "ratio": v_obs / v_ind if v_ind > 0 else math.inf,
+        "v_obs": v_obs,
+        "v_ind": v_ind,
+        "n_rows": n,
+        "n_shots": n_shots,
+    }
+
+
+def sweep_autocorrelation(m, lags: Sequence[int]) -> list:
+    """The autocorrelation of a sweep series at each lag, about its mean: the sum of the products at that lag over the
+    sum of squares; None at a lag the series is too short for."""
+    x = np.asarray(m, float) - float(np.mean(m))
+    v0 = float(np.sum(x * x))
+    return [float(np.sum(x[lag:] * x[:-lag]) / v0) if (v0 > 0 and 0 < lag < len(x)) else None for lag in lags]
+
+
+def two_state_reading(
+    m, sweep_s: float, *, v_ind: float, percentiles: Sequence[float] = SWEEP_PERCENTILES, max_lag: int = SWEEP_MAX_LAG
+) -> dict:
+    """A span's sweep series m read as two states, as test 15 reads it (finding 30); v_ind is the share independent
+    shots would give its variance (`sharing_ratio`), and sweep_s the caller's time per sweep.
+
+      1. The threshold midway between the two percentiles of m, the high state above it, and the duty b, the fraction
+         of the series in the high state, never folded.
+      2. The correlation lag: the first lag, from 1 to max_lag, at which the autocorrelation of m falls below 1/e of its
+         excess over the shot-noise share, 1 - v_ind / var(m) (test 13's reading (b)); max_lag + 1 if none does. The
+         correlation time is the lag times sweep_s.
+      3. The switches between the states, the mean dwells in each in seconds, the duties of the four quarters of the
+         span, and the mid-sweep fraction, the share of the series in the middle fifth between the two percentiles.
+
+    The times are on the sweep clock: the returned order, in seconds only if it is chronological and even."""
+    m = np.asarray(m, float)
+    n = len(m)
+    v_obs = float(m.var(ddof=1))
+    excess = 1 - v_ind / v_obs if v_obs > 0 else 0.0
+    acf = sweep_autocorrelation(m, range(1, max_lag + 1))
+    below = [i for i, a in enumerate(acf) if a is not None and a < excess / math.e]
+    lag = below[0] + 1 if below else max_lag + 1
+    lo, hi = (float(v) for v in np.percentile(m, list(percentiles)))
+    threshold = (lo + hi) / 2
+    high = m > threshold
+    idx = np.flatnonzero(np.diff(high.astype(np.int8)))
+    bounds = np.concatenate([[0], idx + 1, [n]])
+    lens, states = np.diff(bounds), high[bounds[:-1]]
+    lo5, hi5 = lo + 0.4 * (hi - lo), lo + 0.6 * (hi - lo)
+    return {
+        "percentiles": [lo, hi],
+        "threshold": threshold,
+        "duty": float(high.mean()),
+        "excess_over_shot_noise": excess,
+        "acf": acf,
+        "lag": lag,
+        "lag_found": bool(below),
+        "tau_c_s": lag * sweep_s,
+        "switches": len(idx),
+        "n_runs": int(len(lens)),
+        "dwell_high_s": float(lens[states].mean() * sweep_s) if states.any() else None,
+        "dwell_low_s": float(lens[~states].mean() * sweep_s) if (~states).any() else None,
+        "quarter_span_duties": [float(c.mean()) for c in np.array_split(high, 4)],
+        "mid_sweep_fraction": float(np.mean((m >= lo5) & (m <= hi5))),
+        "middle_fifth_bounds": [lo5, hi5],
+    }
+
+
+def time_average_sd(
+    duty: float, lag: int, sweep_s: float, duration_s: float, *, ceiling: int | None = SWEEP_LAG_CEILING
+) -> dict:
+    """The error of a span's duty as a time average (test 15; finding 30): the sampling standard deviation of the duty
+    of a stationary two-state process with exponential correlation, sqrt(2 b (1 - b) tau_c / T), for a span of duration
+    T, with tau_c the lag in sweeps times sweep_s. A lag under `ceiling` sweeps is read at the ceiling, which then
+    bounds tau_c from above rather than measuring it; None reads the lag as given. Its estimand is the underlying duty,
+    not the counted fraction.
+
+    This is the long-duration form. For a span of duration T, the variance of the time average of a stationary
+    two-state process with exponential correlation is 2 b (1 - b) [tau_c / T - (tau_c / T)^2 (1 - exp(-T / tau_c))]; on
+    the spans of finding 29 the exact sd is smaller by less than 2.6 percent, the most at test 14's antiphase wait, and
+    on those of finding 30 by less than 1.6 percent. The three-sweep ceiling is an operational floor on the lag, not a
+    confidence bound on tau_c."""
+    used = lag if ceiling is None or lag >= ceiling else ceiling
+    tau = used * sweep_s
+    return {
+        "sd": math.sqrt(2 * duty * (1 - duty) * tau / duration_s),
+        "tau_c_s": tau,
+        "sweeps_used": used,
+        "at_ceiling": ceiling is not None and lag < ceiling,
+    }
+
+
+def boundary_ratio(duty_a: float, sd_a: float, duty_b: float, sd_b: float) -> dict:
+    """Two spans' duties compared by their errors (`time_average_sd`): the later less the earlier, their combined
+    standard deviation, and the size of the difference over it. The words for the ratio are the caller's."""
+    d = duty_b - duty_a
+    sd = math.hypot(sd_a, sd_b)
+    return {"difference": d, "combined_sd": sd, "ratio": abs(d) / sd}
 
 
 # --------------------------------------------------------------------------- a run: the job and its analysis

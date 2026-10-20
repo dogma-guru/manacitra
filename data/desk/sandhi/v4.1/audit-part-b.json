@@ -1,0 +1,87 @@
+{
+ "independent_forward_algorithm": [
+  {
+   "id": "day3-job2-q143-s0",
+   "independent_loglik": -5604.348516934275,
+   "fit_loglik": -5604.348516934224,
+   "absolute_difference": 5.093170329928398e-11,
+   "within_1e8": true
+  },
+  {
+   "id": "day3-job2-q143-s1",
+   "independent_loglik": -5606.9239809409555,
+   "fit_loglik": -5606.923980940657,
+   "absolute_difference": 2.9831426218152046e-10,
+   "within_1e8": true
+  },
+  {
+   "id": "day3-job2-q143-s2",
+   "independent_loglik": -5496.796389101946,
+   "fit_loglik": -5496.796389102339,
+   "absolute_difference": 3.92901711165905e-10,
+   "within_1e8": true
+  },
+  {
+   "id": "day3-job3-q143-s0",
+   "independent_loglik": -5383.624609725535,
+   "fit_loglik": -5383.6246097252515,
+   "absolute_difference": 2.837623469531536e-10,
+   "within_1e8": true
+  },
+  {
+   "id": "day3-job3-q143-s1",
+   "independent_loglik": -5764.242912389236,
+   "fit_loglik": -5764.24291238984,
+   "absolute_difference": 6.039044819772243e-10,
+   "within_1e8": true
+  },
+  {
+   "id": "day3-job3-q143-s2",
+   "independent_loglik": -5377.626544087572,
+   "fit_loglik": -5377.626544087427,
+   "absolute_difference": 1.4551915228366852e-10,
+   "within_1e8": true
+  }
+ ],
+ "old_job_fits_exactly_carried": {
+  "t10-job1-q11": true,
+  "t10-job1-q95": true,
+  "t10-job1-q120": true,
+  "t10-job2-q11": true,
+  "t10-job2-q95": true,
+  "t10-job2-q120": true,
+  "t11-job2-q143": true,
+  "t11-job3-q143": true,
+  "t12-job1-q143": true,
+  "t14-job1-q143": true
+ },
+ "old_bootstrap_files_byte_equal": {
+  "t10-job1-q11": true,
+  "t10-job1-q95": true,
+  "t10-job1-q120": true,
+  "t10-job2-q11": true,
+  "t10-job2-q95": true,
+  "t10-job2-q120": true,
+  "t11-job2-q143": true,
+  "t11-job3-q143": true,
+  "t12-job1-q143": true,
+  "t14-job1-q143": true
+ },
+ "primary_basis": {
+  "spans": 15,
+  "jobs": 5,
+  "dates": 3
+ },
+ "C2_outside_range_dimensionless_still_calibrated": true,
+ "C2_seconds_remain_uncalibrated": true,
+ "C1_unequal_span_counts_supported": true,
+ "new_fit_success": {
+  "day3-job2-q143": true,
+  "day3-job3-q143": true
+ },
+ "new_bootstrap_failures": {
+  "day3-job2-q143": 0,
+  "day3-job3-q143": 0
+ },
+ "new_boundary_failures": []
+}

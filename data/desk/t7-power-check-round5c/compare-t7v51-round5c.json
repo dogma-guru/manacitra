@@ -1,0 +1,6850 @@
+{
+ "round5c_points": 135,
+ "main_points": 135,
+ "points_compared": 135,
+ "points_where_fractions_differ": [
+  42,
+  86,
+  87,
+  132
+ ],
+ "n_points_where_fractions_differ": 4,
+ "draws_whose_verdict_differs": 8,
+ "keep_round5c": {
+  "counted_written": 117,
+  "passing": 106,
+  "needed": 88,
+  "by_generating_verdict": {
+   "NO RESOLVED SPLIT": {
+    "passing": 25,
+    "of": 27
+   },
+   "TWO FIXED FREQUENCIES": {
+    "passing": 81,
+    "of": 90
+   }
+  },
+  "verdict": "KEPT"
+ },
+ "keep_main": {
+  "counted_written": 117,
+  "passing": 106,
+  "needed": 88,
+  "by_generating_verdict": {
+   "NO RESOLVED SPLIT": {
+    "passing": 25,
+    "of": 27
+   },
+   "TWO FIXED FREQUENCIES": {
+    "passing": 81,
+    "of": 90
+   }
+  },
+  "verdict": "KEPT"
+ },
+ "points": [
+  {
+   "index": 0,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 364,
+    "P": 129,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 370,
+    "P": 127,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.2639270319535498e-10,
+    "mae_P": 7.399656326914639e-08,
+    "chi2_S": 2.6858515411731787e-12,
+    "chi2_P": 1.1518636711116415e-07,
+    "S_Delta_kHz": 2.4116020824749285e-07,
+    "S_tau_us": 2.5377671519777323e-07,
+    "P_Delta0_kHz": 0.0017264813076280916,
+    "P_delta_kHz": 0.0017282333907147063,
+    "P_b": 2.9242963693887347e-06,
+    "P_tau_prime_us": 3.898717265293783e-05,
+    "delta_ci90_kHz": 1.5962845978543427,
+    "b_ci90": 0.12714377125140286
+   },
+   "draws_whose_convergence_counts_differ": 104
+  },
+  {
+   "index": 1,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 416,
+    "P": 179,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 414,
+    "P": 168,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.7756068507873701e-09,
+    "mae_P": 4.156130494620269e-08,
+    "chi2_S": 1.340083599643549e-11,
+    "chi2_P": 4.329075409259531e-08,
+    "S_Delta_kHz": 1.692874690206736e-06,
+    "S_tau_us": 6.109184003122436e-07,
+    "P_Delta0_kHz": 0.0008584226272461137,
+    "P_delta_kHz": 0.0008584542907215109,
+    "P_b": 8.546872934805938e-06,
+    "P_tau_prime_us": 1.2067211958566304e-05,
+    "delta_ci90_kHz": 0.009928554879095941,
+    "b_ci90": 0.07530228732936328
+   },
+   "draws_whose_convergence_counts_differ": 103
+  },
+  {
+   "index": 2,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.995,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.005
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.995,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.005
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 353,
+    "P": 155,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 388,
+    "P": 156,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.7348880179679504e-09,
+    "mae_P": 6.190240559988264e-08,
+    "chi2_S": 1.3912426766182762e-11,
+    "chi2_P": 4.945687237523089e-08,
+    "S_Delta_kHz": 7.239522687996214e-07,
+    "S_tau_us": 9.419723259185275e-07,
+    "P_Delta0_kHz": 0.0009434462252997378,
+    "P_delta_kHz": 0.0008453845225773193,
+    "P_b": 0.00017681142433284558,
+    "P_tau_prime_us": 5.882606112450617e-06,
+    "delta_ci90_kHz": 0.11947097775584536,
+    "b_ci90": 0.1026040515706218
+   },
+   "draws_whose_convergence_counts_differ": 107
+  },
+  {
+   "index": 3,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.915,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.085
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.915,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.085
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 370,
+    "P": 174,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 357,
+    "P": 182,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.525402501331157e-09,
+    "mae_P": 9.105310833437685e-08,
+    "chi2_S": 8.844267540553119e-10,
+    "chi2_P": 2.088114570142352e-09,
+    "S_Delta_kHz": 1.8129889632234608e-05,
+    "S_tau_us": 5.673509170023294e-06,
+    "P_Delta0_kHz": 0.0002402063928528264,
+    "P_delta_kHz": 5.97182222650261e-05,
+    "P_b": 1.584315476338416e-05,
+    "P_tau_prime_us": 3.6786468609051326e-06,
+    "delta_ci90_kHz": 2.6459523301269883e-05,
+    "b_ci90": 0.020253223269672743
+   },
+   "draws_whose_convergence_counts_differ": 103
+  },
+  {
+   "index": 4,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.925,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.075
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.925,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.075
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 411,
+    "P": 149,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 409,
+    "P": 150,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.401251149464437e-09,
+    "mae_P": 2.0782988247036727e-09,
+    "chi2_S": 1.1826273293991107e-10,
+    "chi2_P": 9.172680393021437e-10,
+    "S_Delta_kHz": 1.0997008978108624e-05,
+    "S_tau_us": 3.81709064889435e-06,
+    "P_Delta0_kHz": 2.3810577658878174e-05,
+    "P_delta_kHz": 8.659966459489965e-06,
+    "P_b": 1.6614474979692595e-06,
+    "P_tau_prime_us": 2.6586858634658483e-06,
+    "delta_ci90_kHz": 3.596549738471566e-06,
+    "b_ci90": 0.02595037940458178
+   },
+   "draws_whose_convergence_counts_differ": 117
+  },
+  {
+   "index": 5,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 401,
+    "P": 171,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 413,
+    "P": 177,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.351185382821867e-08,
+    "mae_P": 3.6315386340440847e-09,
+    "chi2_S": 1.5511488982156152e-08,
+    "chi2_P": 1.9963408703915775e-10,
+    "S_Delta_kHz": 0.0001110523711957967,
+    "S_tau_us": 2.2207990628686503e-05,
+    "P_Delta0_kHz": 1.019954584791094e-05,
+    "P_delta_kHz": 1.2432134504081205e-06,
+    "P_b": 3.546884876914902e-07,
+    "P_tau_prime_us": 1.8482126762364715e-06,
+    "delta_ci90_kHz": 4.703644851389299e-08,
+    "b_ci90": 6.498072246952091e-09
+   },
+   "draws_whose_convergence_counts_differ": 95
+  },
+  {
+   "index": 6,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 404,
+    "P": 184,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 404,
+    "P": 181,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.606151498935673e-08,
+    "mae_P": 2.228977965743062e-09,
+    "chi2_S": 6.992451062615146e-09,
+    "chi2_P": 2.1032064978498966e-12,
+    "S_Delta_kHz": 7.858700403318153e-05,
+    "S_tau_us": 2.929813407881454e-05,
+    "P_Delta0_kHz": 4.985678387470216e-06,
+    "P_delta_kHz": 1.9761537171092414e-06,
+    "P_b": 1.5013346710279762e-07,
+    "P_tau_prime_us": 1.8379478063934584e-06,
+    "delta_ci90_kHz": 7.457932582610738e-08,
+    "b_ci90": 1.1503963781578364e-08
+   },
+   "draws_whose_convergence_counts_differ": 101
+  },
+  {
+   "index": 7,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.96,
+    "NOT SETTLED": 0.04
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.96,
+    "NOT SETTLED": 0.04
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 437,
+    "P": 192,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 423,
+    "P": 186,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.0302532064787067e-07,
+    "mae_P": 1.7109783624624786e-09,
+    "chi2_S": 3.725625106199004e-07,
+    "chi2_P": 1.708144736767281e-11,
+    "S_Delta_kHz": 0.0012878025399132298,
+    "S_tau_us": 7.960640708049027e-05,
+    "P_Delta0_kHz": 2.1256424389548556e-06,
+    "P_delta_kHz": 7.096559766495147e-07,
+    "P_b": 3.641609958027203e-08,
+    "P_tau_prime_us": 1.4146577491658263e-06,
+    "delta_ci90_kHz": 1.798157533983158e-08,
+    "b_ci90": 2.3534579285389157e-09
+   },
+   "draws_whose_convergence_counts_differ": 103
+  },
+  {
+   "index": 8,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.48,
+    "NOT SETTLED": 0.52
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.48,
+    "NOT SETTLED": 0.52
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 397,
+    "P": 172,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 416,
+    "P": 179,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.2308410474746196e-08,
+    "mae_P": 1.115761412082139e-09,
+    "chi2_S": 4.6606828618678264e-08,
+    "chi2_P": 2.3383961433864897e-11,
+    "S_Delta_kHz": 0.00021228420938257386,
+    "S_tau_us": 4.007240236880705e-05,
+    "P_Delta0_kHz": 4.6457520497256155e-06,
+    "P_delta_kHz": 2.2372439385520693e-06,
+    "P_b": 6.741732377912868e-08,
+    "P_tau_prime_us": 6.352609904780593e-07,
+    "delta_ci90_kHz": 2.5057614649881543e-08,
+    "b_ci90": 3.464885378612337e-09
+   },
+   "draws_whose_convergence_counts_differ": 117
+  },
+  {
+   "index": 9,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 446,
+    "P": 189,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 439,
+    "P": 199,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.0688418821829258e-06,
+    "mae_P": 4.3653238489260726e-10,
+    "chi2_S": 6.031212592461088e-06,
+    "chi2_P": 1.2150280781497713e-12,
+    "S_Delta_kHz": 0.008715752096925655,
+    "S_tau_us": 0.0003158672707295196,
+    "P_Delta0_kHz": 1.1953863605640436e-06,
+    "P_delta_kHz": 1.4549397668872643e-06,
+    "P_b": 1.2590609776985673e-08,
+    "P_tau_prime_us": 5.402338789650685e-07,
+    "delta_ci90_kHz": 3.8630023624364185e-09,
+    "b_ci90": 1.1923405596192538e-09
+   },
+   "draws_whose_convergence_counts_differ": 95
+  },
+  {
+   "index": 10,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 441,
+    "P": 177,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 439,
+    "P": 173,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.77990139100193e-08,
+    "mae_P": 3.2410300311591644e-10,
+    "chi2_S": 3.928516889573075e-08,
+    "chi2_P": 2.1316282072803006e-12,
+    "S_Delta_kHz": 0.00018307923892280087,
+    "S_tau_us": 0.00011588795882744307,
+    "P_Delta0_kHz": 4.346510849018159e-07,
+    "P_delta_kHz": 1.653783119337504e-07,
+    "P_b": 3.9923278016829045e-09,
+    "P_tau_prime_us": 3.905113228341861e-07,
+    "delta_ci90_kHz": 3.6642493483896033e-09,
+    "b_ci90": 1.9053145172698294e-09
+   },
+   "draws_whose_convergence_counts_differ": 100
+  },
+  {
+   "index": 11,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 498,
+    "P": 212,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 486,
+    "P": 209,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.0011914243659463e-07,
+    "mae_P": 2.3799253540124354e-09,
+    "chi2_S": 4.12193730880972e-06,
+    "chi2_P": 1.708855279503041e-11,
+    "S_Delta_kHz": 0.0022132271983537066,
+    "S_tau_us": 0.00047697594077256156,
+    "P_Delta0_kHz": 2.9697750107970933e-06,
+    "P_delta_kHz": 1.8561713837073057e-06,
+    "P_b": 3.596759201585087e-08,
+    "P_tau_prime_us": 9.499715094563044e-07,
+    "delta_ci90_kHz": 5.778140632628492e-09,
+    "b_ci90": 8.783390681443848e-10
+   },
+   "draws_whose_convergence_counts_differ": 106
+  },
+  {
+   "index": 12,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 483,
+    "P": 166,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 471,
+    "P": 162,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.39863543089114e-07,
+    "mae_P": 1.9393965036348937e-09,
+    "chi2_S": 1.3196720374253346e-06,
+    "chi2_P": 3.6500580335996347e-11,
+    "S_Delta_kHz": 0.0011812328300901953,
+    "S_tau_us": 0.00033791387905157677,
+    "P_Delta0_kHz": 3.3666322138969917e-06,
+    "P_delta_kHz": 2.984773914249672e-06,
+    "P_b": 1.7863882817437116e-08,
+    "P_tau_prime_us": 8.196824978767836e-07,
+    "delta_ci90_kHz": 5.409884096252426e-09,
+    "b_ci90": 1.11778752920344e-09
+   },
+   "draws_whose_convergence_counts_differ": 85
+  },
+  {
+   "index": 13,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 609,
+    "P": 177,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 608,
+    "P": 179,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.066579508161695e-07,
+    "mae_P": 3.602951367809304e-09,
+    "chi2_S": 6.710407433274668e-06,
+    "chi2_P": 2.602718041089247e-11,
+    "S_Delta_kHz": 0.005143683863181536,
+    "S_tau_us": 0.0002566816683300388,
+    "P_Delta0_kHz": 1.836494369911179e-06,
+    "P_delta_kHz": 1.361379872832913e-06,
+    "P_b": 6.986053624480348e-09,
+    "P_tau_prime_us": 2.2588883776819557e-06,
+    "delta_ci90_kHz": 1.1735743044027913e-08,
+    "b_ci90": 8.298013942642513e-10
+   },
+   "draws_whose_convergence_counts_differ": 80
+  },
+  {
+   "index": 14,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 588,
+    "P": 235,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 600,
+    "P": 228,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.37333911204896e-07,
+    "mae_P": 2.6699662099283206e-09,
+    "chi2_S": 1.5609275578754023e-06,
+    "chi2_P": 9.36495325731812e-12,
+    "S_Delta_kHz": 0.001513071850073544,
+    "S_tau_us": 0.00010973262805347161,
+    "P_Delta0_kHz": 1.5250923794951632e-06,
+    "P_delta_kHz": 7.781802580097974e-07,
+    "P_b": 2.668840426434116e-08,
+    "P_tau_prime_us": 2.88849932950086e-06,
+    "delta_ci90_kHz": 1.1382645936919289e-08,
+    "b_ci90": 1.1417237155697535e-09
+   },
+   "draws_whose_convergence_counts_differ": 95
+  },
+  {
+   "index": 15,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 217,
+    "P": 93,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 224,
+    "P": 91,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.253825004573274e-10,
+    "mae_P": 0.0004555578067311529,
+    "chi2_S": 1.6910917111090384e-12,
+    "chi2_P": 0.9197015680276692,
+    "S_Delta_kHz": 8.782750171576481e-08,
+    "S_tau_us": 6.282006594915401e-07,
+    "P_Delta0_kHz": 148.9771624933797,
+    "P_delta_kHz": 8.643928357701895,
+    "P_b": 0.9907026097713116,
+    "P_tau_prime_us": 0.057448268145421366,
+    "delta_ci90_kHz": 7.153290980916978,
+    "b_ci90": 0.9875469180725387
+   },
+   "draws_whose_convergence_counts_differ": 59
+  },
+  {
+   "index": 16,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 217,
+    "P": 59,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 215,
+    "P": 68,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.743096753898057e-09,
+    "mae_P": 8.025986620099901e-10,
+    "chi2_S": 7.763105713820551e-10,
+    "chi2_P": 1.6342482922482304e-11,
+    "S_Delta_kHz": 1.2740511152742329e-06,
+    "S_tau_us": 6.4331312827903275e-06,
+    "P_Delta0_kHz": 9.131656071303951e-07,
+    "P_delta_kHz": 1.399826876635757e-07,
+    "P_b": 1.0476675715853645e-07,
+    "P_tau_prime_us": 1.815132407045894e-06,
+    "delta_ci90_kHz": 6.980160494052257e-08,
+    "b_ci90": 4.824380345214152e-08
+   },
+   "draws_whose_convergence_counts_differ": 61
+  },
+  {
+   "index": 17,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 211,
+    "P": 60,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 216,
+    "P": 62,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.63259075371425e-09,
+    "mae_P": 3.4292672000668656e-10,
+    "chi2_S": 6.444622613344109e-10,
+    "chi2_P": 8.483880264975596e-12,
+    "S_Delta_kHz": 2.038244744539952e-06,
+    "S_tau_us": 1.0555433959780203e-05,
+    "P_Delta0_kHz": 4.698228153188211e-07,
+    "P_delta_kHz": 1.6156701398983842e-07,
+    "P_b": 4.481950932611056e-08,
+    "P_tau_prime_us": 1.4531672576367782e-06,
+    "delta_ci90_kHz": 1.614660818383129e-07,
+    "b_ci90": 6.146935704887113e-08
+   },
+   "draws_whose_convergence_counts_differ": 59
+  },
+  {
+   "index": 18,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 173,
+    "P": 69,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 181,
+    "P": 77,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.2781974349031509e-07,
+    "mae_P": 1.5896630713163606e-10,
+    "chi2_S": 5.454276106320322e-07,
+    "chi2_P": 7.105427357601002e-13,
+    "S_Delta_kHz": 0.00017567359905967805,
+    "S_tau_us": 0.00023770291396374432,
+    "P_Delta0_kHz": 1.9267269379952268e-07,
+    "P_delta_kHz": 1.4165479456096364e-08,
+    "P_b": 4.486667926073551e-09,
+    "P_tau_prime_us": 1.6701105494121293e-06,
+    "delta_ci90_kHz": 8.36006552873414e-09,
+    "b_ci90": 7.152050063297111e-10
+   },
+   "draws_whose_convergence_counts_differ": 75
+  },
+  {
+   "index": 19,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.05,
+    "NOT SETTLED": 0.95
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.05,
+    "NOT SETTLED": 0.95
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 187,
+    "P": 76,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 179,
+    "P": 75,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2560559499094626e-07,
+    "mae_P": 3.128621910153395e-10,
+    "chi2_S": 4.0970462578115985e-08,
+    "chi2_P": 1.0800249583553523e-12,
+    "S_Delta_kHz": 5.0744690113901925e-05,
+    "S_tau_us": 0.00011081084872088809,
+    "P_Delta0_kHz": 2.34326542170038e-07,
+    "P_delta_kHz": 4.755370675013637e-08,
+    "P_b": 7.676179969440255e-09,
+    "P_tau_prime_us": 1.8246502051511015e-06,
+    "delta_ci90_kHz": 9.493620112266399e-09,
+    "b_ci90": 2.0121033728059956e-09
+   },
+   "draws_whose_convergence_counts_differ": 68
+  },
+  {
+   "index": 20,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 228,
+    "P": 95,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 220,
+    "P": 90,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.0958809354283394e-06,
+    "mae_P": 2.295701597571087e-10,
+    "chi2_S": 9.116965884459205e-06,
+    "chi2_P": 7.815970093361102e-13,
+    "S_Delta_kHz": 0.0010186216797265502,
+    "S_tau_us": 0.001708584461177054,
+    "P_Delta0_kHz": 4.086408011971798e-08,
+    "P_delta_kHz": 2.5160026950743486e-08,
+    "P_b": 1.5710820422398797e-09,
+    "P_tau_prime_us": 1.6286402484411155e-06,
+    "delta_ci90_kHz": 4.6062620384645925e-09,
+    "b_ci90": 3.1589664217790414e-10
+   },
+   "draws_whose_convergence_counts_differ": 83
+  },
+  {
+   "index": 21,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 211,
+    "P": 110,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 208,
+    "P": 109,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.4622477610286575e-07,
+    "mae_P": 8.159181420774875e-10,
+    "chi2_S": 1.5100481505214702e-06,
+    "chi2_P": 7.318590178329032e-13,
+    "S_Delta_kHz": 0.00019213748563373656,
+    "S_tau_us": 0.0005293406708339887,
+    "P_Delta0_kHz": 2.183850398296272e-07,
+    "P_delta_kHz": 6.64451249576814e-08,
+    "P_b": 6.9543654723780435e-09,
+    "P_tau_prime_us": 1.7614474927540869e-06,
+    "delta_ci90_kHz": 8.062927214780302e-09,
+    "b_ci90": 7.080470654230453e-10
+   },
+   "draws_whose_convergence_counts_differ": 70
+  },
+  {
+   "index": 22,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 270,
+    "P": 117,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 274,
+    "P": 117,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.821193988953977e-07,
+    "mae_P": 4.662098927396552e-10,
+    "chi2_S": 2.7073769160779193e-05,
+    "chi2_P": 1.2931877790833823e-12,
+    "S_Delta_kHz": 0.0013584026606885402,
+    "S_tau_us": 0.0013738293137279811,
+    "P_Delta0_kHz": 6.615326952896794e-08,
+    "P_delta_kHz": 5.789345891571429e-08,
+    "P_b": 3.993894104326046e-09,
+    "P_tau_prime_us": 7.912569230938971e-07,
+    "delta_ci90_kHz": 8.447305077652345e-10,
+    "b_ci90": 4.0891268149323423e-10
+   },
+   "draws_whose_convergence_counts_differ": 91
+  },
+  {
+   "index": 23,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 265,
+    "P": 105,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 262,
+    "P": 102,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.4097785198952106e-07,
+    "mae_P": 3.004528431604925e-10,
+    "chi2_S": 1.1640722732408904e-06,
+    "chi2_P": 7.389644451905042e-13,
+    "S_Delta_kHz": 0.00016738017139061867,
+    "S_tau_us": 0.0004673363276523901,
+    "P_Delta0_kHz": 5.129920310764646e-08,
+    "P_delta_kHz": 5.947105563564037e-08,
+    "P_b": 2.0446612181146406e-09,
+    "P_tau_prime_us": 8.335301586726018e-07,
+    "delta_ci90_kHz": 9.452545413068947e-10,
+    "b_ci90": 3.899361389336775e-10
+   },
+   "draws_whose_convergence_counts_differ": 69
+  },
+  {
+   "index": 24,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 310,
+    "P": 101,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 321,
+    "P": 108,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.628990381838616e-07,
+    "mae_P": 3.824989977530002e-10,
+    "chi2_S": 5.697242158930749e-06,
+    "chi2_P": 3.808509063674137e-12,
+    "S_Delta_kHz": 0.0007018756809493709,
+    "S_tau_us": 0.000650694620517811,
+    "P_Delta0_kHz": 1.528129303096648e-07,
+    "P_delta_kHz": 4.233742778581018e-08,
+    "P_b": 3.064789200202256e-09,
+    "P_tau_prime_us": 1.3779474983266482e-06,
+    "delta_ci90_kHz": 1.6143388847922324e-09,
+    "b_ci90": 3.4605202037241156e-10
+   },
+   "draws_whose_convergence_counts_differ": 89
+  },
+  {
+   "index": 25,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 287,
+    "P": 101,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 290,
+    "P": 105,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.383477897138224e-08,
+    "mae_P": 4.660220924435077e-10,
+    "chi2_S": 5.700258043361828e-07,
+    "chi2_P": 2.5437429940211587e-12,
+    "S_Delta_kHz": 9.952378339406209e-05,
+    "S_tau_us": 0.00022620730132771882,
+    "P_Delta0_kHz": 1.6979097239300245e-07,
+    "P_delta_kHz": 9.683341595234651e-08,
+    "P_b": 1.2585307795909273e-09,
+    "P_tau_prime_us": 1.3896099630983372e-06,
+    "delta_ci90_kHz": 2.4058763870016264e-09,
+    "b_ci90": 4.2974329650391496e-10
+   },
+   "draws_whose_convergence_counts_differ": 66
+  },
+  {
+   "index": 26,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 344,
+    "P": 140,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 347,
+    "P": 140,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.841743763723706e-08,
+    "mae_P": 3.0857297099451397e-10,
+    "chi2_S": 9.58993041422218e-07,
+    "chi2_P": 6.16751094639767e-12,
+    "S_Delta_kHz": 0.00019211630313975547,
+    "S_tau_us": 0.00034268230922762655,
+    "P_Delta0_kHz": 7.570132964929144e-08,
+    "P_delta_kHz": 3.964022354807639e-08,
+    "P_b": 1.5750000192937819e-09,
+    "P_tau_prime_us": 9.469151933672038e-07,
+    "delta_ci90_kHz": 3.762682609931289e-09,
+    "b_ci90": 3.1195784844229024e-10
+   },
+   "draws_whose_convergence_counts_differ": 98
+  },
+  {
+   "index": 27,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 378,
+    "P": 167,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 376,
+    "P": 163,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.238195744019844e-08,
+    "mae_P": 4.6014207548406016e-10,
+    "chi2_S": 4.1742168832570314e-08,
+    "chi2_P": 6.693312570860144e-12,
+    "S_Delta_kHz": 6.907436967473757e-05,
+    "S_tau_us": 7.758160837312289e-05,
+    "P_Delta0_kHz": 1.4429542005700569e-07,
+    "P_delta_kHz": 1.057684606564635e-07,
+    "P_b": 2.7055429008271403e-09,
+    "P_tau_prime_us": 1.6799946820356126e-06,
+    "delta_ci90_kHz": 2.7957653969679086e-09,
+    "b_ci90": 3.9749503688568666e-10
+   },
+   "draws_whose_convergence_counts_differ": 75
+  },
+  {
+   "index": 28,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 580,
+    "P": 222,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 567,
+    "P": 228,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.8637676425792282e-07,
+    "mae_P": 3.4374604031273126e-10,
+    "chi2_S": 3.1216823117574677e-06,
+    "chi2_P": 1.1795009413617663e-12,
+    "S_Delta_kHz": 0.00039255626414558265,
+    "S_tau_us": 0.0009295789019496681,
+    "P_Delta0_kHz": 6.765728954860606e-08,
+    "P_delta_kHz": 5.078021558801993e-08,
+    "P_b": 1.047480990834515e-09,
+    "P_tau_prime_us": 1.1092078651131487e-06,
+    "delta_ci90_kHz": 5.195346375330701e-10,
+    "b_ci90": 2.550986089033813e-10
+   },
+   "draws_whose_convergence_counts_differ": 97
+  },
+  {
+   "index": 29,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 581,
+    "P": 196,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 581,
+    "P": 194,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.6013817350234447e-08,
+    "mae_P": 4.60275097549645e-10,
+    "chi2_S": 4.477533366298303e-07,
+    "chi2_P": 1.4992451724538114e-12,
+    "S_Delta_kHz": 5.274772088803559e-05,
+    "S_tau_us": 0.0002020027527365187,
+    "P_Delta0_kHz": 1.372224005535827e-07,
+    "P_delta_kHz": 6.112851025363852e-08,
+    "P_b": 3.819828342521703e-09,
+    "P_tau_prime_us": 4.161400532609605e-06,
+    "delta_ci90_kHz": 6.191172019498481e-10,
+    "b_ci90": 2.777365004646981e-10
+   },
+   "draws_whose_convergence_counts_differ": 97
+  },
+  {
+   "index": 30,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 136,
+    "P": 82,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 153,
+    "P": 76,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.829655889284189e-10,
+    "mae_P": 0.0004712899520951828,
+    "chi2_S": 4.952482868247898e-12,
+    "chi2_P": 1.409174806520035,
+    "S_Delta_kHz": 5.9095299320688355e-08,
+    "S_tau_us": 3.3917243911218975e-06,
+    "P_Delta0_kHz": 69.037647984432,
+    "P_delta_kHz": 69.05014899681755,
+    "P_b": 0.47388911690552693,
+    "P_tau_prime_us": 14.893938754796153,
+    "delta_ci90_kHz": 72.50233762122963,
+    "b_ci90": 0.9707913484948708
+   },
+   "draws_whose_convergence_counts_differ": 58
+  },
+  {
+   "index": 31,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.865,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.135
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.865,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.135
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 138,
+    "P": 54,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 137,
+    "P": 47,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.128122405387455e-08,
+    "mae_P": 4.259373643719644e-10,
+    "chi2_S": 8.362803782802075e-10,
+    "chi2_P": 3.574029960873304e-12,
+    "S_Delta_kHz": 1.9927608860825785e-06,
+    "S_tau_us": 3.829067355809457e-05,
+    "P_Delta0_kHz": 5.457367535655067e-07,
+    "P_delta_kHz": 1.1111725894963342e-07,
+    "P_b": 6.218098319576981e-08,
+    "P_tau_prime_us": 2.0673335313858843e-05,
+    "delta_ci90_kHz": 4.910297226601301e-07,
+    "b_ci90": 1.5914619511114836e-08
+   },
+   "draws_whose_convergence_counts_differ": 40
+  },
+  {
+   "index": 32,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.975,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.025
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.975,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.025
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 118,
+    "P": 53,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 111,
+    "P": 53,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.6189385563039616e-08,
+    "mae_P": 3.4184759536981524e-10,
+    "chi2_S": 1.3457679415296298e-09,
+    "chi2_P": 1.1212364370294381e-11,
+    "S_Delta_kHz": 1.9469138550221032e-06,
+    "S_tau_us": 3.433967891908196e-05,
+    "P_Delta0_kHz": 6.10856289995354e-07,
+    "P_delta_kHz": 1.4401010783871016e-07,
+    "P_b": 5.817786430384331e-08,
+    "P_tau_prime_us": 1.4200452937984664e-05,
+    "delta_ci90_kHz": 6.962110132846533e-08,
+    "b_ci90": 1.825699957880289e-08
+   },
+   "draws_whose_convergence_counts_differ": 42
+  },
+  {
+   "index": 33,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 118,
+    "P": 44,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 109,
+    "P": 44,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.00008141596631e-07,
+    "mae_P": 6.584738865278439e-10,
+    "chi2_S": 3.0994101507531013e-06,
+    "chi2_P": 7.602807272633072e-13,
+    "S_Delta_kHz": 0.00040239951881915204,
+    "S_tau_us": 0.0005922458285425591,
+    "P_Delta0_kHz": 1.282905017774283e-07,
+    "P_delta_kHz": 9.77478364916351e-09,
+    "P_b": 1.490774059753619e-09,
+    "P_tau_prime_us": 9.621860414199546e-06,
+    "delta_ci90_kHz": 5.3140061240242176e-09,
+    "b_ci90": 3.69241914821572e-10
+   },
+   "draws_whose_convergence_counts_differ": 41
+  },
+  {
+   "index": 34,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.01,
+    "NOT SETTLED": 0.99
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.01,
+    "NOT SETTLED": 0.99
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 77,
+    "P": 40,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 74,
+    "P": 41,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.032247372538154e-07,
+    "mae_P": 2.6364381251059443e-10,
+    "chi2_S": 9.703944670036435e-08,
+    "chi2_P": 1.5702994460298214e-12,
+    "S_Delta_kHz": 5.003847395101957e-05,
+    "S_tau_us": 0.0001958322319239869,
+    "P_Delta0_kHz": 7.521567368939941e-08,
+    "P_delta_kHz": 1.6011822090433725e-08,
+    "P_b": 3.5875439285959487e-09,
+    "P_tau_prime_us": 1.2205758309846715e-05,
+    "delta_ci90_kHz": 2.7679014635850763e-09,
+    "b_ci90": 2.3660289838467463e-09
+   },
+   "draws_whose_convergence_counts_differ": 40
+  },
+  {
+   "index": 35,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 149,
+    "P": 70,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 156,
+    "P": 70,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.3463123249984887e-06,
+    "mae_P": 3.973918034916313e-10,
+    "chi2_S": 4.3239704609732144e-05,
+    "chi2_P": 7.389644451905042e-13,
+    "S_Delta_kHz": 0.000825918855120733,
+    "S_tau_us": 0.003585843752283324,
+    "P_Delta0_kHz": 4.050149726708696e-08,
+    "P_delta_kHz": 2.0135583866931483e-08,
+    "P_b": 2.535118226454358e-09,
+    "P_tau_prime_us": 5.263071699346256e-06,
+    "delta_ci90_kHz": 8.4631954777592e-09,
+    "b_ci90": 4.074057202707593e-10
+   },
+   "draws_whose_convergence_counts_differ": 59
+  },
+  {
+   "index": 36,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 156,
+    "P": 65,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 148,
+    "P": 75,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.2286756296583405e-07,
+    "mae_P": 4.2786416510481873e-10,
+    "chi2_S": 2.960367055493407e-06,
+    "chi2_P": 1.0373923942097463e-12,
+    "S_Delta_kHz": 0.00017817507612960526,
+    "S_tau_us": 0.0015246114676088496,
+    "P_Delta0_kHz": 7.03778368915664e-08,
+    "P_delta_kHz": 3.645136459340392e-08,
+    "P_b": 3.444727836310335e-09,
+    "P_tau_prime_us": 4.4300639103767026e-06,
+    "delta_ci90_kHz": 8.278886021173548e-09,
+    "b_ci90": 3.860197161920098e-10
+   },
+   "draws_whose_convergence_counts_differ": 57
+  },
+  {
+   "index": 37,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 237,
+    "P": 117,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 248,
+    "P": 125,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.8354844351652364e-07,
+    "mae_P": 2.1081207786377565e-10,
+    "chi2_S": 4.808371159015223e-06,
+    "chi2_P": 8.526512829121202e-13,
+    "S_Delta_kHz": 0.00022937512282084072,
+    "S_tau_us": 0.0018099638196318324,
+    "P_Delta0_kHz": 1.9373800341782044e-08,
+    "P_delta_kHz": 1.918019698621265e-08,
+    "P_b": 1.08057218728419e-09,
+    "P_tau_prime_us": 3.3510124524127605e-06,
+    "delta_ci90_kHz": 2.8656828021667025e-09,
+    "b_ci90": 3.0288294095015544e-10
+   },
+   "draws_whose_convergence_counts_differ": 67
+  },
+  {
+   "index": 38,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 244,
+    "P": 94,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 233,
+    "P": 99,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.1854367679142719e-07,
+    "mae_P": 7.307822090518723e-10,
+    "chi2_S": 3.652057785075158e-07,
+    "chi2_P": 8.72546479513403e-12,
+    "S_Delta_kHz": 7.257990133524572e-05,
+    "S_tau_us": 0.0012077307451505703,
+    "P_Delta0_kHz": 8.496786563227943e-08,
+    "P_delta_kHz": 9.019022861878057e-08,
+    "P_b": 1.1900967988864863e-09,
+    "P_tau_prime_us": 6.434023589463322e-06,
+    "delta_ci90_kHz": 2.39354491782251e-09,
+    "b_ci90": 2.4958124456020414e-10
+   },
+   "draws_whose_convergence_counts_differ": 80
+  },
+  {
+   "index": 39,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 286,
+    "P": 94,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 276,
+    "P": 92,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.362018645922891e-07,
+    "mae_P": 3.7734594528909815e-10,
+    "chi2_S": 1.308850187342614e-06,
+    "chi2_P": 1.0800249583553523e-12,
+    "S_Delta_kHz": 0.00010580922342739996,
+    "S_tau_us": 0.000868000673477809,
+    "P_Delta0_kHz": 5.854352025380649e-08,
+    "P_delta_kHz": 2.6415014175995566e-08,
+    "P_b": 2.0648555643099087e-09,
+    "P_tau_prime_us": 3.2106772778206505e-06,
+    "delta_ci90_kHz": 2.5076332121898304e-09,
+    "b_ci90": 2.1969870367399835e-10
+   },
+   "draws_whose_convergence_counts_differ": 67
+  },
+  {
+   "index": 40,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 263,
+    "P": 91,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 280,
+    "P": 89,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.9750436295050697e-08,
+    "mae_P": 2.781827528747227e-10,
+    "chi2_S": 5.517722456716001e-08,
+    "chi2_P": 5.8122395785176195e-12,
+    "S_Delta_kHz": 1.9722392949006462e-05,
+    "S_tau_us": 0.0002959056198577059,
+    "P_Delta0_kHz": 4.209081083672572e-08,
+    "P_delta_kHz": 2.0416271340195635e-08,
+    "P_b": 1.821481132591174e-09,
+    "P_tau_prime_us": 4.181006744374827e-06,
+    "delta_ci90_kHz": 3.072132770398639e-09,
+    "b_ci90": 3.661493330753274e-10
+   },
+   "draws_whose_convergence_counts_differ": 72
+  },
+  {
+   "index": 41,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.97,
+    "NOT SETTLED": 0.03
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.97,
+    "NOT SETTLED": 0.03
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 388,
+    "P": 166,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 389,
+    "P": 179,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [
+    9,
+    48
+   ],
+   "draws_verdict_differs_detail": [
+    {
+     "draw": 9,
+     "round5c": "NOT SETTLED",
+     "main": "TWO FIXED FREQUENCIES",
+     "round5c_fit": {
+      "mae_S": 0.12199546076614463,
+      "mae_P": 0.1188476018863185,
+      "chi2_S": 17469.664865086124,
+      "chi2_P": 16284.751249856292,
+      "S_Delta_kHz": 70.64138429632989,
+      "S_tau_us": 57.92164910260979,
+      "P_Delta0_kHz": 30.517247314929843,
+      "P_delta_kHz": 39.84791559090507,
+      "P_b": 0.8225678906023304,
+      "P_tau_prime_us": 88.0270726487356,
+      "delta_ci90_kHz": [
+       39.75657693175772,
+       39.94229135797607
+      ],
+      "b_ci90": [
+       0.8102841204639937,
+       0.8362901963776211
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.12199546089052792,
+      "mae_P": 0.006922325255335111,
+      "chi2_S": 17469.664865086273,
+      "chi2_P": 47.489199056416055,
+      "S_Delta_kHz": 70.64138426316666,
+      "S_tau_us": 57.921648418769934,
+      "P_Delta0_kHz": 39.971526765252435,
+      "P_delta_kHz": 29.958117509800307,
+      "P_b": 0.5027653625468123,
+      "P_tau_prime_us": 148.19400192005662,
+      "delta_ci90_kHz": [
+       29.89693633185641,
+       30.01240573355023
+      ],
+      "b_ci90": [
+       0.4967029772141269,
+       0.5073502110261259
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 0,
+      "P": 1,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 0,
+      "P": 0,
+      "refits": 0
+     }
+    },
+    {
+     "draw": 48,
+     "round5c": "TWO FIXED FREQUENCIES",
+     "main": "NOT SETTLED",
+     "round5c_fit": {
+      "mae_S": 0.12367975539976753,
+      "mae_P": 0.007029741254986299,
+      "chi2_S": 18525.276897277123,
+      "chi2_P": 70.68237674405661,
+      "S_Delta_kHz": 70.75294284405354,
+      "S_tau_us": 57.424815612069814,
+      "P_Delta0_kHz": 39.97969684144128,
+      "P_delta_kHz": 30.030592164547567,
+      "P_b": 0.498358547354944,
+      "P_tau_prime_us": 151.88858788217001,
+      "delta_ci90_kHz": [
+       29.974504201223482,
+       30.091207104074694
+      ],
+      "b_ci90": [
+       0.4926181396049778,
+       0.5043401419244854
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.12367975536800088,
+      "mae_P": 0.12031723747097556,
+      "chi2_S": 18525.276897277145,
+      "chi2_P": 17730.085758186462,
+      "S_Delta_kHz": 70.75294284688299,
+      "S_tau_us": 57.42481553015163,
+      "P_Delta0_kHz": -9.592089284497593,
+      "P_delta_kHz": 80.29012811978606,
+      "P_b": 0.8654598703027938,
+      "P_tau_prime_us": 67.135090744361,
+      "delta_ci90_kHz": [
+       80.05880359867417,
+       80.6111771268018
+      ],
+      "b_ci90": [
+       0.8562877235501869,
+       0.8767977594009488
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 4,
+      "P": 1,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 3,
+      "P": 1,
+      "refits": 0
+     }
+    }
+   ],
+   "largest_abs_difference": {
+    "mae_S": 6.719749315320378e-08,
+    "mae_P": 0.11328749621598926,
+    "chi2_S": 3.488821676000953e-08,
+    "chi2_P": 17659.403381442404,
+    "S_Delta_kHz": 2.260022858990851e-05,
+    "S_tau_us": 0.0004586925387641827,
+    "P_Delta0_kHz": 49.57178612593887,
+    "P_delta_kHz": 50.25953595523849,
+    "P_b": 0.3671013229478498,
+    "P_tau_prime_us": 84.75349713780902,
+    "delta_ci90_kHz": 50.51997002272711,
+    "b_ci90": 0.37245761747646344
+   },
+   "draws_whose_convergence_counts_differ": 82
+  },
+  {
+   "index": 42,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.995,
+    "NOT SETTLED": 0.005
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0050000000000000044,
+    "NOT SETTLED": -0.005
+   },
+   "fractions_equal": false,
+   "starts_failed_round5c": {
+    "S": 342,
+    "P": 154,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 332,
+    "P": 159,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [
+    53
+   ],
+   "draws_verdict_differs_detail": [
+    {
+     "draw": 53,
+     "round5c": "TWO FIXED FREQUENCIES",
+     "main": "NOT SETTLED",
+     "round5c_fit": {
+      "mae_S": 0.09262665091285058,
+      "mae_P": 0.005412902883572225,
+      "chi2_S": 11039.719493725026,
+      "chi2_P": 61.127774677569036,
+      "S_Delta_kHz": 8.898456485266486,
+      "S_tau_us": 56.80130245445248,
+      "P_Delta0_kHz": 39.99225030740868,
+      "P_delta_kHz": 29.97044802433901,
+      "P_b": 0.3752992843670882,
+      "P_tau_prime_us": 152.1867613967644,
+      "delta_ci90_kHz": [
+       29.91849574140065,
+       30.03453497787882
+      ],
+      "b_ci90": [
+       0.36880637836736857,
+       0.38158097627455595
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.0926266509091053,
+      "mae_P": 0.09327327539299592,
+      "chi2_S": 11039.719493725006,
+      "chi2_P": 10747.89392348154,
+      "S_Delta_kHz": 8.898456486670174,
+      "S_tau_us": 56.80130277288499,
+      "P_Delta0_kHz": -40.212688500162926,
+      "P_delta_kHz": 49.28812308115895,
+      "P_b": 0.9251009332265173,
+      "P_tau_prime_us": 63.886245356247535,
+      "delta_ci90_kHz": [
+       48.612684651712065,
+       49.857935885831644
+      ],
+      "b_ci90": [
+       0.9163513231224633,
+       0.9332259946121153
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 0,
+      "P": 0,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 0,
+      "P": 0,
+      "refits": 0
+     }
+    }
+   ],
+   "largest_abs_difference": {
+    "mae_S": 1.633637192188786e-08,
+    "mae_P": 0.08786037250942369,
+    "chi2_S": 3.0020601116120815e-08,
+    "chi2_P": 10686.766148803972,
+    "S_Delta_kHz": 9.956215667017432e-06,
+    "S_tau_us": 0.00017079287282939504,
+    "P_Delta0_kHz": 80.20493880757161,
+    "P_delta_kHz": 19.31767505681994,
+    "P_b": 0.5498016488594291,
+    "P_tau_prime_us": 88.30051604051687,
+    "delta_ci90_kHz": 19.823400907952824,
+    "b_ci90": 0.5516450183375594
+   },
+   "draws_whose_convergence_counts_differ": 88
+  },
+  {
+   "index": 43,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 591,
+    "P": 269,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 586,
+    "P": 273,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.868019551495522e-08,
+    "mae_P": 1.22573714199381e-10,
+    "chi2_S": 2.60750312008895e-06,
+    "chi2_P": 1.2363443602225743e-12,
+    "S_Delta_kHz": 0.0001778192449535254,
+    "S_tau_us": 0.0009139464098169015,
+    "P_Delta0_kHz": 2.8264658169518952e-08,
+    "P_delta_kHz": 1.5005774400833616e-08,
+    "P_b": 1.3686366484577661e-09,
+    "P_tau_prime_us": 4.121004479884505e-06,
+    "delta_ci90_kHz": 5.769180688730557e-10,
+    "b_ci90": 3.603274345564955e-10
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 44,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 558,
+    "P": 255,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 563,
+    "P": 249,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.084130204670913e-08,
+    "mae_P": 3.4598698038512676e-10,
+    "chi2_S": 2.1863888832740486e-07,
+    "chi2_P": 1.8189894035458565e-12,
+    "S_Delta_kHz": 2.8021466061289857e-05,
+    "S_tau_us": 0.0032528165372553985,
+    "P_Delta0_kHz": 5.345474818341245e-08,
+    "P_delta_kHz": 1.3007550592192274e-08,
+    "P_b": 2.235893303836889e-09,
+    "P_tau_prime_us": 6.194349538191091e-06,
+    "delta_ci90_kHz": 4.721201207757986e-10,
+    "b_ci90": 3.0401475781260956e-10
+   },
+   "draws_whose_convergence_counts_differ": 91
+  },
+  {
+   "index": 45,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 379,
+    "P": 153,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 381,
+    "P": 147,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.678550780638392e-10,
+    "mae_P": 8.147926171438169e-08,
+    "chi2_S": 4.46931380793103e-12,
+    "chi2_P": 4.625621130571744e-08,
+    "S_Delta_kHz": 3.5205393089654535e-07,
+    "S_tau_us": 6.125561196057561e-07,
+    "P_Delta0_kHz": 0.003698097388602939,
+    "P_delta_kHz": 0.0036995532767818418,
+    "P_b": 1.5045451222217565e-05,
+    "P_tau_prime_us": 3.6591139522812455e-05,
+    "delta_ci90_kHz": 1.9476158326051376,
+    "b_ci90": 0.08425617030889061
+   },
+   "draws_whose_convergence_counts_differ": 112
+  },
+  {
+   "index": 46,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 361,
+    "P": 161,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 360,
+    "P": 157,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.5594519512523997e-09,
+    "mae_P": 5.954291398130307e-08,
+    "chi2_S": 1.0018652574217413e-11,
+    "chi2_P": 2.7160126592207234e-08,
+    "S_Delta_kHz": 1.8852826144666324e-06,
+    "S_tau_us": 1.0988961189895008e-06,
+    "P_Delta0_kHz": 0.0034036598967901455,
+    "P_delta_kHz": 0.003311758183428992,
+    "P_b": 4.382043523487589e-05,
+    "P_tau_prime_us": 3.414820843872235e-05,
+    "delta_ci90_kHz": 0.06521267777569184,
+    "b_ci90": 0.044595645399523376
+   },
+   "draws_whose_convergence_counts_differ": 104
+  },
+  {
+   "index": 47,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 357,
+    "P": 149,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 366,
+    "P": 145,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2187232811475268e-09,
+    "mae_P": 6.579499276827827e-08,
+    "chi2_S": 9.251266419596504e-12,
+    "chi2_P": 3.317025232263404e-08,
+    "S_Delta_kHz": 8.420778172535393e-07,
+    "S_tau_us": 8.479766773206165e-07,
+    "P_Delta0_kHz": 0.002010163862834702,
+    "P_delta_kHz": 0.00025330417111524284,
+    "P_b": 0.0003040628632063891,
+    "P_tau_prime_us": 5.365665721512869e-06,
+    "delta_ci90_kHz": 0.02586191929305315,
+    "b_ci90": 0.11940638493124572
+   },
+   "draws_whose_convergence_counts_differ": 109
+  },
+  {
+   "index": 48,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.95,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.05
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.95,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.05
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 402,
+    "P": 140,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 396,
+    "P": 141,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2651436067170896e-08,
+    "mae_P": 1.0036928638906817e-08,
+    "chi2_S": 3.4287950256839395e-10,
+    "chi2_P": 3.909569556981296e-09,
+    "S_Delta_kHz": 8.560473759189335e-06,
+    "S_tau_us": 6.384153758531852e-06,
+    "P_Delta0_kHz": 8.046607441514197e-05,
+    "P_delta_kHz": 1.4111130323790633e-05,
+    "P_b": 6.240285787550981e-06,
+    "P_tau_prime_us": 8.414914095311588e-06,
+    "delta_ci90_kHz": 9.531751148372791e-07,
+    "b_ci90": 4.093566976504093e-07
+   },
+   "draws_whose_convergence_counts_differ": 120
+  },
+  {
+   "index": 49,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.94,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.06
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.94,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.06
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 399,
+    "P": 148,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 405,
+    "P": 151,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.857101738170444e-09,
+    "mae_P": 2.082669758873834e-09,
+    "chi2_S": 3.353335387146217e-10,
+    "chi2_P": 1.4936887282601674e-09,
+    "S_Delta_kHz": 7.600528654450045e-06,
+    "S_tau_us": 3.5685324295542387e-06,
+    "P_Delta0_kHz": 1.6140635274553006e-05,
+    "P_delta_kHz": 5.228119777100915e-06,
+    "P_b": 1.0037193775569442e-06,
+    "P_tau_prime_us": 1.7921992903069395e-06,
+    "delta_ci90_kHz": 1.9570145823877283e-06,
+    "b_ci90": 7.65975419536602e-07
+   },
+   "draws_whose_convergence_counts_differ": 115
+  },
+  {
+   "index": 50,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 414,
+    "P": 168,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 426,
+    "P": 151,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.792295526199255e-08,
+    "mae_P": 7.540649346257644e-10,
+    "chi2_S": 2.8966610443603713e-08,
+    "chi2_P": 2.0605739337042905e-11,
+    "S_Delta_kHz": 0.00012194486605920929,
+    "S_tau_us": 3.303371412322065e-05,
+    "P_Delta0_kHz": 2.061429853483787e-06,
+    "P_delta_kHz": 7.591316748545296e-07,
+    "P_b": 7.244636546221983e-08,
+    "P_tau_prime_us": 2.0853512534557694e-06,
+    "delta_ci90_kHz": 5.495340715810926e-08,
+    "b_ci90": 6.656741713406689e-09
+   },
+   "draws_whose_convergence_counts_differ": 101
+  },
+  {
+   "index": 51,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 451,
+    "P": 194,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 455,
+    "P": 200,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.2107005208957826e-08,
+    "mae_P": 2.127264238024895e-09,
+    "chi2_S": 1.5006662579253316e-08,
+    "chi2_P": 1.9802826045633992e-11,
+    "S_Delta_kHz": 8.791518740736137e-05,
+    "S_tau_us": 1.614335399935385e-05,
+    "P_Delta0_kHz": 4.9749986672509294e-06,
+    "P_delta_kHz": 1.8378489308190638e-06,
+    "P_b": 1.7373268396125852e-07,
+    "P_tau_prime_us": 7.595883602107278e-07,
+    "delta_ci90_kHz": 6.698652477155065e-08,
+    "b_ci90": 1.1949167266767091e-08
+   },
+   "draws_whose_convergence_counts_differ": 113
+  },
+  {
+   "index": 52,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.95,
+    "NOT SETTLED": 0.05
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.95,
+    "NOT SETTLED": 0.05
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 440,
+    "P": 176,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 436,
+    "P": 178,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.046914737516506e-07,
+    "mae_P": 1.5049283139112468e-09,
+    "chi2_S": 2.733776227614726e-07,
+    "chi2_P": 1.8133050616597757e-11,
+    "S_Delta_kHz": 0.000882849304083777,
+    "S_tau_us": 0.00011383959184563253,
+    "P_Delta0_kHz": 2.0020925504127263e-06,
+    "P_delta_kHz": 5.619712215576556e-07,
+    "P_b": 2.7545756786651054e-08,
+    "P_tau_prime_us": 6.870517701429435e-07,
+    "delta_ci90_kHz": 2.065622695113234e-08,
+    "b_ci90": 3.0685411989139766e-09
+   },
+   "draws_whose_convergence_counts_differ": 85
+  },
+  {
+   "index": 53,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.54,
+    "NOT SETTLED": 0.46
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.54,
+    "NOT SETTLED": 0.46
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 439,
+    "P": 187,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 426,
+    "P": 175,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.757540625858648e-08,
+    "mae_P": 7.951822186824664e-10,
+    "chi2_S": 1.4427541827899404e-08,
+    "chi2_P": 9.43600753089413e-12,
+    "S_Delta_kHz": 0.00022946614483743133,
+    "S_tau_us": 5.4191675522119453e-05,
+    "P_Delta0_kHz": 1.4488781303612086e-06,
+    "P_delta_kHz": 7.678907980590566e-07,
+    "P_b": 1.515546499408771e-08,
+    "P_tau_prime_us": 3.9774301718864535e-07,
+    "delta_ci90_kHz": 1.4607584475356816e-08,
+    "b_ci90": 3.115943947307187e-09
+   },
+   "draws_whose_convergence_counts_differ": 110
+  },
+  {
+   "index": 54,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 457,
+    "P": 212,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 480,
+    "P": 210,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.634874924487384e-06,
+    "mae_P": 4.200300385281963e-10,
+    "chi2_S": 6.794484079364338e-06,
+    "chi2_P": 6.828315690654563e-12,
+    "S_Delta_kHz": 0.0066871873087706035,
+    "S_tau_us": 0.00024295415165287437,
+    "P_Delta0_kHz": 3.4486517819232176e-07,
+    "P_delta_kHz": 3.0540854822902475e-07,
+    "P_b": 2.6701382216387515e-09,
+    "P_tau_prime_us": 9.500201247902851e-07,
+    "delta_ci90_kHz": 6.454277112766249e-09,
+    "b_ci90": 1.22920090772638e-09
+   },
+   "draws_whose_convergence_counts_differ": 109
+  },
+  {
+   "index": 55,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 447,
+    "P": 181,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 438,
+    "P": 178,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.8588302784099406e-08,
+    "mae_P": 7.272681469203124e-09,
+    "chi2_S": 2.0131551536906045e-08,
+    "chi2_P": 6.9469763275265e-11,
+    "S_Delta_kHz": 0.0001022315940417684,
+    "S_tau_us": 2.1919422971805602e-05,
+    "P_Delta0_kHz": 6.455823275075545e-06,
+    "P_delta_kHz": 4.536885564121462e-06,
+    "P_b": 3.598572700935776e-08,
+    "P_tau_prime_us": 1.3190287919684351e-06,
+    "delta_ci90_kHz": 5.117229306961235e-09,
+    "b_ci90": 2.215817307416046e-09
+   },
+   "draws_whose_convergence_counts_differ": 94
+  },
+  {
+   "index": 56,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 545,
+    "P": 203,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 550,
+    "P": 192,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.658798000087283e-07,
+    "mae_P": 8.392805478374399e-10,
+    "chi2_S": 8.543347121303668e-06,
+    "chi2_P": 5.5138116294983774e-12,
+    "S_Delta_kHz": 0.004304387021349498,
+    "S_tau_us": 0.0005741419854921048,
+    "P_Delta0_kHz": 7.16326447047777e-07,
+    "P_delta_kHz": 9.169887889015627e-07,
+    "P_b": 3.488274447072115e-09,
+    "P_tau_prime_us": 1.1704104245779945e-06,
+    "delta_ci90_kHz": 3.026553230256468e-09,
+    "b_ci90": 7.469795337833318e-10
+   },
+   "draws_whose_convergence_counts_differ": 99
+  },
+  {
+   "index": 57,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 555,
+    "P": 194,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 547,
+    "P": 202,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.1393229076026596e-07,
+    "mae_P": 4.3417909371956664e-10,
+    "chi2_S": 1.2523782970674802e-06,
+    "chi2_P": 5.272227099339943e-12,
+    "S_Delta_kHz": 0.001410688724241993,
+    "S_tau_us": 0.00011121735814523248,
+    "P_Delta0_kHz": 1.2751370945807139e-06,
+    "P_delta_kHz": 1.0305274287247812e-06,
+    "P_b": 7.337096874504567e-09,
+    "P_tau_prime_us": 4.91856809503588e-07,
+    "delta_ci90_kHz": 4.32963531693531e-09,
+    "b_ci90": 1.2758807343971057e-09
+   },
+   "draws_whose_convergence_counts_differ": 100
+  },
+  {
+   "index": 58,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 555,
+    "P": 184,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 542,
+    "P": 193,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.448579022045765e-07,
+    "mae_P": 5.54384537408692e-10,
+    "chi2_S": 1.1507830095069949e-05,
+    "chi2_P": 3.630873379734112e-11,
+    "S_Delta_kHz": 0.004276387829577288,
+    "S_tau_us": 0.0004890710929439379,
+    "P_Delta0_kHz": 6.873711413390993e-07,
+    "P_delta_kHz": 2.743161644502834e-07,
+    "P_b": 1.4192108488408905e-08,
+    "P_tau_prime_us": 1.3308694786218211e-06,
+    "delta_ci90_kHz": 7.3166575020877644e-09,
+    "b_ci90": 1.1109277942011886e-09
+   },
+   "draws_whose_convergence_counts_differ": 77
+  },
+  {
+   "index": 59,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 513,
+    "P": 173,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 509,
+    "P": 167,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.9257231897648608e-07,
+    "mae_P": 2.0612887811563563e-09,
+    "chi2_S": 6.61989133732277e-07,
+    "chi2_P": 7.65538743507932e-11,
+    "S_Delta_kHz": 0.001393415420792632,
+    "S_tau_us": 0.00018964454403835873,
+    "P_Delta0_kHz": 8.56949043992472e-06,
+    "P_delta_kHz": 7.229260901908674e-06,
+    "P_b": 2.899860707117341e-08,
+    "P_tau_prime_us": 3.6111184655851503e-06,
+    "delta_ci90_kHz": 5.486327836479177e-09,
+    "b_ci90": 8.435951937002528e-10
+   },
+   "draws_whose_convergence_counts_differ": 89
+  },
+  {
+   "index": 60,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 206,
+    "P": 131,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 210,
+    "P": 129,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.3285638915275806e-10,
+    "mae_P": 0.00019964181504404307,
+    "chi2_S": 9.876544027065393e-13,
+    "chi2_P": 1.867878352340604,
+    "S_Delta_kHz": 1.2778350111375403e-07,
+    "S_tau_us": 8.400048727708054e-07,
+    "P_Delta0_kHz": 49.93447460583673,
+    "P_delta_kHz": 49.93791546538681,
+    "P_b": 0.0013501124449317725,
+    "P_tau_prime_us": 0.18982433683450495,
+    "delta_ci90_kHz": 51.534404939989635,
+    "b_ci90": 0.01569231223556189
+   },
+   "draws_whose_convergence_counts_differ": 79
+  },
+  {
+   "index": 61,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 161,
+    "P": 64,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 154,
+    "P": 68,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.1806093210573483e-09,
+    "mae_P": 6.689536763068715e-10,
+    "chi2_S": 4.425260158313904e-10,
+    "chi2_P": 2.3746338229102548e-11,
+    "S_Delta_kHz": 1.920407783018163e-06,
+    "S_tau_us": 6.120821339550275e-06,
+    "P_Delta0_kHz": 3.6539787373612853e-06,
+    "P_delta_kHz": 1.0094291047479942e-07,
+    "P_b": 4.400939041526719e-07,
+    "P_tau_prime_us": 2.5105780636636155e-06,
+    "delta_ci90_kHz": 5.3774485309077136e-08,
+    "b_ci90": 4.700205763485954e-08
+   },
+   "draws_whose_convergence_counts_differ": 56
+  },
+  {
+   "index": 62,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 179,
+    "P": 54,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 193,
+    "P": 52,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.647073480705145e-09,
+    "mae_P": 2.6709347693623653e-09,
+    "chi2_S": 7.077005648170598e-10,
+    "chi2_P": 8.956391184256063e-11,
+    "S_Delta_kHz": 1.944278096743801e-06,
+    "S_tau_us": 1.0765350047847733e-05,
+    "P_Delta0_kHz": 1.0999340474882047e-05,
+    "P_delta_kHz": 2.6711791636380156e-06,
+    "P_b": 1.4083856120228333e-06,
+    "P_tau_prime_us": 5.035471097869504e-06,
+    "delta_ci90_kHz": 3.639569592372993e-07,
+    "b_ci90": 4.7405467273886615e-08
+   },
+   "draws_whose_convergence_counts_differ": 63
+  },
+  {
+   "index": 63,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.035,
+    "NOT SETTLED": 0.965
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.035,
+    "NOT SETTLED": 0.965
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 147,
+    "P": 81,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 136,
+    "P": 84,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.785109538411268e-07,
+    "mae_P": 4.921177241754005e-10,
+    "chi2_S": 2.8209638003318105e-07,
+    "chi2_P": 1.4495071809506044e-12,
+    "S_Delta_kHz": 0.00014881329697402634,
+    "S_tau_us": 0.00017564711185613646,
+    "P_Delta0_kHz": 1.8382130662075724e-07,
+    "P_delta_kHz": 1.4947985071955827e-08,
+    "P_b": 3.7005694064617956e-09,
+    "P_tau_prime_us": 1.8056476065453353e-06,
+    "delta_ci90_kHz": 8.571236165266782e-09,
+    "b_ci90": 5.069714648087142e-10
+   },
+   "draws_whose_convergence_counts_differ": 71
+  },
+  {
+   "index": 64,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.03,
+    "NOT SETTLED": 0.97
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.03,
+    "NOT SETTLED": 0.97
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 142,
+    "P": 79,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 143,
+    "P": 82,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.4780066258379687e-07,
+    "mae_P": 5.668243287931807e-10,
+    "chi2_S": 8.398978934565093e-08,
+    "chi2_P": 1.4637180356658064e-12,
+    "S_Delta_kHz": 4.915989953957478e-05,
+    "S_tau_us": 0.00011323090786419243,
+    "P_Delta0_kHz": 2.1043919673502387e-07,
+    "P_delta_kHz": 4.5478578236668454e-08,
+    "P_b": 5.886624965256715e-09,
+    "P_tau_prime_us": 1.4835949784242075e-06,
+    "delta_ci90_kHz": 7.440315918927354e-09,
+    "b_ci90": 2.2996441972900072e-09
+   },
+   "draws_whose_convergence_counts_differ": 63
+  },
+  {
+   "index": 65,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 248,
+    "P": 114,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 226,
+    "P": 106,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 8.710533379446828e-07,
+    "mae_P": 4.713155499561084e-10,
+    "chi2_S": 6.563767783518415e-06,
+    "chi2_P": 9.308109838457312e-13,
+    "S_Delta_kHz": 0.0009426925671149888,
+    "S_tau_us": 0.001464815845345413,
+    "P_Delta0_kHz": 6.485533532440968e-08,
+    "P_delta_kHz": 2.0299809833090876e-08,
+    "P_b": 2.385510566860205e-09,
+    "P_tau_prime_us": 1.0605899447568845e-06,
+    "delta_ci90_kHz": 5.025254878887608e-09,
+    "b_ci90": 4.827497290804672e-10
+   },
+   "draws_whose_convergence_counts_differ": 78
+  },
+  {
+   "index": 66,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 257,
+    "P": 104,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 258,
+    "P": 110,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.067332086879258e-07,
+    "mae_P": 9.37611289823781e-10,
+    "chi2_S": 1.4710822142660618e-06,
+    "chi2_P": 1.3997691894473974e-12,
+    "S_Delta_kHz": 0.0001639151424086549,
+    "S_tau_us": 0.0005857534464723813,
+    "P_Delta0_kHz": 1.701974738921308e-07,
+    "P_delta_kHz": 6.05894872052204e-08,
+    "P_b": 4.3221172196794555e-09,
+    "P_tau_prime_us": 2.2787907099086624e-06,
+    "delta_ci90_kHz": 6.1880900403821215e-09,
+    "b_ci90": 6.201130720029369e-10
+   },
+   "draws_whose_convergence_counts_differ": 83
+  },
+  {
+   "index": 67,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 286,
+    "P": 132,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 289,
+    "P": 130,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.527746611751818e-07,
+    "mae_P": 2.795812019396049e-10,
+    "chi2_S": 2.7327967472956516e-05,
+    "chi2_P": 7.887024366937112e-13,
+    "S_Delta_kHz": 0.0011654618977701148,
+    "S_tau_us": 0.002023470959837681,
+    "P_Delta0_kHz": 1.259988096080633e-07,
+    "P_delta_kHz": 5.5536544252277054e-08,
+    "P_b": 6.064151625295722e-09,
+    "P_tau_prime_us": 7.884418451453712e-07,
+    "delta_ci90_kHz": 1.166997165569228e-09,
+    "b_ci90": 3.547057092490036e-10
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 68,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 313,
+    "P": 118,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 330,
+    "P": 112,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2567848943489945e-07,
+    "mae_P": 2.826255843940695e-10,
+    "chi2_S": 9.58689270191826e-07,
+    "chi2_P": 6.323830348264892e-13,
+    "S_Delta_kHz": 0.0001897238897683451,
+    "S_tau_us": 0.0008032594941305149,
+    "P_Delta0_kHz": 9.102020470663774e-08,
+    "P_delta_kHz": 8.507495685705635e-08,
+    "P_b": 3.962372152610527e-09,
+    "P_tau_prime_us": 5.957608806284043e-07,
+    "delta_ci90_kHz": 9.800480427202274e-10,
+    "b_ci90": 5.113148793256528e-10
+   },
+   "draws_whose_convergence_counts_differ": 94
+  },
+  {
+   "index": 69,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 317,
+    "P": 139,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 294,
+    "P": 143,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.215855868716094e-07,
+    "mae_P": 2.7400440597014075e-10,
+    "chi2_S": 7.247912435559556e-06,
+    "chi2_P": 9.521272659185342e-13,
+    "S_Delta_kHz": 0.0005808390969974653,
+    "S_tau_us": 0.000751838385564696,
+    "P_Delta0_kHz": 6.864223678348935e-08,
+    "P_delta_kHz": 3.1399899569350964e-08,
+    "P_b": 2.7606307240191086e-09,
+    "P_tau_prime_us": 7.054374577819544e-07,
+    "delta_ci90_kHz": 1.740570354513693e-09,
+    "b_ci90": 3.253455282958839e-10
+   },
+   "draws_whose_convergence_counts_differ": 78
+  },
+  {
+   "index": 70,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 326,
+    "P": 133,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 334,
+    "P": 128,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.5679278460301038e-07,
+    "mae_P": 4.5841758947867683e-10,
+    "chi2_S": 3.116665538982488e-07,
+    "chi2_P": 6.110667527536862e-12,
+    "S_Delta_kHz": 8.684100495770508e-05,
+    "S_tau_us": 0.0002681619103910293,
+    "P_Delta0_kHz": 1.3713982127683266e-07,
+    "P_delta_kHz": 9.678470291873964e-08,
+    "P_b": 4.947270759725342e-09,
+    "P_tau_prime_us": 1.269316086904837e-06,
+    "delta_ci90_kHz": 1.684929529233159e-09,
+    "b_ci90": 4.367324835108377e-10
+   },
+   "draws_whose_convergence_counts_differ": 84
+  },
+  {
+   "index": 71,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 480,
+    "P": 161,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 477,
+    "P": 170,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.9898483036295822e-07,
+    "mae_P": 6.976395615712616e-10,
+    "chi2_S": 1.087944838218391e-06,
+    "chi2_P": 1.439559582649963e-11,
+    "S_Delta_kHz": 0.00021091495784730796,
+    "S_tau_us": 0.00040238945677018023,
+    "P_Delta0_kHz": 3.8035370408806557e-07,
+    "P_delta_kHz": 1.4898609634883542e-07,
+    "P_b": 4.52183457344546e-09,
+    "P_tau_prime_us": 3.588401803256147e-06,
+    "delta_ci90_kHz": 4.531379715899675e-10,
+    "b_ci90": 2.819570688039619e-10
+   },
+   "draws_whose_convergence_counts_differ": 96
+  },
+  {
+   "index": 72,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 397,
+    "P": 177,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 405,
+    "P": 175,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.829550048241927e-08,
+    "mae_P": 7.791035264853585e-10,
+    "chi2_S": 1.105299816117622e-07,
+    "chi2_P": 4.831690603168681e-12,
+    "S_Delta_kHz": 5.154524054518106e-05,
+    "S_tau_us": 0.00011833753593748497,
+    "P_Delta0_kHz": 2.0389536814491294e-07,
+    "P_delta_kHz": 1.2833151075142268e-07,
+    "P_b": 3.264916670353557e-09,
+    "P_tau_prime_us": 1.068813908489119e-06,
+    "delta_ci90_kHz": 4.3598546994871867e-10,
+    "b_ci90": 3.3331909454759057e-10
+   },
+   "draws_whose_convergence_counts_differ": 82
+  },
+  {
+   "index": 73,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 343,
+    "P": 117,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 351,
+    "P": 118,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 8.720007364793059e-08,
+    "mae_P": 8.889843947784692e-10,
+    "chi2_S": 2.64270965999458e-07,
+    "chi2_P": 8.29913915367797e-12,
+    "S_Delta_kHz": 0.00010556978466524924,
+    "S_tau_us": 0.00030516742108233075,
+    "P_Delta0_kHz": 4.772277506503997e-07,
+    "P_delta_kHz": 1.6032204541716055e-07,
+    "P_b": 2.880709271124715e-08,
+    "P_tau_prime_us": 3.910283993491248e-06,
+    "delta_ci90_kHz": 7.546262281721283e-09,
+    "b_ci90": 2.1043402576026438e-09
+   },
+   "draws_whose_convergence_counts_differ": 63
+  },
+  {
+   "index": 74,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 279,
+    "P": 132,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 282,
+    "P": 127,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.285907417243216e-07,
+    "mae_P": 6.51306186934264e-10,
+    "chi2_S": 2.0189428141748067e-05,
+    "chi2_P": 4.951061782776378e-11,
+    "S_Delta_kHz": 0.0015805594093047937,
+    "S_tau_us": 0.010379385303721733,
+    "P_Delta0_kHz": 3.8007987512855834e-07,
+    "P_delta_kHz": 1.0709653253115903e-07,
+    "P_b": 1.447243852537028e-08,
+    "P_tau_prime_us": 2.1123474738260484e-06,
+    "delta_ci90_kHz": 8.799908357559616e-09,
+    "b_ci90": 1.6608716624233466e-09
+   },
+   "draws_whose_convergence_counts_differ": 70
+  },
+  {
+   "index": 75,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 117,
+    "P": 107,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 122,
+    "P": 100,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.1033217528776404e-10,
+    "mae_P": 0.00040674164077757896,
+    "chi2_S": 1.1510792319313623e-12,
+    "chi2_P": 1.469432810143438,
+    "S_Delta_kHz": 3.462226061401452e-08,
+    "S_tau_us": 2.876248771599421e-06,
+    "P_Delta0_kHz": 81.79767735110838,
+    "P_delta_kHz": 48.53994255211105,
+    "P_b": 0.9894880320176711,
+    "P_tau_prime_us": 0.394180521163662,
+    "delta_ci90_kHz": 50.357999190233315,
+    "b_ci90": 0.9887361835377625
+   },
+   "draws_whose_convergence_counts_differ": 64
+  },
+  {
+   "index": 76,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.795,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.205
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.795,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.205
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 108,
+    "P": 48,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 104,
+    "P": 46,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.757008985352193e-08,
+    "mae_P": 3.2480733554163255e-10,
+    "chi2_S": 1.8497985365684144e-09,
+    "chi2_P": 4.46931380793103e-12,
+    "S_Delta_kHz": 2.8947299952619687e-06,
+    "S_tau_us": 3.471829828072259e-05,
+    "P_Delta0_kHz": 4.3391040804863223e-07,
+    "P_delta_kHz": 8.568795939467577e-08,
+    "P_b": 4.9439990212896134e-08,
+    "P_tau_prime_us": 1.6362611319209464e-05,
+    "delta_ci90_kHz": 7.027219739441648e-08,
+    "b_ci90": 1.3136532861501848e-08
+   },
+   "draws_whose_convergence_counts_differ": 35
+  },
+  {
+   "index": 77,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.98,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.02
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.98,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.02
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 72,
+    "P": 61,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 80,
+    "P": 55,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.1695862634289456e-08,
+    "mae_P": 1.490749612295672e-09,
+    "chi2_S": 3.2987941267492715e-09,
+    "chi2_P": 1.4132695014268393e-11,
+    "S_Delta_kHz": 2.855917948352271e-06,
+    "S_tau_us": 2.491274560156853e-05,
+    "P_Delta0_kHz": 2.086164379022648e-06,
+    "P_delta_kHz": 5.058197136698084e-07,
+    "P_b": 2.2031186175386352e-07,
+    "P_tau_prime_us": 1.2859263790687692e-05,
+    "delta_ci90_kHz": 5.6130330161607844e-08,
+    "b_ci90": 2.2391834109125597e-08
+   },
+   "draws_whose_convergence_counts_differ": 47
+  },
+  {
+   "index": 78,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.02,
+    "NOT SETTLED": 0.98
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.02,
+    "NOT SETTLED": 0.98
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 75,
+    "P": 68,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 83,
+    "P": 68,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.796174472593509e-07,
+    "mae_P": 3.721312372834129e-10,
+    "chi2_S": 2.55369559454266e-06,
+    "chi2_P": 1.3002932064409833e-12,
+    "S_Delta_kHz": 0.0003795900330914037,
+    "S_tau_us": 0.00047456874960616346,
+    "P_Delta0_kHz": 1.4513906165802837e-07,
+    "P_delta_kHz": 8.39919156447877e-09,
+    "P_b": 1.7565560117560608e-09,
+    "P_tau_prime_us": 1.1555247823480386e-05,
+    "delta_ci90_kHz": 1.5500225991615935e-08,
+    "b_ci90": 3.1058577931730724e-10
+   },
+   "draws_whose_convergence_counts_differ": 36
+  },
+  {
+   "index": 79,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 60,
+    "P": 53,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 60,
+    "P": 56,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.030071898113551e-07,
+    "mae_P": 9.424533792268264e-10,
+    "chi2_S": 2.19235062104417e-07,
+    "chi2_P": 2.1600499167107046e-12,
+    "S_Delta_kHz": 6.57009915627782e-05,
+    "S_tau_us": 0.00023724473991393324,
+    "P_Delta0_kHz": 1.2744165900357984e-07,
+    "P_delta_kHz": 1.494569712434668e-08,
+    "P_b": 5.447677753345204e-09,
+    "P_tau_prime_us": 1.8010005732094214e-05,
+    "delta_ci90_kHz": 4.191800684338887e-09,
+    "b_ci90": 2.50348719532667e-09
+   },
+   "draws_whose_convergence_counts_differ": 37
+  },
+  {
+   "index": 80,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 145,
+    "P": 69,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 144,
+    "P": 70,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.6667581112517205e-06,
+    "mae_P": 2.6951163262928235e-10,
+    "chi2_S": 4.824098141398281e-05,
+    "chi2_P": 1.3500311979441904e-12,
+    "S_Delta_kHz": 0.0008471376324905577,
+    "S_tau_us": 0.0028932443566631605,
+    "P_Delta0_kHz": 5.957646465049038e-08,
+    "P_delta_kHz": 2.5136522197044542e-08,
+    "P_b": 3.5072269533031886e-09,
+    "P_tau_prime_us": 4.6089508884961106e-06,
+    "delta_ci90_kHz": 6.800945584473084e-09,
+    "b_ci90": 3.3085179040881485e-10
+   },
+   "draws_whose_convergence_counts_differ": 55
+  },
+  {
+   "index": 81,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 144,
+    "P": 69,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 145,
+    "P": 73,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.3869708351553776e-07,
+    "mae_P": 3.1198650347202816e-10,
+    "chi2_S": 2.662070983205922e-06,
+    "chi2_P": 1.5774048733874224e-12,
+    "S_Delta_kHz": 0.00013941242414006183,
+    "S_tau_us": 0.0015064893899605636,
+    "P_Delta0_kHz": 2.272017241011781e-08,
+    "P_delta_kHz": 2.404515075937752e-08,
+    "P_b": 1.423271889233746e-09,
+    "P_tau_prime_us": 6.979426842690373e-06,
+    "delta_ci90_kHz": 8.417394781190524e-09,
+    "b_ci90": 8.928546235686952e-10
+   },
+   "draws_whose_convergence_counts_differ": 57
+  },
+  {
+   "index": 82,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 237,
+    "P": 92,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 246,
+    "P": 93,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.6067505637958917e-07,
+    "mae_P": 1.8331242426783412e-10,
+    "chi2_S": 4.534442268777639e-06,
+    "chi2_P": 1.1084466677857563e-12,
+    "S_Delta_kHz": 0.00023717520530652791,
+    "S_tau_us": 0.002392892644358824,
+    "P_Delta0_kHz": 1.9696365427535056e-08,
+    "P_delta_kHz": 1.5364964411901383e-08,
+    "P_b": 1.3377661756130976e-09,
+    "P_tau_prime_us": 2.7634377772756125e-06,
+    "delta_ci90_kHz": 2.2005810507153e-09,
+    "b_ci90": 3.247830338004576e-10
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 83,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 238,
+    "P": 118,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 245,
+    "P": 122,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.921525380285896e-08,
+    "mae_P": 2.3397955014464733e-10,
+    "chi2_S": 4.940357030136511e-07,
+    "chi2_P": 9.094947017729282e-13,
+    "S_Delta_kHz": 4.800701719176459e-05,
+    "S_tau_us": 0.000460370948943023,
+    "P_Delta0_kHz": 3.129526504608293e-08,
+    "P_delta_kHz": 1.877931232741048e-08,
+    "P_b": 1.7373049665536655e-09,
+    "P_tau_prime_us": 3.0278034444108926e-06,
+    "delta_ci90_kHz": 3.185624208867921e-09,
+    "b_ci90": 2.9357027919729717e-10
+   },
+   "draws_whose_convergence_counts_differ": 79
+  },
+  {
+   "index": 84,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 273,
+    "P": 113,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 265,
+    "P": 111,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.142657982041497e-07,
+    "mae_P": 6.21481956175618e-10,
+    "chi2_S": 9.723735274747014e-07,
+    "chi2_P": 1.2313705610722536e-11,
+    "S_Delta_kHz": 0.00010434779683521356,
+    "S_tau_us": 0.0007388977260731622,
+    "P_Delta0_kHz": 1.695691480563255e-07,
+    "P_delta_kHz": 7.877519081489481e-08,
+    "P_b": 2.901037743363588e-09,
+    "P_tau_prime_us": 2.896890691772569e-06,
+    "delta_ci90_kHz": 2.624819472885065e-09,
+    "b_ci90": 3.375063561961156e-10
+   },
+   "draws_whose_convergence_counts_differ": 64
+  },
+  {
+   "index": 85,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 260,
+    "P": 106,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 264,
+    "P": 114,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.281465448841004e-08,
+    "mae_P": 5.567662095251613e-10,
+    "chi2_S": 6.852314982097596e-08,
+    "chi2_P": 1.1610268302320037e-11,
+    "S_Delta_kHz": 1.468701572093778e-05,
+    "S_tau_us": 0.00010388809435823987,
+    "P_Delta0_kHz": 1.1964968393840536e-07,
+    "P_delta_kHz": 4.161803168756251e-08,
+    "P_b": 4.80136147507082e-09,
+    "P_tau_prime_us": 1.2888044778947005e-05,
+    "delta_ci90_kHz": 3.6289975469117053e-09,
+    "b_ci90": 3.739813458913943e-10
+   },
+   "draws_whose_convergence_counts_differ": 69
+  },
+  {
+   "index": 86,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.975,
+    "NOT SETTLED": 0.025
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.965,
+    "NOT SETTLED": 0.035
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.010000000000000009,
+    "NOT SETTLED": -0.010000000000000002
+   },
+   "fractions_equal": false,
+   "starts_failed_round5c": {
+    "S": 374,
+    "P": 143,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 381,
+    "P": 149,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [
+    121,
+    176
+   ],
+   "draws_verdict_differs_detail": [
+    {
+     "draw": 121,
+     "round5c": "TWO FIXED FREQUENCIES",
+     "main": "NOT SETTLED",
+     "round5c_fit": {
+      "mae_S": 0.12395610016516359,
+      "mae_P": 0.00624369951968048,
+      "chi2_S": 20144.406024142518,
+      "chi2_P": 59.70059541067275,
+      "S_Delta_kHz": 85.60251250324602,
+      "S_tau_us": 54.14134349539921,
+      "P_Delta0_kHz": 54.94255086824647,
+      "P_delta_kHz": 29.941372676318604,
+      "P_b": 0.49819217531829774,
+      "P_tau_prime_us": 155.19598367459974,
+      "delta_ci90_kHz": [
+       29.893792757654833,
+       29.990515286042996
+      ],
+      "b_ci90": [
+       0.49173999385416783,
+       0.5033840964417741
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.12395610041438225,
+      "mae_P": 0.12166285192006011,
+      "chi2_S": 20144.406024142725,
+      "chi2_P": 19473.07107854629,
+      "S_Delta_kHz": 85.60251242765521,
+      "S_tau_us": 54.14134410031607,
+      "P_Delta0_kHz": 23.87256592943253,
+      "P_delta_kHz": 61.60587379774093,
+      "P_b": 0.8816126574824021,
+      "P_tau_prime_us": 61.70512194074563,
+      "delta_ci90_kHz": [
+       59.446080156573025,
+       62.15307099901764
+      ],
+      "b_ci90": [
+       0.868891820723395,
+       0.8930191317443511
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 3,
+      "P": 2,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 3,
+      "P": 2,
+      "refits": 0
+     }
+    },
+    {
+     "draw": 176,
+     "round5c": "TWO FIXED FREQUENCIES",
+     "main": "NOT SETTLED",
+     "round5c_fit": {
+      "mae_S": 0.12356012729755644,
+      "mae_P": 0.006950129372814982,
+      "chi2_S": 19176.3582808994,
+      "chi2_P": 65.79570956970636,
+      "S_Delta_kHz": 85.6496503833408,
+      "S_tau_us": 53.63868169497452,
+      "P_Delta0_kHz": 54.93061101857833,
+      "P_delta_kHz": 30.017559112317088,
+      "P_b": 0.5012109922344871,
+      "P_tau_prime_us": 147.32646997654527,
+      "delta_ci90_kHz": [
+       29.96481158778918,
+       30.070442785197862
+      ],
+      "b_ci90": [
+       0.49518256836288727,
+       0.5075480624954336
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.12356012733648303,
+      "mae_P": 0.12673124938524558,
+      "chi2_S": 19176.358280899767,
+      "chi2_P": 18623.575488441275,
+      "S_Delta_kHz": 85.64965034827625,
+      "S_tau_us": 53.63868094765243,
+      "P_Delta0_kHz": 5.982903246705952,
+      "P_delta_kHz": 79.62911007104812,
+      "P_b": 0.8920734746951586,
+      "P_tau_prime_us": 60.396633592459466,
+      "delta_ci90_kHz": [
+       79.21677133006094,
+       80.06095100684674
+      ],
+      "b_ci90": [
+       0.8808117927325029,
+       0.9014970482430594
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 1,
+      "P": 2,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 2,
+      "P": 2,
+      "refits": 0
+     }
+    }
+   ],
+   "largest_abs_difference": {
+    "mae_S": 7.115672723267963e-08,
+    "mae_P": 0.11978112001243059,
+    "chi2_S": 1.2846794561482966e-07,
+    "chi2_P": 19413.37048313562,
+    "S_Delta_kHz": 3.767204766091936e-05,
+    "S_tau_us": 0.00029596244520746495,
+    "P_Delta0_kHz": 90.08482934354755,
+    "P_delta_kHz": 89.88873427964947,
+    "P_b": 0.39086248246067157,
+    "P_tau_prime_us": 93.49086173385412,
+    "delta_ci90_kHz": 89.95155972658081,
+    "b_ci90": 0.3939489857476258
+   },
+   "draws_whose_convergence_counts_differ": 74
+  },
+  {
+   "index": 87,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.96,
+    "NOT SETTLED": 0.04
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.97,
+    "NOT SETTLED": 0.03
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": -0.010000000000000009,
+    "NOT SETTLED": 0.010000000000000002
+   },
+   "fractions_equal": false,
+   "starts_failed_round5c": {
+    "S": 364,
+    "P": 166,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 349,
+    "P": 166,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [
+    60,
+    106
+   ],
+   "draws_verdict_differs_detail": [
+    {
+     "draw": 60,
+     "round5c": "NOT SETTLED",
+     "main": "TWO FIXED FREQUENCIES",
+     "round5c_fit": {
+      "mae_S": 0.09435785098322352,
+      "mae_P": 0.09318596682996089,
+      "chi2_S": 11055.813097725515,
+      "chi2_P": 10613.577321444183,
+      "S_Delta_kHz": 24.51898266397107,
+      "S_tau_us": 66.16023918348152,
+      "P_Delta0_kHz": -84.81941187928335,
+      "P_delta_kHz": 109.34399565186028,
+      "P_b": 0.9168321158443934,
+      "P_tau_prime_us": 72.62395312910216,
+      "delta_ci90_kHz": [
+       108.31419848500619,
+       110.49147835229616
+      ],
+      "b_ci90": [
+       0.904842123927194,
+       0.9270880955240037
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.09435785100149328,
+      "mae_P": 0.007697959958361603,
+      "chi2_S": 11055.813097725513,
+      "chi2_P": 70.43682908647787,
+      "S_Delta_kHz": 24.518982656336274,
+      "S_tau_us": 66.1602393082326,
+      "P_Delta0_kHz": 54.93174275982615,
+      "P_delta_kHz": 29.98329858437591,
+      "P_b": 0.3708484998305837,
+      "P_tau_prime_us": 142.92289766795017,
+      "delta_ci90_kHz": [
+       29.90876932570256,
+       30.050576779958046
+      ],
+      "b_ci90": [
+       0.3651226095595749,
+       0.3770756711608405
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 1,
+      "P": 0,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 1,
+      "P": 0,
+      "refits": 0
+     }
+    },
+    {
+     "draw": 106,
+     "round5c": "NOT SETTLED",
+     "main": "TWO FIXED FREQUENCIES",
+     "round5c_fit": {
+      "mae_S": 0.09374690280571397,
+      "mae_P": 0.09281898387437704,
+      "chi2_S": 11193.051209412022,
+      "chi2_P": 10752.791043906398,
+      "S_Delta_kHz": 24.56083028842973,
+      "S_tau_us": 68.28282375745364,
+      "P_Delta0_kHz": -55.68922373220356,
+      "P_delta_kHz": 80.20055581923505,
+      "P_b": 0.9110529937889299,
+      "P_tau_prime_us": 74.73008435883082,
+      "delta_ci90_kHz": [
+       79.69853841877053,
+       80.77172010059479
+      ],
+      "b_ci90": [
+       0.9018429880582148,
+       0.9220731654400431
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.09374690281096419,
+      "mae_P": 0.005408878671900803,
+      "chi2_S": 11193.051209412028,
+      "chi2_P": 75.40235462997757,
+      "S_Delta_kHz": 24.56083028730581,
+      "S_tau_us": 68.28282360318505,
+      "P_Delta0_kHz": 54.97571869423104,
+      "P_delta_kHz": 29.989774088688062,
+      "P_b": 0.3724075175987618,
+      "P_tau_prime_us": 148.47797657769848,
+      "delta_ci90_kHz": [
+       29.9166460736618,
+       30.04995782246462
+      ],
+      "b_ci90": [
+       0.36545471949587466,
+       0.3782659769850549
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 1,
+      "P": 1,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 1,
+      "P": 1,
+      "refits": 0
+     }
+    }
+   ],
+   "largest_abs_difference": {
+    "mae_S": 1.4850133039923108e-08,
+    "mae_P": 0.08741010520247623,
+    "chi2_S": 2.0889274310320616e-08,
+    "chi2_P": 10677.38868927642,
+    "S_Delta_kHz": 8.319103713461118e-06,
+    "S_tau_us": 0.00010406697371934115,
+    "P_Delta0_kHz": 139.7511546391095,
+    "P_delta_kHz": 79.36069706748438,
+    "P_b": 0.5459836160138096,
+    "P_tau_prime_us": 73.74789221886766,
+    "delta_ci90_kHz": 80.4409015723381,
+    "b_ci90": 0.5500124243631632
+   },
+   "draws_whose_convergence_counts_differ": 98
+  },
+  {
+   "index": 88,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 261,
+    "P": 139,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 265,
+    "P": 142,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.378338036714062e-09,
+    "mae_P": 7.922739287541392e-10,
+    "chi2_S": 3.400964487809688e-08,
+    "chi2_P": 5.5564441936439835e-12,
+    "S_Delta_kHz": 2.2571157515471896e-05,
+    "S_tau_us": 0.000781976931563122,
+    "P_Delta0_kHz": 2.177905003009073e-07,
+    "P_delta_kHz": 1.1434791247211251e-07,
+    "P_b": 2.250463626563004e-08,
+    "P_tau_prime_us": 9.10367927531297e-06,
+    "delta_ci90_kHz": 9.186365446112177e-09,
+    "b_ci90": 2.0907590103647067e-09
+   },
+   "draws_whose_convergence_counts_differ": 72
+  },
+  {
+   "index": 89,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 181,
+    "P": 116,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 190,
+    "P": 113,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.142667126867284e-08,
+    "mae_P": 3.131753996757358e-10,
+    "chi2_S": 8.646529749967158e-07,
+    "chi2_P": 3.069544618483633e-12,
+    "S_Delta_kHz": 0.00011446729519093424,
+    "S_tau_us": 0.0016134683544564155,
+    "P_Delta0_kHz": 1.1586234194282952e-07,
+    "P_delta_kHz": 4.4834436607743555e-08,
+    "P_b": 7.008598534863353e-09,
+    "P_tau_prime_us": 3.377255893610709e-06,
+    "delta_ci90_kHz": 6.6580909674485156e-09,
+    "b_ci90": 2.0250187637849137e-09
+   },
+   "draws_whose_convergence_counts_differ": 65
+  },
+  {
+   "index": 90,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 342,
+    "P": 153,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 364,
+    "P": 159,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.91685132644548e-10,
+    "mae_P": 2.907837503632327e-07,
+    "chi2_S": 2.8705926524708048e-12,
+    "chi2_P": 2.2878701599893247e-08,
+    "S_Delta_kHz": 1.3593684400348138e-07,
+    "S_tau_us": 2.419931863784086e-07,
+    "P_Delta0_kHz": 0.009085153876625895,
+    "P_delta_kHz": 0.005615151848215927,
+    "P_b": 0.0011845421609864015,
+    "P_tau_prime_us": 6.312399355756781e-05,
+    "delta_ci90_kHz": 1.2885238237069245,
+    "b_ci90": 0.21925312212874512
+   },
+   "draws_whose_convergence_counts_differ": 107
+  },
+  {
+   "index": 91,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 387,
+    "P": 142,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 374,
+    "P": 143,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.456127599699604e-10,
+    "mae_P": 5.4295278113791756e-08,
+    "chi2_S": 1.1709744285326451e-11,
+    "chi2_P": 2.5641881506999198e-08,
+    "S_Delta_kHz": 1.0975415136726951e-06,
+    "S_tau_us": 9.410886132599217e-07,
+    "P_Delta0_kHz": 0.0014094905919819212,
+    "P_delta_kHz": 0.0006752950993949014,
+    "P_b": 0.0002586442153199031,
+    "P_tau_prime_us": 1.3498269769485205e-05,
+    "delta_ci90_kHz": 0.10222834172794393,
+    "b_ci90": 0.13157692689675993
+   },
+   "draws_whose_convergence_counts_differ": 105
+  },
+  {
+   "index": 92,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 410,
+    "P": 142,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 391,
+    "P": 137,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 9.65348065373739e-10,
+    "mae_P": 8.63966363277846e-08,
+    "chi2_S": 4.2874148675764445e-11,
+    "chi2_P": 1.7200491697622056e-08,
+    "S_Delta_kHz": 1.4756796389292504e-06,
+    "S_tau_us": 5.969109473369372e-07,
+    "P_Delta0_kHz": 0.0012071822476258376,
+    "P_delta_kHz": 0.0009451831142541778,
+    "P_b": 0.00018478795933607461,
+    "P_tau_prime_us": 1.0032008988858365e-05,
+    "delta_ci90_kHz": 0.12581894198666888,
+    "b_ci90": 0.04488222183955515
+   },
+   "draws_whose_convergence_counts_differ": 107
+  },
+  {
+   "index": 93,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.89,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.11
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.89,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.11
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 366,
+    "P": 162,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 366,
+    "P": 168,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.1024748568927434e-08,
+    "mae_P": 2.6488144811223635e-09,
+    "chi2_S": 6.465370461228304e-10,
+    "chi2_P": 1.4634338185715023e-10,
+    "S_Delta_kHz": 1.1939966228169396e-05,
+    "S_tau_us": 8.090602845456374e-06,
+    "P_Delta0_kHz": 1.3031050954737111e-05,
+    "P_delta_kHz": 2.532060080717713e-06,
+    "P_b": 1.1024144057625307e-06,
+    "P_tau_prime_us": 1.098559781809172e-06,
+    "delta_ci90_kHz": 1.4974777357679159e-05,
+    "b_ci90": 5.846677436527337e-06
+   },
+   "draws_whose_convergence_counts_differ": 112
+  },
+  {
+   "index": 94,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.94,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.06
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.94,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.06
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 386,
+    "P": 162,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 389,
+    "P": 150,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.950040299004811e-09,
+    "mae_P": 5.189706581143483e-10,
+    "chi2_S": 6.321272394416155e-10,
+    "chi2_P": 2.3794655135134235e-10,
+    "S_Delta_kHz": 1.0529644143275618e-05,
+    "S_tau_us": 3.834524324730637e-06,
+    "P_Delta0_kHz": 4.402064973874076e-06,
+    "P_delta_kHz": 1.3360153170438593e-06,
+    "P_b": 2.98583944569053e-07,
+    "P_tau_prime_us": 6.345082184111561e-07,
+    "delta_ci90_kHz": 1.8884835180088544e-06,
+    "b_ci90": 0.014014105469387916
+   },
+   "draws_whose_convergence_counts_differ": 113
+  },
+  {
+   "index": 95,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 465,
+    "P": 192,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 483,
+    "P": 202,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.476914455987414e-08,
+    "mae_P": 1.1839193965468287e-09,
+    "chi2_S": 3.334139364596922e-08,
+    "chi2_P": 5.801581437481218e-11,
+    "S_Delta_kHz": 0.00016239416660823736,
+    "S_tau_us": 3.74808736687271e-05,
+    "P_Delta0_kHz": 6.484811095219811e-06,
+    "P_delta_kHz": 3.801703236661069e-07,
+    "P_b": 2.058527142079214e-07,
+    "P_tau_prime_us": 3.149720409822976e-06,
+    "delta_ci90_kHz": 4.453747415311682e-08,
+    "b_ci90": 1.0575739395335404e-08
+   },
+   "draws_whose_convergence_counts_differ": 114
+  },
+  {
+   "index": 96,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 1.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 429,
+    "P": 140,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 415,
+    "P": 157,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.11436782005764e-08,
+    "mae_P": 3.126928022068043e-10,
+    "chi2_S": 1.1130850907647982e-08,
+    "chi2_P": 5.5564441936439835e-12,
+    "S_Delta_kHz": 7.641400686964062e-05,
+    "S_tau_us": 2.0770944896497667e-05,
+    "P_Delta0_kHz": 1.1827704895495117e-06,
+    "P_delta_kHz": 2.2782714736990783e-07,
+    "P_b": 3.391677916297908e-08,
+    "P_tau_prime_us": 3.0551918150933943e-07,
+    "delta_ci90_kHz": 4.396584074584098e-08,
+    "b_ci90": 1.526616832947525e-08
+   },
+   "draws_whose_convergence_counts_differ": 116
+  },
+  {
+   "index": 97,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.93,
+    "NOT SETTLED": 0.07
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.93,
+    "NOT SETTLED": 0.07
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 477,
+    "P": 192,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 491,
+    "P": 196,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.570637350710284e-07,
+    "mae_P": 2.519467134920461e-10,
+    "chi2_S": 4.173431307208375e-07,
+    "chi2_P": 1.4637180356658064e-12,
+    "S_Delta_kHz": 0.0008324203558345289,
+    "S_tau_us": 0.00010536262614202485,
+    "P_Delta0_kHz": 3.4676006066547416e-07,
+    "P_delta_kHz": 2.1430105334729888e-07,
+    "P_b": 4.85635648361793e-09,
+    "P_tau_prime_us": 3.3017199463358793e-07,
+    "delta_ci90_kHz": 2.4470908854823392e-08,
+    "b_ci90": 3.2303379970954893e-09
+   },
+   "draws_whose_convergence_counts_differ": 112
+  },
+  {
+   "index": 98,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.54,
+    "NOT SETTLED": 0.46
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.54,
+    "NOT SETTLED": 0.46
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 455,
+    "P": 173,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 453,
+    "P": 175,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.469942359464299e-08,
+    "mae_P": 6.896622804092312e-10,
+    "chi2_S": 1.638500179979019e-08,
+    "chi2_P": 4.0188297134591267e-11,
+    "S_Delta_kHz": 0.00022105816739781403,
+    "S_tau_us": 5.233716654373666e-05,
+    "P_Delta0_kHz": 1.8276732021149655e-06,
+    "P_delta_kHz": 9.646142817842929e-07,
+    "P_b": 2.519981140425287e-08,
+    "P_tau_prime_us": 2.2552926637331439e-07,
+    "delta_ci90_kHz": 2.0716917958907288e-08,
+    "b_ci90": 3.2678171280053903e-09
+   },
+   "draws_whose_convergence_counts_differ": 117
+  },
+  {
+   "index": 99,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 460,
+    "P": 236,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 466,
+    "P": 235,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.3795681528028523e-06,
+    "mae_P": 7.111705200429919e-10,
+    "chi2_S": 1.0821748901435058e-05,
+    "chi2_P": 4.703792910731863e-12,
+    "S_Delta_kHz": 0.007453033905022721,
+    "S_tau_us": 0.00028605073753773524,
+    "P_Delta0_kHz": 5.531318265639129e-07,
+    "P_delta_kHz": 7.16530861311071e-07,
+    "P_b": 5.068884645353933e-09,
+    "P_tau_prime_us": 6.012716777803462e-07,
+    "delta_ci90_kHz": 5.542688086279668e-09,
+    "b_ci90": 1.190487264324247e-09
+   },
+   "draws_whose_convergence_counts_differ": 109
+  },
+  {
+   "index": 100,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 482,
+    "P": 187,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 497,
+    "P": 192,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.686815036955336e-08,
+    "mae_P": 6.037013625115328e-09,
+    "chi2_S": 2.5360122890560888e-08,
+    "chi2_P": 2.3582913399877725e-11,
+    "S_Delta_kHz": 4.018891846868655e-05,
+    "S_tau_us": 3.638226820434909e-05,
+    "P_Delta0_kHz": 5.904668228140508e-06,
+    "P_delta_kHz": 4.357914757946446e-06,
+    "P_b": 3.376105628394299e-08,
+    "P_tau_prime_us": 5.476264455239743e-07,
+    "delta_ci90_kHz": 4.411052856312381e-09,
+    "b_ci90": 2.2082854989058376e-09
+   },
+   "draws_whose_convergence_counts_differ": 123
+  },
+  {
+   "index": 101,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 544,
+    "P": 217,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 559,
+    "P": 203,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.5968852298819947e-07,
+    "mae_P": 6.268777077295118e-10,
+    "chi2_S": 3.979671873821644e-06,
+    "chi2_P": 9.279688129026908e-12,
+    "S_Delta_kHz": 0.0028901407218029362,
+    "S_tau_us": 0.0004099035518141392,
+    "P_Delta0_kHz": 1.7217516870005056e-06,
+    "P_delta_kHz": 1.0793414695342562e-06,
+    "P_b": 6.726209311747056e-09,
+    "P_tau_prime_us": 5.949835539809101e-07,
+    "delta_ci90_kHz": 3.1131257571814785e-09,
+    "b_ci90": 8.927061312391515e-10
+   },
+   "draws_whose_convergence_counts_differ": 96
+  },
+  {
+   "index": 102,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 542,
+    "P": 210,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 516,
+    "P": 200,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.0157453376606904e-07,
+    "mae_P": 8.21511445675549e-10,
+    "chi2_S": 9.371719897899311e-07,
+    "chi2_P": 1.6910917111090384e-12,
+    "S_Delta_kHz": 0.0010781972151079344,
+    "S_tau_us": 0.00017744672859087984,
+    "P_Delta0_kHz": 1.0301694999270694e-06,
+    "P_delta_kHz": 6.216766941236074e-07,
+    "P_b": 8.443658994217174e-09,
+    "P_tau_prime_us": 2.818962645534384e-07,
+    "delta_ci90_kHz": 4.281559995433781e-09,
+    "b_ci90": 1.144620176418698e-09
+   },
+   "draws_whose_convergence_counts_differ": 103
+  },
+  {
+   "index": 103,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 627,
+    "P": 225,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 634,
+    "P": 229,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.706785962816818e-07,
+    "mae_P": 1.7906485964142016e-09,
+    "chi2_S": 8.783221346675418e-06,
+    "chi2_P": 4.416733645484783e-11,
+    "S_Delta_kHz": 0.00457184478302608,
+    "S_tau_us": 0.0003719195281313148,
+    "P_Delta0_kHz": 2.0914961709195268e-06,
+    "P_delta_kHz": 1.2514532627960762e-06,
+    "P_b": 1.0952193041369185e-08,
+    "P_tau_prime_us": 6.10332286044013e-07,
+    "delta_ci90_kHz": 2.2816806222181185e-09,
+    "b_ci90": 7.627912190777408e-10
+   },
+   "draws_whose_convergence_counts_differ": 88
+  },
+  {
+   "index": 104,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 577,
+    "P": 231,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 562,
+    "P": 230,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.960615199804062e-07,
+    "mae_P": 1.3621183122397573e-09,
+    "chi2_S": 5.582496669376269e-07,
+    "chi2_P": 1.2327916465437738e-11,
+    "S_Delta_kHz": 0.0011068031781178433,
+    "S_tau_us": 0.00015226494706865878,
+    "P_Delta0_kHz": 2.1629394097999466e-06,
+    "P_delta_kHz": 1.811107715354865e-06,
+    "P_b": 9.196925221388597e-09,
+    "P_tau_prime_us": 7.902381007340864e-07,
+    "delta_ci90_kHz": 3.0157707442413084e-09,
+    "b_ci90": 8.626118153109985e-10
+   },
+   "draws_whose_convergence_counts_differ": 92
+  },
+  {
+   "index": 105,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 220,
+    "P": 146,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 220,
+    "P": 146,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.5290413213234784e-10,
+    "mae_P": 8.443552781435548e-08,
+    "chi2_S": 2.0747847884194925e-12,
+    "chi2_P": 1.4699851135446806e-05,
+    "S_Delta_kHz": 9.887639862427022e-08,
+    "S_tau_us": 7.610061985019456e-07,
+    "P_Delta0_kHz": 0.0008003775100533517,
+    "P_delta_kHz": 0.0007956855225756954,
+    "P_b": 6.171777104713172e-05,
+    "P_tau_prime_us": 0.0031830024252101907,
+    "delta_ci90_kHz": 0.13442617670025214,
+    "b_ci90": 0.18940489557127937
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 106,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 153,
+    "P": 83,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 154,
+    "P": 86,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.237734749391487e-09,
+    "mae_P": 7.713091719138698e-10,
+    "chi2_S": 1.0184919574385276e-09,
+    "chi2_P": 3.922195901395753e-12,
+    "S_Delta_kHz": 2.948682634951183e-06,
+    "S_tau_us": 7.854725495803905e-06,
+    "P_Delta0_kHz": 2.584104294101053e-06,
+    "P_delta_kHz": 1.215915874652751e-07,
+    "P_b": 2.897850683858394e-07,
+    "P_tau_prime_us": 3.033213857861483e-06,
+    "delta_ci90_kHz": 5.61476904969993e-08,
+    "b_ci90": 4.5617312649515185e-08
+   },
+   "draws_whose_convergence_counts_differ": 68
+  },
+  {
+   "index": 107,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 152,
+    "P": 94,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 165,
+    "P": 87,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 7.49225521207153e-09,
+    "mae_P": 5.633099160740063e-10,
+    "chi2_S": 8.068923307291698e-10,
+    "chi2_P": 2.4158453015843406e-11,
+    "S_Delta_kHz": 3.0741046259663563e-06,
+    "S_tau_us": 1.2019368384130757e-05,
+    "P_Delta0_kHz": 1.6816940160424565e-06,
+    "P_delta_kHz": 5.578257855631819e-07,
+    "P_b": 1.7430683374453082e-07,
+    "P_tau_prime_us": 1.3777999257058582e-06,
+    "delta_ci90_kHz": 8.325551625887329e-08,
+    "b_ci90": 4.158294131251239e-08
+   },
+   "draws_whose_convergence_counts_differ": 47
+  },
+  {
+   "index": 108,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.025,
+    "NOT SETTLED": 0.975
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.025,
+    "NOT SETTLED": 0.975
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 128,
+    "P": 80,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 123,
+    "P": 84,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.7152858992778315e-07,
+    "mae_P": 3.5716747961989093e-10,
+    "chi2_S": 3.288562311354326e-07,
+    "chi2_P": 1.2931877790833823e-12,
+    "S_Delta_kHz": 0.00019731435487813087,
+    "S_tau_us": 0.00022082534157519262,
+    "P_Delta0_kHz": 2.8585512268364255e-07,
+    "P_delta_kHz": 1.9775238335739687e-08,
+    "P_b": 7.435103421826739e-09,
+    "P_tau_prime_us": 1.8124587342072118e-06,
+    "delta_ci90_kHz": 8.918857652417955e-09,
+    "b_ci90": 7.374998389764187e-10
+   },
+   "draws_whose_convergence_counts_differ": 57
+  },
+  {
+   "index": 109,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.025,
+    "NOT SETTLED": 0.975
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.025,
+    "NOT SETTLED": 0.975
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 175,
+    "P": 99,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 161,
+    "P": 94,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.6657117274734845e-07,
+    "mae_P": 3.8880715660938314e-10,
+    "chi2_S": 1.202824932988733e-07,
+    "chi2_P": 9.166001291305292e-13,
+    "S_Delta_kHz": 6.204881701421527e-05,
+    "S_tau_us": 0.00010407705033799175,
+    "P_Delta0_kHz": 2.3746036958982586e-07,
+    "P_delta_kHz": 6.223283754991371e-08,
+    "P_b": 6.884676939655776e-09,
+    "P_tau_prime_us": 1.927814274438333e-06,
+    "delta_ci90_kHz": 7.2793353567135455e-09,
+    "b_ci90": 2.158190237633306e-09
+   },
+   "draws_whose_convergence_counts_differ": 70
+  },
+  {
+   "index": 110,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 230,
+    "P": 113,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 226,
+    "P": 112,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.0852899971769414e-06,
+    "mae_P": 2.5346296936290535e-10,
+    "chi2_S": 1.3449884136207402e-05,
+    "chi2_P": 1.3855583347321954e-12,
+    "S_Delta_kHz": 0.0008380383431614291,
+    "S_tau_us": 0.002068710414611985,
+    "P_Delta0_kHz": 1.3740316262556007e-07,
+    "P_delta_kHz": 2.945553045918814e-08,
+    "P_b": 4.818511700754868e-09,
+    "P_tau_prime_us": 1.3819026492001285e-06,
+    "delta_ci90_kHz": 5.423121507419637e-09,
+    "b_ci90": 5.452823748086644e-10
+   },
+   "draws_whose_convergence_counts_differ": 82
+  },
+  {
+   "index": 111,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 249,
+    "P": 100,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 247,
+    "P": 106,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.290146598182054e-07,
+    "mae_P": 1.6974053586304994e-10,
+    "chi2_S": 1.7303691492998041e-06,
+    "chi2_P": 1.0231815394945443e-12,
+    "S_Delta_kHz": 0.00019007710392315857,
+    "S_tau_us": 0.0005142321276530026,
+    "P_Delta0_kHz": 5.752390563884546e-08,
+    "P_delta_kHz": 4.0534542833370324e-08,
+    "P_b": 2.4905286721832454e-09,
+    "P_tau_prime_us": 9.66507386124249e-07,
+    "delta_ci90_kHz": 7.394700851648395e-09,
+    "b_ci90": 6.475162628305497e-10
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 112,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 279,
+    "P": 147,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 287,
+    "P": 148,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 8.629994316805556e-07,
+    "mae_P": 3.904689384326421e-10,
+    "chi2_S": 1.7321344785159454e-05,
+    "chi2_P": 7.673861546209082e-13,
+    "S_Delta_kHz": 0.0012129880820808125,
+    "S_tau_us": 0.0019263487049734351,
+    "P_Delta0_kHz": 8.15111320662254e-08,
+    "P_delta_kHz": 5.465570573903733e-08,
+    "P_b": 3.694593242453692e-09,
+    "P_tau_prime_us": 5.184704079397306e-07,
+    "delta_ci90_kHz": 1.1551630763051435e-09,
+    "b_ci90": 4.3588133102900883e-10
+   },
+   "draws_whose_convergence_counts_differ": 89
+  },
+  {
+   "index": 113,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 276,
+    "P": 133,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 278,
+    "P": 139,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2753830003209288e-07,
+    "mae_P": 3.1774173916976345e-10,
+    "chi2_S": 1.1002139217453077e-06,
+    "chi2_P": 1.6626700016786344e-12,
+    "S_Delta_kHz": 0.00018952894803447862,
+    "S_tau_us": 0.0004255311731427014,
+    "P_Delta0_kHz": 8.482206226290145e-08,
+    "P_delta_kHz": 6.221529602612463e-08,
+    "P_b": 3.998268993665732e-09,
+    "P_tau_prime_us": 7.96987286832973e-07,
+    "delta_ci90_kHz": 1.3312284607991387e-09,
+    "b_ci90": 4.340598991348088e-10
+   },
+   "draws_whose_convergence_counts_differ": 94
+  },
+  {
+   "index": 114,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 367,
+    "P": 165,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 363,
+    "P": 167,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 5.675678451250166e-07,
+    "mae_P": 2.5772549545888257e-10,
+    "chi2_S": 6.517417205031961e-06,
+    "chi2_P": 9.663381206337363e-13,
+    "S_Delta_kHz": 0.000786928000373166,
+    "S_tau_us": 0.0010231270788452207,
+    "P_Delta0_kHz": 6.041540245860233e-08,
+    "P_delta_kHz": 6.726572721049706e-08,
+    "P_b": 2.624487016600341e-09,
+    "P_tau_prime_us": 1.4217336570254702e-06,
+    "delta_ci90_kHz": 1.6670629321424713e-09,
+    "b_ci90": 3.7490066606693517e-10
+   },
+   "draws_whose_convergence_counts_differ": 84
+  },
+  {
+   "index": 115,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 378,
+    "P": 154,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 381,
+    "P": 152,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 2.0057973540432705e-07,
+    "mae_P": 1.0249126443373502e-09,
+    "chi2_S": 5.532056093215942e-07,
+    "chi2_P": 2.9558577807620168e-12,
+    "S_Delta_kHz": 0.00011581151338901918,
+    "S_tau_us": 0.0004821649666766348,
+    "P_Delta0_kHz": 1.725473310898451e-07,
+    "P_delta_kHz": 1.0586011001123552e-07,
+    "P_b": 2.448376612562697e-09,
+    "P_tau_prime_us": 1.5157649286834385e-06,
+    "delta_ci90_kHz": 2.0901680386486987e-09,
+    "b_ci90": 4.1528219751896245e-10
+   },
+   "draws_whose_convergence_counts_differ": 85
+  },
+  {
+   "index": 116,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 489,
+    "P": 220,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 503,
+    "P": 205,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.9248546148653567e-07,
+    "mae_P": 4.752454835915687e-10,
+    "chi2_S": 1.9819890439976007e-06,
+    "chi2_P": 1.5063505998114124e-12,
+    "S_Delta_kHz": 0.00024118877316681164,
+    "S_tau_us": 0.0006181438917884918,
+    "P_Delta0_kHz": 1.1236127761549142e-07,
+    "P_delta_kHz": 6.277602082604972e-08,
+    "P_b": 1.6497555543892872e-09,
+    "P_tau_prime_us": 1.340972310970301e-06,
+    "delta_ci90_kHz": 2.714735103381827e-10,
+    "b_ci90": 2.4461044301204993e-10
+   },
+   "draws_whose_convergence_counts_differ": 101
+  },
+  {
+   "index": 117,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 442,
+    "P": 202,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 444,
+    "P": 205,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.133381055817289e-08,
+    "mae_P": 7.43497282837402e-10,
+    "chi2_S": 1.5580917533952743e-07,
+    "chi2_P": 6.785683126508957e-12,
+    "S_Delta_kHz": 5.798510527199596e-05,
+    "S_tau_us": 9.472708461544244e-05,
+    "P_Delta0_kHz": 2.1470849276283843e-07,
+    "P_delta_kHz": 1.3361968598246676e-07,
+    "P_b": 1.9258176164882457e-09,
+    "P_tau_prime_us": 1.2836459646337062e-06,
+    "delta_ci90_kHz": 3.317914831768576e-10,
+    "b_ci90": 3.270059778515133e-10
+   },
+   "draws_whose_convergence_counts_differ": 87
+  },
+  {
+   "index": 118,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 445,
+    "P": 206,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 436,
+    "P": 206,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 0.0014166664403914286,
+    "mae_P": 0.0003842286126969595,
+    "chi2_S": 2.3461889213649556e-06,
+    "chi2_P": 1.4352963262354024e-12,
+    "S_Delta_kHz": 0.00021219094169566688,
+    "S_tau_us": 0.0009504210049158246,
+    "P_Delta0_kHz": 1.0666191485597665e-07,
+    "P_delta_kHz": 6.533487351134681e-08,
+    "P_b": 2.6037969558245777e-09,
+    "P_tau_prime_us": 9.936378972952298e-07,
+    "delta_ci90_kHz": 2.859650294340099e-10,
+    "b_ci90": 2.47649123430449e-10
+   },
+   "draws_whose_convergence_counts_differ": 88
+  },
+  {
+   "index": 119,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 411,
+    "P": 165,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 401,
+    "P": 160,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.9257630424227585e-08,
+    "mae_P": 1.6230288224505784e-09,
+    "chi2_S": 2.1379219106165692e-07,
+    "chi2_P": 1.9326762412674725e-12,
+    "S_Delta_kHz": 6.193837775470001e-05,
+    "S_tau_us": 0.000156987964167854,
+    "P_Delta0_kHz": 4.3101323399241664e-07,
+    "P_delta_kHz": 3.367517891206262e-07,
+    "P_b": 2.732480852696284e-09,
+    "P_tau_prime_us": 1.7781984809062124e-06,
+    "delta_ci90_kHz": 3.482014676592371e-10,
+    "b_ci90": 3.943201321021661e-10
+   },
+   "draws_whose_convergence_counts_differ": 84
+  },
+  {
+   "index": 120,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 1.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 160,
+    "P": 117,
+    "refits": 1
+   },
+   "starts_failed_main": {
+    "S": 165,
+    "P": 122,
+    "refits": 1
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.2434975462521924e-09,
+    "mae_P": 0.0004156152192801108,
+    "chi2_S": 1.8474111129762605e-12,
+    "chi2_P": 1.4020983196704009,
+    "S_Delta_kHz": 1.0874830991269846e-07,
+    "S_tau_us": 3.7261246177422436e-06,
+    "P_Delta0_kHz": 112.10901021393997,
+    "P_delta_kHz": 38.03702143195453,
+    "P_b": 0.9905990987496276,
+    "P_tau_prime_us": 0.11104369664244018,
+    "delta_ci90_kHz": 37.71592246196169,
+    "b_ci90": 0.9892947489367697
+   },
+   "draws_whose_convergence_counts_differ": 58
+  },
+  {
+   "index": 121,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.735,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.265
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.735,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.265
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 125,
+    "P": 57,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 122,
+    "P": 52,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.605965820050681e-08,
+    "mae_P": 9.55333744404041e-10,
+    "chi2_S": 2.96381585940253e-09,
+    "chi2_P": 2.1032064978498966e-12,
+    "S_Delta_kHz": 5.58357915281249e-06,
+    "S_tau_us": 3.3906307834286054e-05,
+    "P_Delta0_kHz": 4.933260271400286e-07,
+    "P_delta_kHz": 7.230679166525533e-08,
+    "P_b": 5.017263032813801e-08,
+    "P_tau_prime_us": 2.1235742792669043e-05,
+    "delta_ci90_kHz": 7.096554188734672e-08,
+    "b_ci90": 1.611861399908321e-08
+   },
+   "draws_whose_convergence_counts_differ": 45
+  },
+  {
+   "index": 122,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.98,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.02
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.98,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.02
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 100,
+    "P": 61,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 95,
+    "P": 56,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.6148565928908454e-08,
+    "mae_P": 1.6732036763056346e-09,
+    "chi2_S": 1.899650214909343e-09,
+    "chi2_P": 9.36495325731812e-12,
+    "S_Delta_kHz": 5.852075702250659e-06,
+    "S_tau_us": 4.579359729461885e-05,
+    "P_Delta0_kHz": 6.842193300826693e-07,
+    "P_delta_kHz": 1.6081254550215363e-07,
+    "P_b": 7.201109214483026e-08,
+    "P_tau_prime_us": 1.0236437418598143e-05,
+    "delta_ci90_kHz": 6.468960123129364e-08,
+    "b_ci90": 2.4514061225389128e-08
+   },
+   "draws_whose_convergence_counts_differ": 37
+  },
+  {
+   "index": 123,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 63,
+    "P": 53,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 61,
+    "P": 56,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.0061976147279772e-06,
+    "mae_P": 3.0218649544472287e-10,
+    "chi2_S": 3.2860139071999583e-06,
+    "chi2_P": 1.1652900866465643e-12,
+    "S_Delta_kHz": 0.0004743054926734658,
+    "S_tau_us": 0.0006175531918550803,
+    "P_Delta0_kHz": 8.79691128830018e-08,
+    "P_delta_kHz": 1.650773562289487e-08,
+    "P_b": 1.1897384188941373e-09,
+    "P_tau_prime_us": 9.810269375520875e-06,
+    "delta_ci90_kHz": 4.633113448448967e-09,
+    "b_ci90": 3.690384109411582e-10
+   },
+   "draws_whose_convergence_counts_differ": 41
+  },
+  {
+   "index": 124,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.015,
+    "NOT SETTLED": 0.985
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 86,
+    "P": 67,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 88,
+    "P": 59,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.1972186399775726e-07,
+    "mae_P": 3.8255630087358217e-10,
+    "chi2_S": 3.261075107729994e-07,
+    "chi2_P": 1.2505552149377763e-12,
+    "S_Delta_kHz": 6.87563262005142e-05,
+    "S_tau_us": 0.000202552768030273,
+    "P_Delta0_kHz": 1.1146794065552967e-07,
+    "P_delta_kHz": 1.7179461409000396e-08,
+    "P_b": 3.2112156822527993e-09,
+    "P_tau_prime_us": 9.750390773888284e-06,
+    "delta_ci90_kHz": 3.808755089096394e-09,
+    "b_ci90": 2.522975717234033e-09
+   },
+   "draws_whose_convergence_counts_differ": 47
+  },
+  {
+   "index": 125,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 136,
+    "P": 104,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 136,
+    "P": 96,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.5154982700577024e-06,
+    "mae_P": 1.9874538386560614e-10,
+    "chi2_S": 3.960320646001492e-05,
+    "chi2_P": 1.2647660696529783e-12,
+    "S_Delta_kHz": 0.0007821707657313937,
+    "S_tau_us": 0.003151094403634147,
+    "P_Delta0_kHz": 5.173581030248897e-08,
+    "P_delta_kHz": 2.5665325864565602e-08,
+    "P_b": 2.9538319568089833e-09,
+    "P_tau_prime_us": 4.646864681490115e-06,
+    "delta_ci90_kHz": 8.667332629386237e-09,
+    "b_ci90": 5.997040641858575e-10
+   },
+   "draws_whose_convergence_counts_differ": 61
+  },
+  {
+   "index": 126,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 133,
+    "P": 90,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 139,
+    "P": 90,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.5420449630573234e-07,
+    "mae_P": 3.5381091372660434e-10,
+    "chi2_S": 2.7361638785805553e-06,
+    "chi2_P": 1.4210854715202004e-12,
+    "S_Delta_kHz": 0.00014526408222081955,
+    "S_tau_us": 0.0010255431438253026,
+    "P_Delta0_kHz": 7.721371275692945e-08,
+    "P_delta_kHz": 4.525108465713856e-08,
+    "P_b": 3.3667643672963266e-09,
+    "P_tau_prime_us": 7.944155584027612e-06,
+    "delta_ci90_kHz": 9.046719817717985e-09,
+    "b_ci90": 5.582306283891114e-10
+   },
+   "draws_whose_convergence_counts_differ": 54
+  },
+  {
+   "index": 127,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 245,
+    "P": 137,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 234,
+    "P": 135,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 4.299667105411853e-07,
+    "mae_P": 2.0778764125983784e-10,
+    "chi2_S": 7.6194955909159034e-06,
+    "chi2_P": 1.8474111129762605e-12,
+    "S_Delta_kHz": 0.00022921241701823192,
+    "S_tau_us": 0.002092938590102733,
+    "P_Delta0_kHz": 2.939164289728069e-08,
+    "P_delta_kHz": 1.6137040148578308e-08,
+    "P_b": 1.5973404265956503e-09,
+    "P_tau_prime_us": 3.7143297220154636e-06,
+    "delta_ci90_kHz": 3.685125093966235e-09,
+    "b_ci90": 3.035310891519316e-10
+   },
+   "draws_whose_convergence_counts_differ": 84
+  },
+  {
+   "index": 128,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 222,
+    "P": 129,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 223,
+    "P": 131,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.3537160346854815e-07,
+    "mae_P": 2.5088829451458405e-10,
+    "chi2_S": 1.5140794857870787e-06,
+    "chi2_P": 1.7337242752546445e-12,
+    "S_Delta_kHz": 7.566331222363942e-05,
+    "S_tau_us": 0.0015450925181852426,
+    "P_Delta0_kHz": 2.239787022517703e-08,
+    "P_delta_kHz": 2.3467576326652306e-08,
+    "P_b": 1.2949387118155187e-09,
+    "P_tau_prime_us": 3.101929024751371e-06,
+    "delta_ci90_kHz": 2.901545670397354e-09,
+    "b_ci90": 3.5346697790927806e-10
+   },
+   "draws_whose_convergence_counts_differ": 80
+  },
+  {
+   "index": 129,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 268,
+    "P": 164,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 264,
+    "P": 163,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 3.055375358412826e-07,
+    "mae_P": 4.062628827100623e-10,
+    "chi2_S": 1.57851172843948e-06,
+    "chi2_P": 1.5418777365994174e-12,
+    "S_Delta_kHz": 0.00014427721389154158,
+    "S_tau_us": 0.0008586724908852261,
+    "P_Delta0_kHz": 3.699842920923402e-08,
+    "P_delta_kHz": 1.811562810871692e-08,
+    "P_b": 1.2552533457110826e-09,
+    "P_tau_prime_us": 4.810821252476671e-06,
+    "delta_ci90_kHz": 2.737380100370501e-09,
+    "b_ci90": 3.2463115529068887e-10
+   },
+   "draws_whose_convergence_counts_differ": 75
+  },
+  {
+   "index": 130,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 275,
+    "P": 162,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 274,
+    "P": 169,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 6.21304845210835e-08,
+    "mae_P": 3.343746616396581e-10,
+    "chi2_S": 1.1120937415398657e-07,
+    "chi2_P": 3.90087961932295e-11,
+    "S_Delta_kHz": 1.8305853664912775e-05,
+    "S_tau_us": 0.0003053928341785195,
+    "P_Delta0_kHz": 1.4663001479675586e-07,
+    "P_delta_kHz": 9.994131744406332e-08,
+    "P_b": 2.390421582898483e-09,
+    "P_tau_prime_us": 9.819192200666294e-06,
+    "delta_ci90_kHz": 3.3853808645289973e-09,
+    "b_ci90": 4.28042379319038e-10
+   },
+   "draws_whose_convergence_counts_differ": 81
+  },
+  {
+   "index": 131,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 445,
+    "P": 242,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 434,
+    "P": 241,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 8.255939853984984e-08,
+    "mae_P": 2.193140859890752e-10,
+    "chi2_S": 2.544802555348724e-07,
+    "chi2_P": 1.6285639503621496e-11,
+    "S_Delta_kHz": 3.567702451334753e-05,
+    "S_tau_us": 0.00026239786610915417,
+    "P_Delta0_kHz": 6.064684043849411e-08,
+    "P_delta_kHz": 2.9628360209699167e-08,
+    "P_b": 1.254748638324088e-09,
+    "P_tau_prime_us": 4.174616947238974e-06,
+    "delta_ci90_kHz": 3.9259973050320696e-10,
+    "b_ci90": 2.4844448720529044e-10
+   },
+   "draws_whose_convergence_counts_differ": 79
+  },
+  {
+   "index": 132,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.975,
+    "NOT SETTLED": 0.025
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.97,
+    "NOT SETTLED": 0.03
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0050000000000000044,
+    "NOT SETTLED": -0.0049999999999999975
+   },
+   "fractions_equal": false,
+   "starts_failed_round5c": {
+    "S": 421,
+    "P": 217,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 418,
+    "P": 211,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [
+    129
+   ],
+   "draws_verdict_differs_detail": [
+    {
+     "draw": 129,
+     "round5c": "TWO FIXED FREQUENCIES",
+     "main": "NOT SETTLED",
+     "round5c_fit": {
+      "mae_S": 0.09321937046732029,
+      "mae_P": 0.006657513837494384,
+      "chi2_S": 11277.655393932338,
+      "chi2_P": 43.5088386262256,
+      "S_Delta_kHz": 44.57202991916268,
+      "S_tau_us": 67.97883998503576,
+      "P_Delta0_kHz": 75.01208086034163,
+      "P_delta_kHz": 29.98941979183266,
+      "P_b": 0.37292487173612077,
+      "P_tau_prime_us": 152.25470872666878,
+      "delta_ci90_kHz": [
+       29.920449704002547,
+       30.055712328416522
+      ],
+      "b_ci90": [
+       0.3670933148214851,
+       0.3789738754339767
+      ]
+     },
+     "main_fit": {
+      "mae_S": 0.09321937046653958,
+      "mae_P": 0.09173906733635981,
+      "chi2_S": 11277.655393932655,
+      "chi2_P": 10865.4465555934,
+      "S_Delta_kHz": 44.5720299461491,
+      "S_tau_us": 67.97883904617898,
+      "P_Delta0_kHz": 103.13212009338814,
+      "P_delta_kHz": 58.52772586982883,
+      "P_b": 0.08316359025524515,
+      "P_tau_prime_us": 74.19564384885271,
+      "delta_ci90_kHz": [
+       57.766809605752535,
+       59.558466862406185
+      ],
+      "b_ci90": [
+       0.07517407603118906,
+       0.09309544587856815
+      ]
+     },
+     "starts_failed_round5c": {
+      "S": 2,
+      "P": 1,
+      "refits": 0
+     },
+     "starts_failed_main": {
+      "S": 2,
+      "P": 2,
+      "refits": 0
+     }
+    }
+   ],
+   "largest_abs_difference": {
+    "mae_S": 2.519620051488758e-08,
+    "mae_P": 0.08508155349886543,
+    "chi2_S": 1.231819624081254e-08,
+    "chi2_P": 10821.937716967175,
+    "S_Delta_kHz": 1.3982753422681071e-05,
+    "S_tau_us": 0.00017661688806924758,
+    "P_Delta0_kHz": 28.120039233046512,
+    "P_delta_kHz": 28.538306077996168,
+    "P_b": 0.2897612814808756,
+    "P_tau_prime_us": 78.05906487781607,
+    "delta_ci90_kHz": 29.502754533989663,
+    "b_ci90": 0.291919238790296
+   },
+   "draws_whose_convergence_counts_differ": 94
+  },
+  {
+   "index": 133,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 310,
+    "P": 135,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 312,
+    "P": 148,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 0.0011041676566158898,
+    "mae_P": 0.0002821944560697093,
+    "chi2_S": 1.0021285561379045e-06,
+    "chi2_P": 1.6626700016786344e-12,
+    "S_Delta_kHz": 6.121187063001798e-05,
+    "S_tau_us": 0.000663221477068987,
+    "P_Delta0_kHz": 3.957192973302881e-08,
+    "P_delta_kHz": 1.2054435671871033e-08,
+    "P_b": 1.6032072336358283e-09,
+    "P_tau_prime_us": 4.4787756507957965e-06,
+    "delta_ci90_kHz": 2.68208566467365e-10,
+    "b_ci90": 1.5569950884142258e-10
+   },
+   "draws_whose_convergence_counts_differ": 82
+  },
+  {
+   "index": 134,
+   "fraction_round5c": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_main": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 1.0,
+    "NOT SETTLED": 0.0
+   },
+   "fraction_difference": {
+    "NO RESOLVED SPLIT": 0.0,
+    "TWO FIXED FREQUENCIES": 0.0,
+    "NOT SETTLED": 0.0
+   },
+   "fractions_equal": true,
+   "starts_failed_round5c": {
+    "S": 306,
+    "P": 138,
+    "refits": 0
+   },
+   "starts_failed_main": {
+    "S": 326,
+    "P": 134,
+    "refits": 0
+   },
+   "draws_compared": 200,
+   "draws_verdict_differs": [],
+   "draws_verdict_differs_detail": [],
+   "largest_abs_difference": {
+    "mae_S": 1.3736832019106693e-08,
+    "mae_P": 3.2405983452221676e-10,
+    "chi2_S": 7.378912414424121e-08,
+    "chi2_P": 2.2737367544323206e-12,
+    "S_Delta_kHz": 1.9612005321079096e-05,
+    "S_tau_us": 0.0003177727667207364,
+    "P_Delta0_kHz": 1.1346567418968334e-07,
+    "P_delta_kHz": 3.432662509794682e-08,
+    "P_b": 2.5837458839106375e-09,
+    "P_tau_prime_us": 9.108452957207192e-06,
+    "delta_ci90_kHz": 2.439790591779456e-10,
+    "b_ci90": 2.4941931853206256e-10
+   },
+   "draws_whose_convergence_counts_differ": 72
+  }
+ ]
+}

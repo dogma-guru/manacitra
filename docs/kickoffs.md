@@ -1,5 +1,7 @@
 # How the results were made: kickoffs
 
+This page lists every run with its question, processor, verdict and data, and what a kickoff brief states. It is for readers tracing a result back to the run and the rule that made it. If it is too deep, read [the findings](findings.md) first.
+
 Every result in the [findings](findings.md) came from a kickoff: a written brief, fixed before a run (according to the author's dated records, which are not part of this release). A brief states:
 
 - the question;
@@ -63,6 +65,9 @@ The practices below are as the author's dated records describe them; those recor
 | test 13, 18 October 2026 | In the per-shot results of tests 11 and 12's monitor jobs, do a span's circuits see the same state at the same shot index, and on what clock? No job was submitted. | ibm_fez | SHARED in all three jobs | `ibm_fez/t13-per-shot-read.json` (the arrays named by SHA-256, not published); the rule, `ibm_fez/t13-rule.md`, its desk check and rulings |
 | test 14, 18 October 2026 | With a second wait at which 143's two lines are in phase, is a change between spans one of the weight, of the envelope or of the frame? | ibm_fez | NOT USABLE (the median length at the antiphase wait 0.0758, under 0.08); no verdict | `ibm_fez/t14-in-phase-control.json`; the rule, `ibm_fez/t14-rule.md`, and its desk check |
 | test 15, 18 October 2026 | Read per shot across every monitor job on the record, what is the error of a span's weight, and which level changes exceed it? No job was submitted. | ibm_kingston and ibm_fez | SHARED (four jobs on ibm_fez), MIXED (two on ibm_kingston), NOT SEPARABLE (one); NO CHANGE at all 17 boundaries read, 11 not read | `ibm_fez/t15-error-model-read.json` (the arrays named by SHA-256, not published); the rule, `ibm_fez/t15-rule.md`, its desk check and rulings |
+| test 11 on a third day, 19 October 2026 | Is 143's fringe two fixed frequencies again on a third day; and at its antiphase wait, do its phase and its weight switch within spans, at their boundaries, or not at all? | ibm_fez | CONFIRMED ON DAY 2; QUIET and WEIGHT QUIET in both monitor jobs | `ibm_fez/t11-day3-monitor.json`; the rule, `ibm_fez/t11-rule.md`, run unchanged; its desk check's rerun and hash check |
+| test 16, 19 October 2026 | In the per-shot results of test 11's third day, do the monitor spans share a state, and does the duty change at their boundaries or between the jobs? No job was submitted. | ibm_fez | SHARED in both monitor jobs; NO CHANGE at all four boundaries and between the jobs | `ibm_fez/t16-day3-per-shot-read.json` (the arrays named by SHA-256, not published); the rule, `ibm_fez/t16-rule.md`, its rulings and hash check; the desk model's scorecard, `desk/sandhi/v4/scorecard-t16.json` |
+| test 17, 19 October 2026 | Over one job of six execution spans, does 143's state behave as on the record; and is the middle of a job different? | ibm_fez | From the counts: SWITCHES AT BOUNDARIES ONLY (A1) and QUIET (A2, B1) in phase, WEIGHT SWITCHES AT BOUNDARIES ONLY, LEVELS DIFFER AT EVERY BOUNDARY (A1, A2) and AT SOME (B1); per shot, SHARED in all twelve spans, BETWEEN at one boundary and NO CHANGE at eight; the middle test NOT SEEN | `ibm_fez/t17-long-monitor.json` (the arrays named by SHA-256, not published); the rule, `ibm_fez/t17-rule.md`, its rulings, hash check and desk checks; the note's line, `ibm_fez/t17-middle-note-excerpt.md`; the desk model's scorecard, `desk/sandhi/v4.1/scorecard-t17.json` |
 
 The kickoff texts and the sealed predictions are kept and dated, and are not part of this release.
 

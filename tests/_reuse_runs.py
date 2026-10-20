@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
-from datetime import UTC
+from datetime import UTC, datetime
 
 import numpy as np
 
@@ -3957,3 +3957,368 @@ def kingston_spans(rec: dict) -> dict:
         shots = job["pre_submission_estimate"]["shots"] // job["positions"]
         out.append(t7_spans({"spans": j["spans"], "n_positions": j["n_positions"]}, shots))
     return {"jobs": out}
+
+
+# --------------------------------------------------------------------------- tests 16 and 17, the per-shot reads (A28)
+#: Test 15's words, as tests 16 and 17 apply them: SHARED above 3, INDEPENDENT below 1.5; at a boundary NO CHANGE at or
+#: under 2, BETWEEN over 2 to 3, CHANGE over 3; test 17's middle test, the middle third of a job's time, MIDDLE HIGH at
+#: a Z of 2.0 or more and NOT SEEN under 1.0
+T15_SHARED, T15_INDEPENDENT, T15_NO_CHANGE, T15_CHANGE = 3.0, 1.5, 2.0, 3.0
+T17_MIDDLE, T17_Z_HIGH, T17_Z_LOW = (1 / 3, 2 / 3), 2.0, 1.0
+
+
+def _t15_word(z: float) -> str:
+    return "NO CHANGE" if z <= T15_NO_CHANGE else ("BETWEEN" if z <= T15_CHANGE else "CHANGE")
+
+
+def per_shot_span(r: dict) -> dict:
+    """One span's readings in its quadrature of record, recomputed through the package (A28) from the sweep means its
+    read published: at four places, recovered exactly as k/n over the span's rows, so that a mean on the threshold falls
+    as it fell in the read; the shot-noise share, the duration and the rows are the record's. The sd at the lag used,
+    its ceiling at three sweeps, and beside it the sd at one sweep less and more and at the 20th to 80th threshold."""
+    n = r["n_rows"]
+    k = np.rint(np.asarray(r["sweep_means"], float) * n)
+    assert np.all(np.abs(k / n - np.asarray(r["sweep_means"])) < 6e-5)
+    m = k / n
+    T = r["duration_s"]
+    sweep = T / len(m)
+    v_obs = float(m.var(ddof=1))
+    ratio = v_obs / r["v_ind"]
+    a = wait.two_state_reading(m, sweep, v_ind=r["v_ind"])
+    b = wait.two_state_reading(m, sweep, v_ind=r["v_ind"], percentiles=(20, 80))
+    out = {
+        "n_shots": len(m),
+        "sweep_s": sweep,
+        "v_obs": v_obs,
+        "ratio": ratio,
+        "word_of_the_ratio": "SHARED"
+        if ratio > T15_SHARED
+        else ("INDEPENDENT" if ratio < T15_INDEPENDENT else "UNDECIDED"),
+        "excess_over_independent": a["excess_over_shot_noise"],
+        "acf_lags_1_to_200": a["acf"],
+        "lag_1_over_e": a["lag"],
+        "threshold": a["threshold"],
+        "threshold_20_80": b["threshold"],
+        "duty_b": a["duty"],
+        "duty_b_at_threshold_20_80": b["duty"],
+        "switches": a["switches"],
+        "n_runs": a["n_runs"],
+        "dwell_high_s": a["dwell_high_s"],
+        "dwell_low_s": a["dwell_low_s"],
+        "quarter_span_duties": a["quarter_span_duties"],
+        "mid_sweep_fraction_middle_fifth": a["mid_sweep_fraction"],
+    }
+    if len(m) >= 1000:
+        out["acf_lags_490_to_510"] = wait.sweep_autocorrelation(m, range(490, 511))
+    if out["word_of_the_ratio"] == "SHARED":
+        e = wait.time_average_sd(a["duty"], a["lag"], sweep, T)
+        used = e["sweeps_used"]
+        out |= {
+            "tau_c_sweeps_used": used,
+            "tau_c_s": e["tau_c_s"],
+            "tau_c_ceiling": e["at_ceiling"],
+            "telegraph_sd": e["sd"],
+            "telegraph_sd_tau_minus_1": wait.time_average_sd(a["duty"], used - 1, sweep, T, ceiling=None)["sd"],
+            "telegraph_sd_tau_plus_1": wait.time_average_sd(a["duty"], used + 1, sweep, T, ceiling=None)["sd"],
+            "telegraph_sd_at_threshold_20_80": wait.time_average_sd(b["duty"], used, sweep, T, ceiling=None)["sd"],
+        }
+    return out
+
+
+def per_shot_job(job: dict) -> dict:
+    """A monitor job of a per-shot read: every span of 143 in its quadrature of record (per_shot_span), with the duty
+    on the weight's branch, the branch read from the span's published mean phase (test 15's rule: b where the
+    quadrature's component of that phase is negative, else 1 - b)."""
+    wd = job["qubits"]["143"]["waits"]["monitor"]
+    q = wd["quadrature_of_record"]
+    spans = []
+    for s in wd["spans"]:
+        if q not in s:
+            spans.append({})
+            continue
+        r = per_shot_span(s[q])
+        g = math.sin(s["theta_bar"]) if q == "Y" else math.cos(s["theta_bar"])
+        branch = "b" if g < 0 else "1 - b"
+        spans.append(
+            {"span": s["span"], q: r, "w_branch": branch, "w_duty": r["duty_b"] if branch == "b" else 1 - r["duty_b"]}
+        )
+    return {"quadrature": q, "spans": spans}
+
+
+def _pair(ra: dict, rb: dict, published=None) -> dict:
+    """Test 15's boundary row between two SHARED spans, by the package's boundary_ratio, with its sensitivities."""
+    br = wait.boundary_ratio(ra["duty_b"], ra["telegraph_sd"], rb["duty_b"], rb["telegraph_sd"])
+    t2 = wait.boundary_ratio(
+        ra["duty_b_at_threshold_20_80"],
+        ra["telegraph_sd_at_threshold_20_80"],
+        rb["duty_b_at_threshold_20_80"],
+        rb["telegraph_sd_at_threshold_20_80"],
+    )
+    sens = {"threshold_20_80": {**t2, "word": _t15_word(t2["ratio"])}}
+    for name, key in (
+        ("tau_minus_1_sweep", "telegraph_sd_tau_minus_1"),
+        ("tau_plus_1_sweep", "telegraph_sd_tau_plus_1"),
+    ):
+        x = wait.boundary_ratio(ra["duty_b"], ra[key], rb["duty_b"], rb[key])
+        sens[name] = {"combined_sd": x["combined_sd"], "ratio": x["ratio"], "word": _t15_word(x["ratio"])}
+    row = {**br, "word": _t15_word(br["ratio"]), "sensitivity": sens}
+    row["word_changes_under_sensitivity"] = sorted(k for k, v in sens.items() if v["word"] != row["word"])
+    if published:
+        z = abs(published["difference"]) / br["combined_sd"]
+        row["published_difference_over_the_same_sd"] = {"ratio": z, "word": _t15_word(z)}
+    return row
+
+
+def per_shot_boundaries(rec: dict, jobs: dict, keys) -> list:
+    """Every adjacent pair of spans within each job, in the order the read lists them."""
+    out = []
+    for b in rec["boundaries"]:
+        if b["job"] not in keys:
+            continue
+        j = jobs[b["job"]]
+        sp = {s["span"]: s for s in j["spans"] if s}
+        ra, rb = sp[b["spans"][0]][j["quadrature"]], sp[b["spans"][1]][j["quadrature"]]
+        out.append({"duties": [ra["duty_b"], rb["duty_b"]], **_pair(ra, rb, b.get("published"))})
+    return out
+
+
+def _job_mean(job: dict) -> dict:
+    sp = [s for s in job["spans"] if s]
+    q = job["quadrature"]
+    r = [s[q] for s in sp]
+    return {
+        "w_branches": sorted({s["w_branch"] for s in sp}),
+        "span_w_duties": [s["w_duty"] for s in sp],
+        "job_mean_w_duty": float(np.mean([s["w_duty"] for s in sp])),
+        "job_sd": math.sqrt(sum(x["telegraph_sd"] ** 2 for x in r)) / len(r),
+        "span_tau_c_s": [x["tau_c_s"] for x in r],
+        "tau_c_median_s": float(np.median([x["tau_c_s"] for x in r])),
+    }
+
+
+def _between(a: dict, b: dict) -> dict:
+    """Two jobs' mean duties on the weight's branch over their combined sd (test 15's); none where a branch differs."""
+    if len(a["w_branches"]) != 1 or a["w_branches"] != b["w_branches"]:
+        return {"word": None}
+    d = b["job_mean_w_duty"] - a["job_mean_w_duty"]
+    sd = math.hypot(a["job_sd"], b["job_sd"])
+    return {"difference": d, "combined_sd": sd, "ratio": abs(d) / sd, "word": _t15_word(abs(d) / sd)}
+
+
+def t16_day3_read(rec: dict, t15: dict, day3: dict) -> dict:
+    """Test 16 (finding 30): day 3's monitor spans, boundaries and jobs from the read's published sweep means, through
+    the package (per_shot_span); day 2's spans the same way from test 15's record; the day means on the weight's branch,
+    each over six spans, with each day's sd the root sum of squares over six; the middle span less the mean of the ends
+    (beside, not a test); job 1's published weights per span, their sd at the borrowed tau_c (the median of day 3's)."""
+    a = rec["archived"]["analysis"]
+    jobs = {k: per_shot_job(a["jobs"][k]) for k in ("d3-job2", "d3-job3")}
+    day2 = {k: per_shot_job(t15["archived"]["analysis"]["jobs"][k]) for k in ("t11-job2", "t11-job3")}
+    js = [_job_mean(jobs[k]) for k in ("d3-job2", "d3-job3")]
+    between = _between(*js)
+    w2 = [s["w_duty"] for k in day2 for s in day2[k]["spans"]]
+    s2 = [s["Y"]["telegraph_sd"] for k in day2 for s in day2[k]["spans"]]
+    w3 = [s["w_duty"] for k in jobs for s in jobs[k]["spans"]]
+    s3 = [s["Y"]["telegraph_sd"] for k in jobs for s in jobs[k]["spans"]]
+    m2, m3 = float(np.mean(w2)), float(np.mean(w3))
+    sd2, sd3 = math.sqrt(sum(x * x for x in s2)) / len(s2), math.sqrt(sum(x * x for x in s3)) / len(s3)
+    means = {
+        "day_mean_duties": [m2, m3],
+        "day_sds": [sd2, sd3],
+        "difference": m3 - m2,
+        "combined_sd": math.hypot(sd2, sd3),
+        "difference_over_sd": (m3 - m2) / math.hypot(sd2, sd3),
+    }
+    mm = []
+    for j in (*day2.values(), *jobs.values()):
+        r = [s["Y"] for s in j["spans"]]
+        d = r[1]["duty_b"] - (r[0]["duty_b"] + r[2]["duty_b"]) / 2
+        sd = math.sqrt(r[1]["telegraph_sd"] ** 2 + (r[0]["telegraph_sd"] ** 2 + r[2]["telegraph_sd"] ** 2) / 4)
+        mm.append({"middle_minus_mean_of_ends": d, "telegraph_sd": sd, "difference_over_sd": d / sd})
+    tau = float(np.median([s["Y"]["tau_c_s"] for j in jobs.values() for s in j["spans"]]))
+    w = [x["weighted_mean"] for x in day3["archived"]["analysis"]["jobs"]["1"]["span_readings_A26"]["weight_per_span"]]
+    sp1 = sorted(day3["jobs"]["1"]["execution_metadata"]["execution_spans"], key=lambda s: s["start_utc"])
+    dur = [x["duration_s"] for x in sp1]
+    sds = [math.sqrt(2 * x * (1 - x) * tau / T) for x, T in zip(w, dur)]
+    rows = []
+    for i in range(len(w) - 1):
+        d = w[i + 1] - w[i]
+        sd = math.hypot(sds[i], sds[i + 1])
+        rows.append({"difference": d, "combined_sd": sd, "ratio": abs(d) / sd, "word": _t15_word(abs(d) / sd)})
+    return {
+        "jobs": jobs,
+        "boundaries": per_shot_boundaries(a, jobs, ("d3-job2", "d3-job3")),
+        "between_jobs": {"jobs": js, "rows": [between]},
+        "day2": day2,
+        "beside_day_means": means,
+        "beside_middle_minus_ends": mm,
+        "job1_borrowed": {"tau_c_borrowed_s": tau, "telegraph_sd_borrowed": sds, "rows": rows},
+    }
+
+
+def _line(t, y, sd) -> dict:
+    """A straight line of duty on time, weighted by 1 / sd², and its slope over its sd (test 17's beside)."""
+    t, y, w = np.asarray(t, float), np.asarray(y, float), 1 / np.asarray(sd, float) ** 2
+    X = np.stack([np.ones_like(t), t], axis=1)
+    G = X.T @ (X * w[:, None])
+    a0, b0 = np.linalg.solve(G, X.T @ (w * y))
+    se = math.sqrt(np.linalg.inv(G)[1, 1])
+    return {"intercept": float(a0), "slope_per_unit_t": float(b0), "slope_sd": se, "slope_over_sd": float(b0) / se}
+
+
+def _contrast(rows: list, duty: str, sd: str) -> dict:
+    mid = [r for r in rows if T17_MIDDLE[0] <= r["t"] <= T17_MIDDLE[1]]
+    oth = [r for r in rows if not (T17_MIDDLE[0] <= r["t"] <= T17_MIDDLE[1])]
+    sd_mid = math.sqrt(sum(r[sd] ** 2 for r in mid)) / len(mid)
+    sd_oth = math.sqrt(sum(r[sd] ** 2 for r in oth)) / len(oth)
+    C = float(np.mean([r[duty] for r in mid])) - float(np.mean([r[duty] for r in oth]))
+    s = math.hypot(sd_mid, sd_oth)
+    return {
+        "C": C,
+        "sd": s,
+        "C_over_sd": C / s,
+        "sd_mid": sd_mid,
+        "sd_other": sd_oth,
+        "mid_spans": [r["span"] for r in mid],
+        "other_spans": [r["span"] for r in oth],
+    }
+
+
+def t17_read(rec: dict) -> dict:
+    """Test 17 (finding 30): every monitor span of A1, A2 and B1 from the read's published sweep means through the
+    package (per_shot_span); the boundary rows; the jobs' means and the rows between adjacent jobs; and the middle test
+    its rule fixed: each span's centre t as a fraction of the job's time from the provider's starts and stops, the
+    contrast C of the spans with t in [1/3, 2/3] against the others with its sd, Z = (sum of C / sd) / sqrt(n) over the
+    contributing jobs, and its word; beside, Z at the 20th to 80th threshold and the weighted line of duty on t."""
+    a = rec["archived"]["per_shot_read"]
+    keys = ("A1", "A2", "B1")
+    jobs = {k: per_shot_job(a["jobs"][k]) for k in keys}
+    js = {k: _job_mean(jobs[k]) for k in keys}
+    middle = []
+    for k in keys:
+        sp = sorted(a["jobs"][k]["spans"], key=lambda s: s["start_utc"])
+        t0 = datetime.fromisoformat(sp[0]["start_utc"])
+        L = (datetime.fromisoformat(sp[-1]["stop_utc"]) - t0).total_seconds()
+        cen = {}
+        for s in sp:
+            u0, u1 = datetime.fromisoformat(s["start_utc"]), datetime.fromisoformat(s["stop_utc"])
+            cen[s["span"]] = ((u0 - t0).total_seconds() + (u1 - u0).total_seconds() / 2) / L
+        rows = []
+        for s in jobs[k]["spans"]:
+            r = s["Y"]
+            rows.append(
+                {
+                    "span": s["span"],
+                    "t": cen[s["span"]],
+                    "duty": r["duty_b"],
+                    "sd": r["telegraph_sd"],
+                    "duty_2080": r["duty_b_at_threshold_20_80"],
+                    "sd_2080": r["telegraph_sd_at_threshold_20_80"],
+                }
+            )
+        c = _contrast(rows, "duty", "sd")
+        middle.append(
+            {
+                "job": k,
+                "spans": [{"span": r["span"], "t": r["t"]} for r in rows],
+                **c,
+                "beside_threshold_20_80": _contrast(rows, "duty_2080", "sd_2080"),
+                "beside_line_duty_on_t": _line(
+                    [r["t"] for r in rows], [r["duty"] for r in rows], [r["sd"] for r in rows]
+                ),
+            }
+        )
+    n = len(middle)
+    Z = sum(x["C_over_sd"] for x in middle) / math.sqrt(n)
+    word = "MIDDLE HIGH" if Z >= T17_Z_HIGH else ("NOT SEEN" if Z < T17_Z_LOW else "UNDECIDED")
+    return {
+        "jobs": jobs,
+        "boundaries": per_shot_boundaries(a, jobs, keys),
+        "between_jobs_job_rows": js,
+        "between_jobs": [_between(js[x], js[y]) for x, y in zip(keys, keys[1:])],
+        "middle_test": {
+            "jobs": middle,
+            "pooled": {
+                "n_contributing_jobs": n,
+                "Z": Z,
+                "word": word,
+                "beside_Z_at_threshold_20_80": sum(x["beside_threshold_20_80"]["C_over_sd"] for x in middle)
+                / math.sqrt(n),
+            },
+        },
+    }
+
+
+def scorecard_t17_recount(card: dict, calibration: dict) -> dict:
+    """A28, ruling R3, item 4: version 4.1's scorecard on test 17's long job (D2), recounted from its published files
+    by the scorer's own definitions (`score_model_01_v4_1.score_entries`, with `calibration_v4_1.calibrate` and
+    `cutoff`, which the scorer calls through `apply_calibration`):
+
+    - each quantity's interval is the 5th and 95th percentiles (numpy's default) of its finite values over the first
+      half of the calibration trials, in trial order;
+    - a bet misses when its observation lies outside its interval, the ends counting as inside;
+    - a family's cutoff is the smallest miss count c whose one-sided 95 percent Monte Carlo upper bound on
+      P(misses >= c), beta.ppf(0.95, h + 1, n - h) for h of the n trials of the second half with at least c misses (a
+      missing value counted as a miss), is under 0.05; the family counts against the model when its misses reach it;
+    - the likelihood probability is the share of complete likelihood trials (every comparison with a p and no
+      failure) in which any comparison has p under 0.01.
+
+    The observations are the scorecard's; nothing stored in it as a summary is read."""
+    from scipy.stats import beta
+
+    trials = sorted(calibration["trials"], key=lambda t: t["trial"])
+    half = len(trials) // 2
+
+    def interval(xs: list) -> list:
+        a = np.asarray(xs, dtype=np.float64)
+        return np.quantile(a[np.isfinite(a)], [0.05, 0.95]).tolist()
+
+    families = {f["family"]: f["quantities"] for f in card["families"]}
+    ints = {q: interval([x for t in trials[:half] for x in t["values"][q]]) for qs in families.values() for q in qs}
+    inside = {
+        (s["quantity"], o["unit"]): ints[s["quantity"]][0] <= o["value"] <= ints[s["quantity"]][1]
+        for s in card["prediction_scores"]
+        for o in s["observations"]
+    }
+    out = {}
+    for fam, qs in families.items():
+        bets = [v for (q, _), v in inside.items() if q in qs]
+        k = sum(len(trials[0]["values"][q]) for q in qs)
+        per = [
+            sum(x is None or not ints[q][0] <= x <= ints[q][1] for q in qs for x in t["values"][q])
+            for t in trials[half:]
+        ]
+        cut = None
+        for c in range(1, k + 1):
+            h, n = sum(m >= c for m in per), len(per)
+            if (float(beta.ppf(0.95, h + 1, n - h)) if h < n else 1.0) < 0.05:
+                cut = c
+                break
+        misses = sum(not v for v in bets)
+        out[fam] = {"bets": len(bets), "k": k, "misses": misses, "cutoff": cut, "counts_against": misses >= cut}
+    complete = [t for t in trials if t["lr"] and all(x["p"] is not None and not x["failures"] for x in t["lr"])]
+    lr = sum(any(x["p"] < 0.01 for x in t["lr"]) for t in complete) / len(complete)
+    return {"intervals": ints, "inside": inside, "families": out, "lr_probability": lr, "lr_trials": len(complete)}
+
+
+def scorecard_t17_differences(card: dict, calibration: dict) -> list:
+    """Every place where the scorecard's stored summaries differ from `scorecard_t17_recount`: each quantity's
+    interval, each bet's inside_90, each family's bets, misses, cutoff and verdict, and the likelihood probability.
+    Empty when the scorecard is what its files recount to."""
+    r = scorecard_t17_recount(card, calibration)
+    diff = []
+    for s in card["prediction_scores"]:
+        if s["interval_90"] != r["intervals"][s["quantity"]]:
+            diff.append(f"interval of {s['quantity']}")
+        for o in s["observations"]:
+            if o["inside_90"] != r["inside"][(s["quantity"], o["unit"])]:
+                diff.append(f"inside_90 of {s['quantity']} at {o['unit']}")
+    for f in card["families"]:
+        g = r["families"][f["family"]]
+        stored = (f["bets_scored"], f["misses"], f["smallest_miss_count_under_0p05"], f["counts_against"])
+        if stored != (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) or f["calibration"]["k"] != g["k"]:
+            diff.append(f"family {f['family']}")
+    (actual,) = [x for x in card["scenario_scores"] if x["scenario"] == "actual"]
+    (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
+    if lr["probability"] != r["lr_probability"]:
+        diff.append("likelihood probability")
+    return diff

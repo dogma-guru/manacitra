@@ -28,6 +28,9 @@ PUBLISHED = {
     "events-model-01-v3.json": "000a75d40761f6f28ce9221134fe700d3a883538ffbb89dbd1346259e8350618",
     "frequency-ledger.json": "14ceaf554d9a843d35c72b406fd6d9b6814eb7f8f48a559f56fe2d574043b73f",
 }
+#: A command session's handle as the desk runner's polling calls passed it: a session_id followed by digits, alone or
+#: as an array, or an array of digits mapped to session_id (A28, ruling R3, item 1)
+HANDLE = re.compile(r"session_id\W{0,4}\d|\[[\d,]+\]\.map\(session_id")
 #: The frequency counts at 4 kHz the kickoff names, per job: (within-span events, trials, boundary events, trials)
 FREQUENCY = {
     "9, job 2": (0, 509, 0, 77),
@@ -63,7 +66,7 @@ def test_the_run_is_published_as_delivered():
     # the signing workflow's bundles (FILE.sigstore.json) sit beside the files on main, and are not the folder's files
     for k in (p for p in (ROOT / "kickoffs").iterdir() if not archive.is_bundle(p)):
         text = k.read_text()
-        assert not re.search(r"chat\s*gpt|open\s*ai", text, re.I), k.name
+        assert not re.search(r"chat\s*gpt|open\s*ai|codex", text, re.I), k.name
         assert _sha(k) in readme, k.name
     for held in ("run.log", "events-model-01-v3.json", "frequency-ledger.json"):
         assert held in sums and not (RUN / held).exists() and f"`{held}`" in readme
@@ -157,3 +160,173 @@ def test_every_count_from_the_ledgers():
         assert tuple(got) == want, job
     wb = json.loads((d / "shuffled-stamp-ledger.json").read_text())["weight_boundaries"]
     assert (len(wb), sum(r["event_own"] for r in wb), sum(r["event_fixed"] for r in wb)) == (38, 16, 11)
+
+
+# --------------------------------------------------------------------------- versions 4 and 4.1 (Amendment A28)
+#: The digests the author posted before each version's run: version 4's in issue 66, before test 11's third day, and
+#: version 4.1's in issue 68, before test 17
+POSTED_V4 = {
+    "v4": (
+        66,
+        {
+            "predictions-model-01-v4.md": "718a0b86f3caeb832630a2431f6c14e137d9c0b90ffe10ac877cbc0ac5b7481b",
+            "predictions-model-01-v4.json": "cd8e4b87b64aa818a43b533ed0725cda47af79f1c1be25890743f1c1646f92af",
+            "score_model_01_v4.py": "42287f2e3f881b148bfa10f23cfbc190dff2959fc156e0bdb88b6e627601d7bf",
+            "FORECAST-SHA256SUMS": "1115b9bdddb43c0e81a68905709a8025d58106799e69da40f89614e76bddfcc2",
+        },
+    ),
+    "v4.1": (
+        68,
+        {
+            "predictions-model-01-v4.1.md": "5b2e45dea15f613d4314a959d5c06bebf0a663a5f1cb7e607f442ce45b98628f",
+            "predictions-model-01-v4.1.json": "a30488be57eade0df185c594cd83befa5817f8e54261a47423017d0d9814fc54",
+            "score_model_01_v4_1.py": "ae4aed5c957c5c5942629e82a5ccd291141a3038cb2a8aa490ff3f165493632c",
+            "FORECAST-SHA256SUMS": "7903a281ccc808ed8dd13c4b316919554879ec29a353f7093642c98b9081b083",
+        },
+    ),
+}
+
+
+def _sums_of(path: Path) -> dict:
+    out = {}
+    for line in path.read_text().splitlines():
+        if line.strip():
+            h, name = line.split(maxsplit=1)
+            out[name.strip()] = h
+    return out
+
+
+@pytest.mark.parametrize("version", ["v4", "v4.1"])
+def test_versions_4_and_4_1_are_published_as_delivered(version):
+    """Amendment A28, section 3: every file of the version here is its run's file, checked against the run's own
+    SHA256SUMS, or, where the folder's README lists a replacement ("[local path]", "the desk runner", the session or,
+    by ruling R2, the name of its variable), carries the published SHA-256 the README gives beside the delivered one,
+    which is the run's; the scorer and its dependencies match FORECAST-SHA256SUMS, whose own digest and the
+    predictions' are those posted; the compiled library is not committed; and no file names a home path or the desk
+    runner's service."""
+    folder = ROOT / version
+    sums = _sums_of(folder / "SHA256SUMS")
+    forecast = _sums_of(folder / "FORECAST-SHA256SUMS")
+    readme = (ROOT / "README.md").read_text()
+    issue, posted = POSTED_V4[version]
+    assert f"[issue {issue}](https://github.com/dogma-guru/manacitra/issues/{issue})" in readme
+    files = sorted(p for p in folder.iterdir() if p.is_file() and not archive.is_bundle(p))
+    assert files and not (folder / "hmm_core.dylib").exists() and "hmm_core.dylib" in forecast
+    replaced = 0
+    for p in files:
+        h = _sha(p)
+        name = p.name
+        row = next(line for line in readme.splitlines() if line.startswith(f"| `{version}/{name}` |"))
+        if name.startswith("scorecard-t1"):  # from the tests' hand-backs, not the model's runs
+            hashes = re.findall(r"`([0-9a-f]{64})`", row)
+            assert h == hashes[-1] and (len(hashes) == 2 or row.endswith("| the same |")), name
+            continue
+        if name == "SHA256SUMS":
+            assert row.endswith(f"`{h}` | the same |")
+            continue
+        if row.endswith("| the same |"):
+            assert h == sums[name], name
+        else:
+            replaced += 1
+            assert f"| `{sums[name]}` | `{h}` |" in row, name
+            assert name not in forecast, name  # nothing the forecast hashed is changed
+        if name in forecast:
+            assert h == forecast[name], name
+        text = p.read_text()
+        assert not re.search(r"/Users/|/home/|chat\s*gpt|open\s*ai|codex", text, re.I), name
+        assert not HANDLE.search(text), name
+    for name, h in posted.items():
+        assert _sha(folder / name) == h and h in readme, name
+    assert replaced == {"v4": 3, "v4.1": 4}[version]
+
+
+def test_the_command_session_handles_are_refused():
+    """A28, ruling R3, item 1: version 4.1's run log carried, at 61f34df, the handles of the command sessions its
+    polling calls read, 30 of them, six values on 14 lines; each is written "[a command session]", and the files check
+    above refuses a handle in any form. The negative control writes one handle back into the published log, in memory,
+    and then every handle, as the log stood at 61f34df; the check must catch both."""
+    log = (ROOT / "v4.1" / "run.log").read_text()
+    assert log.count("[a command session]") == 30 and not HANDLE.search(log)
+    lines = [line for line in log.split("\n") if "[a command session]" in line]
+    assert len(lines) == 14
+    assert HANDLE.search(log.replace("[a command session]", "12345", 1))  # made-up digits, not a handle of the run
+    assert HANDLE.search(log.replace("[a command session]", "67890"))
+    assert HANDLE.search("const rs=await Promise.allSettled([12345,67890].map(session_id=>tools.write_stdin(")
+
+
+def test_the_carried_sentences_and_their_plain_reading():
+    """The folder's README quotes each version's three carried sentences word for word as its report carries them
+    (version 3's from run 3.1's report; versions 4 and 4.1's from both reports), and gives after each quotation, as a
+    paragraph of its own and not inside the quotation, a reading of it in plain words, at the author's choice of 20
+    October 2026. The quotations are not changed."""
+    lines = (ROOT / "README.md").read_text().split("\n")
+    reports = {
+        "Version 3's report carries three sentences:": [RUN / "report-model-01-v3.md"],
+        "Versions 4 and 4.1 carry three sentences:": [ROOT / v / f"report-model-01-{v}.md" for v in ("v4", "v4.1")],
+    }
+    plain = {
+        "Version 3's report carries three sentences:": (
+            "In plain words: the model describes how the records change and does not say why; a change too small for a "
+            "record to see is counted as unseen, not as one that did not happen; and its forecasts, written before the "
+            "run, are the test it can fail."
+        ),
+        "Versions 4 and 4.1 carry three sentences:": (
+            "In plain words: the model describes how each span switches between two states and does not say why; its "
+            "clock is the order in which the provider returns the shots, and its times are in seconds only if that is "
+            "the order in which they ran; and its forecasts, written before the run, are what can count against it."
+        ),
+    }
+    for lead, files in reports.items():
+        i = lines.index(lead)
+        quote, reading = lines[i + 2], lines[i + 4]
+        assert quote.startswith("> ") and lines[i + 1] == lines[i + 3] == ""
+        sentences = re.findall(r'"([^"]+)"', quote)
+        assert len(sentences) == 3
+        for f in files:
+            text = f.read_text()
+            assert all(s in text for s in sentences), f.name
+        assert reading == plain[lead] and not reading.startswith(">")
+        assert "—" not in reading and "–" not in reading
+
+
+def test_the_scorecards_family_counts():
+    """Amendment A28, section 3: the scorecards as the scorers wrote them, the local paths aside. Version 4's on test
+    11's third day (test 16) scored no calibrated bet, every family "not fully testable"; version 4.1's on test 17's
+    long job (D2) scored 12 duty bets with 0 misses (cutoff 5), 24 correlation bets with 0 (cutoff 9) and 4 emission
+    bets with 2 (cutoff 3), no family counting against it, and no likelihood rejection at 1 percent against 0.62. By
+    ruling R3, item 4, every one of those summaries is recounted from the published files by the scorer's own
+    definitions (`_reuse_runs.scorecard_t17_recount` states them), and an in-memory copy with one duty observation
+    moved outside its interval must fail the recount."""
+    c16 = json.loads((ROOT / "v4" / "scorecard-t16.json").read_text())
+    assert {f["status"] for f in c16["families"]} == {"not fully testable"}
+    assert sum(f["bets_scored"] for f in c16["families"]) == sum(f["misses"] for f in c16["families"]) == 0
+    assert (
+        c16["sharing_spans_counting_against"] == []
+        and c16["prediction_sha256"] == POSTED_V4["v4"][1]["predictions-model-01-v4.json"]
+    )
+    c17 = json.loads((ROOT / "v4.1" / "scorecard-t17.json").read_text())
+    fam = {
+        f["family"]: (f["bets_scored"], f["misses"], f["smallest_miss_count_under_0p05"], f["counts_against"])
+        for f in c17["families"]
+    }
+    assert fam == {"duty": (12, 0, 5, False), "correlation": (24, 0, 9, False), "emissions": (4, 2, 3, False)}
+    assert c17["matching_scenario"] == "actual" and c17["any_monitor_boundary_LR_p_under_0p01"] is False
+    assert c17["prediction_sha256"] == POSTED_V4["v4.1"][1]["predictions-model-01-v4.1.json"]
+    (actual,) = [x for x in c17["scenario_scores"] if x["scenario"] == "actual"]
+    (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
+    assert (lr["probability"], lr["observed"]) == (0.62, False)
+    import copy
+
+    import _reuse_runs as rr
+
+    calib = json.loads((ROOT / "v4.1" / "scorecard-t17.calibration.json").read_text())
+    r = rr.scorecard_t17_recount(c17, calib)
+    assert {f: (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) for f, g in r["families"].items()} == fam
+    assert (r["lr_probability"], r["lr_trials"]) == (0.62, 100)
+    assert rr.scorecard_t17_differences(c17, calib) == []
+    bad = copy.deepcopy(c17)  # the negative control
+    (duty,) = [s for s in bad["prediction_scores"] if s["quantity"] == "threshold_duty"]
+    duty["observations"][0]["value"] = 0.99
+    assert rr.scorecard_t17_differences(bad, calib) == ["inside_90 of threshold_duty at B1-q143-s0", "family duty"]
+    for c in (c16, c17):
+        assert c["prediction_file"] == "[local path]"

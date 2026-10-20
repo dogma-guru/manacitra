@@ -10,6 +10,7 @@ import copy
 import hashlib
 import json
 import math
+import os
 import re
 from pathlib import Path
 from types import SimpleNamespace
@@ -1645,3 +1646,166 @@ def test_the_span_assignment_reads_the_provider_record():
         got = wait.span_assignment(rec["jobs"][job]["execution_metadata"]["execution_spans"], labs)
         assert got["straddling_repeats"] == want
         assert [len(s["positions"]) for s in got["spans"]] == ([100, 101, 99] if job == "2" else [101, 100, 99])
+
+
+# --------------------------------------------------------------------------- the per-shot read of a span (A28)
+def _two_state_span(rng, rows: int, sweeps: int, duty: float, tau_sweeps: float, q_high=0.86, q_low=0.13):
+    """One span's bits per row: a two-state chain on the sweep index, stationary at the given duty, its correlation
+    per sweep exp(-1 / tau_sweeps), shared by every row at equal index; each row's shot reads 1 with the state's
+    probability. Returns the bits (rows by sweeps) and the chain's states."""
+    lam = math.exp(-1 / tau_sweeps)
+    up, down = duty * (1 - lam), (1 - duty) * (1 - lam)
+    s = np.empty(sweeps, bool)
+    s[0] = rng.random() < duty
+    u = rng.random(sweeps)
+    for j in range(1, sweeps):
+        s[j] = (u[j] >= down) if s[j - 1] else (u[j] < up)
+    p = np.where(s, q_high, q_low)
+    return (rng.random((rows, sweeps)) < p).astype(np.int8), s
+
+
+def _synthetic_job(bits_by_span: list) -> tuple[list, list, list]:
+    """A job of X then Y repeats whose Y rows are the given spans' rows, one span after another, X rows all zero, with
+    one repeat straddling the first boundary: per position its bits, its label, and the provider's span record."""
+    labels, bits, spans, t0 = [], [], [], 0.0
+    for sp, rows in enumerate(bits_by_span):
+        pos = []
+        for row in rows:
+            k = len(labels) // 2 + 1
+            for circ, b in (("X", np.zeros_like(row)), ("Y", row)):
+                pos.append(len(labels))
+                labels.append({"circuit": circ, "repeat": k})
+                bits.append(b)
+        spans.append({"span": sp, "positions": pos, "start": t0, "stop": t0 + 27.5})
+        t0 += 27.505
+    a, b = spans[0]["positions"][-1], spans[1]["positions"][0]
+    spans[0]["positions"][-1], spans[1]["positions"][0] = b, a  # the last repeat of span 0 straddles the boundary
+    return bits, labels, spans
+
+
+def test_the_per_shot_read_returns_a_known_duty_and_correlation_time():
+    """Amendment A28, 1 (the tests): on synthetic spans of a two-state process shared by every row at equal shot index,
+    49 rows of 1,000 shots at duties 0.32 and 0.45 and a correlation time of 8 sweeps, the package's read returns what
+    was planted within its sampling error: the sharing ratio far above the share of independent shots; over 200 spans,
+    the mean duty within three standard errors of the planted one and the spread of the duties within a quarter of the
+    error of a time average; the median correlation lag within one sweep of 8; and the boundary ratio of two
+    spans of one duty near the spread of a standard normal. Rows that share no state read a ratio near 1. The
+    straddling repeat is left out, and the threshold, the duty and the dwells follow the planted chain."""
+    rng = np.random.default_rng(28)
+    for duty in (0.32, 0.45):
+        duties, sds, lags, ratios, zs = [], [], [], [], []
+        for _ in range(100):
+            spans_bits = [_two_state_span(rng, 49, 1000, duty, 8.0)[0] for _ in range(2)]
+            bits, labels, spans = _synthetic_job(spans_bits)
+            ser = wait.sweep_series(bits, labels, spans, "Y")
+            assert [s["n_rows"] for s in ser] == [48, 48] and ser[0]["repeats"] == list(range(1, 49))
+            got = []
+            for s in ser:
+                sr = wait.sharing_ratio(s["M"])
+                r = wait.two_state_reading(s["m"], s["sweep_s"], v_ind=sr["v_ind"])
+                e = wait.time_average_sd(r["duty"], r["lag"], s["sweep_s"], s["duration_s"])
+                duties.append(r["duty"])
+                sds.append(e["sd"])
+                lags.append(r["lag"])
+                ratios.append(sr["ratio"])
+                got.append((r["duty"], e["sd"]))
+            br = wait.boundary_ratio(got[0][0], got[0][1], got[1][0], got[1][1])
+            zs.append(br["difference"] / br["combined_sd"])
+        duties = np.array(duties)
+        assert abs(duties.mean() - duty) < 3 * duties.std(ddof=1) / math.sqrt(len(duties)), duty
+        assert 0.75 < duties.std(ddof=1) / np.median(sds) < 1.25, duty
+        assert abs(np.median(lags) - 8) <= 1 and min(ratios) > 10
+        assert 0.75 < np.std(zs, ddof=1) < 1.25
+    flat = (rng.random((49, 1000)) < 0.35).astype(float)
+    assert 0.8 < wait.sharing_ratio(flat)["ratio"] < 1.25
+    bits, s = _two_state_span(np.random.default_rng(1), 49, 1000, 0.32, 8.0)
+    m = bits.mean(axis=0)
+    r = wait.two_state_reading(m, 0.0275, v_ind=wait.sharing_ratio(bits)["v_ind"])
+    assert np.array_equal(m > r["threshold"], s) and r["duty"] == s.mean()
+    assert r["switches"] == int(np.sum(s[1:] != s[:-1])) and r["n_runs"] == r["switches"] + 1
+    assert r["tau_c_s"] == pytest.approx(r["lag"] * 0.0275) and len(r["quarter_span_duties"]) == 4
+    assert r["mid_sweep_fraction"] < 0.02 and r["lag_found"]
+
+
+def test_the_error_of_a_time_average_and_its_ceiling():
+    """Amendment A28, 1.4: sqrt(2 b (1 - b) tau_c / T), with a lag under three sweeps read at three as a ceiling, as
+    test 15 states it; None reads the lag as given. The boundary ratio is the difference over the combined sd."""
+    e = wait.time_average_sd(0.25, 8, 0.0275, 27.5)
+    assert e["sd"] == pytest.approx(math.sqrt(2 * 0.25 * 0.75 * 8 * 0.0275 / 27.5)) and not e["at_ceiling"]
+    c = wait.time_average_sd(0.25, 1, 0.0275, 27.5)
+    assert c["sweeps_used"] == 3 and c["at_ceiling"] and c["tau_c_s"] == pytest.approx(3 * 0.0275)
+    assert wait.time_average_sd(0.25, 2, 0.0275, 27.5, ceiling=None)["sweeps_used"] == 2
+    b = wait.boundary_ratio(0.30, 0.03, 0.26, 0.04)
+    assert (b["difference"], b["combined_sd"], b["ratio"]) == pytest.approx((-0.04, 0.05, 0.8))
+
+
+def test_the_per_shot_read_leaves_its_words_to_the_caller():
+    """Amendment A28, 1 (what stays out): the read's functions return numbers only; no verdict word of tests 13 to 17
+    is in their results, and none of their thresholds is a default."""
+    import inspect
+
+    bits, _ = _two_state_span(np.random.default_rng(2), 20, 400, 0.3, 5.0)
+    m = bits.mean(axis=0)
+    out = [
+        wait.sharing_ratio(bits),
+        wait.two_state_reading(m, 0.03, v_ind=wait.sharing_ratio(bits)["v_ind"]),
+        wait.time_average_sd(0.3, 5, 0.03, 12.0),
+        wait.boundary_ratio(0.3, 0.05, 0.35, 0.05),
+    ]
+    text = json.dumps(out, default=str)
+    for word in ("SHARED", "INDEPENDENT", "UNDECIDED", "NO CHANGE", "BETWEEN", "CHANGE", "MIDDLE", "NOT SEEN"):
+        assert word not in text
+    for f in (wait.sweep_series, wait.sharing_ratio, wait.two_state_reading, wait.time_average_sd, wait.boundary_ratio):
+        params = inspect.signature(f).parameters.values()
+        defaults = {p.default for p in params if isinstance(p.default, float)}
+        assert not {1.5, 2.0, 3.0} & defaults, f.__name__
+
+
+SHOTS = os.environ.get("MANACITRA_SHOTS")
+
+
+@pytest.mark.skipif(
+    not SHOTS, reason="needs test 17's per-shot arrays, which are not published (MANACITRA_SHOTS, a folder)"
+)
+def test_the_per_shot_read_reproduces_test_17s_long_job():
+    """Amendment A28, 1 (the tests): test 17's long job (B1), rebuilt from its archived per-shot array, which its record
+    names by SHA-256 and which is not published. Every span's whole repeats in Y, the quadrature of record: the
+    package's sweep series, sharing ratio, two-state reading and error of a time average reproduce the read's ratio,
+    duty, lag, correlation time and sd, and every sweep mean, as fits-t17-shots.json records them."""
+    rec = archive.load("ibm_fez/t17-long-monitor.json")
+    arr = next(a for a in rec["meta"]["arrays_not_published"] if a["file"] == "shots-t17-B1.npz")
+    path = Path(SHOTS) / arr["file"]
+    if not path.exists():
+        pytest.skip(f"{arr['file']} is not in MANACITRA_SHOTS")
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == arr["sha256"]
+    z = np.load(path)
+    idx = [k for k, lab in enumerate(rec["labels"]) if lab["job"] == "B1"]
+    labels = [rec["labels"][k] for k in idx]
+    bits = [z[f"p{i:03d}"].reshape(-1) for i in range(len(labels))]
+    assert [int(b.sum()) for b in bits] == [
+        sum(n for key, n in rec["counts"][k].items() if key[-1] == "1") for k in idx
+    ]
+    spans = rec["jobs"]["B1"]["execution_metadata"]["execution_spans"]
+    want = rec["archived"]["per_shot_read"]["jobs"]["B1"]["qubits"]["143"]["waits"]["monitor"]["spans"]
+    got = wait.sweep_series(bits, labels, spans, "Y")
+    assert [s["span"] for s in got] == [s["span"] for s in want] and len(got) == 6
+    for s, w in zip(got, want):
+        y = w["Y"]
+        sr = wait.sharing_ratio(s["M"])
+        r = wait.two_state_reading(s["m"], s["sweep_s"], v_ind=sr["v_ind"])
+        e = wait.time_average_sd(r["duty"], r["lag"], s["sweep_s"], s["duration_s"])
+        assert (
+            s["n_rows"] == y["n_rows"] == w["n_whole_repeats"]
+            and [round(float(v), 4) for v in s["m"]] == y["sweep_means"]
+        )
+        assert (r["duty"], r["lag"], e["sweeps_used"]) == (y["duty_b"], y["lag_1_over_e"], y["tau_c_sweeps_used"])
+        got_v = (sr["ratio"], sr["v_ind"], r["threshold"], e["tau_c_s"], e["sd"], r["mid_sweep_fraction"])
+        want_v = (
+            y["ratio"],
+            y["v_ind"],
+            y["threshold"],
+            y["tau_c_s"],
+            y["telegraph_sd"],
+            y["mid_sweep_fraction_middle_fifth"],
+        )
+        assert got_v == pytest.approx(want_v, rel=1e-12, abs=1e-15)

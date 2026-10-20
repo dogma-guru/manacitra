@@ -1,5 +1,7 @@
 # Manacitra, the long version
 
+The long version, for readers who want the circuits, the three map rules with their thresholds, the backends and the guards in one place; the later tests' rules are fixed in their rule files and stated in the findings. If it is too deep, read the [README](../README.md) and then [the method in six pictures](method.md) first.
+
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
 safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
 README is the short version; the findings in full are in [`findings.md`](findings.md), the method in six pictures in
@@ -76,6 +78,8 @@ against a spread between pairs of 0.205.
 
 Each rule is a pure function in `manacitra.verdicts` that returns the verdict, the rule's name, every input it used,
 and each condition as tested. The thresholds were fixed before the data they were first applied to, according to the author's dated records, which are not part of this release.
+
+The later per-shot words (SHARED, NO CHANGE, BETWEEN, CHANGE, MIDDLE HIGH, NOT SEEN) are defined in `data/ibm_fez/t15-rule.md` and `data/ibm_fez/t17-rule.md`, and stated in findings 29 and 30.
 
 ### The map rule (Kickoff 31)
 
@@ -315,7 +319,7 @@ pytest tests/test_readme_numbers.py   # the statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the fourteen diagrams, from data/
+python docs/make_diagrams.py          # the sixteen diagrams, from data/
 ```
 
 (*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
@@ -324,8 +328,8 @@ differs between platforms. So the intervals that also resample shots are compare
 between platforms is 3.2·10⁻⁴), and Kickoff 42's bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, the runs'
 version, and named as not compared under an older numpy. Every other field is compared at 10⁻⁶ everywhere.
 
-Every measured statistic in the README and the pages it links to (`findings.md`, `method.md`, `kickoffs.md`,
-`install.md`) is checked by a test; times, ranges and counts are taken from the data files and listed in
+Every statistic the runs measured, in the README and the pages it links to (`findings.md`, `method.md`, `kickoffs.md`,
+`install.md`), is checked by a test; times, ranges and counts are taken from the data files and listed in
 `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
 
 Where each README number comes from:
@@ -358,6 +362,7 @@ Where each README number comes from:
 | ibm_kingston, Kickoffs 56 to 59: the phase sweep, LARGE on 7 (L −36.7°), NOT SETTLED on 43, SMALL on 18; the check at the peak phase, AGREE on four cells, twice, on new chains; the placement comparison, PEAK SMALLER on 7 and 43 (D +0.170 and +0.108); ibm_fez, Kickoff 61: the readout check, PUBLISHED NOT READABLE (thirteen of sixteen qubits); Kickoff 62: the survey (median 0.0098 against 0.166 published) and the check at the peak phase, AGREE on four cells | `ibm_kingston/k56-phase-sweep.json`, `k57-peak-check.json`, `k58-placement-comparison.json`, `k59-peak-check-day-2.json`, `ibm_fez/k61-readout-check.json`, `k62-peak-check.json` | `tests/_reuse_runs.py`: `k56_phase_sweep`, `k57_peak_check`, `k58_placement`, `k59_peak_check_day_two`, `k61_readout`, `k62_peak_check_fez` (with `manacitra.wait.sweep_fit`, `peak_phase` and `readout_errors`) |
 | ibm_fez, test 7: the two-quadrature Ramsey on 143, TWO FIXED FREQUENCIES (held-out error 0.0200 for two lines against 0.0733 for one; δ 44.82 kHz, b 0.355, lines at 93.5 and 3.8 kHz); the copies' sum of z² (871.7 on 128) and the weight in execution order, read after the data | `ibm_fez/t7-ramsey-xy.json` | `tests/_reuse_runs.py`: `t7_ramsey_xy` (with `manacitra.wait.ramsey_xy_fit`) and `t7_readings` (with `copies_check`) |
 | ibm_kingston and ibm_fez, tests 8 to 11: test 10's 192 records, 189 QUIET and 1 SWITCHES AT BOUNDARIES ONLY, 17,398 qubit-seconds within spans; test 11 CONFIRMED ON DAY 2 (δ 44.70 kHz, b 0.466), QUIET and WEIGHT QUIET; test 9's 43 and 134 NOT CONFIRMED ON DAY 2; every job's execution spans; the desk model's counts (16 of the 47 kingston qubits compared across two stamps, by 4 kHz or more in the one-line fit; the weight at 4 of 4 of the monitor's boundaries) | `ibm_kingston/t10-monitor.json`, `ibm_fez/t11-day2-monitor.json`, `ibm_kingston/t9-day2-scan.json`, `ibm_kingston/spans-t8-t9.json`, `desk/sandhi/` | `tests/_reuse_runs.py`: `t10_monitor`, `t11_job1`, `t11_monitor`, `t9_job1_43_134` and `kingston_spans` (with `manacitra.wait.monitor_phase` and `monitor_weight`); `tests/test_sandhi.py` |
+| ibm_fez, test 11 on a third day and tests 16 and 17: CONFIRMED ON DAY 2 (δ 44.97 kHz, b 0.452), QUIET and WEIGHT QUIET; SHARED in all eighteen monitor spans read; the duty at every boundary of the long job NO CHANGE; the monitor means 0.330, 0.341 and 0.313; the middle test NOT SEEN (Z = −0.97); the desk model's scorecard on test 17 | `ibm_fez/t11-day3-monitor.json`, `ibm_fez/t16-day3-per-shot-read.json`, `ibm_fez/t17-long-monitor.json`, `desk/sandhi/` | `tests/_reuse_runs.py`: `t11_job1` and `t11_monitor` on day 3, `t16_day3_read` and `t17_read` (with `manacitra.wait.two_state_reading`, `time_average_sd` and `boundary_ratio`); `tests/test_sandhi.py` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3

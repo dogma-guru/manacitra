@@ -1478,6 +1478,116 @@ def diagram_two_lines(out: Path):
     save(fig, out, "two-lines-143")
 
 
+# --------------------------------------------------------------------------- 15 and 16. finding 30
+def _span_rows(job: dict) -> list:
+    wd = job["qubits"]["143"]["waits"]["monitor"]
+    q = wd["quadrature_of_record"]
+    return [(s, s[q]) for s in wd["spans"] if q in s]
+
+
+def diagram_sweep_series(out: Path):
+    """Finding 30, test 17's long job (B1) on ibm_fez's qubit 143: each span's sweep series in its quadrature of record,
+    Y, the mean over the span's whole repeats at each returned shot index, with the span's threshold between the two
+    states and its duty, correlation time and sharing ratio. The series are the read's, as test 17's record publishes
+    them; the times are on the sweep clock."""
+    rec = archive.load("ibm_fez/t17-long-monitor.json")
+    job = rec["archived"]["per_shot_read"]["jobs"]["B1"]
+    rows = _span_rows(job)
+    fig, axes = plt.subplots(2, 3, figsize=(9.6, 5.4), sharey=True)
+    for ax, (s, r) in zip(axes.flat, rows):
+        m = np.asarray(r["sweep_means"])
+        idx = np.arange(len(m))
+        ax.plot(idx, m, color=SERIES_1, lw=0.55)
+        ax.axhline(r["threshold"], color=INK, lw=0.9, ls=(0, (4, 3)))
+        ax.set_ylim(0, 1)
+        ax.set_xlim(0, len(m))
+        ax.set_xticks([0, 250, 500, 750, 1000])
+        ax.yaxis.grid(True, color=GRID, lw=0.8)
+        ax.set_axisbelow(True)
+        ax.set_title(
+            f"span {s['span']}: duty {r['duty_b']:.3f}, τ_c {r['tau_c_s']:.2f} s, ratio {r['ratio']:.1f}",
+            loc="left",
+            fontsize=8.5,
+            color=INK,
+        )
+    for ax in axes[1]:
+        ax.set_xlabel("returned shot index in the span")
+    for ax in axes[:, 0]:
+        ax.set_ylabel("mean over repeats, Y")
+    title = "Qubit 143, test 17's long job: the sweep series of each span"
+    fig.suptitle(title, x=0.07, y=0.99, ha="left", fontsize=10.5)
+    fig.text(
+        0.07,
+        0.945,
+        "ibm_fez, 19 October 2026, one job of 600 positions, six execution spans, every span SHARED. Each point is the "
+        "mean of the span's\n48 to 50 whole repeats at one returned index; dashed, the span's threshold between the "
+        "two states.",
+        fontsize=8.5,
+        color=INK_2,
+        va="top",
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.87))
+    save(fig, out, "sweep-series-143")
+
+
+def diagram_duties_by_span(out: Path):
+    """Finding 30: the duty of every monitor span of test 11's third day (jobs 2 and 3) and of test 17's long job, on
+    the weight's branch, each with its error as a time average, and each run's mean over its six spans. The numbers are
+    the reads', as tests 16's and 17's records publish them."""
+    d3 = archive.load("ibm_fez/t16-day3-per-shot-read.json")["archived"]["analysis"]["jobs"]
+    t17 = archive.load("ibm_fez/t17-long-monitor.json")["archived"]["per_shot_read"]["jobs"]["B1"]
+    runs = [
+        (
+            "test 11, day 3, 19 October, about 04:15 UTC",
+            [s for k in ("d3-job2", "d3-job3") for s in _span_rows(d3[k])],
+            SERIES_1,
+            ["job 2, span 0", "span 1", "span 2", "job 3, span 0", "span 1", "span 2"],
+        ),
+        (
+            "test 17, the long job, 19 October, about 17:10 UTC",
+            _span_rows(t17),
+            SERIES_2,
+            [f"span {i}" for i in range(6)],
+        ),
+    ]
+    fig, ax = plt.subplots(figsize=(9.2, 4.2))
+    x0, ticks, labels = 0, [], []
+    for name, rows, colour, lab in runs:
+        x = np.arange(x0, x0 + len(rows))
+        w = [s["w_duty"] for s, _ in rows]
+        sd = [r["telegraph_sd"] for _, r in rows]
+        ax.errorbar(x, w, yerr=sd, fmt="o", ms=5, color=colour, ecolor=colour, elinewidth=1.1, capsize=3, label=name)
+        mean = float(np.mean(w))
+        ax.plot([x[0] - 0.3, x[-1] + 0.3], [mean, mean], color=colour, lw=1.2, ls=(0, (4, 3)))
+        ax.text(x[-1] + 0.4, mean, f"mean {mean:.3f}", fontsize=8, color=INK, va="center")
+        ticks += list(x)
+        labels += lab
+        x0 += len(rows) + 1.5
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=8)
+    ax.set_ylim(0.1, 0.55)
+    ax.set_ylabel("duty on the weight's branch")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.legend(loc="upper left", frameon=False, fontsize=8)
+    ax.set_title(
+        "Qubit 143: the duty of each monitor span, with its error as a time average",
+        loc="left",
+        fontsize=10.5,
+        color=INK,
+        pad=22,
+    )
+    fig.text(
+        0.125,
+        0.905,
+        "ibm_fez; bars, each span's error as a time average; dashed, each run's mean over its six spans. NO CHANGE at "
+        "every boundary of both runs.",
+        fontsize=8.5,
+        color=INK_2,
+    )
+    save(fig, out, "duties-by-span-143")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1496,7 +1606,9 @@ def main(argv=None):
     diagram_phase_sweep(a.out)
     diagram_leftover(a.out)
     diagram_two_lines(a.out)
-    print(f"wrote 14 diagrams (SVG and PNG) to {a.out}")
+    diagram_sweep_series(a.out)
+    diagram_duties_by_span(a.out)
+    print(f"wrote 16 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":

@@ -317,11 +317,20 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
             for fam in "AB"
         }
     assert marked == (
-        shots | boot | REUSE_MARKED | WAIT_TEST_MARKED | A22_MARKED | A23_MARKED | A24_MARKED | A25_MARKED | A27_MARKED
+        shots
+        | boot
+        | REUSE_MARKED
+        | WAIT_TEST_MARKED
+        | A22_MARKED
+        | A23_MARKED
+        | A24_MARKED
+        | A25_MARKED
+        | A27_MARKED
+        | A28_MARKED
     )
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
     assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED), len(A25_MARKED)) == (336, 147, 385, 32)
-    assert len(A27_MARKED) == 26
+    assert (len(A27_MARKED), len(A28_MARKED)) == (26, 30)
 
 
 def _reuse_marked() -> set:
@@ -766,6 +775,46 @@ A27_MARKED = {
         J1 + "analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142",
         J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz",
         J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us",
+    )
+}
+
+
+#: Amendment A28: test 11's job 1 on a third day, by A27's rule for day 2: the fields that moved by 10⁻⁶ or more, and
+#: less than 8·10⁻⁴, over 200 other seeds of the five random streams its analysis draws, and its intervals that move
+#: less than 8·10⁻⁴, compared at 10⁻³; the fields that moved more are excluded with their reasons
+A28_MARKED = {
+    ("ibm_fez/t11-day3-monitor.json", f, "resampled-shots")
+    for f in (
+        J1 + "analysis/fits/S/params/tau_us",
+        J1 + "analysis/fits/S/params/phi0_rad",
+        J1 + "analysis/fits/S/largest_abs_residual_sigma",
+        J1 + "analysis/fits/P/params/tau_prime_us",
+        J1 + "analysis/beside/1_telegraph_T/fit/largest_abs_residual_sigma",
+        J1 + "analysis/beside/1_telegraph_T/gamma_ci90_per_us",
+        J1 + "analysis/beside/1_telegraph_T/delta_T_kHz",
+        J1 + "analysis/beside/1_telegraph_T/lines_against_the_band/T_lines_kHz",
+        J1 + "analysis/beside/1_telegraph_T/lines_against_the_band/T_reach_kHz",
+        J1 + "analysis/beside/3_beat_nodes/tau_S_us",
+        J1 + "analysis/beside/3_beat_nodes/tau_prime_P_us",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se",
+        J1 + "analysis/beside/5_detuning_and_T2/S_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_S_us",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_prime_P_us",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/X",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/Y",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/complex",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/weights_ci90/w144",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/weights_ci90/w142",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/chi2",
         J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz",
         J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us",
     )

@@ -92,6 +92,9 @@ ALLOW = [
     # Amendment A27, ruling R2: one field name of test 12's analysis record, forty-four characters, quoted as a key
     # or, inside a script kept as JSON text, with an escaped closing quote. Exactly this name (a character class again).
     ("t12-field-name", r"\"phase_switches_not_within_0p6_of_a_half_tur[n]\\?\"", ""),
+    # Amendment A28: three matrix products in the desk model's code (hmm_model.py, published beside Sandhi's versions 4
+    # and 4.1, and quoted in version 4.1's run log), a transpose times a log, are not email addresses. Exactly these.
+    ("sandhi-matrix-products", r"[n)]?\.T@np\.log(?:1p)?|weights@n\.T-weights\.sum", ""),
     # Synthetic placeholder identifiers used in recorded test responses
     ("synthetic-uuid", r"\b00000000-0000-0000-0000-[0-9]{12}\b", ""),
 ]

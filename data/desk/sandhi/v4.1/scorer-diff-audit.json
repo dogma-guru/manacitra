@@ -1,0 +1,994 @@
+{
+  "unchanged_dependencies": [
+    {
+      "file": "record_io.py",
+      "byte_equal": true,
+      "sha256": "89c5b1807fd1deb5b403567eecabd651809a5017a42e2788475245c1db66ac5b"
+    },
+    {
+      "file": "hmm_model.py",
+      "byte_equal": true,
+      "sha256": "24f49e97f6b226f6697843b65eeb23522d18816ce2989579f3c02e80856e164b"
+    },
+    {
+      "file": "hmm_core.c",
+      "byte_equal": true,
+      "sha256": "b46709c740033e7f14a73174e93f7b706836f3348e1fec9c987ada0819e270a1"
+    },
+    {
+      "file": "hmm_core.dylib",
+      "byte_equal": true,
+      "sha256": "70c8f698e67dcc4e2b274fde82459ee5ce3ed5f132161e0a306336eef657529e"
+    },
+    {
+      "file": "run_boundaries.py",
+      "byte_equal": true,
+      "sha256": "2f1cf231a66b9105755f5d8d5ad5c489cdd1c0456cf066f4ad6a58bb02a67191"
+    },
+    {
+      "file": "run_checks.py",
+      "byte_equal": true,
+      "sha256": "cf7bb72e09b44447d824009a642c76751175b16371084648915d1353d8d73dc5"
+    }
+  ],
+  "replacement_blocks": [
+    {
+      "category": "C1,C2",
+      "old": "def applicability(jobs,scenario):\n    differences=[];seconds=[];allocations=scenario.get('row_allocations');schema=scenario.get('circuit_schema')\n    expected_shots=scenario.get('n_shots_per_position');support=scenario.get('sweep_seconds_donor_support',[])\n    if allocations is None or schema is None or expected_shots is None:\n        differences.append({'reason':'The scenario lacks an exact row, circuit or shot specification'})\n    for job in jobs:\n        for index,span in enumerate(job['series']):\n            if allocations is not None and (index>=len(allocations) or list(span['R'])!=allocations[index]):\n                differences.append({'id':span['id'],'field':'R','actual':span['R'],'expected':allocations[index] if index<len(allocations) else None})\n            for ci,circuit in enumerate(span['circuits']):\n                if expected_shots is not None and circuit['shot_count']!=expected_shots:\n                    differences.append({'id':span['id'],'field':'shots','actual':circuit['shot_count'],'expected':expected_shots})\n                if schema is not None:\n                    target=schema[ci] if ci<len(schema) else None\n                    match=target is not None and circuit['quadrature']==target['quadrature'] and circuit.get('wait_us') is not None and abs(circuit['wait_us']-target['wait_us'])<=1e-9\n                    if not match:differences.append({'id':span['id'],'field':'circuit','index':ci,'actual':{'quadrature':circuit['quadrature'],'wait_us':circuit.get('wait_us')},'expected':target})\n            if schema is not None and len(span['circuits'])!=len(schema):\n                differences.append({'id':span['id'],'field':'circuit_count','actual':len(span['circuits']),'expected':len(schema)})\n            inside=any(abs(span['sweep_s']-value)<=1e-12 for value in support)\n            seconds.append({'id':span['id'],'sweep_s':span['sweep_s'],'in_empirical_support':inside,\n                            'inside_empirical_range':bool(support and min(support)<=span['sweep_s']<=max(support))})\n    return {'dimensionless_applicable':not differences,'seconds_applicable':not differences and all(s['in_empirical_support'] for s in seconds),\n            'design_differences':differences,'seconds_support_checks':seconds,\n            'seconds_scope':scenario.get('seconds_scope'),\n            'note':'Outside the modeled design or duration support, raw quantities and interval comparisons remain beside without a calibrated decision'}\n\n\n",
+      "new": "# C1 and C2 applicability is computed with the actual design in calibration_v4_1.\n\n"
+    },
+    {
+      "category": "C2",
+      "old": "            family=entry.get('family',quantity)",
+      "new": "            # C2 seconds outside support remain beside; calibrate the dimensionless subfamily.\n            if quantity in ('t15_tau_seconds','model_ell_seconds') and not scenario.get('_applicability',{}).get('seconds_applicable',True):\n                continue\n            family=entry.get('family',quantity)"
+    },
+    {
+      "category": "C3",
+      "old": "'missing_A26':'No implementation or complete definition of A26 is included; no new shuffled weight is calculated'",
+      "new": "'missing_A26':'C3 reads supplied per span A26 weights; no estimator is recomputed'"
+    },
+    {
+      "category": "C3",
+      "old": "            rows.append({'span':s['span'],'quadratures':quadratures,'A26':{'status':'unavailable','reason':result['definitions']['missing_A26']}})\n            add_observation(observations,'shuffled_weight_A26',f'{key} span {s[\"span\"]}',None,reason=result['definitions']['missing_A26'])\n            add_observation(observations,'shuffled_sd',f'{key} span {s[\"span\"]}',None,reason='A26 weight and its population length inputs are needed')",
+      "new": "            from calibration_v4_1 import read_a26\n            a26=read_a26(args.shuffled_fits,key,s['span'])\n            rows.append({'span':s['span'],'duration_s':s['duration_s'],'sweep_s':s['duration_s']/len(next(iter(arr.values()))),'quadratures':quadratures,'A26':a26})\n            add_observation(observations,'shuffled_weight_A26',f'{key} span {s[\"span\"]}',a26.get('value'),reason=a26.get('reason'),source=a26)\n            add_observation(observations,'shuffled_sd',f'{key} span {s[\"span\"]}',None,reason='C3 supplies A26 weight but the v4 definition gives a distribution of population lengths, not one observed scalar; no unique observed sd is defined')"
+    },
+    {
+      "category": "C1",
+      "old": "    scenario_key=str(span_counts[0]) if span_counts and len(set(span_counts))==1 else None\n    scenarios=predictions.get('scenarios',{});scenario=scenarios.get(scenario_key,{})\n    if scenario and len(span_counts)!=scenario.get('n_jobs',2):\n        scenario_key=None;scenario={}\n    result['scenario_applicability']=applicability(result['jobs'],scenario) if scenario else {'dimensionless_applicable':False,'seconds_applicable':False,'reason':'No matching span count scenario'}\n    scenario={**scenario,'_applicability':result['scenario_applicability']}",
+      "new": "    # C1 actual design calibration uses frozen model state and no observed quantities.\n    from calibration_v4_1 import apply_calibration\n    predictions,scenario,calibration=apply_calibration(predictions,result['jobs'],result['shuffled'],args)\n    scenario_key='actual';scenarios=predictions['scenarios']\n    result['calibration']=calibration\n    result['scenario_applicability']=scenario['_applicability']"
+    },
+    {
+      "category": "C1,C3",
+      "old": "    args=p.parse_args()",
+      "new": "    # C1 calibration controls and frozen state; C3 explicitly supplied run fits.\n    p.add_argument('--model-state')\n    p.add_argument('--calibration-cache')\n    p.add_argument('--calibration-seed',type=int,default=41119001)\n    p.add_argument('--calibration-draws',type=int,default=2000)\n    p.add_argument('--calibration-lr-trials',type=int,default=100)\n    p.add_argument('--workers',type=int,default=4)\n    p.add_argument('--shuffled-fits',action='append',default=[],help='C3 key,path to the run fits file')\n    args=p.parse_args()"
+    }
+  ],
+  "added_dependency_lines": [
+    {
+      "line": 1,
+      "category": "C1",
+      "text": "\"\"\"C1 actual design calibration; C2 actual sweep times; C3 supplied A26 readings.\"\"\""
+    },
+    {
+      "line": 2,
+      "category": "C1",
+      "text": "from pathlib import Path"
+    },
+    {
+      "line": 3,
+      "category": "C1",
+      "text": "import copy, hashlib, json, multiprocessing as mp, time"
+    },
+    {
+      "line": 4,
+      "category": "C1",
+      "text": "import numpy as np"
+    },
+    {
+      "line": 5,
+      "category": "C1",
+      "text": "from scipy.special import expit"
+    },
+    {
+      "line": 6,
+      "category": "C1",
+      "text": "from scipy.stats import beta, binom"
+    },
+    {
+      "line": 7,
+      "category": "C1",
+      "text": "from hmm_model import fit_job, simulate_span, derived"
+    },
+    {
+      "line": 8,
+      "category": "C1",
+      "text": "from record_io import native, boundary"
+    },
+    {
+      "line": 9,
+      "category": "C1",
+      "text": "# C1 uses the same record estimator as v4."
+    },
+    {
+      "line": 10,
+      "category": "C1",
+      "text": "from record_io import record_reading"
+    },
+    {
+      "line": 11,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 12,
+      "category": "C1",
+      "text": "FAMILIES={'duty':['threshold_duty','model_duty'],"
+    },
+    {
+      "line": 13,
+      "category": "C1",
+      "text": " 'correlation':['t15_tau_sweeps','t15_tau_seconds','model_ell_sweeps','model_ell_seconds'],"
+    },
+    {
+      "line": 14,
+      "category": "C1",
+      "text": " 'emissions':['q_H_X','q_L_X','q_H_Y','q_L_Y']}"
+    },
+    {
+      "line": 15,
+      "category": "C1",
+      "text": "QUANTITIES=sum(FAMILIES.values(),[])+['job_mean_duty_difference','shuffled_weight_A26','shuffled_sd']"
+    },
+    {
+      "line": 16,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 17,
+      "category": "C1",
+      "text": "def probability(k,n):"
+    },
+    {
+      "line": 18,
+      "category": "C1",
+      "text": "    return {'probability':k/n,'count':int(k),'draws':int(n),'mc_interval_90':[float(beta.ppf(.05,k,n-k+1)) if k else 0.,float(beta.ppf(.95,k+1,n-k)) if k<n else 1.]}"
+    },
+    {
+      "line": 19,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 20,
+      "category": "C1",
+      "text": "def interval(x):"
+    },
+    {
+      "line": 21,
+      "category": "C1",
+      "text": "    a=np.asarray(x,dtype=np.float64);a=a[np.isfinite(a)]"
+    },
+    {
+      "line": 22,
+      "category": "C1",
+      "text": "    return np.quantile(a,[.05,.95]).tolist() if len(a) else None"
+    },
+    {
+      "line": 23,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 24,
+      "category": "C1",
+      "text": "def cutoff(counts,k):"
+    },
+    {
+      "line": 25,
+      "category": "C1",
+      "text": "    n=len(counts);rows=[]"
+    },
+    {
+      "line": 26,
+      "category": "C1",
+      "text": "    for c in range(1,k+1):"
+    },
+    {
+      "line": 27,
+      "category": "C1",
+      "text": "        h=int(np.sum(np.asarray(counts)>=c));upper=float(beta.ppf(.95,h+1,n-h)) if h<n else 1."
+    },
+    {
+      "line": 28,
+      "category": "C1",
+      "text": "        rows.append({'misses_at_least':c,'estimated_probability':h/n,'one_sided_95_mc_upper':upper})"
+    },
+    {
+      "line": 29,
+      "category": "C1",
+      "text": "    return {'cutoff':next((r['misses_at_least'] for r in rows if r['one_sided_95_mc_upper']<.05),None),"
+    },
+    {
+      "line": 30,
+      "category": "C1",
+      "text": "     'point_probability_cutoff':next((r['misses_at_least'] for r in rows if r['estimated_probability']<.05),None),"
+    },
+    {
+      "line": 31,
+      "category": "C1",
+      "text": "     'k':k,'calibration_draws':n,'tail_table':rows,"
+    },
+    {
+      "line": 32,
+      "category": "C1",
+      "text": "     'independent_binomial_cutoff_beside':next((c for c in range(1,k+1) if binom.sf(c-1,k,.1)<.05),None)}"
+    },
+    {
+      "line": 33,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 34,
+      "category": "C1",
+      "text": "def design_only(jobs,shuffled):"
+    },
+    {
+      "line": 35,
+      "category": "C1",
+      "text": "    \"\"\"C1 allowlist excludes counts, fitted values, readings and paths.\"\"\""
+    },
+    {
+      "line": 36,
+      "category": "C1",
+      "text": "    groups=[]"
+    },
+    {
+      "line": 37,
+      "category": "C1",
+      "text": "    for j in jobs:"
+    },
+    {
+      "line": 38,
+      "category": "C1",
+      "text": "        group=[]"
+    },
+    {
+      "line": 39,
+      "category": "C1",
+      "text": "        for s in j['series']:"
+    },
+    {
+      "line": 40,
+      "category": "C1",
+      "text": "            circuits=[{'quadrature':c['quadrature'],'wait_us':c.get('wait_us'),'shot_count':c['shot_count']} for c in s['circuits']]"
+    },
+    {
+      "line": 41,
+      "category": "C1",
+      "text": "            group.append({'R':list(s['R']),'N':circuits[0]['shot_count'],'circuits':circuits,'sweep_s':s['sweep_s'],"
+    },
+    {
+      "line": 42,
+      "category": "C1",
+      "text": "                          'duration_s':s['duration_s'],'span':s['span']})"
+    },
+    {
+      "line": 43,
+      "category": "C1",
+      "text": "        groups.append(group)"
+    },
+    {
+      "line": 44,
+      "category": "C1",
+      "text": "    return {'jobs':groups,'shuffled':[{'key':j['key'],'spans':[{'span':s['span'],'duration_s':s['duration_s'],'sweep_s':s['sweep_s']} for s in j['spans']]} for j in shuffled]}"
+    },
+    {
+      "line": 45,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 46,
+      "category": "C2",
+      "text": "def support(design,state):"
+    },
+    {
+      "line": 47,
+      "category": "C2",
+      "text": "    donor=state['sweep_seconds_donor_support'];lo=.9*min(donor);hi=1.1*max(donor);width=max(donor)-min(donor)"
+    },
+    {
+      "line": 48,
+      "category": "C2",
+      "text": "    checks=[];diff=[]"
+    },
+    {
+      "line": 49,
+      "category": "C2",
+      "text": "    for ji,g in enumerate(design['jobs']):"
+    },
+    {
+      "line": 50,
+      "category": "C2",
+      "text": "        for si,s in enumerate(g):"
+    },
+    {
+      "line": 51,
+      "category": "C2",
+      "text": "            actual=[(c['quadrature'],c['wait_us']) for c in s['circuits']]"
+    },
+    {
+      "line": 52,
+      "category": "C2",
+      "text": "            if actual!=[('X',5.6),('Y',5.6)] or any(r<=0 for r in s['R']):"
+    },
+    {
+      "line": 53,
+      "category": "C2",
+      "text": "                diff.append({'job':ji,'span':si,'reason':'Emission donor schema is X then Y at 5.6 microseconds with positive rows','actual':actual})"
+    },
+    {
+      "line": 54,
+      "category": "C2",
+      "text": "            checks.append({'job':ji,'span':si,'sweep_s':s['sweep_s'],'in_empirical_support':lo<=s['sweep_s']<=hi,"
+    },
+    {
+      "line": 55,
+      "category": "C2",
+      "text": "                           'inside_empirical_range':min(donor)<=s['sweep_s']<=max(donor),"
+    },
+    {
+      "line": 56,
+      "category": "C2",
+      "text": "                           'inside_range_width_alternative':min(donor)-.1*width<=s['sweep_s']<=max(donor)+.1*width})"
+    },
+    {
+      "line": 57,
+      "category": "C2",
+      "text": "    return {'dimensionless_applicable':not diff,'seconds_applicable':not diff and all(c['in_empirical_support'] for c in checks),"
+    },
+    {
+      "line": 58,
+      "category": "C2",
+      "text": "            'design_differences':diff,'seconds_support_checks':checks,'seconds_range':[lo,hi],"
+    },
+    {
+      "line": 59,
+      "category": "C2",
+      "text": "            'seconds_range_width_alternative':[min(donor)-.1*width,max(donor)+.1*width],"
+    },
+    {
+      "line": 60,
+      "category": "C2",
+      "text": "            'seconds_scope':'C2 actual sweep times within donor endpoint range widened by ten percent',"
+    },
+    {
+      "line": 61,
+      "category": "C2",
+      "text": "            'note':'C1 calibration uses only design quantities. Outside C2 seconds support the dimensionless correlation subfamily remains calibrated.'}"
+    },
+    {
+      "line": 62,
+      "category": "C2",
+      "text": ""
+    },
+    {
+      "line": 63,
+      "category": "C1",
+      "text": "_STATE=None;_DESIGN=None;_SEED=None;_LR_DRAWS=None;_LR_TRIALS=None"
+    },
+    {
+      "line": 64,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 65,
+      "category": "C1",
+      "text": "def initialize(state,design,seed,lr_draws,lr_trials):"
+    },
+    {
+      "line": 66,
+      "category": "C1",
+      "text": "    global _STATE,_DESIGN,_SEED,_LR_DRAWS,_LR_TRIALS"
+    },
+    {
+      "line": 67,
+      "category": "C1",
+      "text": "    _STATE=state;_DESIGN=design;_SEED=seed;_LR_DRAWS=lr_draws;_LR_TRIALS=lr_trials"
+    },
+    {
+      "line": 68,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 69,
+      "category": "C1",
+      "text": "def trial(ti):"
+    },
+    {
+      "line": 70,
+      "category": "C1",
+      "text": "    # C1 separate deterministic streams make process scheduling immaterial."
+    },
+    {
+      "line": 71,
+      "category": "C1",
+      "text": "    rng=np.random.default_rng(np.random.SeedSequence([_SEED,ti]));state=_STATE;design=_DESIGN"
+    },
+    {
+      "line": 72,
+      "category": "C1",
+      "text": "    dates=state['dates'];date=dates[int(rng.integers(len(dates)))];hier=state['hierarchy']['parameters']"
+    },
+    {
+      "line": 73,
+      "category": "C1",
+      "text": "    hb=hier['logit_b']['bootstrap']['samples'][int(rng.integers(len(hier['logit_b']['bootstrap']['samples'])))];hl=hier['log_ell']['bootstrap']['samples'][int(rng.integers(len(hier['log_ell']['bootstrap']['samples'])))];vals={q:[] for q in QUANTITIES}"
+    },
+    {
+      "line": 74,
+      "category": "C1",
+      "text": "    groups=[];read_groups=[];orders=[];failures=[]"
+    },
+    {
+      "line": 75,
+      "category": "C1",
+      "text": "    for ji,template in enumerate(design['jobs']):"
+    },
+    {
+      "line": 76,
+      "category": "C1",
+      "text": "        donors=state['jobs_by_date'][date];donor=donors[int(rng.integers(len(donors)))];boots=state['emission_bootstrap'][donor];em=boots[int(rng.integers(len(boots)))];qH=em['q_H'];qL=em['q_L'];sim=[];rates=[];reads=[]"
+    },
+    {
+      "line": 77,
+      "category": "C1",
+      "text": "        for si,s0 in enumerate(template):"
+    },
+    {
+      "line": 78,
+      "category": "C1",
+      "text": "            b=float(expit(rng.normal(hb['mean_by_day'][date],hb['sigma'])));ell=float(np.exp(rng.normal(hl['mean_by_day'][date],hl['sigma'])));total=float(-np.expm1(-1/ell));rate=derived(b*total,(1-b)*total)"
+    },
+    {
+      "line": 79,
+      "category": "C1",
+      "text": "            s={'id':f'trial{ti}-job{ji+2}-s{si}','job':f'future-job{ji+2}','span':si,'R':s0['R'],'n':np.zeros((len(s0['R']),s0['N']),dtype=np.float64),'record_c':1,'sweep_s':s0['sweep_s'],'duration_s':s0['duration_s']}"
+    },
+    {
+      "line": 80,
+      "category": "C1",
+      "text": "            v=simulate_span(s,rate,qH,qL,rng,with_rows=True);rd=record_reading(v['row_arrays'][1],s['duration_s'],include_means=False);v.pop('row_arrays');v.pop('latent_path');sim.append(v);rates.append([rate['u'],rate['d']]);reads.append(rd)"
+    },
+    {
+      "line": 81,
+      "category": "C1",
+      "text": "            for q,value in [('threshold_duty',rd['duty_b']),('t15_tau_sweeps',rd['tau_c_sweeps_used']),('t15_tau_seconds',rd['tau_c_s'])]:vals[q].append(value)"
+    },
+    {
+      "line": 82,
+      "category": "C1",
+      "text": "        fit=fit_job(sim,q_init=np.array([qL,qH]),rate_init=rates,starts=1,return_series=False)"
+    },
+    {
+      "line": 83,
+      "category": "C1",
+      "text": "        if not fit['success']:failures.append({'trial':ti,'job':ji,'order':'returned','attempts':fit['attempts']})"
+    },
+    {
+      "line": 84,
+      "category": "C1",
+      "text": "        for si,f in enumerate(fit['spans']):"
+    },
+    {
+      "line": 85,
+      "category": "C1",
+      "text": "            vals['model_duty'].append(f['b']);vals['model_ell_sweeps'].append(f['ell']);vals['model_ell_seconds'].append(f['ell']*sim[si]['sweep_s'] if f['ell'] is not None else None)"
+    },
+    {
+      "line": 86,
+      "category": "C1",
+      "text": "        for ci,q in enumerate(('X','Y')):"
+    },
+    {
+      "line": 87,
+      "category": "C1",
+      "text": "            for k in ('q_H','q_L'):vals[k+'_'+q].append(fit[k][ci])"
+    },
+    {
+      "line": 88,
+      "category": "C1",
+      "text": "        if all(s['N']==1000 for s in template):"
+    },
+    {
+      "line": 89,
+      "category": "C1",
+      "text": "            idx=np.column_stack([np.arange(500),np.arange(500,1000)]).ravel()"
+    },
+    {
+      "line": 90,
+      "category": "C1",
+      "text": "            ff=fit_job([{**s,'n':np.asarray(s['n'])[:,idx]} for s in sim],q_init=np.array([qL,qH]),starts=1,return_series=False)"
+    },
+    {
+      "line": 91,
+      "category": "C1",
+      "text": "            if not ff['success']:failures.append({'trial':ti,'job':ji,'order':'interleaved','attempts':ff['attempts']})"
+    },
+    {
+      "line": 92,
+      "category": "C1",
+      "text": "            orders.extend(a['loglik']>b['loglik'] for a,b in zip(fit['spans'],ff['spans']))"
+    },
+    {
+      "line": 93,
+      "category": "C1",
+      "text": "        groups.append(sim);read_groups.append(reads)"
+    },
+    {
+      "line": 94,
+      "category": "C1",
+      "text": "    means=[float(np.mean([r['duty_b'] for r in rr])) for rr in read_groups];vals['job_mean_duty_difference']=[b-a for a,b in zip(means[:-1],means[1:])]"
+    },
+    {
+      "line": 95,
+      "category": "C1",
+      "text": "    # C1 actual shuffled span durations and number of spans; same v4 normal time average definition and 0.011 allowance."
+    },
+    {
+      "line": 96,
+      "category": "C1",
+      "text": "    for job in design['shuffled']:"
+    },
+    {
+      "line": 97,
+      "category": "C1",
+      "text": "        for s in job['spans']:"
+    },
+    {
+      "line": 98,
+      "category": "C1",
+      "text": "            b=float(expit(rng.normal(hb['mean_by_day'][date],hb['sigma'])));ell=float(np.exp(rng.normal(hl['mean_by_day'][date],hl['sigma'])))"
+    },
+    {
+      "line": 99,
+      "category": "C1",
+      "text": "            dt=float(rng.choice([s['sweep_s'] for g in design['jobs'] for s in g]));sd=float(np.sqrt(2*b*(1-b)*ell*dt/s['duration_s']))"
+    },
+    {
+      "line": 100,
+      "category": "C1",
+      "text": "            vals['shuffled_sd'].append(sd);vals['shuffled_weight_A26'].append(float(np.clip(rng.normal(b,sd),0,1)))"
+    },
+    {
+      "line": 101,
+      "category": "C1",
+      "text": "    words=[boundary(a,b)['word'] for rr in read_groups for a,b in zip(rr[:-1],rr[1:])]"
+    },
+    {
+      "line": 102,
+      "category": "C1",
+      "text": "    lr=[]"
+    },
+    {
+      "line": 103,
+      "category": "C1",
+      "text": "    if ti<_LR_TRIALS:"
+    },
+    {
+      "line": 104,
+      "category": "C1",
+      "text": "        from run_boundaries import boundary_test_spans,boundary_test_job_pair"
+    },
+    {
+      "line": 105,
+      "category": "C1",
+      "text": "        for ji,g in enumerate(groups):"
+    },
+    {
+      "line": 106,
+      "category": "C1",
+      "text": "            for si,(a,b) in enumerate(zip(g[:-1],g[1:])):"
+    },
+    {
+      "line": 107,
+      "category": "C1",
+      "text": "                r=boundary_test_spans([a,b],draws=_LR_DRAWS,seed=_SEED+1000000+ti*10000+ji*100+si,interval_draws=0)"
+    },
+    {
+      "line": 108,
+      "category": "C1",
+      "text": "                lr.append({'key':f'within_job{ji+2}_span{si}_span{si+1}','p':r.get('p_bootstrap'),'failures':r.get('failures',[]),'fit_success':r.get('fit_success')})"
+    },
+    {
+      "line": 109,
+      "category": "C1",
+      "text": "        for ji,(a,b) in enumerate(zip(groups[:-1],groups[1:])):"
+    },
+    {
+      "line": 110,
+      "category": "C1",
+      "text": "            r=boundary_test_job_pair([a,b],draws=_LR_DRAWS,seed=_SEED+2000000+ti*10000+ji,interval_draws=0)"
+    },
+    {
+      "line": 111,
+      "category": "C1",
+      "text": "            lr.append({'key':f'between_job{ji+2}_job{ji+3}','p':r.get('p_bootstrap'),'failures':r.get('failures',[]),'fit_success':r.get('fit_success')})"
+    },
+    {
+      "line": 112,
+      "category": "C1",
+      "text": "    return {'trial':ti,'donor_date':date,'values':vals,'all_shared':all(r['word_of_the_ratio']=='SHARED' for rr in read_groups for r in rr),'boundary_words':words,"
+    },
+    {
+      "line": 113,
+      "category": "C1",
+      "text": "            'boundary_counts':{w:words.count(w) for w in ('NO CHANGE','BETWEEN','CHANGE','NOT READ')},'returned_preference_all':all(orders) if orders else None,'lr':lr,'failures':failures}"
+    },
+    {
+      "line": 114,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 115,
+      "category": "C1",
+      "text": "def calibrate(state,design,seed=41119001,draws=2000,lr_trials=100,lr_draws=400,workers=4):"
+    },
+    {
+      "line": 116,
+      "category": "C1",
+      "text": "    start=time.monotonic();sup=support(design,state)"
+    },
+    {
+      "line": 117,
+      "category": "C1",
+      "text": "    if not sup['dimensionless_applicable']:raise ValueError(sup['design_differences'])"
+    },
+    {
+      "line": 118,
+      "category": "C1",
+      "text": "    if draws<2 or draws%2:raise ValueError('Even positive draw count required')"
+    },
+    {
+      "line": 119,
+      "category": "C1",
+      "text": "    with mp.get_context('spawn').Pool(workers,initializer=initialize,initargs=(state,design,seed,lr_draws,lr_trials)) as pool:"
+    },
+    {
+      "line": 120,
+      "category": "C1",
+      "text": "        trials=[]"
+    },
+    {
+      "line": 121,
+      "category": "C1",
+      "text": "        for t in pool.imap_unordered(trial,range(draws),chunksize=1):"
+    },
+    {
+      "line": 122,
+      "category": "C1",
+      "text": "            trials.append(t)"
+    },
+    {
+      "line": 123,
+      "category": "C1",
+      "text": "            if len(trials)%100==0:print('C1 calibration',len(trials),'of',draws,'elapsed',round(time.monotonic()-start,1),flush=True)"
+    },
+    {
+      "line": 124,
+      "category": "C1",
+      "text": "    trials.sort(key=lambda t:t['trial']);half=draws//2"
+    },
+    {
+      "line": 125,
+      "category": "C1",
+      "text": "    ints={q:interval([x for t in trials[:half] for x in t['values'][q]]) for q in QUANTITIES}"
+    },
+    {
+      "line": 126,
+      "category": "C1",
+      "text": "    if ints['shuffled_weight_A26']:ints['shuffled_weight_A26']=[max(0,ints['shuffled_weight_A26'][0]-.011),min(1,ints['shuffled_weight_A26'][1]+.011)]"
+    },
+    {
+      "line": 127,
+      "category": "C1",
+      "text": "    families={}"
+    },
+    {
+      "line": 128,
+      "category": "C1",
+      "text": "    for fam,qs0 in FAMILIES.items():"
+    },
+    {
+      "line": 129,
+      "category": "C1",
+      "text": "        qs=[q for q in qs0 if sup['seconds_applicable'] or 'seconds' not in q]"
+    },
+    {
+      "line": 130,
+      "category": "C1",
+      "text": "        k=sum(len(trials[0]['values'][q]) for q in qs)"
+    },
+    {
+      "line": 131,
+      "category": "C1",
+      "text": "        misses=[sum(x is None or not ints[q][0]<=x<=ints[q][1] for q in qs for x in t['values'][q]) for t in trials[half:]]"
+    },
+    {
+      "line": 132,
+      "category": "C1",
+      "text": "        families[fam]=cutoff(misses,k)|{'quantities':qs,'seconds_included':sup['seconds_applicable']}"
+    },
+    {
+      "line": 133,
+      "category": "C1",
+      "text": "    keys=[f'within_job{ji+2}_span{si}_span{si+1}' for ji,g in enumerate(design['jobs']) for si in range(len(g)-1)]"
+    },
+    {
+      "line": 134,
+      "category": "C1",
+      "text": "    boundary_probs={k:probability(sum(t['boundary_words'][i]=='CHANGE' for t in trials),draws) for i,k in enumerate(keys)}"
+    },
+    {
+      "line": 135,
+      "category": "C1",
+      "text": "    lrtr=[t for t in trials if t['lr']];lrok=[t for t in lrtr if all(x['p'] is not None and not x['failures'] for x in t['lr'])]"
+    },
+    {
+      "line": 136,
+      "category": "C1",
+      "text": "    lrp=probability(sum(any(x['p']<.01 for x in t['lr']) for t in lrok),len(lrok)) if lrok else None"
+    },
+    {
+      "line": 137,
+      "category": "C1",
+      "text": "    if lrp:lrp.update({'null_draws_per_comparison':lr_draws,'requested_trials':lr_trials,'complete_trials':len(lrok),'per_boundary':{k:probability(sum(next(x['p'] for x in t['lr'] if x['key']==k)<.01 for t in lrok),len(lrok)) for k in [x['key'] for x in lrok[0]['lr']]}})"
+    },
+    {
+      "line": 138,
+      "category": "C1",
+      "text": "    counts=[len(g) for g in design['jobs']]"
+    },
+    {
+      "line": 139,
+      "category": "C1",
+      "text": "    s={'n_spans_per_job':counts[0] if len(set(counts))==1 else None,'span_counts':counts,'n_jobs':len(counts),'scope':'conditional_empirical_day_extension_with_actual_design',"
+    },
+    {
+      "line": 140,
+      "category": "C1",
+      "text": "       'design':design,'_applicability':sup,'draws':draws,'interval_training_draws':half,'joint_calibration_draws':half,'seed':seed,'rng':'PCG64 SeedSequence([seed,trial])',"
+    },
+    {
+      "line": 141,
+      "category": "C1",
+      "text": "       'intervals':ints,'family_miss_thresholds':families,'sharing_all_probability':probability(sum(t['all_shared'] for t in trials),draws),"
+    },
+    {
+      "line": 142,
+      "category": "C1",
+      "text": "       'boundary_counts':{w:{'expected_count':float(np.mean([t['boundary_counts'][w] for t in trials])),'interval_90':interval([t['boundary_counts'][w] for t in trials])} for w in ('NO CHANGE','BETWEEN','CHANGE','NOT READ')},"
+    },
+    {
+      "line": 143,
+      "category": "C1",
+      "text": "       'boundary_change_probabilities':boundary_probs,'any_LR_reject_probability':lrp,"
+    },
+    {
+      "line": 144,
+      "category": "C1",
+      "text": "       'returned_order_all_preference_probability':probability(sum(t['returned_preference_all'] for t in trials),draws) if all(t['returned_preference_all'] is not None for t in trials) else None,"
+    },
+    {
+      "line": 145,
+      "category": "C1",
+      "text": "       'failures':[f for t in trials for f in t['failures']],'elapsed_seconds':time.monotonic()-start,"
+    },
+    {
+      "line": 146,
+      "category": "C1",
+      "text": "       'seconds_scope':sup['seconds_scope'],'assumptions':'Frozen v4 empirical day and emission extension with C1 actual design and C2 actual sweep times.'}"
+    },
+    {
+      "line": 147,
+      "category": "C1",
+      "text": "    return native({'scenario':s,'trials':trials})"
+    },
+    {
+      "line": 148,
+      "category": "C1",
+      "text": ""
+    },
+    {
+      "line": 149,
+      "category": "C3",
+      "text": "def read_a26(specs,key,span):"
+    },
+    {
+      "line": 150,
+      "category": "C3",
+      "text": "    # C3 supplied observations only, no estimator reconstruction."
+    },
+    {
+      "line": 151,
+      "category": "C3",
+      "text": "    for spec in specs:"
+    },
+    {
+      "line": 152,
+      "category": "C3",
+      "text": "        name,path=spec.split(',',1)"
+    },
+    {
+      "line": 153,
+      "category": "C3",
+      "text": "        if name!=key:continue"
+    },
+    {
+      "line": 154,
+      "category": "C3",
+      "text": "        obj=json.loads(Path(path).read_text());found=[]"
+    },
+    {
+      "line": 155,
+      "category": "C3",
+      "text": "        def walk(x,route):"
+    },
+    {
+      "line": 156,
+      "category": "C3",
+      "text": "            if isinstance(x,dict):"
+    },
+    {
+      "line": 157,
+      "category": "C3",
+      "text": "                if 'span_readings_A26' in x:"
+    },
+    {
+      "line": 158,
+      "category": "C3",
+      "text": "                    rows=x['span_readings_A26'].get('weight_per_span',[])"
+    },
+    {
+      "line": 159,
+      "category": "C3",
+      "text": "                    found.extend((r,route+'.span_readings_A26.weight_per_span') for r in rows if r['span']==span)"
+    },
+    {
+      "line": 160,
+      "category": "C3",
+      "text": "                for k,v in x.items():walk(v,route+'.'+k)"
+    },
+    {
+      "line": 161,
+      "category": "C3",
+      "text": "            elif isinstance(x,list):"
+    },
+    {
+      "line": 162,
+      "category": "C3",
+      "text": "                for i,v in enumerate(x):walk(v,route+f'[{i}]')"
+    },
+    {
+      "line": 163,
+      "category": "C3",
+      "text": "        walk(obj,'$')"
+    },
+    {
+      "line": 164,
+      "category": "C3",
+      "text": "        if len(found)!=1:return {'status':'unavailable','reason':'Expected one matching supplied A26 span reading','matches':len(found)}"
+    },
+    {
+      "line": 165,
+      "category": "C3",
+      "text": "        row,field=found[0];return {'status':'available','value':row['weighted_mean'],'source':str(Path(path).resolve()),'sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest(),'field':field,'span':span}"
+    },
+    {
+      "line": 166,
+      "category": "C3",
+      "text": "    return {'status':'unavailable','reason':'No run fits supplied for this shuffled job'}"
+    },
+    {
+      "line": 167,
+      "category": "C3",
+      "text": ""
+    },
+    {
+      "line": 168,
+      "category": "C1",
+      "text": "def apply_calibration(predictions,jobs,shuffled,args):"
+    },
+    {
+      "line": 169,
+      "category": "C1",
+      "text": "    state_path=Path(args.model_state or Path(args.predictions).parent/'calibration-state.json')"
+    },
+    {
+      "line": 170,
+      "category": "C1",
+      "text": "    state=json.loads(state_path.read_text());design=design_only(jobs,shuffled)"
+    },
+    {
+      "line": 171,
+      "category": "C1",
+      "text": "    payload={'state_sha256':hashlib.sha256(state_path.read_bytes()).hexdigest(),'design':design,'seed':args.calibration_seed,'draws':args.calibration_draws,'lr_trials':args.calibration_lr_trials,'lr_draws':args.bootstrap,"
+    },
+    {
+      "line": 172,
+      "category": "C1",
+      "text": "             'calibrator_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}"
+    },
+    {
+      "line": 173,
+      "category": "C1",
+      "text": "    token=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest();cache=Path(args.calibration_cache or Path(args.out).with_suffix('.calibration.json'))"
+    },
+    {
+      "line": 174,
+      "category": "C1",
+      "text": "    if cache.exists():"
+    },
+    {
+      "line": 175,
+      "category": "C1",
+      "text": "        result=json.loads(cache.read_text())"
+    },
+    {
+      "line": 176,
+      "category": "C1",
+      "text": "        if result.get('cache_key')!=token:raise ValueError('Calibration cache does not match frozen state, design, seed or code')"
+    },
+    {
+      "line": 177,
+      "category": "C1",
+      "text": "    else:"
+    },
+    {
+      "line": 178,
+      "category": "C1",
+      "text": "        result=calibrate(state,design,args.calibration_seed,args.calibration_draws,args.calibration_lr_trials,args.bootstrap,args.workers)"
+    },
+    {
+      "line": 179,
+      "category": "C1",
+      "text": "        result.update({'cache_key':token,'inputs':payload});cache.write_text(json.dumps(result,separators=(',',':'),allow_nan=False))"
+    },
+    {
+      "line": 180,
+      "category": "C1",
+      "text": "    scenario=result['scenario'];entries=[]"
+    },
+    {
+      "line": 181,
+      "category": "C1",
+      "text": "    for q,inter in scenario['intervals'].items():"
+    },
+    {
+      "line": 182,
+      "category": "C1",
+      "text": "        if inter is None:continue"
+    },
+    {
+      "line": 183,
+      "category": "C1",
+      "text": "        fam=next((f for f,qs in FAMILIES.items() if q in qs),q)"
+    },
+    {
+      "line": 184,
+      "category": "C1",
+      "text": "        entries.append({'id':'actual_design_'+q,'quantity':q,'interval_90':inter,'class':'Frozen empirical day extension under actual design','prediction_scope':scenario['scope'],'family':fam,'status':'issued'})"
+    },
+    {
+      "line": 185,
+      "category": "C1",
+      "text": "    return {**predictions,'entries':entries,'scenarios':{'actual':scenario}},scenario,{'state_sha256':payload['state_sha256'],'cache_key':token,'calibration_file':str(cache.resolve()),'design':design,'failures':scenario['failures'],'seed':args.calibration_seed}"
+    }
+  ],
+  "source_changes_outside_C1_C2_C3": []
+}

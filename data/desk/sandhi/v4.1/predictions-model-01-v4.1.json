@@ -1,0 +1,1839 @@
+{
+  "schema": "model01_v4_1_predictions_1",
+  "created_utc": "2026-10-19T12:54:26.558127+00:00",
+  "scorer": "score_model_01_v4_1.py",
+  "calibration_state": "calibration-state.json",
+  "calibration_state_sha256": "10aa29fe32b3e030ff0b5eb7ff2e0d8d936df60322622522febca63c8be4b827",
+  "record_basis": {
+    "spans": 15,
+    "jobs": 5,
+    "dates": 3
+  },
+  "scope": "Conditional empirical day extension over three observed UTC dates; no unrestricted fourth date forecast.",
+  "designs": {
+    "D1": "Next 143 monitor run, two jobs, 300 positions each, 1000 shots, 5.6 microseconds X then Y, any span counts.",
+    "D2": "One longer job of the same circuits, 600 positions, 1000 shots, about six spans."
+  },
+  "calibration": "C1 at scoring time through actual design. Nominal intervals never gate eligibility. C2 actual sweep time with donor endpoint range widened ten percent on each side. C3 supplied per span A26 weights.",
+  "entries": [
+    {
+      "id": "D1_threshold_duty",
+      "design": "D1",
+      "quantity": "threshold_duty",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.242,
+        0.452
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_model_duty",
+      "design": "D1",
+      "quantity": "model_duty",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.24248554154304813,
+        0.4512249710921999
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_t15_tau_sweeps",
+      "design": "D1",
+      "quantity": "t15_tau_sweeps",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        3.0,
+        13.0
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_t15_tau_seconds",
+      "design": "D1",
+      "quantity": "t15_tau_seconds",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.08254092899999999,
+        0.35754553899999997
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_model_ell_sweeps",
+      "design": "D1",
+      "quantity": "model_ell_sweeps",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        2.3052640881874535,
+        11.632873350675064
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_model_ell_seconds",
+      "design": "D1",
+      "quantity": "model_ell_seconds",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.06322052927096107,
+        0.3206894101690002
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_q_H_X",
+      "design": "D1",
+      "quantity": "q_H_X",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.6417424725708339,
+        0.7341236637592583
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_q_L_X",
+      "design": "D1",
+      "quantity": "q_L_X",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.2656059599003586,
+        0.36442102961263795
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_q_H_Y",
+      "design": "D1",
+      "quantity": "q_H_Y",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.7733916801819475,
+        0.9197933940414095
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_q_L_Y",
+      "design": "D1",
+      "quantity": "q_L_Y",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.05450923410220885,
+        0.13634659852326275
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_job_mean_duty_difference",
+      "design": "D1",
+      "quantity": "job_mean_duty_difference",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        -0.07101666666666673,
+        0.07168333333333331
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_shuffled_weight_A26",
+      "design": "D1",
+      "quantity": "shuffled_weight_A26",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.24520836228696413,
+        0.45495891863793797
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D1_shuffled_sd",
+      "design": "D1",
+      "quantity": "shuffled_sd",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.026854253155360185,
+        0.06516598499641138
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_threshold_duty",
+      "design": "D2",
+      "quantity": "threshold_duty",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.242,
+        0.448
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_model_duty",
+      "design": "D2",
+      "quantity": "model_duty",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.2415230396303645,
+        0.44775745193977873
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_t15_tau_sweeps",
+      "design": "D2",
+      "quantity": "t15_tau_sweeps",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        3.0,
+        13.0
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_t15_tau_seconds",
+      "design": "D2",
+      "quantity": "t15_tau_seconds",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.08308163760000001,
+        0.3600204296
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_model_ell_sweeps",
+      "design": "D2",
+      "quantity": "model_ell_sweeps",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        2.344420586090511,
+        11.850756258002212
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_model_ell_seconds",
+      "design": "D2",
+      "quantity": "model_ell_seconds",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.06492610050518381,
+        0.3281934122377573
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_q_H_X",
+      "design": "D2",
+      "quantity": "q_H_X",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.6411246247489629,
+        0.7342149374722922
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_q_L_X",
+      "design": "D2",
+      "quantity": "q_L_X",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.26538520835865226,
+        0.36389997533540963
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_q_H_Y",
+      "design": "D2",
+      "quantity": "q_H_Y",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.773514607231406,
+        0.9196237584733621
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    {
+      "id": "D2_q_L_Y",
+      "design": "D2",
+      "quantity": "q_L_Y",
+      "nominal": true,
+      "status": "issued",
+      "interval_90": [
+        0.0546199168702532,
+        0.13624226001755127
+      ],
+      "definition": "Same v4 quantity; nominal display interval. C1 recalculates from actual design at scoring time.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    }
+  ],
+  "scenarios": {
+    "D1": {
+      "n_spans_per_job": 3,
+      "span_counts": [
+        3,
+        3
+      ],
+      "n_jobs": 2,
+      "scope": "conditional_empirical_day_extension_with_actual_design",
+      "design": {
+        "jobs": [
+          [
+            {
+              "R": [
+                48.0,
+                48.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.027503503,
+              "duration_s": 27.503503,
+              "span": 0
+            },
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.02751653,
+              "duration_s": 27.51653,
+              "span": 1
+            },
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.027513642999999997,
+              "duration_s": 27.513643,
+              "span": 2
+            }
+          ],
+          [
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.027809945,
+              "duration_s": 27.809945,
+              "span": 0
+            },
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.027540241,
+              "duration_s": 27.540241,
+              "span": 1
+            },
+            {
+              "R": [
+                48.0,
+                48.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.027294861,
+              "duration_s": 27.294861,
+              "span": 2
+            }
+          ]
+        ],
+        "shuffled": [
+          {
+            "key": "day3-job1",
+            "spans": [
+              {
+                "span": 0,
+                "duration_s": 44.557507,
+                "sweep_s": 0.029705004666666666
+              },
+              {
+                "span": 1,
+                "duration_s": 44.655053,
+                "sweep_s": 0.029770035333333333
+              },
+              {
+                "span": 2,
+                "duration_s": 27.003637,
+                "sweep_s": 0.018002424666666666
+              }
+            ]
+          }
+        ]
+      },
+      "_applicability": {
+        "dimensionless_applicable": true,
+        "seconds_applicable": true,
+        "design_differences": [],
+        "seconds_support_checks": [
+          {
+            "job": 0,
+            "span": 0,
+            "sweep_s": 0.027503503,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 1,
+            "sweep_s": 0.02751653,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 2,
+            "sweep_s": 0.027513642999999997,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 1,
+            "span": 0,
+            "sweep_s": 0.027809945,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 1,
+            "span": 1,
+            "sweep_s": 0.027540241,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 1,
+            "span": 2,
+            "sweep_s": 0.027294861,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          }
+        ],
+        "seconds_range": [
+          0.0136017504,
+          0.0385076846
+        ],
+        "seconds_range_width_alternative": [
+          0.013123663,
+          0.036996378999999996
+        ],
+        "seconds_scope": "C2 actual sweep times within donor endpoint range widened by ten percent",
+        "note": "C1 calibration uses only design quantities. Outside C2 seconds support the dimensionless correlation subfamily remains calibrated."
+      },
+      "draws": 2000,
+      "interval_training_draws": 1000,
+      "joint_calibration_draws": 1000,
+      "seed": 41119301,
+      "rng": "PCG64 SeedSequence([seed,trial])",
+      "intervals": {
+        "threshold_duty": [
+          0.242,
+          0.452
+        ],
+        "model_duty": [
+          0.24248554154304813,
+          0.4512249710921999
+        ],
+        "t15_tau_sweeps": [
+          3.0,
+          13.0
+        ],
+        "t15_tau_seconds": [
+          0.08254092899999999,
+          0.35754553899999997
+        ],
+        "model_ell_sweeps": [
+          2.3052640881874535,
+          11.632873350675064
+        ],
+        "model_ell_seconds": [
+          0.06322052927096107,
+          0.3206894101690002
+        ],
+        "q_H_X": [
+          0.6417424725708339,
+          0.7341236637592583
+        ],
+        "q_L_X": [
+          0.2656059599003586,
+          0.36442102961263795
+        ],
+        "q_H_Y": [
+          0.7733916801819475,
+          0.9197933940414095
+        ],
+        "q_L_Y": [
+          0.05450923410220885,
+          0.13634659852326275
+        ],
+        "job_mean_duty_difference": [
+          -0.07101666666666673,
+          0.07168333333333331
+        ],
+        "shuffled_weight_A26": [
+          0.24520836228696413,
+          0.45495891863793797
+        ],
+        "shuffled_sd": [
+          0.026854253155360185,
+          0.06516598499641138
+        ]
+      },
+      "family_miss_thresholds": {
+        "duty": {
+          "cutoff": 6,
+          "point_probability_cutoff": 5,
+          "k": 12,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.402,
+              "one_sided_95_mc_upper": 0.42819317988100497
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.376,
+              "one_sided_95_mc_upper": 0.4019427156497015
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.148,
+              "one_sided_95_mc_upper": 0.16773868485085514
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.127,
+              "one_sided_95_mc_upper": 0.14563881599321973
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.045,
+              "one_sided_95_mc_upper": 0.057326263253131136
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.033,
+              "one_sided_95_mc_upper": 0.043878620530371636
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.013,
+              "one_sided_95_mc_upper": 0.020589286529908307
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.01,
+              "one_sided_95_mc_upper": 0.016903175120562504
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.006,
+              "one_sided_95_mc_upper": 0.011807823003840638
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.005,
+              "one_sided_95_mc_upper": 0.010484076911415651
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            }
+          ],
+          "independent_binomial_cutoff_beside": 4,
+          "quantities": [
+            "threshold_duty",
+            "model_duty"
+          ],
+          "seconds_included": true
+        },
+        "correlation": {
+          "cutoff": 9,
+          "point_probability_cutoff": 9,
+          "k": 24,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.527,
+              "one_sided_95_mc_upper": 0.5533853653262331
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.431,
+              "one_sided_95_mc_upper": 0.4573848147097276
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.316,
+              "one_sided_95_mc_upper": 0.34106387278126676
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.257,
+              "one_sided_95_mc_upper": 0.28074402790233477
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.145,
+              "one_sided_95_mc_upper": 0.16458991176570648
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.109,
+              "one_sided_95_mc_upper": 0.12657400410623126
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.076,
+              "one_sided_95_mc_upper": 0.09123455217626245
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.058,
+              "one_sided_95_mc_upper": 0.07166041043370713
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.034,
+              "one_sided_95_mc_upper": 0.045009535721700765
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.028,
+              "one_sided_95_mc_upper": 0.038188865025176225
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.013,
+              "one_sided_95_mc_upper": 0.020589286529908307
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.009,
+              "one_sided_95_mc_upper": 0.015652573749606477
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.005,
+              "one_sided_95_mc_upper": 0.010484076911415651
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 17,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 18,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 19,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 20,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 21,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 22,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 23,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 24,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 6,
+          "quantities": [
+            "t15_tau_sweeps",
+            "t15_tau_seconds",
+            "model_ell_sweeps",
+            "model_ell_seconds"
+          ],
+          "seconds_included": true
+        },
+        "emissions": {
+          "cutoff": 4,
+          "point_probability_cutoff": 4,
+          "k": 8,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.511,
+              "one_sided_95_mc_upper": 0.5374519373464182
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.251,
+              "one_sided_95_mc_upper": 0.27458130420187776
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.068,
+              "one_sided_95_mc_upper": 0.08256760433169352
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.009,
+              "one_sided_95_mc_upper": 0.015652573749606477
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3,
+          "quantities": [
+            "q_H_X",
+            "q_L_X",
+            "q_H_Y",
+            "q_L_Y"
+          ],
+          "seconds_included": true
+        }
+      },
+      "sharing_all_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "boundary_counts": {
+        "NO CHANGE": {
+          "expected_count": 3.7965,
+          "interval_90": [
+            3.0,
+            4.0
+          ]
+        },
+        "BETWEEN": {
+          "expected_count": 0.1815,
+          "interval_90": [
+            0.0,
+            1.0
+          ]
+        },
+        "CHANGE": {
+          "expected_count": 0.022,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        },
+        "NOT READ": {
+          "expected_count": 0.0,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "boundary_change_probabilities": {
+        "within_job2_span0_span1": {
+          "probability": 0.0065,
+          "count": 13,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0038489424981443874,
+            0.010314468121596716
+          ]
+        },
+        "within_job2_span1_span2": {
+          "probability": 0.0065,
+          "count": 13,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0038489424981443874,
+            0.010314468121596716
+          ]
+        },
+        "within_job3_span0_span1": {
+          "probability": 0.0045,
+          "count": 9,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.002349556759577519,
+            0.007839446211579703
+          ]
+        },
+        "within_job3_span1_span2": {
+          "probability": 0.0045,
+          "count": 9,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.002349556759577519,
+            0.007839446211579703
+          ]
+        }
+      },
+      "any_LR_reject_probability": {
+        "probability": 0.69,
+        "count": 69,
+        "draws": 100,
+        "mc_interval_90": [
+          0.6053283459758323,
+          0.7659908498496452
+        ],
+        "null_draws_per_comparison": 400,
+        "requested_trials": 100,
+        "complete_trials": 100,
+        "per_boundary": {
+          "within_job2_span0_span1": {
+            "probability": 0.22,
+            "count": 22,
+            "draws": 100,
+            "mc_interval_90": [
+              0.15388900687522575,
+              0.29901179589287813
+            ]
+          },
+          "within_job2_span1_span2": {
+            "probability": 0.21,
+            "count": 21,
+            "draws": 100,
+            "mc_interval_90": [
+              0.14524480797807218,
+              0.2881349155406023
+            ]
+          },
+          "within_job3_span0_span1": {
+            "probability": 0.23,
+            "count": 23,
+            "draws": 100,
+            "mc_interval_90": [
+              0.1625908713764863,
+              0.30983361699732903
+            ]
+          },
+          "within_job3_span1_span2": {
+            "probability": 0.22,
+            "count": 22,
+            "draws": 100,
+            "mc_interval_90": [
+              0.15388900687522575,
+              0.29901179589287813
+            ]
+          },
+          "between_job2_job3": {
+            "probability": 0.25,
+            "count": 25,
+            "draws": 100,
+            "mc_interval_90": [
+              0.18015704677970465,
+              0.33132155374566175
+            ]
+          }
+        }
+      },
+      "returned_order_all_preference_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "elapsed_seconds": 420.9674982088618,
+      "seconds_scope": "C2 actual sweep times within donor endpoint range widened by ten percent",
+      "assumptions": "Frozen v4 empirical day and emission extension with C1 actual design and C2 actual sweep times.",
+      "nominal": true,
+      "design_name": "D1",
+      "description": "D1 two 300 position monitor jobs using the day 3 design metadata as a nominal example. Any actual span count is calibrated afresh. The shuffled job is beside the monitor prediction.",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    },
+    "D2": {
+      "n_spans_per_job": 6,
+      "span_counts": [
+        6
+      ],
+      "n_jobs": 1,
+      "scope": "conditional_empirical_day_extension_with_actual_design",
+      "design": {
+        "jobs": [
+          [
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 0
+            },
+            {
+              "R": [
+                50.0,
+                50.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 1
+            },
+            {
+              "R": [
+                50.0,
+                50.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 2
+            },
+            {
+              "R": [
+                50.0,
+                50.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 3
+            },
+            {
+              "R": [
+                50.0,
+                50.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 4
+            },
+            {
+              "R": [
+                49.0,
+                49.0
+              ],
+              "N": 1000,
+              "circuits": [
+                {
+                  "quadrature": "X",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                },
+                {
+                  "quadrature": "Y",
+                  "wait_us": 5.6,
+                  "shot_count": 1000
+                }
+              ],
+              "sweep_s": 0.0276938792,
+              "duration_s": 27.6938792,
+              "span": 5
+            }
+          ]
+        ],
+        "shuffled": []
+      },
+      "_applicability": {
+        "dimensionless_applicable": true,
+        "seconds_applicable": true,
+        "design_differences": [],
+        "seconds_support_checks": [
+          {
+            "job": 0,
+            "span": 0,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 1,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 2,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 3,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 4,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          },
+          {
+            "job": 0,
+            "span": 5,
+            "sweep_s": 0.0276938792,
+            "in_empirical_support": true,
+            "inside_empirical_range": true,
+            "inside_range_width_alternative": true
+          }
+        ],
+        "seconds_range": [
+          0.0136017504,
+          0.0385076846
+        ],
+        "seconds_range_width_alternative": [
+          0.013123663,
+          0.036996378999999996
+        ],
+        "seconds_scope": "C2 actual sweep times within donor endpoint range widened by ten percent",
+        "note": "C1 calibration uses only design quantities. Outside C2 seconds support the dimensionless correlation subfamily remains calibrated."
+      },
+      "draws": 2000,
+      "interval_training_draws": 1000,
+      "joint_calibration_draws": 1000,
+      "seed": 41119302,
+      "rng": "PCG64 SeedSequence([seed,trial])",
+      "intervals": {
+        "threshold_duty": [
+          0.242,
+          0.448
+        ],
+        "model_duty": [
+          0.2415230396303645,
+          0.44775745193977873
+        ],
+        "t15_tau_sweeps": [
+          3.0,
+          13.0
+        ],
+        "t15_tau_seconds": [
+          0.08308163760000001,
+          0.3600204296
+        ],
+        "model_ell_sweeps": [
+          2.344420586090511,
+          11.850756258002212
+        ],
+        "model_ell_seconds": [
+          0.06492610050518381,
+          0.3281934122377573
+        ],
+        "q_H_X": [
+          0.6411246247489629,
+          0.7342149374722922
+        ],
+        "q_L_X": [
+          0.26538520835865226,
+          0.36389997533540963
+        ],
+        "q_H_Y": [
+          0.773514607231406,
+          0.9196237584733621
+        ],
+        "q_L_Y": [
+          0.0546199168702532,
+          0.13624226001755127
+        ],
+        "job_mean_duty_difference": null,
+        "shuffled_weight_A26": null,
+        "shuffled_sd": null
+      },
+      "family_miss_thresholds": {
+        "duty": {
+          "cutoff": 6,
+          "point_probability_cutoff": 5,
+          "k": 12,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.436,
+              "one_sided_95_mc_upper": 0.4624087076465441
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.402,
+              "one_sided_95_mc_upper": 0.42819317988100497
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.134,
+              "one_sided_95_mc_upper": 0.15302110388263976
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.117,
+              "one_sided_95_mc_upper": 0.13506267815970827
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.042,
+              "one_sided_95_mc_upper": 0.053987205411418486
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.033,
+              "one_sided_95_mc_upper": 0.043878620530371636
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.014,
+              "one_sided_95_mc_upper": 0.02180013152550217
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.011,
+              "one_sided_95_mc_upper": 0.018141892240076254
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 4,
+          "quantities": [
+            "threshold_duty",
+            "model_duty"
+          ],
+          "seconds_included": true
+        },
+        "correlation": {
+          "cutoff": 9,
+          "point_probability_cutoff": 7,
+          "k": 24,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.417,
+              "one_sided_95_mc_upper": 0.4433036699976229
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.417,
+              "one_sided_95_mc_upper": 0.4433036699976229
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.226,
+              "one_sided_95_mc_upper": 0.24884008722293754
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.226,
+              "one_sided_95_mc_upper": 0.24884008722293754
+            },
+            {
+              "misses_at_least": 5,
+              "estimated_probability": 0.094,
+              "one_sided_95_mc_upper": 0.11058203571530774
+            },
+            {
+              "misses_at_least": 6,
+              "estimated_probability": 0.094,
+              "one_sided_95_mc_upper": 0.11058203571530774
+            },
+            {
+              "misses_at_least": 7,
+              "estimated_probability": 0.049,
+              "one_sided_95_mc_upper": 0.06175857882817405
+            },
+            {
+              "misses_at_least": 8,
+              "estimated_probability": 0.049,
+              "one_sided_95_mc_upper": 0.06175857882817405
+            },
+            {
+              "misses_at_least": 9,
+              "estimated_probability": 0.026,
+              "one_sided_95_mc_upper": 0.03589434150359929
+            },
+            {
+              "misses_at_least": 10,
+              "estimated_probability": 0.026,
+              "one_sided_95_mc_upper": 0.03589434150359929
+            },
+            {
+              "misses_at_least": 11,
+              "estimated_probability": 0.012,
+              "one_sided_95_mc_upper": 0.019370199285059248
+            },
+            {
+              "misses_at_least": 12,
+              "estimated_probability": 0.012,
+              "one_sided_95_mc_upper": 0.019370199285059248
+            },
+            {
+              "misses_at_least": 13,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 14,
+              "estimated_probability": 0.003,
+              "one_sided_95_mc_upper": 0.007735244718479458
+            },
+            {
+              "misses_at_least": 15,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 16,
+              "estimated_probability": 0.001,
+              "one_sided_95_mc_upper": 0.004734993575499777
+            },
+            {
+              "misses_at_least": 17,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 18,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 19,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 20,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 21,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 22,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 23,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            },
+            {
+              "misses_at_least": 24,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 6,
+          "quantities": [
+            "t15_tau_sweeps",
+            "t15_tau_seconds",
+            "model_ell_sweeps",
+            "model_ell_seconds"
+          ],
+          "seconds_included": true
+        },
+        "emissions": {
+          "cutoff": 3,
+          "point_probability_cutoff": 3,
+          "k": 4,
+          "calibration_draws": 1000,
+          "tail_table": [
+            {
+              "misses_at_least": 1,
+              "estimated_probability": 0.304,
+              "one_sided_95_mc_upper": 0.32883435000776623
+            },
+            {
+              "misses_at_least": 2,
+              "estimated_probability": 0.061,
+              "one_sided_95_mc_upper": 0.07494207683768803
+            },
+            {
+              "misses_at_least": 3,
+              "estimated_probability": 0.002,
+              "one_sided_95_mc_upper": 0.006282284546723426
+            },
+            {
+              "misses_at_least": 4,
+              "estimated_probability": 0.0,
+              "one_sided_95_mc_upper": 0.002991249545095295
+            }
+          ],
+          "independent_binomial_cutoff_beside": 3,
+          "quantities": [
+            "q_H_X",
+            "q_L_X",
+            "q_H_Y",
+            "q_L_Y"
+          ],
+          "seconds_included": true
+        }
+      },
+      "sharing_all_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "boundary_counts": {
+        "NO CHANGE": {
+          "expected_count": 4.786,
+          "interval_90": [
+            4.0,
+            5.0
+          ]
+        },
+        "BETWEEN": {
+          "expected_count": 0.1965,
+          "interval_90": [
+            0.0,
+            1.0
+          ]
+        },
+        "CHANGE": {
+          "expected_count": 0.0175,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        },
+        "NOT READ": {
+          "expected_count": 0.0,
+          "interval_90": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "boundary_change_probabilities": {
+        "within_job2_span0_span1": {
+          "probability": 0.0015,
+          "count": 3,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.00040896664013944755,
+            0.003872223150157523
+          ]
+        },
+        "within_job2_span1_span2": {
+          "probability": 0.004,
+          "count": 8,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0019919161099451925,
+            0.007205716652398641
+          ]
+        },
+        "within_job2_span2_span3": {
+          "probability": 0.004,
+          "count": 8,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0019919161099451925,
+            0.007205716652398641
+          ]
+        },
+        "within_job2_span3_span4": {
+          "probability": 0.004,
+          "count": 8,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0019919161099451925,
+            0.007205716652398641
+          ]
+        },
+        "within_job2_span4_span5": {
+          "probability": 0.004,
+          "count": 8,
+          "draws": 2000,
+          "mc_interval_90": [
+            0.0019919161099451925,
+            0.007205716652398641
+          ]
+        }
+      },
+      "any_LR_reject_probability": {
+        "probability": 0.59,
+        "count": 59,
+        "draws": 100,
+        "mc_interval_90": [
+          0.5028917916482835,
+          0.6730141498408492
+        ],
+        "null_draws_per_comparison": 400,
+        "requested_trials": 100,
+        "complete_trials": 100,
+        "per_boundary": {
+          "within_job2_span0_span1": {
+            "probability": 0.2,
+            "count": 20,
+            "draws": 100,
+            "mc_interval_90": [
+              0.13666132524586722,
+              0.2772002496709136
+            ]
+          },
+          "within_job2_span1_span2": {
+            "probability": 0.18,
+            "count": 18,
+            "draws": 100,
+            "mc_interval_90": [
+              0.11969077800858116,
+              0.2551448808894621
+            ]
+          },
+          "within_job2_span2_span3": {
+            "probability": 0.2,
+            "count": 20,
+            "draws": 100,
+            "mc_interval_90": [
+              0.13666132524586722,
+              0.2772002496709136
+            ]
+          },
+          "within_job2_span3_span4": {
+            "probability": 0.22,
+            "count": 22,
+            "draws": 100,
+            "mc_interval_90": [
+              0.15388900687522575,
+              0.29901179589287813
+            ]
+          },
+          "within_job2_span4_span5": {
+            "probability": 0.25,
+            "count": 25,
+            "draws": 100,
+            "mc_interval_90": [
+              0.18015704677970465,
+              0.33132155374566175
+            ]
+          }
+        }
+      },
+      "returned_order_all_preference_probability": {
+        "probability": 1.0,
+        "count": 2000,
+        "draws": 2000,
+        "mc_interval_90": [
+          0.9985032551048117,
+          1.0
+        ]
+      },
+      "elapsed_seconds": 344.8518324592151,
+      "seconds_scope": "C2 actual sweep times within donor endpoint range widened by ten percent",
+      "assumptions": "Frozen v4 empirical day and emission extension with C1 actual design and C2 actual sweep times.",
+      "nominal": true,
+      "design_name": "D2",
+      "description": "D2 one 600 position job, six contiguous 100 position spans, readout at the first and last two positions, sweep time the mean of donor sweep times",
+      "source_basis": {
+        "spans": 15,
+        "jobs": 5,
+        "dates": 3
+      }
+    }
+  },
+  "counts_against": {
+    "families": "Scenario specific conservative Monte Carlo cutoff with estimated smallest cutoff beside; calibrations are joint across shared day and job parameters",
+    "sharing": "Any monitor span INDEPENDENT or UNDECIDED under test 15 sharing ratio",
+    "dwell": "More than one monitor span with the declared dwell p below 0.01",
+    "boundary": "A matching boundary reads CHANGE where its own conditional predicted CHANGE probability is below 0.05",
+    "undefined_quantity": "Not fully testable, retained with reason; no reduced family cutoff substituted"
+  },
+  "middle_span_pattern": "No channel, parameter or bet added. No prediction beyond stationarity within a job. Span position has no effect in the model.",
+  "limits": {
+    "fixed_date_means": "The hierarchy contains three fixed observed date means, not an identified future date population.",
+    "emissions": "Empirical donors on three dates only.",
+    "shuffled_sd": "No unique observed population length scalar is specified; observed sd remains unavailable with alternatives recorded.",
+    "shuffled_weight": "Assumed relation to time averaged duty with absolute 0.011 allowance.",
+    "prior_record_limits": {
+      "dwell_failures_143": 2,
+      "dwell_testable_all": 25,
+      "middle_fifth_mismatch": "Retained from test 11 job 2; predictions remain conditional despite this strain",
+      "undefined_model_length": "Unrestricted transitions can make real positive length unavailable; scorer never treats that as a numerical interval miss"
+    },
+    "chronology": "Seconds conditional on chronological returned order and even sweep spacing."
+  },
+  "rehearsals": [
+    "rehearsal-day2.json",
+    "rehearsal-day3.json"
+  ],
+  "audit": [
+    "audit-part-a.json",
+    "audit-part-b.json",
+    "calibration-audit.json",
+    "scorer-diff-audit.json"
+  ],
+  "adoption": "Nothing adopted; ready for the author to hash before the future run."
+}
