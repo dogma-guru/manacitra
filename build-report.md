@@ -4328,18 +4328,22 @@ runner's recount found their numbers did not hold as written: items 6 and 9.
   README's second sentence and the changelog's lead, the kickoff's fixed text amended by this ruling, say that every
   boundary read NO CHANGE, which does not show the duties equal; finding 30's limits bullet says the duty measurements
   and boundary tests are the record. No other "held" or "hold" in the new text is said of the duty.
-- Item 3. Finding 30's opening scopes finding 29's boundaries to the monitor jobs, 17 of 17, with test 7's shuffled job
-  read beside them at a borrowed correlation time.
+- Item 3. Finding 30's opening scopes finding 29's boundaries to the monitor boundaries that could be read, all
+  seventeen NO CHANGE (nine on ibm_kingston, eight on ibm_fez), the eleven others NOT READ, with test 7's shuffled job
+  read beside them at a borrowed correlation time. Amended by R5, item 1: R3 had ruled "every weight boundary of the
+  monitor jobs on the record, 17 of 17", which lost the word "read".
 - Item 4. The scorecard tests recount version 4.1's scorecard on test 17's long job from its published files by the
   scorer's own definitions (the intervals, each bet's miss, each family's cutoff, and the likelihood probability, 62 of
   100), assert the stored summaries against the recount, and fail on an in-memory copy with one duty observation moved
   outside its interval. No published file changed.
 - Item 5. Round 5c's README says that the report's sentence on the simulated data being the same rests on S's χ² over
   the fitted waits, while the held-out counts differ at the two points the README explains.
-- Item 6, as amended. On the weight's branch the per-shot duty agrees with the monitor's weight within 0.011 on finding
-  29's twelve spans of 143 and within 0.014 on seventeen of finding 30's eighteen; A1's last span, which the per-shot
-  read places on the other branch, is given both ways, 0.066 from the duty on that branch and 0.014 from the raw duty.
-  The ruling's sentence had read 0.014 over all eighteen on the weight's branch, which holds only on the raw duty.
+- Item 6, as amended. On the weight's branch the per-shot duty agrees with the monitor's weight by less than 0.012 on
+  finding 29's twelve spans of 143 and by less than 0.015 on seventeen of finding 30's eighteen (largest 0.0112 and
+  0.0141); A1's last span, which the per-shot read places on the other branch, is given both ways, 0.066 from the duty
+  on that branch and 0.014 from the raw duty. The ruling's sentence had read 0.014 over all eighteen on the weight's
+  branch, which holds only on the raw duty. Amended by R5, item 3: R3 had ruled "within 0.011" and "within 0.014",
+  rounded maxima stated as bounds, false by a few ten-thousandths.
 - Item 9, as amended. The method and `time_average_sd`'s docstring name the long-duration form and the exact variance,
   and bound the exact sd's shortfall at less than 2.6 percent on finding 29's spans (2.53, at test 14's antiphase wait)
   and less than 1.6 percent on finding 30's (1.51). The ruling had said at most 1.5 percent on both. No code changed.

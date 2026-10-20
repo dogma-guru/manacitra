@@ -5022,11 +5022,25 @@ def test_finding_30_the_records():
         "with 17 of 17 boundaries read NO CHANGE" in findings
         and "test 7's job BETWEEN (borrowed) at its first, 2.65" in findings
     )
+    # ruling R5, item 1: the boundaries that could be read, counted from test 15's read: 28 monitor boundaries, 17 NO
+    # CHANGE (9 on ibm_kingston, 8 on ibm_fez) and 11 NOT READ (all on ibm_kingston), none of those with both spans
+    # SHARED
+    bounds = archive.load("ibm_fez/t15-error-model-read.json")["archived"]["analysis"]["boundaries"]
+    by = {}
+    for b_ in bounds:
+        by[(b_["word"], b_["processor"])] = by.get((b_["word"], b_["processor"]), 0) + 1
+    assert len(bounds) == 28 and by == {
+        ("NO CHANGE", "ibm_kingston"): 9,
+        ("NO CHANGE", "ibm_fez"): 8,
+        ("NOT READ", "ibm_kingston"): 11,
+    }
+    assert not any(b_["span_words"] == ["SHARED", "SHARED"] for b_ in bounds if b_["word"] == "NOT READ")
     assert (
-        "and every weight boundary of the monitor jobs on the record, 17 of 17, read NO CHANGE under the error of a "
-        "time average, with test 7's shuffled job read beside them at a borrowed correlation time." in item
+        "and all seventeen monitor boundaries that could be read returned NO CHANGE under the error of a time average, "
+        "nine on ibm_kingston and eight on ibm_fez; the eleven others, on ibm_kingston, were NOT READ, each with a "
+        "span not read SHARED, with test 7's shuffled job read beside them at a borrowed correlation time." in item
     )
-    assert "every weight boundary on the record" not in item
+    assert "every weight boundary" not in item and "17 of 17" not in item
     # the rules and their issues, posted before each run or read
     issues = {"t11": 58, "t16": 67, "t17": 69}
     for rec, t in ((d3, "t11"), (t16, "t16"), (t17, "t17")):
@@ -5271,10 +5285,10 @@ def test_finding_30_the_records():
 def test_finding_30_the_two_estimators():
     """Ruling R3, item 6, as the author amended it: in "What it has not shown", the monitor's weight per span (test
     11's on day 3; test 12's analysis from the counts in test 17) against the per-shot duty on the weight's branch,
-    over finding 30's eighteen monitor spans: within 0.014 on the seventeen read on the b branch; on the eighteenth,
-    A1's last span, which the per-shot read places on the 1 - b branch, the monitor's 0.540 stands 0.066 from the duty
-    on that branch (0.474) and 0.014 from the raw duty (0.526). Finding 29's 0.011 over its twelve spans is recomputed
-    in finding 29's test (len(dw) == 12)."""
+    over finding 30's eighteen monitor spans: less than 0.015 on the seventeen read on the b branch, and less than
+    0.012 on finding 29's twelve, each recomputed unrounded (ruling R5, item 3); on the eighteenth, A1's last span,
+    which the per-shot read places on the 1 - b branch, the monitor's 0.540 stands 0.066 from the duty on that branch
+    (0.474) and 0.014 from the raw duty (0.526), unchanged."""
     _, d3, t16, t17 = _t30_records()
     rows = []
     for j, k in (("2", "d3-job2"), ("3", "d3-job3")):
@@ -5291,17 +5305,39 @@ def test_finding_30_the_two_estimators():
     (other,) = [r for r in rows if r[3]["w_branch"] != "b"]
     assert (other[0], other[1], other[3]["w_branch"]) == ("A1", 2, "1 - b")
     seventeen = [abs(w - s["w_duty"]) for _, _, w, s in rows if s["w_branch"] == "b"]
-    assert len(seventeen) == 17 and _q(max(seventeen), 3) == "0.014"
+    assert len(seventeen) == 17 and _q(max(seventeen), 4) == "0.0141" and max(seventeen) < 0.015  # ruling R5, item 3
+    # finding 29's twelve monitor spans of 143, as finding 29's test reads them: the duty on the weight's branch against
+    # the published weight per span
+    f15 = archive.load("ibm_fez/t15-error-model-read.json")["archived"]["analysis"]
+    pub = {
+        (jk, s_): w_
+        for jk, xs in f15["published_weight_level_changes"].items()
+        for x in xs
+        for s_, w_ in zip(x["spans"], x["w"])
+    }
+    twelve = [
+        abs(sp["w_duty"] - pub[(jk, sp["span"])])
+        for jk, wk in (
+            ("t11-job2", "monitor"),
+            ("t11-job3", "monitor"),
+            ("t12-job1", "monitor"),
+            ("t14-job1", "antiphase"),
+        )
+        for sp in f15["jobs"][jk]["qubits"]["143"]["waits"][wk]["spans"]
+    ]
+    assert len(twelve) == 12 and _q(max(twelve), 4) == "0.0112" and max(twelve) < 0.012
     w, s = other[2], other[3]
     assert (_q(w, 3), _q(s["w_duty"], 3), _q(s["Y"]["duty_b"], 3)) == ("0.540", "0.474", "0.526")
     assert (_q(abs(w - s["w_duty"]), 3), _q(abs(w - s["Y"]["duty_b"]), 3)) == ("0.066", "0.014")
     shown = " ".join((ROOT / "docs" / "findings.md").read_text().split()).split("## What it has not shown", 1)[1]
     assert (
-        "the duty of the per-shot record agrees with the second within 0.011 on finding 29's twelve monitor spans of "
-        "143, and within 0.014 on seventeen of finding 30's eighteen, each on the weight's branch; on the eighteenth, "
-        "A1's last span, the per-shot read places the duty on the other branch, and the monitor's 0.540 stands 0.066 "
-        "from the duty on that branch (0.474) and 0.014 from the raw duty (0.526)." in shown
+        "the duty of the per-shot record agrees with the second by less than 0.012 on finding 29's twelve monitor "
+        "spans of 143, and by less than 0.015 on seventeen of finding 30's eighteen (largest 0.0112 and 0.0141), each "
+        "on the weight's branch; on the eighteenth, A1's last span, the per-shot read places the duty on the other "
+        "branch, and the monitor's 0.540 stands 0.066 from the duty on that branch (0.474) and 0.014 from the raw "
+        "duty (0.526)." in shown
     )
+    assert "within 0.011 on finding 29's" not in shown and "within 0.014 on seventeen" not in shown
 
 
 def test_the_long_duration_form():
