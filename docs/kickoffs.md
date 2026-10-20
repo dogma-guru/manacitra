@@ -1,5 +1,7 @@
 # How the results were made: kickoffs
 
+This page lists every run with its question, processor, verdict and data, and what a kickoff brief states. It is for readers tracing a result back to the run and the rule that made it. If it is too deep, read [the findings](findings.md) first.
+
 Every result in the [findings](findings.md) came from a kickoff: a written brief, fixed before a run (according to the author's dated records, which are not part of this release). A brief states:
 
 - the question;

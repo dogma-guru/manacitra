@@ -1,5 +1,7 @@
 # The idea in six pictures
 
+This page explains the method in six pictures, then the wait test, the two-quadrature Ramsey, the monitor and its execution spans, and the per-shot read. It is for readers who want to know how a number is made before reading the findings. Read the [README](../README.md) first; every rule and threshold is in [the long version](index.md).
+
 ## 1. The kept share
 
 ![Two circuits on one pair of qubits, identical except for their single-qubit gates, shown as two rows of boxes joined by the same three CZ gates. Beside them, three pairs of dots on a P(11) axis: the exact model's outcomes, 0.962 without the offset and 1.000 with it, a gap of 0.038; ibm_fez pair 106-107, 0.923 and 0.963, a gap of 0.040, k = 1.06; ibm_fez pair 20-21, 0.824 and 0.833, a gap of 0.008, k = 0.22.](diagrams/kept-share.svg)

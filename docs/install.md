@@ -1,5 +1,7 @@
 # Installing Manacitra: the details
 
+This page holds the install routes, the extras, the provider backends and the checks made before anything is sent, and how long the tests take. It is for readers installing Manacitra or pointing it at a provider.
+
 The short version is in the [README](../README.md#install-and-try-it).
 
 ## As a plain package

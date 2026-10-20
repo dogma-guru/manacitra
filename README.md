@@ -4,7 +4,13 @@
 
 **Manacitra makes a map of a quantum processor's qubit pairs: which pairs keep a small, known difference and which lose it, and it uses the map to choose pairs for a job.** The name is the Sanskrit *māna* (measure) and *citra* (picture): *mānacitra*, the Hindi word for a map. The name is measure-picture, map; it says nothing about minds.
 
-**Contents:** [Latest finding](#latest-finding-the-duty-across-spans-jobs-and-days) · [What it does](#what-it-does) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+**Contents:** [Who it is for](#who-it-is-for) · [Latest finding](#latest-finding-the-duty-across-spans-jobs-and-days) · [What it does](#what-it-does) · [Words used here](#words-used-here) · [Findings](#findings) · [Limits](#limits) · [The idea](#the-idea) · [Install and try it](#install-and-try-it) · [Reproducing the numbers](#reproducing-the-numbers) · [Documentation](#documentation) · [How to cite](#how-to-cite) · [Support](#support) · [Licence](#licence)
+
+## Who it is for
+
+Manacitra is for people who run work on shared quantum processors and want to check, on the qubits and pairs they will use, whether the provider's published figures already describe them: researchers choosing qubits or pairs, people checking their own error bars, and anyone studying how a device's results move between runs, execution spans and days. It is also a worked example of measuring in the open. The rule for each newer test is hashed and posted in a public issue before its run or read, all but test 8's, which was posted after its run; every number the runs measured, as this README and the findings give it, is checked by a test against the published files; and the mistakes found along the way are kept beside their corrections. No account or hardware is needed to start: the simulator runs locally, and the archived results reproduce from the published files. The words it uses are listed under [Words used here](#words-used-here).
+
+**How Manacitra and Sandhi relate.** Manacitra measures; Sandhi forecasts. Manacitra is the Python package and its tests: it builds the circuits, reads the counts and, from the per-shot records, gives the quantities the findings report, such as a qubit's duty, its correlation time and the boundary words between execution spans. Sandhi is a desk model kept in [`data/desk/sandhi/`](data/desk/sandhi/README.md), outside the package: since version 4, a two-state model fitted on the desk to Manacitra's records and nothing else, with no hardware. Before a run, Sandhi's predictions for it are hashed and posted in a public issue; after the run, a scorer hashed with the predictions compares them with Manacitra's read of that run. Manacitra's measurements are the record; Sandhi's scorecards say how well a simple model of that record forecasts the next run, and a version that does not describe the record is set down in the open, as version 3 was. Neither names a cause.
 
 ## Latest finding: the duty across spans, jobs and days
 
@@ -19,6 +25,23 @@ It maps pairs. It does not rank machines.
 ![ibm_fez's heavy-hex coupling map with 27 pairs drawn as segments shaded from light blue (kept least, k = 0.22) to dark blue (kept most, k = 1.06), each also drawn thicker the more it kept and numbered by its rank (1 = kept most), and other couplers in light grey. Beside it, a smaller copy of the same map with the same 27 pairs shaded by IBM's published error score, from light (highest error, 0.021) to dark (lowest error, 0.011). The two shadings differ pair by pair.](docs/diagrams/chip-map.svg)
 
 The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), each coloured by its kept share. Each pair is also drawn thicker the more it kept, and numbered by its rank; every pair's k, x and ranks are in [a table](docs/diagrams/chip-map-table.md). The small map on the right colours the same pairs by the published score x (the pair's two-qubit error plus both qubits' readout errors, as IBM reported them at submission). Dark means better on both. The two pictures order the pairs differently: across these 27 pairs, k and x correlate at r = −0.18.
+
+## Words used here
+
+One sentence each, taken from the page it links to, where each is defined at length.
+
+- **Kept share** (k): the change in a pair's P(11) between the two circuits as a share of the change the exact model predicts, 0.038 for the main circuit, so that a pair that moved by 0.040 has k = 1.06 and one that moved by 0.008 has k = 0.22 ([the method](docs/method.md#1-the-kept-share)).
+- **Map**: the kept shares of all the pairs measured, one per pair, drawn on the chip's coupling map ([the method](docs/method.md#2-the-map)).
+- **The map rule's verdicts**: NOISE, the map does not repeat (r_split under 0.3); REDUNDANT, the published score already holds it; DIAGNOSTIC, it repeats, carries over to a second circuit and survives with the published score taken out, which does not explain it; MAP PRESENT, it repeats and carries over where the provider publishes no per-pair figures; NOT SETTLED, anything else ([the rule](docs/index.md#the-map-rule-kickoff-31)).
+- **Ramsey fringe**: a qubit's P(1) after H, a wait and H, read across waits, which can be fitted as one line with decay or as two fixed lines, and which a short span of waits does not tell apart ([the method](docs/method.md#the-two-quadrature-ramsey-and-the-two-model-fit)).
+- **Execution span**: one of the runs in which a provider may execute a job, each a run of the submitted circuits, with gaps between them, the provider's record giving each span's positions, start and stop ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
+- **Boundary**: the place between two adjacent spans of a job, across which changes are set apart from those between adjacent repeats of a span, a repeat whose circuits ran in different spans straddling it ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
+- **Sweep**: one returned shot index across a span's repeats; the sweep series is the mean at each returned index, on the sweep clock, the returned order, which is in seconds only if that order is chronological and even ([the method](docs/method.md#reading-a-span-per-shot)).
+- **Per-shot read**: a reading of a span from each position's shots one by one, as the provider returns them, rather than from its counts, giving the sweep series, the sharing ratio, the duty, the correlation time and the error of a time average ([the method](docs/method.md#reading-a-span-per-shot)).
+- **Duty**: the fraction b of a span's sweep series above the threshold between its two states, never folded ([the method](docs/method.md#reading-a-span-per-shot)).
+- **Weight**: the free weight b on the upper of the two fixed lines in the two-line fit, read per repeat by the monitor at antiphase as w ([the method](docs/method.md#the-two-quadrature-ramsey-and-the-two-model-fit)).
+- **Correlation time** (τ_c): the first lag at which the autocorrelation of a span's sweep series falls below 1/e of its excess over shot noise, times the sweep time ([the method](docs/method.md#reading-a-span-per-shot)).
+- **Desk model** (Sandhi): a kinetic description of the records, fitted on the desk from bundles of those records and nothing else, with no hardware, and not a run record or counts of any device ([its folder](data/desk/sandhi/README.md)).
 
 ## Findings
 
@@ -146,9 +169,11 @@ pytest tests/test_reproduction.py tests/test_field_inventory.py   # every listed
 python examples/03_pick_pairs.py                                   # finding 4: both picks and the 35.6%
 ```
 
-Every statistic listed in `tests/expected_fields.json` is recomputed from the archived inputs and compared at 10⁻⁶, with the exceptions named in [`docs/findings.md`](docs/findings.md); every measured number in the README and the findings is checked by a test. How each run was made is in [`docs/kickoffs.md`](docs/kickoffs.md), and the dataset, file by file, in [`data/README.md`](data/README.md).
+Every statistic listed in `tests/expected_fields.json` is recomputed from the archived inputs and compared at 10⁻⁶, with the exceptions named in [`docs/findings.md`](docs/findings.md); every number the runs measured, as the README and the findings give it, is checked by a test. How each run was made is in [`docs/kickoffs.md`](docs/kickoffs.md), and the dataset, file by file, in [`data/README.md`](data/README.md).
 
 ## Documentation
+
+**Reading order:** this README, then [`docs/method.md`](docs/method.md), then [`docs/findings.md`](docs/findings.md); [`docs/index.md`](docs/index.md) for the long version; the rest as needed.
 
 - [`docs/findings.md`](docs/findings.md): the thirty findings in full, with a table of all of them, what was known before them, and what has not been shown.
 - [`docs/method.md`](docs/method.md): the method in six pictures.

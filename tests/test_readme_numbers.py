@@ -2327,6 +2327,107 @@ def test_finding_15_in_the_persistence_bullet():
     )
 
 
+def test_the_readme_for_a_first_reader():
+    """Ruling R4, items 2, 3 and 7, from a first reader's notes: the README says whom Manacitra is for and how it and
+    Sandhi relate, in the author's confirmed wording, with its factual clauses checked against the records (each newer
+    test's rule posted before its run or read but test 8's; Sandhi's digests posted before the runs they predict); a
+    glossary, "Words used here", whose every entry is taken from the page it links to; a reading order; and every page
+    in docs/ opens with what it holds and whom it is for. The README's and docs/index.md's statements of what the tests
+    check cover the numbers the runs measured, which the timings are not."""
+    import glob
+    import json
+
+    readme = (ROOT / "README.md").read_text()
+    flat = " ".join(readme.split())
+    contents = readme.split("**Contents:** ", 1)[1].split("\n", 1)[0]
+    assert contents.startswith("[Who it is for](#who-it-is-for) · [Latest finding]")
+    assert contents.index("[Words used here](#words-used-here)") < contents.index("[Findings](#findings)")
+    order = [
+        readme.index(h)
+        for h in (
+            "**Contents:**",
+            "\n## Who it is for\n",
+            "\n## Latest finding",
+            "\n## What it does",
+            "\n## Words used here\n",
+            "\n## Findings\n",
+        )
+    ]
+    assert order == sorted(order)
+    who = " ".join(readme.split("\n## Who it is for\n", 1)[1].split("\n## ", 1)[0].split())
+    for s in (
+        "The rule for each newer test is hashed and posted in a public issue before its run or read, all but test 8's, "
+        "which was posted after its run;",
+        "every number the runs measured, as this README and the findings give it, is checked by a test against the "
+        "published files;",
+        "Sandhi is a desk model kept in [`data/desk/sandhi/`](data/desk/sandhi/README.md), outside the package: since "
+        "version 4, a two-state model fitted on the desk to Manacitra's records and nothing else, with no hardware.",
+        "after the run, a scorer hashed with the predictions compares them with Manacitra's read of that run.",
+        "a version that does not describe the record is set down in the open, as version 3 was. Neither names a cause.",
+    ):
+        assert s in who, s[:50]
+    # the clause on the rules, against every record whose rule is posted in a public issue
+    late = []
+    for f in sorted(glob.glob(str(archive.data_dir() / "ibm_*" / "*.json"))):
+        m = json.loads(Path(f).read_text()).get("meta", {})
+        r_ = m.get("rule")
+        if isinstance(r_, dict) and isinstance(r_.get("posted"), dict) and m.get("utc"):
+            if _utc(r_["posted"]["created_utc"]) > _utc(m["utc"]):
+                late.append(r_["file"])
+    assert late == ["t8-rule.md"]
+    assert "The rule's hash was posted after the run" in (ROOT / "docs" / "kickoffs.md").read_text()
+    sandhi = " ".join((archive.data_dir() / "desk" / "sandhi" / "README.md").read_text().split())
+    assert (
+        "the model is set down at version 3" in sandhi and "`hmm_core.c`, listed in its `FORECAST-SHA256SUMS`" in sandhi
+    )
+    # the glossary: each entry and the line it is taken from on the page it links to
+    words = " ".join(readme.split("\n## Words used here\n", 1)[1].split("\n## ", 1)[0].split())
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    index = " ".join((ROOT / "docs" / "index.md").read_text().split())
+    sources = {
+        "**Kept share** (k)": (
+            method,
+            "pair [106, 107] moved by 0.040, slightly more than the model's 0.038 (k = 1.06)",
+        ),
+        "**Map**": (method, "each coloured by its kept share"),
+        "**The map rule's verdicts**": (index, "| NOISE | r_split < 0.3 |"),
+        "**Ramsey fringe**": (
+            method,
+            "A Ramsey fringe read at a few waits on one quadrature can be fitted as one line",
+        ),
+        "**Execution span**": (method, "A provider may execute one job as several spans, each a run of the submitted"),
+        "**Boundary**": (method, "a repeat whose circuits ran in different spans straddles"),
+        "**Sweep**": (
+            method,
+            "The times are on the sweep clock, the returned order, and in seconds only if that order",
+        ),
+        "**Per-shot read**": (method, "A provider returns, for a completed job, each position's shots one by one."),
+        "**Duty**": (method, "the duty b, the fraction of the series above it, never folded"),
+        "**Weight**": (method, "with a free weight b on the upper line"),
+        "**Correlation time** (τ_c)": (method, "the correlation time τ_c, that lag times the caller's sweep time"),
+        "**Desk model** (Sandhi)": (sandhi, "a kinetic description of the records, fitted on the desk from bundles of"),
+    }
+    entries = [e.split(":", 1)[0] for e in words.split("- ")[1:]]
+    assert entries == list(sources)
+    for term, (page, line) in sources.items():
+        assert line in page, term
+    assert "**MAP PRESENT** if r_split ≥ 0.5 and r_AB ≥ 0.4 with p < 0.05" in index
+    # the reading order and the page headers
+    assert (
+        "**Reading order:** this README, then [`docs/method.md`](docs/method.md), then [`docs/findings.md`]"
+        "(docs/findings.md); [`docs/index.md`](docs/index.md) for the long version; the rest as needed." in flat
+    )
+    for name in ("findings", "index", "install", "kickoffs", "method", "reproduce"):
+        text = (ROOT / "docs" / f"{name}.md").read_text()
+        header = text.split("\n\n", 2)[1]
+        assert text.startswith("# ") and "for readers" in header and len(header.split(". ")) <= 3, name
+    # what the tests check: the numbers the runs measured
+    assert "every number the runs measured, as the README and the findings give it, is checked by a test." in flat
+    assert "every measured number" not in flat
+    assert "Every statistic the runs measured, in the README and the pages it links to" in index
+    assert "—" not in who + words and "–" not in who + words
+
+
 def test_the_quick_start_prints_what_the_readme_shows():
     """Ruling R4, items 1 and 4: the README's quick start picks with `pick_by_kept_share`, `manacitra pick`'s default
     since Amendment A15, and prints the numbers its verdict rests on, each with the map rule's threshold (docs/index.md,

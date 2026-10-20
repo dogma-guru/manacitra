@@ -1,5 +1,7 @@
 # Manacitra, the long version
 
+The long version, for readers who want the circuits, every rule and threshold, the backends and the guards in one place. If it is too deep, read the [README](../README.md) and then [the method in six pictures](method.md) first.
+
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
 safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
 README is the short version; the findings in full are in [`findings.md`](findings.md), the method in six pictures in
@@ -324,8 +326,8 @@ differs between platforms. So the intervals that also resample shots are compare
 between platforms is 3.2·10⁻⁴), and Kickoff 42's bootstrap SDs are compared at 10⁻⁶ under numpy 2.5 or later, the runs'
 version, and named as not compared under an older numpy. Every other field is compared at 10⁻⁶ everywhere.
 
-Every measured statistic in the README and the pages it links to (`findings.md`, `method.md`, `kickoffs.md`,
-`install.md`) is checked by a test; times, ranges and counts are taken from the data files and listed in
+Every statistic the runs measured, in the README and the pages it links to (`findings.md`, `method.md`, `kickoffs.md`,
+`install.md`), is checked by a test; times, ranges and counts are taken from the data files and listed in
 `tests/test_readme_numbers.py`. Times are rounded to the nearest minute, everywhere.
 
 Where each README number comes from:
