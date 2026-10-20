@@ -5380,8 +5380,8 @@ def test_finding_30_beside_the_finding():
 
 def test_finding_30_the_desk_model():
     """Finding 30's desk model, versions 4 and 4.1: against their kickoffs (published, the service's name replaced),
-    their posted issues, version 4's scorecard on day 3 and version 4.1's on test 17's long job, and the three
-    sentences its report carries."""
+    their posted issues, version 4's scorecard on day 3 and version 4.1's on test 17's long job (recounted from its
+    published files, ruling R3, item 4), and the three sentences its report carries."""
     import json
 
     item = _item30()
@@ -5404,19 +5404,23 @@ def test_finding_30_the_desk_model():
     assert {f["status"] for f in card16["families"]} == {"not fully testable"}
     assert sum(f["bets_scored"] for f in card16["families"]) == 0
     card = json.loads((sandhi / "v4.1" / "scorecard-t17.json").read_text())
-    fam = {f["family"]: f for f in card["families"]}
-    got = [(fam[k]["misses"], fam[k]["bets_scored"], fam[k]["smallest_miss_count_under_0p05"]) for k in fam]
+    # ruling R3, item 4: the scorecard's numbers recounted from its published files, then the stored summaries
+    # against the recount
+    import _reuse_runs as rr
+
+    calib = json.loads((sandhi / "v4.1" / "scorecard-t17.calibration.json").read_text())
+    rc = rr.scorecard_t17_recount(card, calib)
+    fam = rc["families"]
+    got = [(fam[k]["misses"], fam[k]["bets"], fam[k]["cutoff"]) for k in ("duty", "correlation", "emissions")]
     assert got == [(0, 12, 5), (0, 24, 9), (2, 4, 3)] and not any(f["counts_against"] for f in fam.values())
+    assert rr.scorecard_t17_differences(card, calib) == []
     assert (
         "duty, 0 misses of 12 (cutoff 5); correlation, 0 of 24 (cutoff 9); emissions, 2 of 4 (cutoff 3), the two "
         "misses the X quadrature's two levels" in item
     )
-    missed = [
-        s["quantity"]
-        for s in card["prediction_scores"]
-        if s["quantity"].startswith("q_") and not all(o["inside_90"] for o in s["observations"])
-    ]
-    assert sorted(missed) == ["q_H_X", "q_L_X"], missed
+    missed = sorted(q_ for (q_, _), inside in rc["inside"].items() if q_.startswith("q_") and not inside)
+    assert missed == ["q_H_X", "q_L_X"], missed
+    assert (rc["lr_probability"], rc["lr_trials"]) == (0.62, 100)
     (actual,) = [x for x in card["scenario_scores"] if x["scenario"] == "actual"]
     (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
     assert (lr["probability"], lr["observed"], card["any_monitor_boundary_LR_p_under_0p01"]) == (0.62, False, False)

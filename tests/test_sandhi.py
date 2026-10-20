@@ -258,7 +258,10 @@ def test_the_scorecards_family_counts():
     """Amendment A28, section 3: the scorecards as the scorers wrote them, the local paths aside. Version 4's on test
     11's third day (test 16) scored no calibrated bet, every family "not fully testable"; version 4.1's on test 17's
     long job (D2) scored 12 duty bets with 0 misses (cutoff 5), 24 correlation bets with 0 (cutoff 9) and 4 emission
-    bets with 2 (cutoff 3), no family counting against it, and no likelihood rejection at 1 percent against 0.62."""
+    bets with 2 (cutoff 3), no family counting against it, and no likelihood rejection at 1 percent against 0.62. By
+    ruling R3, item 4, every one of those summaries is recounted from the published files by the scorer's own
+    definitions (`_reuse_runs.scorecard_t17_recount` states them), and an in-memory copy with one duty observation
+    moved outside its interval must fail the recount."""
     c16 = json.loads((ROOT / "v4" / "scorecard-t16.json").read_text())
     assert {f["status"] for f in c16["families"]} == {"not fully testable"}
     assert sum(f["bets_scored"] for f in c16["families"]) == sum(f["misses"] for f in c16["families"]) == 0
@@ -277,5 +280,18 @@ def test_the_scorecards_family_counts():
     (actual,) = [x for x in c17["scenario_scores"] if x["scenario"] == "actual"]
     (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
     assert (lr["probability"], lr["observed"]) == (0.62, False)
+    import copy
+
+    import _reuse_runs as rr
+
+    calib = json.loads((ROOT / "v4.1" / "scorecard-t17.calibration.json").read_text())
+    r = rr.scorecard_t17_recount(c17, calib)
+    assert {f: (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) for f, g in r["families"].items()} == fam
+    assert (r["lr_probability"], r["lr_trials"]) == (0.62, 100)
+    assert rr.scorecard_t17_differences(c17, calib) == []
+    bad = copy.deepcopy(c17)  # the negative control
+    (duty,) = [s for s in bad["prediction_scores"] if s["quantity"] == "threshold_duty"]
+    duty["observations"][0]["value"] = 0.99
+    assert rr.scorecard_t17_differences(bad, calib) == ["inside_90 of threshold_duty at B1-q143-s0", "family duty"]
     for c in (c16, c17):
         assert c["prediction_file"] == "[local path]"

@@ -4246,3 +4246,79 @@ def t17_read(rec: dict) -> dict:
             },
         },
     }
+
+
+def scorecard_t17_recount(card: dict, calibration: dict) -> dict:
+    """A28, ruling R3, item 4: version 4.1's scorecard on test 17's long job (D2), recounted from its published files
+    by the scorer's own definitions (`score_model_01_v4_1.score_entries`, with `calibration_v4_1.calibrate` and
+    `cutoff`, which the scorer calls through `apply_calibration`):
+
+    - each quantity's interval is the 5th and 95th percentiles (numpy's default) of its finite values over the first
+      half of the calibration trials, in trial order;
+    - a bet misses when its observation lies outside its interval, the ends counting as inside;
+    - a family's cutoff is the smallest miss count c whose one-sided 95 percent Monte Carlo upper bound on
+      P(misses >= c), beta.ppf(0.95, h + 1, n - h) for h of the n trials of the second half with at least c misses (a
+      missing value counted as a miss), is under 0.05; the family counts against the model when its misses reach it;
+    - the likelihood probability is the share of complete likelihood trials (every comparison with a p and no
+      failure) in which any comparison has p under 0.01.
+
+    The observations are the scorecard's; nothing stored in it as a summary is read."""
+    from scipy.stats import beta
+
+    trials = sorted(calibration["trials"], key=lambda t: t["trial"])
+    half = len(trials) // 2
+
+    def interval(xs: list) -> list:
+        a = np.asarray(xs, dtype=np.float64)
+        return np.quantile(a[np.isfinite(a)], [0.05, 0.95]).tolist()
+
+    families = {f["family"]: f["quantities"] for f in card["families"]}
+    ints = {q: interval([x for t in trials[:half] for x in t["values"][q]]) for qs in families.values() for q in qs}
+    inside = {
+        (s["quantity"], o["unit"]): ints[s["quantity"]][0] <= o["value"] <= ints[s["quantity"]][1]
+        for s in card["prediction_scores"]
+        for o in s["observations"]
+    }
+    out = {}
+    for fam, qs in families.items():
+        bets = [v for (q, _), v in inside.items() if q in qs]
+        k = sum(len(trials[0]["values"][q]) for q in qs)
+        per = [
+            sum(x is None or not ints[q][0] <= x <= ints[q][1] for q in qs for x in t["values"][q])
+            for t in trials[half:]
+        ]
+        cut = None
+        for c in range(1, k + 1):
+            h, n = sum(m >= c for m in per), len(per)
+            if (float(beta.ppf(0.95, h + 1, n - h)) if h < n else 1.0) < 0.05:
+                cut = c
+                break
+        misses = sum(not v for v in bets)
+        out[fam] = {"bets": len(bets), "k": k, "misses": misses, "cutoff": cut, "counts_against": misses >= cut}
+    complete = [t for t in trials if t["lr"] and all(x["p"] is not None and not x["failures"] for x in t["lr"])]
+    lr = sum(any(x["p"] < 0.01 for x in t["lr"]) for t in complete) / len(complete)
+    return {"intervals": ints, "inside": inside, "families": out, "lr_probability": lr, "lr_trials": len(complete)}
+
+
+def scorecard_t17_differences(card: dict, calibration: dict) -> list:
+    """Every place where the scorecard's stored summaries differ from `scorecard_t17_recount`: each quantity's
+    interval, each bet's inside_90, each family's bets, misses, cutoff and verdict, and the likelihood probability.
+    Empty when the scorecard is what its files recount to."""
+    r = scorecard_t17_recount(card, calibration)
+    diff = []
+    for s in card["prediction_scores"]:
+        if s["interval_90"] != r["intervals"][s["quantity"]]:
+            diff.append(f"interval of {s['quantity']}")
+        for o in s["observations"]:
+            if o["inside_90"] != r["inside"][(s["quantity"], o["unit"])]:
+                diff.append(f"inside_90 of {s['quantity']} at {o['unit']}")
+    for f in card["families"]:
+        g = r["families"][f["family"]]
+        stored = (f["bets_scored"], f["misses"], f["smallest_miss_count_under_0p05"], f["counts_against"])
+        if stored != (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) or f["calibration"]["k"] != g["k"]:
+            diff.append(f"family {f['family']}")
+    (actual,) = [x for x in card["scenario_scores"] if x["scenario"] == "actual"]
+    (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]
+    if lr["probability"] != r["lr_probability"]:
+        diff.append("likelihood probability")
+    return diff
