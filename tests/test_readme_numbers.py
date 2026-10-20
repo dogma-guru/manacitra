@@ -2330,8 +2330,9 @@ def test_finding_15_in_the_persistence_bullet():
 def test_the_readme_opens_with_the_latest_findings():
     """A28 (A27's section, replaced): a short section at the top of the README, after the opening description and
     before what it does, the findings table and installation, says that two runs on 143 on 19 October were read per
-    shot under rules hashed before them, that the duty held within its error across one job's six spans, the monitor
-    means of three runs (with no clause on the switching time, by the author's ruling R1, Q1: the per-span
+    shot under rules hashed before them, that every boundary of one job's six spans read NO CHANGE, which does not show
+    the duties equal (ruling R3, item 2, in place of "the duty held"), the monitor means of three runs (with no
+    clause on the switching time, by the author's ruling R1, Q1: the per-span
     correlation times of 17 and 19 October overlap), that the pattern noticed in the published weights was not seen
     on new data, and the desk model's record, in at most five sentences, each claim checked here
     against the records. It carries none of the words the kickoff keeps out, and ends "To be released as 0.10.0."."""
@@ -2364,12 +2365,13 @@ def test_the_readme_opens_with_the_latest_findings():
     assert {b["word"] for b in m17["boundaries"][4:]} == {"NO CHANGE"} and len(m17["boundaries"][4:]) == 5
     means = [*m16["beside_day_means"]["day_mean_duties"], m17["between_jobs_job_rows"]["B1"]["job_mean_w_duty"]]
     assert [_q(x, 3) for x in means] == ["0.330", "0.341", "0.313"]
+    assert max(b["ratio"] for b in m17["boundaries"][4:]) < 2  # each pair within twice its combined error
     assert (
-        "The duty held within its error across the six spans of one job (NO CHANGE at every boundary, which does not "
-        "show the duties equal), and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A "
-        "pattern" in flat
+        "Across the six spans of one job every boundary read NO CHANGE, each adjacent pair differing by less than "
+        "twice its combined error, which does not show the duties equal; and the monitor means of runs on 17 and 19 "
+        "October were 0.330, 0.341 and 0.313. A pattern" in flat
     )
-    assert "switching time" not in flat and "moved" not in flat
+    assert "switching time" not in flat and "moved" not in flat and "held" not in flat
     assert m17["middle_test"]["pooled"]["word"] == "NOT SEEN"
     assert (
         "A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under "
@@ -4850,6 +4852,18 @@ def test_finding_30_the_records():
     item = _item30()
     q = _q
     d2, d3, t16, t17 = _t30_records()
+    # ruling R3, item 3: finding 29's boundaries in the opening, scoped as finding 29 states them (its table row's
+    # "17 of 17 boundaries read NO CHANGE"; test 7's shuffled job BETWEEN (borrowed) at its first, 2.65)
+    findings = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    assert (
+        "with 17 of 17 boundaries read NO CHANGE" in findings
+        and "test 7's job BETWEEN (borrowed) at its first, 2.65" in findings
+    )
+    assert (
+        "and every weight boundary of the monitor jobs on the record, 17 of 17, read NO CHANGE under the error of a "
+        "time average, with test 7's shuffled job read beside them at a borrowed correlation time." in item
+    )
+    assert "every weight boundary on the record" not in item
     # the rules and their issues, posted before each run or read
     issues = {"t11": 58, "t16": 67, "t17": 69}
     for rec, t in ((d3, "t11"), (t16, "t16"), (t17, "t17")):
@@ -5030,6 +5044,20 @@ def test_finding_30_the_records():
     acf = [a for x in s17["B1"] for a in x["acf_lags_490_to_510"]]
     assert (q(min(acf), 3), q(max(acf), 3, sign=True)) == ("−0.144", "+0.120")
     assert "at lags 490 to 510 ran from −0.144 to +0.120 across its spans, with no word" in item
+    # ruling R3, item 10: A2's first span, the run's lowest duty and its largest sensitivity to the threshold; its
+    # counts weight beside it; its boundary word at the threshold of record unchanged
+    a2 = s17["A2"][0]
+    cw = t17["archived"]["analysis_counts"]["jobs"]["A2"]["analysis"]["weight_per_span"][0]["mean_w"]
+    assert (q(a2["duty_b"], 3), q(a2["duty_b_at_threshold_20_80"], 3), q(cw, 3)) == ("0.142", "0.446", "0.144")
+    every = [x for v_ in s17.values() for x in v_]
+    sens = [abs(x["duty_b_at_threshold_20_80"] - x["duty_b"]) for x in every]
+    assert len(every) == 12 and min(x["duty_b"] for x in every) == a2["duty_b"] and max(sens) == sens[len(s17["A1"])]
+    rb = t17["archived"]["per_shot_read"]["boundaries"][2]
+    assert (rb["job"], rb["spans"], rb["word"], b17[2]["word"]) == ("A2", [0, 1], "NO CHANGE", "NO CHANGE")
+    assert (
+        "A2's first span, the lowest duty of the run, reads 0.142 at the rule's threshold and 0.446 at the 20th to "
+        "80th, the largest sensitivity of the run's spans." in item
+    )
     assert (
         "A NO CHANGE carries no evidence of a change in the duty" in item and "does not show the duties equal" in item
     )
@@ -5075,6 +5103,42 @@ def test_finding_30_the_records():
     )
     assert "moved" not in item and "near 0.2 s" not in item
     assert math.isfinite(b1["job_sd"])
+
+
+def test_finding_30_the_two_estimators():
+    """Ruling R3, item 6, as the author amended it: in "What it has not shown", the monitor's weight per span (test
+    11's on day 3; test 12's analysis from the counts in test 17) against the per-shot duty on the weight's branch,
+    over finding 30's eighteen monitor spans: within 0.014 on the seventeen read on the b branch; on the eighteenth,
+    A1's last span, which the per-shot read places on the 1 - b branch, the monitor's 0.540 stands 0.066 from the duty
+    on that branch (0.474) and 0.014 from the raw duty (0.526). Finding 29's 0.011 over its twelve spans is recomputed
+    in finding 29's test (len(dw) == 12)."""
+    _, d3, t16, t17 = _t30_records()
+    rows = []
+    for j, k in (("2", "d3-job2"), ("3", "d3-job3")):
+        w = [s["mean_w"] for s in d3["archived"]["analysis"]["jobs"][j]["weight"]["per_span"]]
+        spans = t16["archived"]["analysis"]["jobs"][k]["qubits"]["143"]["waits"]["monitor"]["spans"]
+        assert len(w) == len(spans) == 3
+        rows += [(k, i, w[i], s) for i, s in enumerate(spans)]
+    for k in ("A1", "A2", "B1"):
+        w = [s["mean_w"] for s in t17["archived"]["analysis_counts"]["jobs"][k]["analysis"]["weight_per_span"]]
+        spans = t17["archived"]["per_shot_read"]["jobs"][k]["qubits"]["143"]["waits"]["monitor"]["spans"]
+        assert len(w) == len(spans)
+        rows += [(k, i, w[i], s) for i, s in enumerate(spans)]
+    assert len(rows) == 18
+    (other,) = [r for r in rows if r[3]["w_branch"] != "b"]
+    assert (other[0], other[1], other[3]["w_branch"]) == ("A1", 2, "1 - b")
+    seventeen = [abs(w - s["w_duty"]) for _, _, w, s in rows if s["w_branch"] == "b"]
+    assert len(seventeen) == 17 and _q(max(seventeen), 3) == "0.014"
+    w, s = other[2], other[3]
+    assert (_q(w, 3), _q(s["w_duty"], 3), _q(s["Y"]["duty_b"], 3)) == ("0.540", "0.474", "0.526")
+    assert (_q(abs(w - s["w_duty"]), 3), _q(abs(w - s["Y"]["duty_b"]), 3)) == ("0.066", "0.014")
+    shown = " ".join((ROOT / "docs" / "findings.md").read_text().split()).split("## What it has not shown", 1)[1]
+    assert (
+        "the duty of the per-shot record agrees with the second within 0.011 on finding 29's twelve monitor spans of "
+        "143, and within 0.014 on seventeen of finding 30's eighteen, each on the weight's branch; on the eighteenth, "
+        "A1's last span, the per-shot read places the duty on the other branch, and the monitor's 0.540 stands 0.066 "
+        "from the duty on that branch (0.474) and 0.014 from the raw duty (0.526)." in shown
+    )
 
 
 def test_finding_30_records_name_their_reports():
@@ -5182,7 +5246,9 @@ def test_finding_30_the_middle_test():
         "cost",
     ):
         assert not re.search(rf"\b{w}", prose), w
-    assert not re.search(r"\bfirst\b(?! reads)", prose), "first"
+    # "first" never of a model; of a boundary or a span it stands ("A2's first reads"; "A2's first span", ruling R3,
+    # item 10)
+    assert not re.search(r"\bfirst\b(?! reads| span)", prose), "first"
     assert "—" not in item and "–" not in item
 
 
@@ -5251,8 +5317,8 @@ def test_finding_30_beside_the_finding():
     findings = " ".join((ROOT / "docs" / "findings.md").read_text().split())
     shown = findings.split("## What it has not shown", 1)[1]
     for bullet in (
-        "- **One qubit, three days.** The duty's hold is a record of ibm_fez's 143 at one wait on 17 to 19 October "
-        "2026; nothing about other qubits, waits, days or processors.",
+        "- **One qubit, three days.** The duty measurements and boundary tests are a record of ibm_fez's 143 at one "
+        "wait on 17 to 19 October 2026; nothing about other qubits, waits, days or processors.",
         "- **One scored design.** Sandhi version 4.1 has been scored on one run of one design (D2). Its other bets "
         "(D1) are not yet scored, and a model's record on one run is a record, not a calibration.",
         "- **The middle test had modest power.** NOT SEEN counts against a difference of 0.05 and says little about "
@@ -5472,16 +5538,17 @@ def test_the_round_5c_gaps_are_whole_counts():
 def test_the_changelog_0_10_0():
     """Amendment A28, section 5: the changelog's 0.10.0 heading above 0.9.0, unreleased until the release pull request
     dates it, with the lead the kickoff fixed, word for word but for the switching-time clause, deleted by the author's
-    ruling R1, Q1, and the A28 entry naming the package's new functions,
-    finding 30's data, Sandhi's versions 4 and 4.1 and round 5c; no dashes."""
+    ruling R1, Q1, and its clause on the duty, which ruling R3, item 2, rewrites as the boundaries' word; and the A28
+    entry naming the package's new functions, finding 30's data, Sandhi's versions 4 and 4.1 and round 5c; no
+    dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
     assert log.index("## 0.10.0 (unreleased)") < log.index("## 0.9.0 (18 October 2026)")
     entry = " ".join(log.split("## 0.10.0 (unreleased)", 1)[1].split("\n## ", 1)[0].split())
     lead = (
         "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
-        "hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans the duty "
-        "held within its error at every boundary; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and "
-        "0.313. A pattern noticed in the published weights, a job's "
+        "hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans every "
+        "boundary read NO CHANGE, which does not show the duties equal; the monitor means of runs on 17 and 19 October "
+        "were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's "
         "middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk "
         "model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of "
         "its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the "

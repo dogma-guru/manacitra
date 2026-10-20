@@ -8,7 +8,7 @@
 
 ## Latest finding: the duty across spans, jobs and days
 
-Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30](docs/findings.md#finding-30)). The duty held within its error across the six spans of one job (NO CHANGE at every boundary, which does not show the duties equal), and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and not seen. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted against it, with its bets for the other design not yet scored; no cause is named. To be released as 0.10.0.
+Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30](docs/findings.md#finding-30)). Across the six spans of one job every boundary read NO CHANGE, each adjacent pair differing by less than twice its combined error, which does not show the duties equal; and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and not seen. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted against it, with its bets for the other design not yet scored; no cause is named. To be released as 0.10.0.
 
 ## What it does
 
