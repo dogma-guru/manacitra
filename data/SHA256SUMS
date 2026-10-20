@@ -1,7 +1,7 @@
 e50f652c00fc2ace63395de1bdd458e580aa4aaaa72722f19b0d89585738a784  LICENSE
 bd51b7697382bfd63303299eee081838f342bfa6591386ac4080a9709ba133fd  PROGRAMS.md
 f119f1fbd21c94f028f3ad1f5affb0b8059dfbb05b900424fc7ccbdef915ef6b  README.md
-39ea44761e8ba7e29b9d44bfe05cbcba2af6b9ac12398c45cf39f6425e2b39b1  desk/sandhi/README.md
+8b952053990184cdfff45fefb6845a26b5ac8fd54981e3856da8a73d50368690  desk/sandhi/README.md
 bcf20d5403c1655c10498145cfa5606c6a362c782da1d0c022dd704e4521f5e0  desk/sandhi/kickoffs/kickoff-model-01-v2-gated-states-2026-10-17.md
 881ec9b4c124f8bf8974a3898b4e4bc568d3de8b2be28824a23bf3f6c105a4a3  desk/sandhi/kickoffs/kickoff-model-01-v3-errata-2026-10-17.md
 89e760a1b66a88e5a39907c0197487ff93961ca1c4e1718bbf9775f183aafbc1  desk/sandhi/kickoffs/kickoff-model-01-v3-gated-states-2026-10-17.md
@@ -72,7 +72,7 @@ a30488be57eade0df185c594cd83befa5817f8e54261a47423017d0d9814fc54  desk/sandhi/v4
 d8f7dcbef0c6a78cf4c2f06c4ffbd6fe4b4c97c1b25b5206df87edc88b3329a4  desk/sandhi/v4.1/rehearsal-day2.json
 cb08a1e2e673dde055770942aff56ea965bdc758b503de4516377712b1f4fccc  desk/sandhi/v4.1/rehearsal-day3.json
 87a17b647d62af74820dbdcb95b3d8a2832fe05ac4d7adc4b1f85e7a93e3ffc5  desk/sandhi/v4.1/report-model-01-v4.1.md
-9e3680c2ee40f0168422e0b7b511b1005b982e1f734a20ed8c4250c400d7a0c9  desk/sandhi/v4.1/run.log
+d0f1f54c22f503640f395d4bf4caec32e99cbd4a3380123ba55fb726576aeee7  desk/sandhi/v4.1/run.log
 2f1cf231a66b9105755f5d8d5ad5c489cdd1c0456cf066f4ad6a58bb02a67191  desk/sandhi/v4.1/run_boundaries.py
 cf7bb72e09b44447d824009a642c76751175b16371084648915d1353d8d73dc5  desk/sandhi/v4.1/run_checks.py
 ae4aed5c957c5c5942629e82a5ccd291141a3038cb2a8aa490ff3f165493632c  desk/sandhi/v4.1/score_model_01_v4_1.py
@@ -93,7 +93,7 @@ a1c178a8b6054ddb5492405f30dbc05fd2502438dbb6699a9bd337533c01ee3c  desk/t7-power-
 ab65d1524618c11e43f28072ff431439516798c799de4974f53f541b95ce3111  desk/t7-power-check/report-t7v51.md
 5c6e75d9cd3157598d450f2f480bc9947fa0040f4ef7698901f5e6cd77cd362a  desk/t7-power-check/tables_t7v51.py
 05d34be47a08f0098e5158b0018fdc728df4dad64569ef4b7863bf7386bbee9e  desk/t7-power-check/timing-t7v51.json
-78cbebdaaeac96a66a71ecac65fe8667ae6d9af348dc7dc05e7b08d2563c7bac  desk/t7-power-check-round5c/README.md
+cdd1cfb07aca5c637c51ca0f6e217032f9fb98aa28a7cbe837aca47c6919c1b3  desk/t7-power-check-round5c/README.md
 b738c5742b2b65ed0e7c4bd7d5e7f0246cee6a844de2c7e63ade586b106e0fe5  desk/t7-power-check-round5c/compare-t7v51-round5c.json
 fa51e8c59801394f8922fbe7de1fbd2d5e43c61e4e029207879dd96c5a667bcd  desk/t7-power-check-round5c/compare_t7v51_round5c.py
 bb5127974b20729215c6d627913b96146852091dc8ba36c7828d253678019efb  desk/t7-power-check-round5c/report-t7v51-round5c.md

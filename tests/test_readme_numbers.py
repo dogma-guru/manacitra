@@ -5422,13 +5422,17 @@ def test_the_round_5c_folder():
     fr = [p for p in cmp_["points"] if not p["fractions_equal"]]
     assert [p["index"] for p in fr] == [42, 86, 87, 132]
     assert "No verdict moved:" in flat and "—" not in readme and "–" not in readme
-    # by ruling R2: the report, written before the trace and published as handed back, calls the gaps a fact not
-    # traced, and the README says so directly after the paragraph that traces them
-    assert "a fact, not traced" in (root / "report-t7v51-round5c.md").read_text()
+    # by rulings R2 and R3: the report, written before the trace and published as handed back, calls the gaps a fact
+    # not traced, and says the simulated data are the same on both machines, from S's chi-square on the fit waits; the
+    # README says both, directly after the paragraph that traces the gaps
+    report = " ".join((root / "report-t7v51-round5c.md").read_text().split())
+    assert "a fact, not traced" in report
+    assert "The simulated data are the same on both machines: S's χ² on the fit waits agrees" in report
     assert (
         "fails it on the other. The report beside this file, written before that explanation, calls these gaps a fact "
-        "not traced; the third sentence above is the trace, made from the two result files after the report. **The "
-        "files.**" in flat
+        "not traced; the third sentence above is the trace, made from the two result files after the report. Its "
+        "sentence that the simulated data are the same on both machines rests on S's χ² over the fitted waits; at the "
+        "two points named above the held-out counts differ, as the third sentence says. **The files.**" in flat
     )
 
 

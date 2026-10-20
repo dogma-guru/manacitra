@@ -28,6 +28,9 @@ PUBLISHED = {
     "events-model-01-v3.json": "000a75d40761f6f28ce9221134fe700d3a883538ffbb89dbd1346259e8350618",
     "frequency-ledger.json": "14ceaf554d9a843d35c72b406fd6d9b6814eb7f8f48a559f56fe2d574043b73f",
 }
+#: A command session's handle as the desk runner's polling calls passed it: a session_id followed by digits, alone or
+#: as an array, or an array of digits mapped to session_id (A28, ruling R3, item 1)
+HANDLE = re.compile(r"session_id\W{0,4}\d|\[[\d,]+\]\.map\(session_id")
 #: The frequency counts at 4 kHz the kickoff names, per job: (within-span events, trials, boundary events, trials)
 FREQUENCY = {
     "9, job 2": (0, 509, 0, 77),
@@ -231,9 +234,24 @@ def test_versions_4_and_4_1_are_published_as_delivered(version):
             assert h == forecast[name], name
         text = p.read_text()
         assert not re.search(r"/Users/|/home/|chat\s*gpt|open\s*ai|codex", text, re.I), name
+        assert not HANDLE.search(text), name
     for name, h in posted.items():
         assert _sha(folder / name) == h and h in readme, name
     assert replaced == {"v4": 3, "v4.1": 4}[version]
+
+
+def test_the_command_session_handles_are_refused():
+    """A28, ruling R3, item 1: version 4.1's run log carried, at 61f34df, the handles of the command sessions its
+    polling calls read, 30 of them, six values on 14 lines; each is written "[a command session]", and the files check
+    above refuses a handle in any form. The negative control writes one handle back into the published log, in memory,
+    and then every handle, as the log stood at 61f34df; the check must catch both."""
+    log = (ROOT / "v4.1" / "run.log").read_text()
+    assert log.count("[a command session]") == 30 and not HANDLE.search(log)
+    lines = [line for line in log.split("\n") if "[a command session]" in line]
+    assert len(lines) == 14
+    assert HANDLE.search(log.replace("[a command session]", "30707", 1))
+    assert HANDLE.search(log.replace("[a command session]", "21563"))
+    assert HANDLE.search("const rs=await Promise.allSettled([21563,93745].map(session_id=>tools.write_stdin(")
 
 
 def test_the_scorecards_family_counts():

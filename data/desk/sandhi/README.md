@@ -123,7 +123,7 @@ Version 4.1, on 19 October 2026 (`kickoffs/kickoff-model-01-v4.1-errata-2026-10-
 
 **The compiled library is not committed.** Each scorer calls a library compiled from the hashed C source, `hmm_core.c`, listed in its `FORECAST-SHA256SUMS`. `hmm_model.py` builds it, as `hmm_core.dylib` beside itself, when it is absent and a C compiler is present, with the line `cc -O3 -shared -fPIC hmm_core.c -o hmm_core.dylib`. The library each run used is named in its `SHA256SUMS`.
 
-**The files.** Each was checked against its run's `SHA256SUMS` (and, for the scorer and its dependencies, `FORECAST-SHA256SUMS`) before it was copied, and the scorecards against their tests' hand-backs. Where the scorer or the runner wrote a local path, it is written "[local path]"; where a run log names the desk runner's service, it is written "the desk runner"; and version 4.1's run log writes its session identifier "[the desk runner's session]" and the name of the variable that holds it "[the desk runner's session variable]". Nothing else in any file changed. Each file's SHA-256 as delivered and as published:
+**The files.** Each was checked against its run's `SHA256SUMS` (and, for the scorer and its dependencies, `FORECAST-SHA256SUMS`) before it was copied, and the scorecards against their tests' hand-backs. Where the scorer or the runner wrote a local path, it is written "[local path]"; where a run log names the desk runner's service, it is written "the desk runner"; and version 4.1's run log writes its session identifier "[the desk runner's session]" and the name of the variable that holds it "[the desk runner's session variable]", and the handles of the command sessions its polling calls read, "[a command session]". Nothing else in any file changed. Each file's SHA-256 as delivered and as published:
 
 | file | what | SHA-256 as delivered | as published |
 |---|---|---|---|
@@ -171,7 +171,7 @@ Version 4.1, on 19 October 2026 (`kickoffs/kickoff-model-01-v4.1-errata-2026-10-
 | `v4.1/audit-part-b.json` | the new fits' audit | `dd9ffe4746ad109c3d2355c2d061d2d2c2864b81c30ab31fdb3c21df1fd515e1` | the same |
 | `v4.1/calibration-audit.json` | the recount of the calibration from its saved trials | `13613653501d7e9fc5174eb76cd83712a73b37e38113024287a6c1b16f437d86` | the same |
 | `v4.1/seeds-and-versions.json` | the seeds and the numerical environment | `14c2ff984df951f1c3b34bd320d2a57fa59365bfe2c7441383771c2c484363bb` | the same |
-| `v4.1/run.log` | the command record | `20430516f24179913a62dab395c1ded718d9d224b6363ae3cc77eb3c766a0811` | `9e3680c2ee40f0168422e0b7b511b1005b982e1f734a20ed8c4250c400d7a0c9` |
+| `v4.1/run.log` | the command record | `20430516f24179913a62dab395c1ded718d9d224b6363ae3cc77eb3c766a0811` | `d0f1f54c22f503640f395d4bf4caec32e99cbd4a3380123ba55fb726576aeee7` |
 | `v4.1/README.md` | the run's own README | `dcc45eba2d59f0f0d634c147b8812fbdf4a9013221f9481e27588c39c197de28` | the same |
 | `v4.1/SHA256SUMS` | the run's sums, over every file it delivered | `f8436f9555f484528bb42c56dfe1e92cf80fef155c91509b097d00f5daa17c11` | the same |
 | `v4.1/FORECAST-SHA256SUMS` | the sums of the scorer, its dependencies and the predictions, as posted | `7903a281ccc808ed8dd13c4b316919554879ec29a353f7093642c98b9081b083` | the same |
@@ -188,7 +188,7 @@ The replacements, by file:
 - `v4.1/rehearsal-day2.json`: local paths, 20 times.
 - `v4.1/rehearsal-day3.json`: local paths, 20 times.
 - `v4.1/internal-review-day3.json`: local paths, 20 times.
-- `v4.1/run.log`: local paths, 87 times; the service, 2 times; the session, 1 time; the session variable's name, 3 times.
+- `v4.1/run.log`: local paths, 87 times; the service, 2 times; the session, 1 time; the session variable's name, 3 times; the command sessions' handles, 30 times (six values, on 14 lines).
 - `v4.1/scorecard-t17.json`: local paths, 5 times.
 
 **Attached to the 0.10.0 release as assets**, not kept here, for size; each SHA-256 as delivered is in its version's `SHA256SUMS`:
