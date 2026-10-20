@@ -5,24 +5,24 @@
 Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans every boundary read NO CHANGE, which does not show the duties equal; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the per-shot read of a span: the sweep series, the sharing ratio, the duty and correlation time, and the error of a time average; thresholds and words are the caller's. No cause is named.
 
 - Amendment A28: `manacitra.wait` gains the per-shot read of a span, ported from test 15's read, which tests 16 and 17
-  ran unchanged: `sweep_series` (one qubit's shots per position, in returned order, made into each span's bit matrix
-  of whole repeats and its column means, by `span_assignment`), `sharing_ratio`, `two_state_reading` (the threshold
-  between two caller-given percentiles, the duty, the correlation lag and time, the switches, dwells, quarter-span
-  duties and mid-sweep fraction), `time_average_sd` (with test 15's ceiling at three sweeps), `boundary_ratio` and
-  `sweep_autocorrelation`. Everything else in the package is unchanged. Finding 30 (test 11 on a third day, tests 16
-  and 17), with their data in `data/ibm_fez/` (one record per test, in A27's layout; the per-shot arrays named by their
+  ran unchanged: `sweep_series` (one qubit's shots per position, in returned order, made into each span's bit matrix of
+  whole repeats and its column means, by `span_assignment`), `sharing_ratio`, `two_state_reading` (the threshold between
+  two caller-given percentiles, the duty, the correlation lag and time, the switches, dwells, quarter-span duties and
+  mid-sweep fraction), `time_average_sd` (with test 15's ceiling at three sweeps), `boundary_ratio` and
+  `sweep_autocorrelation`. Everything else in the package is unchanged. Finding 30 (test 11 on a third day, tests 16 and
+  17), with their data in `data/ibm_fez/` (one record per test, in A27's layout; the per-shot arrays named by their
   SHA-256 and not published; the posted rules of tests 16 and 17 published unchanged; the desk checks, hash checks and
   rulings; the run's code as verbatim lines of the scripts as run), and the line of the note of 19 October that test
   17's rule tests, as a dated excerpt (`t17-middle-note-excerpt.md`). `tests/_reuse_runs.py` recomputes day 3's three
   jobs as day 2's are recomputed, and tests 16's and 17's spans, boundaries, jobs and middle test through the package
   from the sweep means their reads published; `tests/test_wait.py` recovers a planted duty and correlation time, and,
   given test 17's arrays (`MANACITRA_SHOTS`), reproduces its long job's read. The desk model Sandhi's versions 4 and 4.1
-  in `data/desk/sandhi/v4/` and `v4.1/` (their reports, predictions, fits, hierarchies, checks, scorers with their
-  tests and C source, run logs and sums, and their scorecards on test 16 and test 17, the local paths the scorer wrote
-  replaced; their large files attached to the release, with their SHA-256 in the folder's README), checked by
-  `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
-  `data/desk/t7-power-check-round5c/` beside round 5b, its results attached to the release. The README opens with
-  finding 30, and its table of findings gains an eleventh row.
+  in `data/desk/sandhi/v4/` and `v4.1/` (their reports, predictions, fits, hierarchies, checks, scorers with their tests
+  and C source, run logs and sums, and their scorecards on test 16 and test 17, the local paths the scorer wrote
+  replaced; their large files to be attached to the 0.10.0 release, with their SHA-256 in the folder's README), checked
+  by `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
+  `data/desk/t7-power-check-round5c/` beside round 5b, its results to be attached to the 0.10.0 release. The README
+  opens with finding 30, and its table of findings gains an eleventh row.
 - Documentation: a glossary, page headers, a reading order, timings, and the quick start's pick matched to `manacitra
   pick`'s default, from a first reader's notes.
 
