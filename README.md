@@ -86,20 +86,55 @@ Point an install at a clone's data with `manacitra --data /path/to/manacitra/dat
 Then, on the simulator, with no account (paste this into a Python session):
 
 ```python
+import numpy as np
+
 from manacitra.backends.base import MapJob
 from manacitra.backends.simulator import NoiseModel, SimulatorBackend
-from manacitra.layout import pick_pairs
+from manacitra.layout import pick_by_kept_share
 from manacitra.verdicts import analyse_map
 
 pairs = [(2 * i, 2 * i + 1) for i in range(27)]
-noise, _ = NoiseModel.random(pairs, seed=1).planted(sigma=0.03)  # a hidden per-pair map
+noise, planted = NoiseModel.random(pairs, seed=1).planted(sigma=0.03)  # a hidden per-pair map
 sim = SimulatorBackend(noise, seed=7)
 counts = sim.fetch(sim.submit(MapJob(pairs)))
 result = analyse_map(counts.p11(), counts.order, x=sim.target().x_of(pairs))
-print(result["verdict"]["verdict"], [pairs[i] for i in pick_pairs(result["kA"], 8)])
+print(result["verdict"]["verdict"], [pairs[i] for i in pick_by_kept_share(result["kA"], 8)])
+
+s = result["verdict"]["inputs"]  # the numbers the verdict rests on, with the map rule's thresholds
+print(f"r_split {s['r_split_A']:.3f}  (at least 0.5; under 0.3 is NOISE)")
+print(f"r_AB    {s['r_AB']:.3f}  (at least 0.4, with p = {s['p_AB']:.4f} under 0.05)")
+print(f"r_AB.x  {s['r_AB_given_x']:.3f}  (at least 0.3)")
+print(f"r_Ax    {s['r_Ax']:.3f}  (|r_Ax| under 0.5)")
+
+delta = np.array([planted[p] for p in pairs])  # the over-rotation planted on each pair
+print("pair, the over-rotation planted, the kept share k_A measured:")
+for i in range(0, 27, 3):
+    print("   ".join(f"{pairs[j]!s:8} {delta[j]:+.3f} {result['kA'][j]:.3f}" for j in range(i, i + 3)))
+print(f"planted against measured, across the 27 pairs: r = {np.corrcoef(delta, result['kA'])[0, 1]:.2f}")
 ```
 
-It prints `DIAGNOSTIC` and the eight pairs that kept the most. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
+It prints `DIAGNOSTIC` and the eight pairs whose kept share is closest to the ideal of 1, the rule `manacitra pick` uses by default. `pick_pairs(k, n)` ranks highest first, the rule Kickoff 33 ran; `pick_by_kept_share` is the default since Amendment A15. Then it prints the four statistics the verdict rests on, each with its threshold in the map rule ([`docs/index.md`](docs/index.md#3-the-three-rules), section 3), and, pair by pair, the over-rotation the simulator planted beside the kept share it measured, with their correlation:
+
+```text
+DIAGNOSTIC [(20, 21), (50, 51), (26, 27), (10, 11), (18, 19), (32, 33), (38, 39), (48, 49)]
+r_split 0.704  (at least 0.5; under 0.3 is NOISE)
+r_AB    0.817  (at least 0.4, with p = 0.0000 under 0.05)
+r_AB.x  0.841  (at least 0.3)
+r_Ax    -0.004  (|r_Ax| under 0.5)
+pair, the over-rotation planted, the kept share k_A measured:
+(0, 1)   +0.028 0.879   (2, 3)   -0.008 0.923   (4, 5)   +0.021 0.878
+(6, 7)   +0.008 0.824   (8, 9)   +0.017 0.746   (10, 11) -0.013 0.962
+(12, 13) +0.021 0.847   (14, 15) +0.037 0.827   (16, 17) +0.019 0.914
+(18, 19) -0.035 1.048   (20, 21) -0.028 1.001   (22, 23) +0.026 0.787
+(24, 25) +0.017 0.876   (26, 27) -0.010 0.964   (28, 29) -0.056 1.139
+(30, 31) +0.031 0.823   (32, 33) +0.016 0.947   (34, 35) +0.026 0.852
+(36, 37) +0.001 0.916   (38, 39) -0.025 1.065   (40, 41) +0.055 0.774
+(42, 43) +0.016 0.908   (44, 45) +0.021 0.916   (46, 47) +0.018 0.792
+(48, 49) +0.002 0.928   (50, 51) -0.027 0.965   (52, 53) -0.054 1.101
+planted against measured, across the 27 pairs: r = -0.89
+```
+
+A working install prints these lines: DIAGNOSTIC, every statistic past its threshold, and a measured map that tracks the planted one (r = −0.89). Another verdict, a statistic short of its threshold, or a correlation near zero means the install differs from the one that printed them. Three longer examples are in `examples/`: the simulator end to end, the ibm_fez numbers reproduced from the archived counts, and the payoff choice.
 
 A fourth, `examples/04_wait_test.py`, builds finding 13's Part B and the wait test for a backend and chain you name, as a dry run unless `--submit`; [`docs/reproduce.md`](docs/reproduce.md) says how to rerun them on hardware, and why a rerun is a new measurement. The check of findings 14 to 19, which predicts the wait test from the waiting qubit's Ramsey loss over the circuit's own wait (`manacitra.wait.build_wait_ramsey` and `predicted_fidelity`), now runs that Ramsey with the qubit's neighbours active, as they are in the circuit, by default; the idle-neighbour Ramsey, the 0.5.0 behaviour, remains with `neighbours="idle"`. The check at the peak phase is two jobs: `phase_sweep` builds the sweep, and `peak_check` builds the check from its counts, with the peak phase to record before the check runs; `readout_survey` and `readout_errors` measure every qubit's readout ([the method](docs/method.md#the-check-at-the-peak-phase)).
 

@@ -2327,6 +2327,45 @@ def test_finding_15_in_the_persistence_bullet():
     )
 
 
+def test_the_quick_start_prints_what_the_readme_shows():
+    """Ruling R4, items 1 and 4: the README's quick start picks with `pick_by_kept_share`, `manacitra pick`'s default
+    since Amendment A15, and prints the numbers its verdict rests on, each with the map rule's threshold (docs/index.md,
+    section 3), and the simulator's planted over-rotation beside the measured kept share. Its code block, run here as
+    the README gives it, prints the README's text block exactly; the statistics are the ones the map rule tests, each
+    past its threshold, and the correlation the prose quotes is the one printed."""
+    import contextlib
+    import io
+    import re
+
+    pytest.importorskip("qiskit_aer")
+    readme = (ROOT / "README.md").read_text()
+    quick = readme.split("Then, on the simulator, with no account (paste this into a Python session):", 1)[1]
+    code = quick.split("```python\n", 1)[1].split("\n```", 1)[0]
+    shown = quick.split("```text\n", 1)[1].split("\n```", 1)[0]
+    assert 'pick_by_kept_share(result["kA"], 8)' in code and "pick_pairs" not in code
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        exec(compile(code, "README quick start", "exec"), {"__name__": "__readme__"})
+    assert buf.getvalue().rstrip("\n") == shown
+    lines = shown.splitlines()
+    assert lines[0].startswith("DIAGNOSTIC [") and len(lines) == 1 + 4 + 1 + 9 + 1
+    stats = {
+        m.group(1): float(m.group(2)) for m in re.finditer(r"^(r_split|r_AB|r_AB\.x|r_Ax)\s+(-?[0-9.]+)", shown, re.M)
+    }
+    assert stats["r_split"] >= 0.5 and stats["r_AB"] >= 0.4 and stats["r_AB.x"] >= 0.3 and abs(stats["r_Ax"]) < 0.5
+    index = " ".join((ROOT / "docs" / "index.md").read_text().split())
+    assert "| DIAGNOSTIC | r_split ≥ 0.5, r_AB ≥ 0.4 with p < 0.05, r_AB·x ≥ 0.3, and \\|r_Ax\\| < 0.5 |" in index
+    r = lines[-1].rsplit("r = ", 1)[1]
+    flat = " ".join(quick.split("## ", 1)[0].split())
+    assert r == "-0.89" and "a measured map that tracks the planted one (r = −0.89)" in flat
+    assert (
+        "It prints `DIAGNOSTIC` and the eight pairs whose kept share is closest to the ideal of 1, the rule `manacitra "
+        "pick` uses by default. `pick_pairs(k, n)` ranks highest first, the rule Kickoff 33 ran; `pick_by_kept_share` "
+        "is the default since Amendment A15." in flat
+    )
+    assert "kept the most" not in flat
+
+
 def test_the_readme_opens_with_the_latest_findings():
     """A28 (A27's section, replaced): a short section at the top of the README, after the opening description and
     before what it does, the findings table and installation, says that two runs on 143 on 19 October were read per
