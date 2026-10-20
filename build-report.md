@@ -4376,3 +4376,29 @@ run; and the tests took about 10 minutes. The reader added that they are not in 
   record. The README's and `docs/index.md`'s own statements of what the tests check are scoped the same way.
 - Not taken: a change to make the command line print more, which would be new package behaviour and can be proposed for
   0.11.0, and shortening the long pages, whose length is the record.
+
+**Ruling R5 (20 October 2026, approved by the author in chat: "approved"),** after a second independent review from a
+separate service (not an empty context) of `051e43d`. The rulings of R1 to R4 stand. The author gave the wording for two
+parts after the runner's check: the method page's header and three entries of the glossary.
+- Item 1. Finding 30's opening counts finding 29's monitor boundaries as test 15's record holds them: of 28, the
+  seventeen that could be read returned NO CHANGE, nine on ibm_kingston and eight on ibm_fez, and the eleven others, on
+  ibm_kingston, were NOT READ, each with a span not read SHARED. R3 had written "17 of 17", losing the word "read"; its
+  entry above carries a note. A test counts the rows.
+- Item 2. The headers of `docs/index.md` and `docs/method.md` no longer say the long version holds every rule and
+  threshold: it holds the three map rules with their thresholds, and each later test's rule is in its rule file, named
+  in its row of the kickoffs, in the author's wording, since the findings name rule files only as paths and tests 12 to
+  14's not at all. A line under `docs/index.md`'s section 3 says where the later per-shot words are defined, each
+  checked in its rule file.
+- Item 3. The two estimators' agreement is stated as bounds that hold: less than 0.012 on finding 29's twelve spans and
+  less than 0.015 on seventeen of finding 30's eighteen, the largest 0.011194 and 0.014059. R3 had written "within
+  0.011" and "within 0.014", rounded maxima stated as bounds; its entry above carries a note. The A1 exception stands as
+  it was.
+- Item 4. The glossary gains P(11), quadrature, monitor, antiphase and shot index, each from its page, the shot index
+  keeping the returned-order condition; and a shot, P(1) and H, which no page defines, in the author's wording, without
+  a link.
+- Item 5. Until the release, the four 0.10.0 assets are written as to be attached to the 0.10.0 release, in the nine
+  places a search of the tree found: Sandhi's README, round 5c's README, `data/README.md` and the changelog twice each,
+  and a test's docstring. At release step 4, after the check that the four are on the release with the digests their
+  READMEs give, the version-DOI pull request returns them to the present tense.
+- The reviewer stated that its session was not empty-context, as the first review's had not been; the record calls it an
+  independent review from a separate service, not from an empty context.
