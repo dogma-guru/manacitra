@@ -5141,6 +5141,57 @@ def test_finding_30_the_two_estimators():
     )
 
 
+def test_the_long_duration_form():
+    """Ruling R3, item 9, as the author amended it on 20 October 2026: the method page and `time_average_sd`'s
+    docstring say the error of a time average is the long-duration form, give the exact variance, and bound the
+    exact sd's shortfall, recomputed here from the published records over every span that carries the error (test 15's
+    read for finding 29; tests 16 and 17 for finding 30): less than 2.6 percent on finding 29's, the most, 2.53, at test
+    14's antiphase wait (job 1, third span); less than 1.6 percent on finding 30's, the most, 1.51, at test 17's A2,
+    third span. Every recorded sd is the long-duration form; the code is unchanged."""
+    import math
+
+    def shortfalls(jobs: dict) -> list:
+        out = []
+        for jk, job in jobs.items():
+            for qk, qubit in job["qubits"].items():
+                for wk, w in qubit["waits"].items():
+                    for i, s in enumerate(w["spans"]):
+                        for quad in ("Y", "X"):
+                            y = s.get(quad)
+                            if not (isinstance(y, dict) and y.get("tau_c_s") and y.get("telegraph_sd") is not None):
+                                continue
+                            b, tau, t = y["duty_b"], y["tau_c_s"], y["duration_s"]
+                            long_form = math.sqrt(2 * b * (1 - b) * tau / t)
+                            assert math.isclose(y["telegraph_sd"], long_form, rel_tol=1e-9)
+                            x = tau / t
+                            out.append((1 - math.sqrt(1 - x * (1 - math.exp(-1 / x))), (jk, qk, wk, i, quad)))
+        return out
+
+    _, _, t16, t17 = _t30_records()
+    f29 = shortfalls(archive.load("ibm_fez/t15-error-model-read.json")["archived"]["analysis"]["jobs"])
+    f30 = shortfalls(t16["archived"]["analysis"]["jobs"]) + shortfalls(t17["archived"]["per_shot_read"]["jobs"])
+    (m29, at29), (m30, at30) = max(f29), max(f30)
+    assert (len(f29), len(f30)) == (37, 36)  # finding 30: eighteen spans, each in Y and X
+    assert 100 * m29 < 2.6 and _q(100 * m29, 2) == "2.53" and at29 == ("t14-job1", "143", "antiphase", 2, "Y")
+    assert 100 * m30 < 1.6 and _q(100 * m30, 2) == "1.51" and at30 == ("A2", "143", "monitor", 2, "Y")
+    method = " ".join((ROOT / "docs" / "method.md").read_text().split())
+    assert (
+        "This is the long-duration form. For a span of duration T, the variance of the time average of a stationary "
+        "two-state process with exponential correlation is 2 b(1 − b)[τ_c/T − (τ_c/T)²(1 − e^(−T/τ_c))]; on the spans "
+        "of finding 29 the exact sd is smaller by less than 2.6 percent, the most at test 14's antiphase wait, and on "
+        "those of finding 30 by less than 1.6 percent. The three-sweep ceiling is an operational floor on the lag, not "
+        "a confidence bound on τ_c." in method
+    )
+    doc = " ".join(wait.time_average_sd.__doc__.split())
+    assert (
+        "This is the long-duration form. For a span of duration T, the variance of the time average of a stationary "
+        "two-state process with exponential correlation is 2 b (1 - b) [tau_c / T - (tau_c / T)^2 (1 - exp(-T / "
+        "tau_c))]; on the spans of finding 29 the exact sd is smaller by less than 2.6 percent, the most at test 14's "
+        "antiphase wait, and on those of finding 30 by less than 1.6 percent. The three-sweep ceiling is an "
+        "operational floor on the lag, not a confidence bound on tau_c." in doc
+    )
+
+
 def test_finding_30_records_name_their_reports():
     """A28 R1, Q14: each of finding 30's three records names its hand-back's report, which is not published, by
     SHA-256 under meta.not_copied (day 3's by the author's ruling, with numbers-t11-day3.json, the output of its kept

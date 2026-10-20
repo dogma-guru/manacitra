@@ -1893,7 +1893,13 @@ def time_average_sd(
     of a stationary two-state process with exponential correlation, sqrt(2 b (1 - b) tau_c / T), for a span of duration
     T, with tau_c the lag in sweeps times sweep_s. A lag under `ceiling` sweeps is read at the ceiling, which then
     bounds tau_c from above rather than measuring it; None reads the lag as given. Its estimand is the underlying duty,
-    not the counted fraction."""
+    not the counted fraction.
+
+    This is the long-duration form. For a span of duration T, the variance of the time average of a stationary
+    two-state process with exponential correlation is 2 b (1 - b) [tau_c / T - (tau_c / T)^2 (1 - exp(-T / tau_c))]; on
+    the spans of finding 29 the exact sd is smaller by less than 2.6 percent, the most at test 14's antiphase wait, and
+    on those of finding 30 by less than 1.6 percent. The three-sweep ceiling is an operational floor on the lag, not a
+    confidence bound on tau_c."""
     used = lag if ceiling is None or lag >= ceiling else ceiling
     tau = used * sweep_s
     return {
