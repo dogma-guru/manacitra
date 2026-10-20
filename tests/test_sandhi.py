@@ -254,6 +254,41 @@ def test_the_command_session_handles_are_refused():
     assert HANDLE.search("const rs=await Promise.allSettled([12345,67890].map(session_id=>tools.write_stdin(")
 
 
+def test_the_carried_sentences_and_their_plain_reading():
+    """The folder's README quotes each version's three carried sentences word for word as its report carries them
+    (version 3's from run 3.1's report; versions 4 and 4.1's from both reports), and gives after each quotation, as a
+    paragraph of its own and not inside the quotation, a reading of it in plain words, at the author's choice of 20
+    October 2026. The quotations are not changed."""
+    lines = (ROOT / "README.md").read_text().split("\n")
+    reports = {
+        "Version 3's report carries three sentences:": [RUN / "report-model-01-v3.md"],
+        "Versions 4 and 4.1 carry three sentences:": [ROOT / v / f"report-model-01-{v}.md" for v in ("v4", "v4.1")],
+    }
+    plain = {
+        "Version 3's report carries three sentences:": (
+            "In plain words: the model describes how the records change and does not say why; a change too small for a "
+            "record to see is counted as unseen, not as one that did not happen; and its forecasts, written before the "
+            "run, are the test it can fail."
+        ),
+        "Versions 4 and 4.1 carry three sentences:": (
+            "In plain words: the model describes how each span switches between two states and does not say why; its "
+            "clock is the order in which the provider returns the shots, and its times are in seconds only if that is "
+            "the order in which they ran; and its forecasts, written before the run, are what can count against it."
+        ),
+    }
+    for lead, files in reports.items():
+        i = lines.index(lead)
+        quote, reading = lines[i + 2], lines[i + 4]
+        assert quote.startswith("> ") and lines[i + 1] == lines[i + 3] == ""
+        sentences = re.findall(r'"([^"]+)"', quote)
+        assert len(sentences) == 3
+        for f in files:
+            text = f.read_text()
+            assert all(s in text for s in sentences), f.name
+        assert reading == plain[lead] and not reading.startswith(">")
+        assert "—" not in reading and "–" not in reading
+
+
 def test_the_scorecards_family_counts():
     """Amendment A28, section 3: the scorecards as the scorers wrote them, the local paths aside. Version 4's on test
     11's third day (test 16) scored no calibrated bet, every family "not fully testable"; version 4.1's on test 17's

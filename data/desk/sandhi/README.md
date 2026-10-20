@@ -14,9 +14,13 @@ Version 3's report carries three sentences:
 
 > "The model is a kinetic description; it names no cause." "A record below its own floor is censored, not absent." "The predictions are the model's, written before the run they predict, and they are what can prove it wrong."
 
+In plain words: the model describes how the records change and does not say why; a change too small for a record to see is counted as unseen, not as one that did not happen; and its forecasts, written before the run, are the test it can fail.
+
 Versions 4 and 4.1 carry three sentences:
 
 > "The model is a kinetic description; it names no cause." "The sweep clock is the returned order; seconds are conditional on that order being chronological." "The predictions are the model's, written before the run they predict, and they are what can count against it."
+
+In plain words: the model describes how each span switches between two states and does not say why; its clock is the order in which the provider returns the shots, and its times are in seconds only if that is the order in which they ran; and its forecasts, written before the run, are what can count against it.
 
 **The name.** The author named the model Sandhi on 17 October 2026 (`kickoffs/ruling-sandhi-the-model-name-2026-10-17.md`); its files keep the lineage "Model 01" in their names. The run published here is version 3, run 3.1. Three runs preceded it, runs 1 to 3; their outputs are not published, and the kickoffs of versions 2 and 3, with version 3's errata, are the record of what changed between them.
 
