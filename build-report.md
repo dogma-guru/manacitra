@@ -4402,3 +4402,68 @@ parts after the runner's check: the method page's header and three entries of th
   READMEs give, the version-DOI pull request returns them to the present tense.
 - The reviewer stated that its session was not empty-context, as the first review's had not been; the record calls it an
   independent review from a separate service, not from an empty context.
+
+## 50. Release v0.10.0 (20 October 2026)
+
+**What it carries.** Amendment A28 (pull request 70), section 49: finding 30, "The duty across spans, jobs and days, and
+the desk model's scored bets", on test 11's third day and tests 16 and 17; the records of those tests; the per-shot read
+in `manacitra.wait`; the desk model Sandhi's versions 4 and 4.1; and round 5c of the desk power check; under rulings R1
+to R5, R3 and R5 answering independent reviews and R4 a first reader's notes, and two readability edits after them at
+the author's request, which the next ruling records. Pull request 70 was merged as `d649477` with a merge commit, on the
+author's go ("merge it") after every check had passed on its head, `dd6cd4d`. Its new and changed data files were signed
+on `main` in the bundle commit `0eb3465`, which changes bundles only (74 new, 3 signed again).
+
+**The tree check on `0eb3465`,** by the author's next go:
+- All 456 files in `data/` have a bundle, and all 456 verified offline against `…/sign.yml@refs/heads/main`, each once.
+- The negative control, `data/ibm_fez/t17-long-monitor.json`, new in A28, against `@refs/tags/v0.9.0`, fails as it
+  should (exit status 1), its certificate naming `…/sign.yml@refs/heads/main`.
+- The tool was `sigstore` 4.5.0, installed by the author's standing leave (A20, C2) in a throwaway environment outside
+  the repository, with the same wheel as 0.9.0's checks, and deleted afterwards.
+- The git identity scan is clean (207 reachable commits).
+- The sign-off check over `f88ee7b..0eb3465` flags only GitHub's merge commit `d649477`, as at 0.8.0 and 0.9.0; the
+  bot's bundle commit is exempt, and every contributor commit is signed off.
+
+**The version, by the author's choice of 0.10.0** (19 October, in the kickoff of A28), and the goes for the merge, the
+tree check and this pull request, given in chat:
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (`version`, and `date-released` 2026-10-20) and
+  the README's citation. The changelog heading `## 0.10.0 (unreleased)` becomes `## 0.10.0 (20 October 2026)`, and the
+  README's "To be released as 0.10.0." becomes "Released as 0.10.0 on 20 October 2026.". The date is the UTC date, as
+  every date of a run and a record here is.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`,
+  which accept a two-digit minor number as they stand: they escape the version string, and the latest version DOI is the
+  one with the largest numbers, compared as integers. The README's sentence is checked by
+  `test_the_readme_opens_with_the_latest_findings` and the changelog heading by `test_the_changelog_0_10_0`, and "To be
+  released as 0.10.0" joins the retired phrases.
+- **The package.** Since 0.9.0, `src/` changes only in `manacitra.wait` and in the version line. `manacitra.wait` gains
+  six public functions (`sweep_series`, `sharing_ratio`, `two_state_reading`, `time_average_sd`, `boundary_ratio` and
+  `sweep_autocorrelation`) and three constants (`SWEEP_PERCENTILES`, `SWEEP_MAX_LAG`, `SWEEP_LAG_CEILING`). The build
+  takes the package from `src/` with one data file, `pinned_circuits.json`, and has no manifest, so `data/` is not built
+  into either package. The workflow's `build-release` job builds them from the tag as `manacitra-0.10.0`, and the
+  release step checks the built packages for it.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.9.0's DOI until Zenodo has minted v0.10.0's
+(release step 5).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+
+**The release assets.** Four files, as their folders' READMEs list them with their sizes and SHA-256: Sandhi version 4's
+fits (`v4/fits-model-01-v4.json`) and its checks, as the copy whose one local path is written "[local path]"
+(`v4/checks-model-01-v4.json`), version 4.1's fits (`v4.1/fits-model-01-v4.1.json`), and round 5c's results
+(`results-t7v51-round5c.jsonl`). They are attached at the release step, each checked from a fresh download against the
+SHA-256 its README gives. Until then the tree writes them as to be attached to the 0.10.0 release (R5, item 5); the
+version-DOI pull request returns those sentences to the present tense once the check has passed. The workflow's
+`build-release` job signs the packages it builds and their `SHA256SUMS`; it does not build these files.
+
+**The release path,** the rest of kickoff section 8, each step on the author's go:
+3. the merge of this pull request with a merge commit, then signing on `main`; the tree check against
+   `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a v0.10.0 -m "Manacitra
+   0.10.0"`, on the bundle commit if there is one, otherwise on the merge commit;
+4. the release, with the changelog's entry as its notes and the four assets attached; its signed assets checked from a
+   fresh download against `@refs/tags/v0.10.0`, with the negative control against `@refs/tags/v0.9.0`, and the four
+   assets against their SHA-256;
+5. the version DOI, once Zenodo has minted it (`docs/v0.10.0-doi`), with the four assets' sentences returned to the
+   present tense; if the Zenodo webhook times out, the author redelivers it.
+
+The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken. The hand-back
+is `release-0.10.0-report.md`.

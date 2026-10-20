@@ -813,6 +813,7 @@ RETIRED = [
     "To be released as 0.7.0",  # the 0.7.0 release: released, with its date
     "To be released as 0.8.0",  # the 0.8.0 release: released, with its date
     "To be released as 0.9.0",  # the 0.9.0 release: released, with its date
+    "To be released as 0.10.0",  # the 0.10.0 release: released, with its date
     "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
@@ -2535,8 +2536,9 @@ def test_the_readme_opens_with_the_latest_findings():
     the duties equal (ruling R3, item 2, in place of "the duty held"), the monitor means of three runs (with no
     clause on the switching time, by the author's ruling R1, Q1: the per-span
     correlation times of 17 and 19 October overlap), that the pattern noticed in the published weights was not seen
-    on new data, and the desk model's record, in at most five sentences, each claim checked here
-    against the records. It carries none of the words the kickoff keeps out, and ends "To be released as 0.10.0."."""
+    on new data, and the desk model's record, in at most five sentences, each claim checked here against the
+    records. It carries none of the words the kickoff keeps out, and ends "Released as 0.10.0 on 20 October 2026.",
+    as the release pull request dated it."""
     import re
 
     import _reuse_runs as rr
@@ -2582,7 +2584,7 @@ def test_the_readme_opens_with_the_latest_findings():
         "The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted "
         "against it, with its bets for the other design not yet scored; no cause is named." in flat
     )
-    assert flat.endswith("To be released as 0.10.0.")
+    assert flat.endswith("Released as 0.10.0 on 20 October 2026.")  # the release pull request dated it
     for word in ("parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "constant", "telegraph", "defect", "first"):
         assert word not in flat.lower(), word
     assert "—" not in flat and "–" not in flat
@@ -5828,14 +5830,15 @@ def test_the_round_5c_gaps_are_whole_counts():
 
 
 def test_the_changelog_0_10_0():
-    """Amendment A28, section 5: the changelog's 0.10.0 heading above 0.9.0, unreleased until the release pull request
-    dates it, with the lead the kickoff fixed, word for word but for the switching-time clause, deleted by the author's
+    """Amendment A28, section 5: the changelog's 0.10.0 heading above 0.9.0, dated 20 October 2026 by the release pull
+    request, with the lead the kickoff fixed, word for word but for the switching-time clause, deleted by the author's
     ruling R1, Q1, and its clause on the duty, which ruling R3, item 2, rewrites as the boundaries' word; and the A28
     entry naming the package's new functions, finding 30's data, Sandhi's versions 4 and 4.1 and round 5c; no
     dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
-    assert log.index("## 0.10.0 (unreleased)") < log.index("## 0.9.0 (18 October 2026)")
-    entry = " ".join(log.split("## 0.10.0 (unreleased)", 1)[1].split("\n## ", 1)[0].split())
+    assert log.index("## 0.10.0 (20 October 2026)") < log.index("## 0.9.0 (18 October 2026)")
+    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
+    entry = " ".join(log.split("## 0.10.0 (20 October 2026)", 1)[1].split("\n## ", 1)[0].split())
     lead = (
         "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
         "hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans every "

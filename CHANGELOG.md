@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.0 (unreleased)
+## 0.10.0 (20 October 2026)
 
 Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans every boundary read NO CHANGE, which does not show the duties equal; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the per-shot read of a span: the sweep series, the sharing ratio, the duty and correlation time, and the error of a time average; thresholds and words are the caller's. No cause is named.
 
