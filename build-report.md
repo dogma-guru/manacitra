@@ -4303,3 +4303,15 @@ changelog's fixed lead included.").** It answers four of the packet's questions:
   record, released in 0.9.0 and signed, stays as released.
 
 The tests check each new sentence against the records, and that the old wording is gone.
+
+**Ruling R2 (20 October 2026, approved by the author in chat: "Give me a prompt to update the PR as recommended"),**
+after a review of pull request 70 at `8d11bd5`. The rulings of R1 stand.
+- The desk runner's session variable. Three lines of version 4.1's run log carried the name of the variable that holds
+  the desk runner's session identifier, a name that identifies its service. Each is written "[the desk runner's session
+  variable]", and nothing else in the log changed. The folder's README lists the replacement, and its table gives the
+  log's SHA-256 as published, `9e3680c2…a0c9` in place of `c70740d2…517d`, beside the delivered one; `data/SHA256SUMS`
+  is rewritten. The two checks in `tests/test_sandhi.py` that refuse the service's names in Sandhi's files refuse this
+  one too, in the same scope.
+- Round 5c's untraced gap. The report, published as handed back, calls the held-out gaps a fact not traced; the folder's
+  README traces them in its third sentence. The README now says so, in the ruling's sentence, directly after that
+  paragraph, and a test checks it there. The report is not edited.

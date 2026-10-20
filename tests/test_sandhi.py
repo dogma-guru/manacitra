@@ -63,7 +63,7 @@ def test_the_run_is_published_as_delivered():
     # the signing workflow's bundles (FILE.sigstore.json) sit beside the files on main, and are not the folder's files
     for k in (p for p in (ROOT / "kickoffs").iterdir() if not archive.is_bundle(p)):
         text = k.read_text()
-        assert not re.search(r"chat\s*gpt|open\s*ai", text, re.I), k.name
+        assert not re.search(r"chat\s*gpt|open\s*ai|codex", text, re.I), k.name
         assert _sha(k) in readme, k.name
     for held in ("run.log", "events-model-01-v3.json", "frequency-ledger.json"):
         assert held in sums and not (RUN / held).exists() and f"`{held}`" in readme
@@ -196,10 +196,11 @@ def _sums_of(path: Path) -> dict:
 @pytest.mark.parametrize("version", ["v4", "v4.1"])
 def test_versions_4_and_4_1_are_published_as_delivered(version):
     """Amendment A28, section 3: every file of the version here is its run's file, checked against the run's own
-    SHA256SUMS, or, where the folder's README lists a replacement ("[local path]", "the desk runner" or the session),
-    carries the published SHA-256 the README gives beside the delivered one, which is the run's; the scorer and its
-    dependencies match FORECAST-SHA256SUMS, whose own digest and the predictions' are those posted; the compiled
-    library is not committed; and no file names a home path or the desk runner's service."""
+    SHA256SUMS, or, where the folder's README lists a replacement ("[local path]", "the desk runner", the session or,
+    by ruling R2, the name of its variable), carries the published SHA-256 the README gives beside the delivered one,
+    which is the run's; the scorer and its dependencies match FORECAST-SHA256SUMS, whose own digest and the
+    predictions' are those posted; the compiled library is not committed; and no file names a home path or the desk
+    runner's service."""
     folder = ROOT / version
     sums = _sums_of(folder / "SHA256SUMS")
     forecast = _sums_of(folder / "FORECAST-SHA256SUMS")
@@ -229,7 +230,7 @@ def test_versions_4_and_4_1_are_published_as_delivered(version):
         if name in forecast:
             assert h == forecast[name], name
         text = p.read_text()
-        assert not re.search(r"/Users/|/home/|chat\s*gpt|open\s*ai", text, re.I), name
+        assert not re.search(r"/Users/|/home/|chat\s*gpt|open\s*ai|codex", text, re.I), name
     for name, h in posted.items():
         assert _sha(folder / name) == h and h in readme, name
     assert replaced == {"v4": 3, "v4.1": 4}[version]

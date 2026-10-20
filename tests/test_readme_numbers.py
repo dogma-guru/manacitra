@@ -5422,6 +5422,14 @@ def test_the_round_5c_folder():
     fr = [p for p in cmp_["points"] if not p["fractions_equal"]]
     assert [p["index"] for p in fr] == [42, 86, 87, 132]
     assert "No verdict moved:" in flat and "—" not in readme and "–" not in readme
+    # by ruling R2: the report, written before the trace and published as handed back, calls the gaps a fact not
+    # traced, and the README says so directly after the paragraph that traces them
+    assert "a fact, not traced" in (root / "report-t7v51-round5c.md").read_text()
+    assert (
+        "fails it on the other. The report beside this file, written before that explanation, calls these gaps a fact "
+        "not traced; the third sentence above is the trace, made from the two result files after the report. **The "
+        "files.**" in flat
+    )
 
 
 ROUND5C = __import__("os").environ.get("MANACITRA_ROUND5C")
