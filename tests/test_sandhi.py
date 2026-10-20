@@ -249,9 +249,9 @@ def test_the_command_session_handles_are_refused():
     assert log.count("[a command session]") == 30 and not HANDLE.search(log)
     lines = [line for line in log.split("\n") if "[a command session]" in line]
     assert len(lines) == 14
-    assert HANDLE.search(log.replace("[a command session]", "30707", 1))
-    assert HANDLE.search(log.replace("[a command session]", "21563"))
-    assert HANDLE.search("const rs=await Promise.allSettled([21563,93745].map(session_id=>tools.write_stdin(")
+    assert HANDLE.search(log.replace("[a command session]", "12345", 1))  # made-up digits, not a handle of the run
+    assert HANDLE.search(log.replace("[a command session]", "67890"))
+    assert HANDLE.search("const rs=await Promise.allSettled([12345,67890].map(session_id=>tools.write_stdin(")
 
 
 def test_the_scorecards_family_counts():
