@@ -1,6 +1,6 @@
 # The idea in six pictures
 
-This page explains the method in six pictures, then the wait test, the two-quadrature Ramsey, the monitor and its execution spans, and the per-shot read. It is for readers who want to know how a number is made before reading the findings. Read the [README](../README.md) first; every rule and threshold is in [the long version](index.md).
+This page explains the method in six pictures, then the wait test, the two-quadrature Ramsey, the monitor and its execution spans, and the per-shot read. It is for readers who want to know how a number is made before reading the findings. Read the [README](../README.md) first; the three map rules and their thresholds are in [the long version](index.md); each later test's rule is in its rule file, named in its row of [the kickoffs](kickoffs.md).
 
 ## 1. The kept share
 

@@ -28,14 +28,22 @@ The left map is ibm_fez's 27 pairs from Kickoff 31 (5 October 2026, 12:37 UTC), 
 
 ## Words used here
 
-One sentence each, taken from the page it links to, where each is defined at length.
+One sentence each. Each entry with a link is taken from the page it links to, where it is defined at length; a shot, P(1) and H, which no page defines, are given plainly, without a link.
 
+- **Shot**: one run of a circuit, ending in one readout; P(1) and P(11) are shares of a circuit's shots.
+- **P(1)**: the share of a circuit's shots that read 1 on the qubit, as P(11) is the share that read 11.
+- **P(11)**: the share of shots that read 11 on a pair ([the long version](docs/index.md#1-the-circuit-and-why-the-gap-is-known)).
+- **H**: the Hadamard gate, the single-qubit gate a Ramsey puts before and after its wait (H, the wait, H, measure).
 - **Kept share** (k): the change in a pair's P(11) between the two circuits as a share of the change the exact model predicts, 0.038 for the main circuit, so that a pair that moved by 0.040 has k = 1.06 and one that moved by 0.008 has k = 0.22 ([the method](docs/method.md#1-the-kept-share)).
 - **Map**: the kept shares of all the pairs measured, one per pair, drawn on the chip's coupling map ([the method](docs/method.md#2-the-map)).
 - **The map rule's verdicts**: NOISE, the map does not repeat (r_split under 0.3); REDUNDANT, the published score already holds it; DIAGNOSTIC, it repeats, carries over to a second circuit and survives with the published score taken out, which does not explain it; MAP PRESENT, it repeats and carries over where the provider publishes no per-pair figures; NOT SETTLED, anything else ([the rule](docs/index.md#the-map-rule-kickoff-31)).
 - **Ramsey fringe**: a qubit's P(1) after H, a wait and H, read across waits, which can be fitted as one line with decay or as two fixed lines, and which a short span of waits does not tell apart ([the method](docs/method.md#the-two-quadrature-ramsey-and-the-two-model-fit)).
+- **Quadrature**: one of a Ramsey's two readings, X, the Ramsey as it stands, or Y, the same with an S† before the final H, which advances the fringe by a quarter turn, so that the pair reads the fringe's phase as well as its size ([the method](docs/method.md#the-two-quadrature-ramsey-and-the-two-model-fit)).
+- **Monitor**: a design that reads a qubit's fringe at one wait, in a fixed order of repeats of X then Y, as often as the job allows ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
+- **Antiphase**: the wait 1/(4δ), at which two fixed lines point in opposite directions, so that the fringe's length is R0 |1 − 2w| ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
 - **Execution span**: one of the runs in which a provider may execute a job, each a run of the submitted circuits, with gaps between them, the provider's record giving each span's positions, start and stop ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
 - **Boundary**: the place between two adjacent spans of a job, across which changes are set apart from those between adjacent repeats of a span, a repeat whose circuits ran in different spans straddling it ([the method](docs/method.md#the-monitor-and-the-execution-spans)).
+- **Shot index**: a shot's place in the order the provider returns a position's shots; that order is the provider's, and reading it as time assumes it is chronological and evenly spaced ([the method](docs/method.md#reading-a-span-per-shot)).
 - **Sweep**: one returned shot index across a span's repeats; the sweep series is the mean at each returned index, on the sweep clock, the returned order, which is in seconds only if that order is chronological and even ([the method](docs/method.md#reading-a-span-per-shot)).
 - **Per-shot read**: a reading of a span from each position's shots one by one, as the provider returns them, rather than from its counts, giving the sweep series, the sharing ratio, the duty, the correlation time and the error of a time average ([the method](docs/method.md#reading-a-span-per-shot)).
 - **Duty**: the fraction b of a span's sweep series above the threshold between its two states, never folded ([the method](docs/method.md#reading-a-span-per-shot)).

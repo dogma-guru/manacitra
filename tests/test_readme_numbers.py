@@ -2385,6 +2385,7 @@ def test_the_readme_for_a_first_reader():
     method = " ".join((ROOT / "docs" / "method.md").read_text().split())
     index = " ".join((ROOT / "docs" / "index.md").read_text().split())
     sources = {
+        "**P(11)**": (index, "Read P(11), the share of shots that read 11."),
         "**Kept share** (k)": (
             method,
             "pair [106, 107] moved by 0.040, slightly more than the model's 0.038 (k = 1.06)",
@@ -2395,8 +2396,18 @@ def test_the_readme_for_a_first_reader():
             method,
             "A Ramsey fringe read at a few waits on one quadrature can be fitted as one line",
         ),
+        "**Quadrature**": (
+            method,
+            "the same with an S† before the final H, which advances the fringe by a quarter turn",
+        ),
+        "**Monitor**": (
+            method,
+            "The monitor reads it at one wait, in a fixed order of repeats, as often as the job allows",
+        ),
+        "**Antiphase**": (method, "At the wait 1/(4δ) two fixed lines point in opposite directions"),
         "**Execution span**": (method, "A provider may execute one job as several spans, each a run of the submitted"),
         "**Boundary**": (method, "a repeat whose circuits ran in different spans straddles"),
+        "**Shot index**": (method, "one row per repeat and one column per shot index as returned"),
         "**Sweep**": (
             method,
             "The times are on the sweep clock, the returned order, and in seconds only if that order",
@@ -2407,10 +2418,16 @@ def test_the_readme_for_a_first_reader():
         "**Correlation time** (τ_c)": (method, "the correlation time τ_c, that lag times the caller's sweep time"),
         "**Desk model** (Sandhi)": (sandhi, "a kinetic description of the records, fitted on the desk from bundles of"),
     }
-    entries = [e.split(":", 1)[0] for e in words.split("- ")[1:]]
-    assert entries == list(sources)
+    items = words.split(" - **")[1:]
+    entries = ["**" + e.split(":", 1)[0] for e in items]
+    fresh = {"**Shot**", "**P(1)**", "**H**"}  # ruling R5, item 4: no page defines them; given plainly, without a link
+    assert entries[:4] == ["**Shot**", "**P(1)**", "**P(11)**", "**H**"]
+    assert [e for e in entries if e not in fresh] == list(sources)
     for term, (page, line) in sources.items():
         assert line in page, term
+    assert all("](" not in e for e, name in zip(items, entries) if name in fresh)
+    assert "a shot, P(1) and H, which no page defines, are given plainly, without a link." in words
+    assert "reading it as time assumes it is chronological and evenly spaced" in words
     assert "**MAP PRESENT** if r_split ≥ 0.5 and r_AB ≥ 0.4 with p < 0.05" in index
     # the reading order and the page headers
     assert (
@@ -2425,6 +2442,27 @@ def test_the_readme_for_a_first_reader():
     assert "every number the runs measured, as the README and the findings give it, is checked by a test." in flat
     assert "every measured number" not in flat
     assert "Every statistic the runs measured, in the README and the pages it links to" in index
+    # ruling R5, item 2: the two headers, and the line under section 3, each word defined in the rule file named
+    assert (
+        "for readers who want the circuits, the three map rules with their thresholds, the backends and the guards in "
+        "one place; the later tests' rules are fixed in their rule files and stated in the findings." in index
+    )
+    assert (
+        "the three map rules and their thresholds are in [the long version](index.md); each later test's rule is in "
+        "its rule file, named in its row of [the kickoffs](kickoffs.md)." in method
+    )
+    kick = (ROOT / "docs" / "kickoffs.md").read_text()
+    assert all(f"t{n}-rule.md" in kick for n in range(7, 18))
+    assert (
+        "The later per-shot words (SHARED, NO CHANGE, BETWEEN, CHANGE, MIDDLE HIGH, NOT SEEN) are defined in "
+        "`data/ibm_fez/t15-rule.md` and `data/ibm_fez/t17-rule.md`, and stated in findings 29 and 30." in index
+    )
+    r15 = (archive.data_dir() / "ibm_fez" / "t15-rule.md").read_text()
+    r17 = (archive.data_dir() / "ibm_fez" / "t17-rule.md").read_text()
+    assert "SHARED above 3, INDEPENDENT below 1.5" in r15
+    assert "**NO CHANGE** at or under 2, **BETWEEN** over 2 to 3, **CHANGE**" in r15
+    assert "**MIDDLE HIGH** if Z ≥ 2.0; **NOT SEEN** if Z < 1.0" in r17
+    assert "every rule and threshold" not in index + method
     assert "—" not in who + words and "–" not in who + words
 
 

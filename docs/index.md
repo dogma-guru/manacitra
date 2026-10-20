@@ -1,6 +1,6 @@
 # Manacitra, the long version
 
-The long version, for readers who want the circuits, every rule and threshold, the backends and the guards in one place. If it is too deep, read the [README](../README.md) and then [the method in six pictures](method.md) first.
+The long version, for readers who want the circuits, the three map rules with their thresholds, the backends and the guards in one place; the later tests' rules are fixed in their rule files and stated in the findings. If it is too deep, read the [README](../README.md) and then [the method in six pictures](method.md) first.
 
 This page explains the circuit and why its gap is known, the three rules and their thresholds, the backends, the
 safety guards, how to reproduce the README's measured statistics from `data/`, and how sealing and signing work. The
@@ -78,6 +78,8 @@ against a spread between pairs of 0.205.
 
 Each rule is a pure function in `manacitra.verdicts` that returns the verdict, the rule's name, every input it used,
 and each condition as tested. The thresholds were fixed before the data they were first applied to, according to the author's dated records, which are not part of this release.
+
+The later per-shot words (SHARED, NO CHANGE, BETWEEN, CHANGE, MIDDLE HIGH, NOT SEEN) are defined in `data/ibm_fez/t15-rule.md` and `data/ibm_fez/t17-rule.md`, and stated in findings 29 and 30.
 
 ### The map rule (Kickoff 31)
 
