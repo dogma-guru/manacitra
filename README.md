@@ -14,7 +14,7 @@ Manacitra is for people who run work on shared quantum processors and want to ch
 
 ## Latest finding: the duty across spans, jobs and days
 
-Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30](docs/findings.md#finding-30)). Across the six spans of one job every boundary read NO CHANGE, each adjacent pair differing by less than twice its combined error, which does not show the duties equal; and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and not seen. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted against it, with its bets for the other design not yet scored; no cause is named. To be released as 0.10.0.
+Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30](docs/findings.md#finding-30)). Across the six spans of one job every boundary read NO CHANGE, each adjacent pair differing by less than twice its combined error, which does not show the duties equal; and the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and not seen. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted against it, with its bets for the other design not yet scored; no cause is named. Released as 0.10.0 on 20 October 2026.
 
 ## What it does
 
@@ -198,7 +198,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.9.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.10.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.9.0: [10.5281/zenodo.23454906](https://doi.org/10.5281/zenodo.23454906)).
 
