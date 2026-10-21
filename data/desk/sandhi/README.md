@@ -195,7 +195,7 @@ The replacements, by file:
 - `v4.1/run.log`: local paths, 87 times; the service, 2 times; the session, 1 time; the session variable's name, 3 times; the command sessions' handles, 30 times (six values, on 14 lines).
 - `v4.1/scorecard-t17.json`: local paths, 5 times.
 
-**To be attached to the 0.10.0 release as assets**, not kept here, for size; each SHA-256 as delivered is in its version's `SHA256SUMS`:
+**Attached to the 0.10.0 release as assets**, not kept here, for size; each SHA-256 as delivered is in its version's `SHA256SUMS`:
 
 | file | bytes as published | SHA-256 as delivered | as published |
 |---|---|---|---|
@@ -203,7 +203,7 @@ The replacements, by file:
 | `v4/checks-model-01-v4.json` | 70,593,293 | `2f3af3de395d1bc355c8c10eb2bbb788ef1b02bb1cf26e40b5ef7425ae65642f` | `bd1192c421174f223f0f3f918d9dff57dcfaae1ddb82df4a24e8a50bc45b378b` |
 | `v4.1/fits-model-01-v4.1.json` | 10,312,728 | `3c6fbaa54f5a4af21d5b76ab0eea01f801ab84ca696818b472e13f8132935e65` | the same |
 
-`v4/checks-model-01-v4.json` is to be attached as a copy whose one local path is written "[local path]".
+`v4/checks-model-01-v4.json` is attached as a copy whose one local path is written "[local path]".
 
 **Not published:** the rest of each version's delivery (version 4's data series, bootstrap draws, pilot and retry records, predictive simulations and likelihood-ratio results, audits and scripts; version 4.1's input copies, frozen version 4 state, calibration trials, nominal examples, data series and scripts), each named with its SHA-256 in its version's `SHA256SUMS`; the bundles the model was given; and the compiled library.
 

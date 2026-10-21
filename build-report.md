@@ -4467,3 +4467,43 @@ version-DOI pull request returns those sentences to the present tense once the c
 
 The merge, the tag, the release and its verification, and the DOI are recorded here as each step is taken. The hand-back
 is `release-0.10.0-report.md`.
+
+**The release (20 October 2026), each step by the author's go given in chat on 20 October (UTC).**
+- **The merge of the amendment.** Pull request 70 (A28) was marked ready and merged as `d649477` with a merge commit, at
+  18:50:45 UTC, after every check had passed on its head, `dd6cd4d`. Signing on `main` wrote the bundles of its new and
+  changed data files in `0eb3465`, and the tree check on it is above.
+- **The merge of the release.** Pull request 72 (this release) was merged as `dd9727a` with a merge commit, at 21:46:05
+  UTC, after every check had passed on its head, `2ff2232`. No signed file changed, and the signing run on `dd9727a`
+  committed nothing, so the tag is on the merge commit.
+- **The tree check, before tagging,** at 23:17:27 to 23:17:29 UTC, on `dd9727a`: all 456 files in `data/` have a bundle,
+  and all 456 gave OK offline against `…/sign.yml@refs/heads/main`; `data/` is unchanged since `0eb3465`. The negative
+  control: `data/ibm_fez/t16-day3-per-shot-read.json` against `…/sign.yml@refs/tags/v0.9.0` fails (exit status 1). The
+  git identity scan was clean (209 reachable commits). The DCO check over `0eb3465..dd9727a` names GitHub's merge commit
+  `dd9727a`, which has no Signed-off-by line, as at 0.8.0 and 0.9.0; every contributor commit is signed off.
+- **The tool.** `sigstore` 4.5.0 (wheel `f045b207…`), with Python 3.14.8 and pip 26.2.1 on macOS (arm64), installed by
+  the author's standing leave (A20, C2) into a throwaway environment outside the repository: its 31 wheels downloaded
+  first, then installed from that folder alone, `pip check` clean, no credentials. A fresh environment served each tree
+  check and the release's verification, and each was deleted afterwards.
+- **The tag and the release.** `v0.10.0` is annotated and unsigned, as every earlier tag (tag object `7e93974`, message
+  "Manacitra 0.10.0"), on `dd9727a`, at 23:17 UTC. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.10.0>, published at 23:39:50 UTC, with the changelog's 0.10.0
+  entry as its notes and the four assets attached. Before they were attached, each was staged again from its source, the
+  checks copy rebuilt by the staging rule with its one local path written "[local path]"; each one's size and SHA-256
+  were checked against its folder's README at the tag, and the identifier scan was clean on all four.
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, GitHub's two source archives and the four assets, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 23:42:02 to 23:42:04 UTC, each file checked one at a time: all nine gave OK
+  offline against `…/sign.yml@refs/tags/v0.10.0`, the wheel (158,205 bytes), the sdist (367,140 bytes), `SHA256SUMS`,
+  the four assets and GitHub's two source archives; `SHA256SUMS` matches both packages, and each asset's SHA-256 is its
+  README's. The negative control: the wheel against `…@refs/tags/v0.9.0` fails (exit status 1). The wheel carries
+  version 0.10.0, and neither package contains `data/` (27 and 72 entries).
+- **Zenodo.** GitHub's release events reached Zenodo: `created` (at 23:39:46 UTC) and `released` were answered with HTTP
+  202, and `published` with HTTP 500 (at 0.9.0, 409); the edits that followed, as signing attached the bundles, with 202
+  but one with 403. Zenodo archived v0.10.0 with its own DOI, `10.5281/zenodo.23519346` (record created 23:40:07 UTC,
+  linked to the `v0.10.0` tree), under the concept DOI `10.5281/zenodo.23228518`, which now resolves to it. Zenodo dates
+  the record 2026-10-21; the release's UTC date, and the date this repository gives it, is 20 October 2026.
+- **Step 5.** The README's version-DOI parenthetical names v0.10.0's DOI, `CITATION.cff` lists it among its
+  `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line. The nine
+  sentences that wrote the four assets as to be attached to the 0.10.0 release (Sandhi's and round 5c's READMEs,
+  `data/README.md` and the changelog's 0.10.0 entry twice each, and a test's docstring) are in the present tense again,
+  as ruling R5, item 5, set, and `data/SHA256SUMS` is regenerated.

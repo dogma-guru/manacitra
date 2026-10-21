@@ -5801,8 +5801,8 @@ ROUND5C = __import__("os").environ.get("MANACITRA_ROUND5C")
 
 @pytest.mark.skipif(not ROUND5C, reason="needs both rounds' result files (MANACITRA_ROUND5C, a folder holding them)")
 def test_the_round_5c_gaps_are_whole_counts():
-    """Amendment A28, section 4, sentence 3, recounted from the two result files, attached to release 0.8.0 and to be
-    attached to 0.10.0: at the two points with lines at 25 and 125 kHz, 393 draws differ in S's held-out error, each
+    """Amendment A28, section 4, sentence 3, recounted from the two result files, attached to releases 0.8.0 and
+    0.10.0: at the two points with lines at 25 and 125 kHz, 393 draws differ in S's held-out error, each
     gap a whole multiple of 1/192,000 (64 held-out points of 3,000 shots) to within 0.05 of one; the true probability
     is exactly one half at six held-out waits, where the 50 kHz factor of the two lines' sum is zero."""
     import hashlib
