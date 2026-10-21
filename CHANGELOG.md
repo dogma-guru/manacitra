@@ -19,10 +19,10 @@ Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run 
   given test 17's arrays (`MANACITRA_SHOTS`), reproduces its long job's read. The desk model Sandhi's versions 4 and 4.1
   in `data/desk/sandhi/v4/` and `v4.1/` (their reports, predictions, fits, hierarchies, checks, scorers with their tests
   and C source, run logs and sums, and their scorecards on test 16 and test 17, the local paths the scorer wrote
-  replaced; their large files to be attached to the 0.10.0 release, with their SHA-256 in the folder's README), checked
-  by `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
-  `data/desk/t7-power-check-round5c/` beside round 5b, its results to be attached to the 0.10.0 release. The README
-  opens with finding 30, and its table of findings gains an eleventh row.
+  replaced; their large files attached to the 0.10.0 release, with their SHA-256 in the folder's README), checked by
+  `tests/test_sandhi.py`. Round 5c of the desk power check, version 5.1's grid on a second machine, in
+  `data/desk/t7-power-check-round5c/` beside round 5b, its results attached to the 0.10.0 release. The README opens with
+  finding 30, and its table of findings gains an eleventh row.
 - Documentation: a glossary, page headers, a reading order, timings, and the quick start's pick matched to `manacitra
   pick`'s default, from a first reader's notes.
 

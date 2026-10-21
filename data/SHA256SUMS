@@ -1,7 +1,7 @@
 e50f652c00fc2ace63395de1bdd458e580aa4aaaa72722f19b0d89585738a784  LICENSE
 bd51b7697382bfd63303299eee081838f342bfa6591386ac4080a9709ba133fd  PROGRAMS.md
-8b2d48b0d5a282869dd9f15cf008f2ade879db81056e52e38109aeb25c28b2c3  README.md
-3a18e68769592b96c57852d88ed232ff6b48ce96c7b87813775634a8dbcf7398  desk/sandhi/README.md
+de91648393e3a36f9e5a69b4d8dfe408dc9284b4a0ec642b6ef3e6fa339fb145  README.md
+f29a56f8a83f5bd99905e42e6fda8c5748f91ceecc6df634eb800adc0fa0d59f  desk/sandhi/README.md
 bcf20d5403c1655c10498145cfa5606c6a362c782da1d0c022dd704e4521f5e0  desk/sandhi/kickoffs/kickoff-model-01-v2-gated-states-2026-10-17.md
 881ec9b4c124f8bf8974a3898b4e4bc568d3de8b2be28824a23bf3f6c105a4a3  desk/sandhi/kickoffs/kickoff-model-01-v3-errata-2026-10-17.md
 89e760a1b66a88e5a39907c0197487ff93961ca1c4e1718bbf9775f183aafbc1  desk/sandhi/kickoffs/kickoff-model-01-v3-gated-states-2026-10-17.md
@@ -93,7 +93,7 @@ a1c178a8b6054ddb5492405f30dbc05fd2502438dbb6699a9bd337533c01ee3c  desk/t7-power-
 ab65d1524618c11e43f28072ff431439516798c799de4974f53f541b95ce3111  desk/t7-power-check/report-t7v51.md
 5c6e75d9cd3157598d450f2f480bc9947fa0040f4ef7698901f5e6cd77cd362a  desk/t7-power-check/tables_t7v51.py
 05d34be47a08f0098e5158b0018fdc728df4dad64569ef4b7863bf7386bbee9e  desk/t7-power-check/timing-t7v51.json
-94ab3c587484874e9a69a973cce0a6bd50177597eaf409c002dc6346229a373b  desk/t7-power-check-round5c/README.md
+d34481ef7b20d5317682395183f5a31698a1895eb26455e38a31ab5b58521ee8  desk/t7-power-check-round5c/README.md
 b738c5742b2b65ed0e7c4bd7d5e7f0246cee6a844de2c7e63ade586b106e0fe5  desk/t7-power-check-round5c/compare-t7v51-round5c.json
 fa51e8c59801394f8922fbe7de1fbd2d5e43c61e4e029207879dd96c5a667bcd  desk/t7-power-check-round5c/compare_t7v51_round5c.py
 bb5127974b20729215c6d627913b96146852091dc8ba36c7828d253678019efb  desk/t7-power-check-round5c/report-t7v51-round5c.md
