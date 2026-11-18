@@ -4578,6 +4578,9 @@ JSON files are not run records, and their programs belong to no run record: `tes
 and `PROGRAMS.md` says so. `tests/test_probes.py` checks the rules, the sums, both digests of each changed file, and
 that no dollar figure is left outside the rules.
 
+**The changelog.** `## 0.11.0 (unreleased)`, with the kickoff's lead verbatim and the entry for A29;
+`tests/test_readme_numbers.py` checks the lead.
+
 **Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
 vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
 added line checked for dashes and the kickoff's words to avoid.

@@ -5910,7 +5910,8 @@ def test_the_changelog_0_10_0():
     dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
     assert log.index("## 0.10.0 (20 October 2026)") < log.index("## 0.9.0 (18 October 2026)")
-    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
+    # the release pull request dated it; A29: 0.11.0's heading, above it, waits for its own date
+    assert "(unreleased)" not in log.split("## 0.10.0 (20 October 2026)", 1)[1] and "## Unreleased" not in log
     entry = " ".join(log.split("## 0.10.0 (20 October 2026)", 1)[1].split("\n## ", 1)[0].split())
     lead = (
         "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
@@ -6765,3 +6766,37 @@ def test_findings_31_to_33_beside_the_findings():
     sec = br.split("## 51. Amendment A29:", 1)[1].split("\n## ", 1)[0]
     assert not re.search(r"\b\d{10,11}\b", sec)  # no CI run IDs
     assert "—" not in sec and "–" not in sec
+
+
+def test_the_changelog_0_11_0():
+    """Amendment A29, section 6: the changelog's 0.11.0 heading above 0.10.0, unreleased until the release pull request
+    dates it, with the lead the kickoff fixed, word for word, and the A29 entry naming the findings' data, Sandhi's two
+    scorecards, the three probes and IBM's reproduction; no dashes."""
+    log = (ROOT / "CHANGELOG.md").read_text()
+    assert log.index("## 0.11.0 (unreleased)") < log.index("## 0.10.0 (20 October 2026)")
+    entry = log.split("## 0.11.0 (unreleased)", 1)[1].split("\n## ", 1)[0]
+    lead = (
+        "Four records under rules hashed before them. On 17 November 2026 ibm_fez's qubit 143 read TWO FIXED "
+        "FREQUENCIES on a fifth date, with a split of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, "
+        "and every monitor span read SHARED. The desk model Sandhi, at version 4.1, was scored on its first design "
+        "twice, on 21 October and 17 November, with its bets unchanged and the first scorecard's digest posted "
+        "before the second run; on the second run one family of its bets, the emissions, counted against it. A "
+        "survey of ibm_fez's readout on 16 November read MIXED against the published table, where on 15 October the "
+        "published errors had sat above the measured ones on 105 of 156 qubits; the series is open. On ibm_kingston, "
+        "of two qubits that read two lines on 17 October, one could not be given a word for its readout error and "
+        "the other read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could "
+        "time. Three probes of a second provider's route are published as records. IBM Quantum Support reproduced "
+        "the two-line result on qubit 143; this does not indicate collaboration with or endorsement by IBM. No cause "
+        "is named."
+    )
+    assert entry.strip().split("\n\n", 1)[0] == lead
+    flat = " ".join(entry.split())
+    for part in (
+        "- Amendment A29: findings 31 to 33 (tests 18 to 21)",
+        "`scorecard-t18.json` and `scorecard-t20.json`, in `data/desk/sandhi/v4.1/`",
+        "`data/rigetti_cepheus_1_108q/probes/`, published as records with a README; a probe is not a test, and nothing "
+        'in one is a finding. Their rules are byte for byte; elsewhere each dollar figure is written "[cost]"',
+        "The package is unchanged.",
+    ):
+        assert part in flat, part
+    assert "—" not in entry and "–" not in entry

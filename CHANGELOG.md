@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.11.0 (unreleased)
+
+Four records under rules hashed before them. On 17 November 2026 ibm_fez's qubit 143 read TWO FIXED FREQUENCIES on a fifth date, with a split of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, and every monitor span read SHARED. The desk model Sandhi, at version 4.1, was scored on its first design twice, on 21 October and 17 November, with its bets unchanged and the first scorecard's digest posted before the second run; on the second run one family of its bets, the emissions, counted against it. A survey of ibm_fez's readout on 16 November read MIXED against the published table, where on 15 October the published errors had sat above the measured ones on 105 of 156 qubits; the series is open. On ibm_kingston, of two qubits that read two lines on 17 October, one could not be given a word for its readout error and the other read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could time. Three probes of a second provider's route are published as records. IBM Quantum Support reproduced the two-line result on qubit 143; this does not indicate collaboration with or endorsement by IBM. No cause is named.
+
+- Amendment A29: findings 31 to 33 (tests 18 to 21), with their data in `data/ibm_fez/` and `data/ibm_kingston/` (one
+  record per test, in A28's layout; the per-shot arrays named by their SHA-256 and not published; the posted rules
+  published unchanged; the hash checks, rulings and desk checks; the run's code as verbatim lines of the scripts as
+  run). `tests/_reuse_runs.py` recomputes tests 18 and 20's per-shot reads and test 18's middle test from the archived
+  reads, test 19's classes from the counts and the published table saved before the job, test 20's scan by test 7's
+  analysis and test 21's job 1 by test 9's, each with the run's seeds. The desk model Sandhi's two D1 scorecards,
+  `scorecard-t18.json` and `scorecard-t20.json`, in `data/desk/sandhi/v4.1/`, the local paths the scorer wrote replaced,
+  checked by `tests/test_sandhi.py`. Three probes of a second provider's route in `data/rigetti_cepheus_1_108q/probes/`,
+  published as records with a README; a probe is not a test, and nothing in one is a finding. Their rules are byte for
+  byte; elsewhere each dollar figure is written "[cost]" (ruling R1), and the README gives both SHA-256 values of each
+  changed file. `tools/program_catalogue.py` and the tests that walk the run records leave the probes out, and the
+  identifier scan allows six exact strings in them. IBM Quantum Support's reproduction is stated once on the findings
+  page and once in the README. The README opens with qubit 143 a month on, and its table of findings gains three rows.
+  The package is unchanged.
+
 ## 0.10.0 (20 October 2026)
 
 Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule hashed before it. In all eighteen monitor spans read, the state read SHARED. On a job of six spans every boundary read NO CHANGE, which does not show the duties equal; the monitor means of runs on 17 and 19 October were 0.330, 0.341 and 0.313. A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under a rule fixed before them and read NOT SEEN. The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run, and on that run no family of its bets counted against it; its bets for the other design are not yet scored. `manacitra.wait` gains the per-shot read of a span: the sweep series, the sharing ratio, the duty and correlation time, and the error of a time average; thresholds and words are the caller's. No cause is named.
