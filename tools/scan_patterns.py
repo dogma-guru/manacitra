@@ -92,8 +92,8 @@ ALLOW = [
     ("bootstrap-seed-list-five-digit", r"\"seeds\": \[\s*[0-9]{5},\s*[0-9]{5},\s*[0-9]{12}\s*\]", ""),
     # Amendment A29, the three probes (data/rigetti_cepheus_1_108q/probes/): the device's public ARN, whose account
     # field is empty; each task's results directory, named by its task ID (task IDs stay, as job IDs do; the task ARNs,
-    # which carry the account number, were redacted by the runner); the public issues the probes' goes cite; and three
-    # ways the runner's scripts and logs write the start of an ARN without any account number. Exactly these.
+    # which carry the account number, were redacted before the hand-back); the public issues the probes' goes cite; and
+    # three ways the probes' scripts and logs write the start of an ARN without any account number. Exactly these.
     ("braket-device-arn", r"[a]rn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q", ""),
     ("braket-task-directory", r"\"outputS3Directory\": \"tasks/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\"", ""),
     ("probe-issue", r"issue 7[456] of `?d[o]gma-guru/manacitra`?", ""),
