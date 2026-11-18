@@ -217,7 +217,7 @@ def test_versions_4_and_4_1_are_published_as_delivered(version):
         h = _sha(p)
         name = p.name
         row = next(line for line in readme.splitlines() if line.startswith(f"| `{version}/{name}` |"))
-        if name.startswith("scorecard-t1"):  # from the tests' hand-backs, not the model's runs
+        if name.startswith("scorecard-t"):  # from the tests' hand-backs, not the model's runs
             hashes = re.findall(r"`([0-9a-f]{64})`", row)
             assert h == hashes[-1] and (len(hashes) == 2 or row.endswith("| the same |")), name
             continue
@@ -330,3 +330,72 @@ def test_the_scorecards_family_counts():
     assert rr.scorecard_t17_differences(bad, calib) == ["inside_90 of threshold_duty at B1-q143-s0", "family duty"]
     for c in (c16, c17):
         assert c["prediction_file"] == "[local path]"
+
+
+#: Amendment A29: issue 71's comment of 15 November 2026, 02:44:02 UTC, fixed the SHA-256 of test 18's scorecard as
+#: delivered before test 20 ran; the published copy differs from it only in its local paths (the folder's README)
+T18_SCORECARD_POSTED = "01999991619b1180cbb223514e715a1a6b9ef6a99e8617088227fb4306e3345b"
+
+
+@pytest.mark.parametrize(
+    "test,families,lr",
+    [
+        (
+            "t18",
+            {
+                "duty": (12, 2, 6, False),
+                "correlation": (24, 0, 9, False),
+                "emissions": (8, 0, 4, False),
+                "job_mean_duty_difference": (1, 0, None, None),
+            },
+            0.58,
+        ),
+        (
+            "t20",
+            {
+                "duty": (12, 2, 5, False),
+                "correlation": (24, 0, 9, False),
+                "emissions": (8, 4, 4, True),
+                "job_mean_duty_difference": (1, 0, None, None),
+                "shuffled_weight_A26": (3, 2, None, None),
+                "shuffled_sd": (0, 0, None, None),
+            },
+            0.66,
+        ),
+    ],
+)
+def test_the_d1_scorecards_family_counts(test, families, lr):
+    """Amendment A29: version 4.1's scorecards on D1, test 18's two monitor jobs, and on D1, SECOND RUN, the same bets
+    unchanged on test 20's, set beside each other and not pooled. On test 18 no family counted against the model; on
+    test 20 the emissions family did, 4 misses of 8 at a cutoff of 4. Every family's bets, misses, cutoff and verdict,
+    every interval and every bet's inside_90, and the likelihood probability are recounted from the published files
+    by the scorer's definitions (`_reuse_runs.scorecard_t17_recount`), and an in-memory copy with one duty observation
+    moved outside its interval must fail the recount. Test 18's scorecard as delivered is the one whose SHA-256 issue
+    71 carries, named beside its published copy in the folder's README."""
+    import copy
+
+    import _reuse_runs as rr
+
+    card = json.loads((ROOT / "v4.1" / f"scorecard-{test}.json").read_text())
+    calib = json.loads((ROOT / "v4.1" / f"scorecard-{test}.calibration.json").read_text())
+    stored = {
+        f["family"]: (f["bets_scored"], f["misses"], f["smallest_miss_count_under_0p05"], f["counts_against"])
+        for f in card["families"]
+    }
+    assert stored == families
+    r = rr.scorecard_t17_recount(card, calib)
+    assert {f: (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) for f, g in r["families"].items()} == families
+    assert (r["lr_probability"], r["lr_trials"]) == (lr, 100)
+    assert rr.scorecard_t17_differences(card, calib) == []
+    assert card["matching_scenario"] == "actual" and card["prediction_file"] == "[local path]"
+    assert card["prediction_sha256"] == POSTED_V4["v4.1"][1]["predictions-model-01-v4.1.json"]
+    bad = copy.deepcopy(card)  # the negative control
+    (duty,) = [s for s in bad["prediction_scores"] if s["quantity"] == "threshold_duty"]
+    unit = next(o for o in duty["observations"] if o["inside_90"])
+    unit["value"] = 0.99
+    assert rr.scorecard_t17_differences(bad, calib) == [f"inside_90 of threshold_duty at {unit['unit']}", "family duty"]
+    if test == "t18":
+        readme = (ROOT / "README.md").read_text()
+        row = next(line for line in readme.splitlines() if line.startswith("| `v4.1/scorecard-t18.json` |"))
+        assert f"| `{T18_SCORECARD_POSTED}` | `{_sha(ROOT / 'v4.1' / 'scorecard-t18.json')}` |" in row
+        assert "issues/71#issuecomment-6888107307" in readme
