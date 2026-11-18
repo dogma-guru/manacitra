@@ -4569,14 +4569,19 @@ author's rulings that allowed its second and third starts, and its report descri
 attempts are published, as the author's instruction for probe 01 asked; probe 03 carries both its attempts and the
 ruling that allowed the second. By ruling R1 the three rules are published byte for byte with their dollar caps, and in
 every other file each dollar figure is written "[cost]" (173 replacements); the path of the hand-back folder, which four
-scripts named, is written "[the hand-back folder]". The folder's README lists the 48 changed files with both SHA-256
-values; every other file is byte for byte as handed back. The identifier scan allows six exact strings for these files:
-the device's ARN, which carries no account number; each task's results directory, named by its task ID; the probes'
-issue references; and three ways the scripts and logs write the start of an ARN without an account number. The probes'
-JSON files are not run records, and their programs belong to no run record: `tests/test_data_meta.py`,
-`tests/test_readme_numbers.py`, `tests/test_program_catalogue.py` and `tools/program_catalogue.py` leave the folder out,
-and `PROGRAMS.md` says so. `tests/test_probes.py` checks the rules, the sums, both digests of each changed file, and
-that no dollar figure is left outside the rules.
+scripts named, is written "[the hand-back folder]". Probe 03's final search kept six matched lines of attempt 1's
+scripts, logged by line and reason with each line's hash; read together with the scripts, those would let a reader infer
+one of the account's figures, so the runner asked, and by the author's answers of 18 November the six rows' line and
+reason in both redaction logs, and the reason and the six entries' line and hash in both copies of `explain_kept.py`,
+are written "[withheld]" (50 values); the scripts holding the lines and `go.log` are as handed back. The folder's README
+lists the 52 changed files with both SHA-256 values; every other file is byte for byte as handed back. The identifier
+scan allows six exact strings for these files: the device's ARN, which carries no account number; each task's results
+directory, named by its task ID; the probes' issue references; and three ways the scripts and logs write the start of an
+ARN without an account number. The probes' JSON files are not run records, and their programs belong to no run record:
+`tests/test_data_meta.py`, `tests/test_readme_numbers.py`, `tests/test_program_catalogue.py`,
+`tests/test_field_inventory.py` and `tools/program_catalogue.py` leave the folder out, and `PROGRAMS.md` says so.
+`tests/test_probes.py` checks the rules, the sums, both digests of each changed file, that no dollar figure is left
+outside the rules, and the withheld cells.
 
 **The changelog.** `## 0.11.0 (unreleased)`, with the kickoff's lead verbatim and the entry for A29;
 `tests/test_readme_numbers.py` checks the lead.

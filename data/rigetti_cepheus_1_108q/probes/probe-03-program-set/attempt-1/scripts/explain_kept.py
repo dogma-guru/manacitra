@@ -18,16 +18,16 @@ import hashlib
 
 from common import redact, sha, utc
 
-REASON = "a code constant (ten minutes in seconds, or a file mode), not a spending figure"
+REASON = "[withheld]"
 # (file, line): SHA-256 of the line's stripped text, so that a shifted line cannot be kept by number alone
 # (the text itself is not written here, since it carries the figure).
 EXPLAINED = {
-    ("scripts/run_probe.py", 55): "dee28b2d12a93b45bda90cdf0e7d25350dda7e13f6a4fc39c0a5d0a3bab8674e",
-    ("scripts/run_probe.py", 220): "1930f6538ec481943a9e539150e618df262adefd204c3889f2b03d4ec36b12c2",
-    ("scripts/run_probe.py", 398): "8cbf40ac928a1e8fd1e616b5df715e273e4ea7fd39e49e14ba7e69f6a77fc4e2",
-    ("scripts/run_probe-probe02-start.py", 51): "dee28b2d12a93b45bda90cdf0e7d25350dda7e13f6a4fc39c0a5d0a3bab8674e",
-    ("scripts/run_probe-probe02-start.py", 238): "1930f6538ec481943a9e539150e618df262adefd204c3889f2b03d4ec36b12c2",
-    ("scripts/run_probe-probe02-start.py", 316): "8cbf40ac928a1e8fd1e616b5df715e273e4ea7fd39e49e14ba7e69f6a77fc4e2",
+    ("scripts/run_probe.py", "[withheld]"): "[withheld]",
+    ("scripts/run_probe.py", "[withheld]"): "[withheld]",
+    ("scripts/run_probe.py", "[withheld]"): "[withheld]",
+    ("scripts/run_probe-probe02-start.py", "[withheld]"): "[withheld]",
+    ("scripts/run_probe-probe02-start.py", "[withheld]"): "[withheld]",
+    ("scripts/run_probe-probe02-start.py", "[withheld]"): "[withheld]",
 }
 
 

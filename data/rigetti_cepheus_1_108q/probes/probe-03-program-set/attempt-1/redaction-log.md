@@ -10,12 +10,12 @@ Kept at the author's ruling of 21 October 2026. The matched text and the pattern
 
 | UTC | file | line | action | reason |
 |---|---|---|---|---|
-| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | 51 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
-| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | 238 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
-| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | 316 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
-| 2026-10-21T20:59:27Z | scripts/run_probe.py | 55 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
-| 2026-10-21T20:59:27Z | scripts/run_probe.py | 220 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
-| 2026-10-21T20:59:27Z | scripts/run_probe.py | 398 | explained, kept | a code constant (ten minutes in seconds, or a file mode), not a spending figure |
+| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | [withheld] | explained, kept | [withheld] |
+| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | [withheld] | explained, kept | [withheld] |
+| 2026-10-21T20:59:27Z | scripts/run_probe-probe02-start.py | [withheld] | explained, kept | [withheld] |
+| 2026-10-21T20:59:27Z | scripts/run_probe.py | [withheld] | explained, kept | [withheld] |
+| 2026-10-21T20:59:27Z | scripts/run_probe.py | [withheld] | explained, kept | [withheld] |
+| 2026-10-21T20:59:27Z | scripts/run_probe.py | [withheld] | explained, kept | [withheld] |
 
 ## Every file
 

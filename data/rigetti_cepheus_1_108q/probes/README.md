@@ -31,10 +31,11 @@ The runner redacted the task ARNs, which carry the account number, the results b
 
 ## What was changed when copying
 
-Two kinds of change, in 48 files; every other file is byte for byte as handed back.
+Three kinds of change, in 52 files; every other file is byte for byte as handed back.
 
 - **Dollar figures** (Amendment A29, ruling R1). In every file but the three rules, each dollar figure is written "[cost]": the tracker's figures, the price list's estimates and the spending limit's coverage in the reports, logs and run logs; the caps in the scripts (`Decimal("[cost]")`); and the published price per shot in each properties file, where the number becomes the string `"[cost]"`. Zeros written as code defaults in the scripts are kept. 173 replacements.
 - **The hand-back folder's path.** Each `scripts/finalize.py` named the folder its runner wrote the hand-back to; the path is written `"[the hand-back folder]"`. 4 replacements.
+- **Withheld in probe 03** (the author's answers of 18 November 2026). Probe 03's final search matched six lines of two of attempt 1's scripts, which the author ruled were kept as run and logged by file and line without the matched text. Together, the line numbers, the reason given for keeping them and the hashes of the lines' text would let a reader infer one of the account's figures. In both redaction logs (`redaction-log.md` and `attempt-1/redaction-log.md`), each of the six rows' line and reason is written "[withheld]" (12 cells in each); in both copies of `explain_kept.py` (`scripts/` and `attempt-1/scripts/`), the reason and each of the six entries' line number and hash are written "[withheld]" (13 values in each). The scripts that hold the six lines, and `attempt-1/go.log`, which records the ruling, are as handed back. 50 values.
 
 The `SHA256SUMS` in each folder is the hand-back's, unchanged, so it reports the files below as changed. Their SHA-256 values as handed back and as published (the published ones are also in [`../../SHA256SUMS`](../../SHA256SUMS)):
 
@@ -72,19 +73,23 @@ The `SHA256SUMS` in each folder is the hand-back's, unchanged, so it reports the
 | `probe-03-program-set/attempt-1/go.log` | 1 | 1,323 | `9fc813f27a5716f4686f079de2c2dda44f01eb455bfb6a34f811c4026a60c31a` | `4f2637b590da57dad3e53937355e6aa21fc110a8229d6da8f00b74eb4286c4ed` |
 | `probe-03-program-set/attempt-1/pre-go-checks.md` | 2 | 1,130 | `5f55b9aca9c13bb9faf5106333858095a2efc89cc4f2bdaa82b4d538fa7515fa` | `ce2c2fd06adc3532f2e0ed07c4ecf5d08fb82156e5a8e3d04f62423ed97b5c6a` |
 | `probe-03-program-set/attempt-1/raw/properties-presubmission-20261021T203820Z.json` | 1 | 674,522 | `b468cae835daf0d8b01a9161c3cab48cb59c8e1c72024cc3b2246e6715f3d52a` | `149f122b86673f7b0103b3c47e002cf31c2c6ba6e84cbc4fb272634c4b5e75eb` |
+| `probe-03-program-set/attempt-1/redaction-log.md` | 12 (withheld) | 4,291 | `a09231cfa9a11e4a681a94b8e225f3de963043bda6d018ce9dc254f02bcbd008` | `49d318284696c878b7bc69ab20cfb91ccbe75c296ee20d7a1a3571b72597f85f` |
 | `probe-03-program-set/attempt-1/report-probe-03.md` | 3 | 8,941 | `48f26bd084cd9a4a5379cb9e52349b6d430aa755d01ee93ec6380e9afe52b17d` | `9df5668bf46cac4eadf6c4f1d1abf9d7ebcc4e7170fbd894d97e1138c25c0495` |
 | `probe-03-program-set/attempt-1/run-log.json` | 5 | 2,549 | `c32d51edd4820bdeb2ae3059546b07dc024b9a6acf574a84cf96a4527457ad7c` | `3e202cc5717da9124ac8dff14c7ce96c0e9e0a46da48c049bcf925d21fd6265d` |
 | `probe-03-program-set/attempt-1/run-stdout.log` | 2 | 831 | `19be844367e10e09c326aa3676ea5efd0c6f79b092a8e10711229622cc1086ce` | `32fb62c3201735f76f2384d4c029c922d667658a04b01e06865384f42a776be5` |
 | `probe-03-program-set/attempt-1/run.log` | 2 | 824 | `f46335a5f49023d9b59e1e7a20490607e4225249746ed90e5717dc16ef36e681` | `26f5c124030feffd5cf66c4a8bb50e73c8ba7fc54daa50ffe50fa7de973d7e4f` |
+| `probe-03-program-set/attempt-1/scripts/explain_kept.py` | 7 (withheld) | 6,291 | `a056af7556e73ba0c5c618890f127e74e61a5ad158add97ea8a7aadc002e8a9a` | `bde7db7d209fd7c3daf32a4dec4d1d9c02b1120214a879b75bffc5c5f0e89865` |
 | `probe-03-program-set/attempt-1/scripts/finalize.py` | 1 (the folder's path) | 5,606 | `21e5bfb079eb4a3a80d1b59cab9b5ebf8e4b7c53fbe7df9b04c7fe9269bb049e` | `afa4c56e038afb054c3bc8a86a4f3b2f8baba69b0b7100e2f502c1161b922458` |
 | `probe-03-program-set/attempt-1/scripts/run_probe-probe02-start.py` | 2 | 17,623 | `79ccf8f299367582b59e4a9b79ad72d0f36087479181ead072ba21d06b0544a8` | `88586a1a590092278353ff00d8954746d38596227cba644363113b19656666fb` |
 | `probe-03-program-set/attempt-1/scripts/run_probe.py` | 3 | 22,300 | `d3fbde083ff058855d6c750130a1936d0596909cdd1de1fa451ab862138dbade` | `5e05cee67e67036462c13cfd0c43af53ee2fe14e22a0ceb4f464af37f136d6ac` |
 | `probe-03-program-set/go.log` | 2 | 1,830 | `d217bde29026408454e298cc0e7ffeeb4ccd972137f1e1b62efb51994137c2cb` | `5c190ad70bd26d1599471d906a8c93c800456c8aa715295afcb89321c71b7566` |
 | `probe-03-program-set/pre-go-checks.md` | 2 | 1,613 | `5d665dcf8035f46cf21c98571a10eabf2417261f133a412c5c0f7ffc1bf3119c` | `14061b2a00460eb1a03f38809a2050ded40d9fdca3fecd2567e61313a5a50c66` |
 | `probe-03-program-set/raw/properties-presubmission-20261021T211710Z.json` | 1 | 674,522 | `a383a76c8d608c8082ac2ca2c1e34a1b20611cbce00cf62f1c47e574f4271536` | `edeb501463e3acedb523284b0f33451a407022c1e7c1a8089e966b4871213ae2` |
+| `probe-03-program-set/redaction-log.md` | 12 (withheld) | 6,459 | `d4c3ea357c56afffa0c8b40769a75de0e0e96ff41dd9b6e8fc5a1d361c4f8d08` | `5df0ea38cbc59951f109c93da39c0b804224e1d76ea192ead204f60b0b581b2c` |
 | `probe-03-program-set/report-probe-03.md` | 6 | 11,480 | `ce2a2dc57ed787b2a91c93419adb1ac9ffd72b7cd2f935057f379c8147a12b19` | `cd965cd3f94d120a8b155cd7fb9b3af2fa8fc26556739c571355e77ba2bddc85` |
 | `probe-03-program-set/run-log.json` | 5 | 2,044 | `78046510db3aedee622124cccfabfe20e47b6229d840ecefe05b412c7b737dd6` | `f345dcc2b635480350a03d0150e1cab0835d8b722dded73d902e031a2c114203` |
 | `probe-03-program-set/run-stdout.log` | 2 | 1,389 | `134af21fbec05bbfc5c9ef55112d9b45ab3d4656047a9fcccb7c09fe9a27d53b` | `f5e1962757444e2627e419eae11bae3d13f155daaab90d397164aec66fe19de5` |
 | `probe-03-program-set/run.log` | 2 | 1,382 | `4303a6379622c837a1aed12980bca50a26e5ea4f0dcd100becd566c81b6b47da` | `a370feb4a0f5f1b5415ec0b0b4f2c7e1092bfaa83c28db4c2e263077ffbcecc4` |
+| `probe-03-program-set/scripts/explain_kept.py` | 7 (withheld) | 6,593 | `44c62067e6cb4f7308ba23cb85d02c711efd37f374f0cab1723dd34faf5bdf5c` | `6092d44dd090c516962979fdc403b6b981ed12dddb0e2114ba78dab8aa2515ac` |
 | `probe-03-program-set/scripts/finalize.py` | 1 (the folder's path) | 5,852 | `afa6ac650135a26cd8510c5cd14ece2a3058236faa1570a7af03f466db1b287c` | `f7a8654005f64ae0c5408294bc56e1f4d5747ea816ae7ef68b7a80f88e9975ea` |
 | `probe-03-program-set/scripts/run_probe.py` | 2 | 23,014 | `ab8f7125b4f89222dfe06048e231709fbfedea20d6ba71cce2776a75572d09e0` | `84ec6ea1a3bea4606da9f80dfb2bd8db1ed1381ae76c5c5784ffc112c384426b` |

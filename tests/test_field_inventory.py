@@ -5,7 +5,8 @@
 Every field of every file in data/ is either recomputed and compared (tests/expected_fields.json) or excluded with a
 reason (tests/excluded_fields.json), never both and never neither, so a new archived statistic cannot slip through
 unlisted. And the comparison fails, as it must, when an inventoried statistic is changed, removed, emptied or made
-NaN in memory; the files on disk are never touched."""
+NaN in memory; the files on disk are never touched. The three probes' JSON files (Amendment A29,
+`rigetti_cepheus_1_108q/probes/`) are records of probes, not run records, and are not in the inventory."""
 
 import copy
 import hashlib
@@ -21,7 +22,8 @@ from manacitra import archive as ar
 
 def _data_files():
     root = ar.data_dir()
-    return {str(p.relative_to(root)): p for p in ar.records(root)}
+    probes = root / "rigetti_cepheus_1_108q" / "probes"
+    return {str(p.relative_to(root)): p for p in ar.records(root) if probes not in p.parents}
 
 
 def _pattern(path: str) -> re.Pattern:

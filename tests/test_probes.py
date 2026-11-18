@@ -3,8 +3,8 @@
 """Amendment A29, section 4: the three probes in data/rigetti_cepheus_1_108q/probes/, published as records.
 
 Each rule is byte for byte, its hash the one its issue carried; every file but those the README lists as changed is
-byte for byte as its probe's SHA256SUMS gives it; each changed file's two digests are the README's; and outside the
-rules no dollar figure is left (ruling R1)."""
+byte for byte as its probe's SHA256SUMS gives it; each changed file's two digests are the README's; outside the rules
+no dollar figure is left (ruling R1); and probe 03's kept matches are withheld (the author's answers)."""
 
 import hashlib
 import re
@@ -82,14 +82,25 @@ def test_every_file_is_as_handed_back_or_listed_as_changed(probe):
 
 
 def test_the_changed_files_and_their_count():
-    assert len(CHANGED) == 48
-    assert "Two kinds of change, in 48 files" in FLAT and "173 replacements." in FLAT and "4 replacements." in FLAT
+    assert len(CHANGED) == 52
+    assert "Three kinds of change, in 52 files" in FLAT
+    assert "173 replacements." in FLAT and "4 replacements." in FLAT and "50 values." in FLAT
     assert sum(_text(p).count("[cost]") for p in PROBES.rglob("*") if p.is_file() and p.name != "README.md") >= 173
     assert sum(_text(p).count('"[the hand-back folder]"') for p in PROBES.rglob("finalize.py")) == 4
 
 
 def _text(p: Path) -> str:
     return p.read_text()
+
+
+def test_probe_03_kept_matches_are_withheld():
+    """The author's answers of 18 November 2026: the six kept matches' lines, reason and hashes are withheld."""
+    folder = PROBES / "probe-03-program-set"
+    for sub in ("", "attempt-1/"):
+        log, script = _text(folder / f"{sub}redaction-log.md"), _text(folder / f"{sub}scripts" / "explain_kept.py")
+        assert log.count("[withheld]") == 12 and script.count('"[withheld]"') == 13, sub
+        assert "ten minutes in seconds" not in log + script, sub
+        assert not re.search(r"[0-9a-f]{64}", script), sub
 
 
 def test_no_dollar_figure_outside_the_rules():
