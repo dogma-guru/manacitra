@@ -1,0 +1,45 @@
+{
+ "tasks": [
+  {
+   "letter": "A",
+   "program_sha256": "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T14:05:51Z",
+   "created_utc": "2026-10-21T14:05:56Z"
+  }
+ ],
+ "tracker_start_usd": "[cost]",
+ "properties_read_utc": "2026-10-21T14:05:51Z",
+ "choice": {
+  "qubit": 99,
+  "tied_on_T2": [
+   99
+  ],
+  "runner_up": [
+   [
+    92,
+    2.410704297428623e-05
+   ],
+   [
+    90,
+    2.40973548348844e-05
+   ]
+  ],
+  "T1_s": 3.785622702690006e-05,
+  "T2_s": 3.727711859413674e-05,
+  "readout_fidelity": 0.981,
+  "rb_fidelity": 0.9994084090175812,
+  "rb_standard_error": 1.699444252869219e-05,
+  "simultaneous_rb_fidelity": 0.9988009902235544,
+  "properties_updatedAt": "2026-10-21T14:02:03+00:00",
+  "d_ns": 37900,
+  "d_capped": false
+ },
+ "frame": "Transmon_99_charge_tx",
+ "filled": [
+  "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b  task-A.qasm",
+  "f17fb4e0397c89383a3afc30bc9d3652eca794d23d0eb2b303c541fe39610a02  task-B.qasm",
+  "cc2f6de8e438913f2c96083c5e0960e1cd6f4df99db97fa496b61e11929667d2  task-C.qasm",
+  "9a49cd441837e78af65f3a7e4516f8af1935e2a275e9d04d8547a6deb86a7ecb  task-D.qasm"
+ ]
+}

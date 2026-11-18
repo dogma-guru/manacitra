@@ -1,12 +1,12 @@
 # Sandhi, the desk model
 
-The desk model of findings 29 and 30 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-30)): a kinetic description of the records, fitted on the desk from bundles of those records and nothing else, with no hardware. It is not a run record and not counts of any device. Version 3, named "the gated states" (a dated name, retired with it), described the records of tests 7 to 11 on ibm_fez and ibm_kingston with five fitted rates: a frequency change between adjacent repeats of an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change between adjacent repeats of a span. Versions 4 and 4.1 describe the per-shot records of tests 10 to 15 and of test 11's third day as a two-state chain on the sweep clock.
+The desk model of findings 29 to 31 ([`../../../docs/findings.md`](../../../docs/findings.md#finding-31)): a kinetic description of the records, fitted on the desk from bundles of those records and nothing else, with no hardware. It is not a run record and not counts of any device. Version 3, named "the gated states" (a dated name, retired with it), described the records of tests 7 to 11 on ibm_fez and ibm_kingston with five fitted rates: a frequency change between adjacent repeats of an execution span, a frequency change at a span boundary, a weight change at a span boundary, a change across a calibration stamp, and a weight change between adjacent repeats of a span. Versions 4 and 4.1 describe the per-shot records of tests 10 to 15 and of test 11's third day as a two-state chain on the sweep clock.
 
 | version | date | what it describes | its bets | posted | scored |
 |---|---|---|---|---|---|
 | 3, run 3.1 (`v3.1/`) | 17 October 2026 | tests 7 to 11, five rates | the next run | [issue 59](https://github.com/dogma-guru/manacitra/issues/59), with test 12's rule | set down at version 3 (below) |
 | 4 (`v4/`) | 18 October 2026 | tests 10 to 15, per shot: per span a two-state chain on the sweep clock, the levels shared by a job's spans, 143's spans drawn from a population | test 11 on a third day | [issue 66](https://github.com/dogma-guru/manacitra/issues/66), before day 3 | on day 3, by test 16: every structural criterion held; no calibrated bet was scored, each outside the modelled support (`v4/scorecard-t16.json`) |
-| 4.1 (`v4.1/`) | 19 October 2026 | version 4, its fits extended with day 3; the prediction setup corrected (C1 to C3) | D1, the next two-job monitor run; D2, one 600-position monitor job | [issue 68](https://github.com/dogma-guru/manacitra/issues/68), before test 17 | D2, on test 17's long job: no family counted against it (`v4.1/scorecard-t17.json`); D1 not yet scored |
+| 4.1 (`v4.1/`) | 19 October 2026 | version 4, its fits extended with day 3; the prediction setup corrected (C1 to C3) | D1, the next two-job monitor run; D2, one 600-position monitor job | [issue 68](https://github.com/dogma-guru/manacitra/issues/68), before test 17 | D2, on test 17's long job: no family counted against it (`v4.1/scorecard-t17.json`); D1, on test 18's two jobs: no family counted against it (`v4.1/scorecard-t18.json`); D1, SECOND RUN, the same bets on test 20's two monitor jobs: one family, the emissions, counted against it (`v4.1/scorecard-t20.json`) |
 
 **Set down at version 3.** By ruling R2 of Amendment A27 (18 October 2026), after tests 13 and 15 read the per-shot record, the model is set down at version 3, its files kept here as published. Where tests 13 and 15 read SHARED, the means at equal returned shot index across a span's circuits varied far beyond independent shots; read as a state the circuits share, adjacent repeats of a span average the same stretch of time, so there its two channels within a span count what the design cannot make nonzero; and its channel for the weight at a span boundary was fitted to level differences read at the shots' binomial error, where the error of a span's weight is that of a time average (finding 29, part (d)). Versions 4 and 4.1, below, model the per-shot record in another form; version 3's files are not changed.
 
@@ -181,6 +181,12 @@ Version 4.1, on 19 October 2026 (`kickoffs/kickoff-model-01-v4.1-errata-2026-10-
 | `v4.1/FORECAST-SHA256SUMS` | the sums of the scorer, its dependencies and the predictions, as posted | `7903a281ccc808ed8dd13c4b316919554879ec29a353f7093642c98b9081b083` | the same |
 | `v4.1/scorecard-t17.json` | the scorecard on test 17's long job (D2) | `79f3141ab7649cc6ecb21aceb8ce5b6f1d692901baf4dd35c1e3cfeceae64c0e` | `49998cdfb40b68a82b9cd9d2e0a6245794861ee2046dcefe1417a687ab050fde` |
 | `v4.1/scorecard-t17.calibration.json` | that run's calibration through the job's design | `8231d551666bc7e846a96e576eec2960a777a10312c163f6b689d1c4955ae754` | the same |
+| `v4.1/scorecard-t18.json` | the scorecard on test 18's two monitor jobs (D1) | `01999991619b1180cbb223514e715a1a6b9ef6a99e8617088227fb4306e3345b` | `85396a06a5f3c24ee403891467dfbfb160761b6c2adbbf88605c78934c7db61d` |
+| `v4.1/scorecard-t18.calibration.json` | that run's calibration through the jobs' design | `4c3f8d77b15cf65bfa485cff080b8063176ca546bb47826ef40c175ad29d0025` | the same |
+| `v4.1/scorecard-t20.json` | the scorecard on test 20's two monitor jobs, with its scan as the shuffled job (D1, SECOND RUN) | `67e250143149d2a38e92de0a6b57df4074fe82dc012e909adbe72854e4bfc0ae` | `20b407f03c1c1c67c440db005fbd342e45c46fcd80b338f78991f7da6fb49af1` |
+| `v4.1/scorecard-t20.calibration.json` | that run's calibration through the jobs' design | `9a172172483b584a0f8ef6eeb09df4a8786f913e45827652a8205dc331b2f640` | the same |
+
+Test 18's scorecard as delivered is the file whose SHA-256 was posted on [issue 71](https://github.com/dogma-guru/manacitra/issues/71#issuecomment-6888107307) on 15 November 2026 at 02:44:02 UTC, before test 20 ran; its published copy differs from it only in its eight local paths.
 
 The replacements, by file:
 
@@ -194,6 +200,8 @@ The replacements, by file:
 - `v4.1/internal-review-day3.json`: local paths, 20 times.
 - `v4.1/run.log`: local paths, 87 times; the service, 2 times; the session, 1 time; the session variable's name, 3 times; the command sessions' handles, 30 times (six values, on 14 lines).
 - `v4.1/scorecard-t17.json`: local paths, 5 times.
+- `v4.1/scorecard-t18.json`: local paths, 8 times.
+- `v4.1/scorecard-t20.json`: local paths, 20 times.
 
 **Attached to the 0.10.0 release as assets**, not kept here, for size; each SHA-256 as delivered is in its version's `SHA256SUMS`:
 
@@ -207,4 +215,4 @@ The replacements, by file:
 
 **Not published:** the rest of each version's delivery (version 4's data series, bootstrap draws, pilot and retry records, predictive simulations and likelihood-ratio results, audits and scripts; version 4.1's input copies, frozen version 4 state, calibration trials, nominal examples, data series and scripts), each named with its SHA-256 in its version's `SHA256SUMS`; the bundles the model was given; and the compiled library.
 
-**Rerunning a scorer.** From the version's folder with the arrays, their meta files and the counts files of the run it scores, by the command line its `README.md` gives; test 17's run of version 4.1's scorer is in [`../../../docs/reproduce.md`](../../../docs/reproduce.md). The arrays are not published. `tests/test_sandhi.py` checks each version's files against its sums and its scorecard's family counts.
+**Rerunning a scorer.** From the version's folder with the arrays, their meta files and the counts files of the run it scores, by the command line its `README.md` gives; the runs of version 4.1's scorer by tests 17, 18 and 20 are in [`../../../docs/reproduce.md`](../../../docs/reproduce.md). The arrays are not published. `tests/test_sandhi.py` checks each version's files against its sums and its scorecard's family counts.

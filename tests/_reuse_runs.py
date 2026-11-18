@@ -3848,18 +3848,19 @@ def t11_monitor(rec: dict) -> dict:
     return {"jobs": out, "pooled": pooled, "gap": gap}
 
 
-def t11_job1(rec: dict) -> dict:
+def t11_job1(rec: dict, seeds: dict = T11_SEEDS, words=("CONFIRMED ON DAY 2", "NOT CONFIRMED ON DAY 2")) -> dict:
     """Test 11's job 1 (finding 29): test 7's analysis on day 2, by the functions test 11 ran (t7_ramsey_xy,
     t7_readings, t7_spans, t7_span_readings), with the seeds of its rulings; the weight change across each span boundary
-    from the plain means of the three positions on either side (its ruling 3); R0 and the antiphase wait from P."""
+    from the plain means of the three positions on either side (its ruling 3); R0 and the antiphase wait from P. Test
+    20 (A29) runs the same job on a fifth date with its own bootstrap seed and its own words."""
     d = _t11_job(rec, 1)
     rows = []
     for r in rec["calibration_record"]["stamps"]:
         if r["kind"].startswith("job 1 "):
             rows.append({**r, "kind": r["kind"][len("job 1 ") :]})
     doc = {**d, "timestamps": rec["jobs"]["1"]["timestamps"], "calibration_record": {"stamps": rows}}
-    analysis, _ = t7_ramsey_xy(doc, T11_SEEDS)
-    readings = t7_readings(doc, analysis, T11_SEEDS)
+    analysis, _ = t7_ramsey_xy(doc, seeds)
+    readings = t7_readings(doc, analysis, seeds)
     doc["archived"] = {"readings_after_the_data": readings}
     spans = {"spans": rec["jobs"]["1"]["execution_metadata"]["execution_spans"], "n_positions": len(d["labels"])}
     sr = t7_span_readings(doc, spans)
@@ -3878,7 +3879,7 @@ def t11_job1(rec: dict) -> dict:
         }
     P = analysis["fits"]["P"]["params"]
     return {
-        "verdict": "CONFIRMED ON DAY 2" if analysis["verdict"] == "TWO FIXED FREQUENCIES" else "NOT CONFIRMED ON DAY 2",
+        "verdict": words[0] if analysis["verdict"] == "TWO FIXED FREQUENCIES" else words[1],
         "package_verdict": analysis["verdict"],
         "analysis": analysis,
         "readings_after_the_data": readings,
@@ -3944,6 +3945,190 @@ def t9_job1_43_134(rec: dict) -> dict:
             "bootstrap": {k: r["bootstrap"][k] for k in ("draws", "returned", "refits_failed", "percentiles_5_50_95")},
         }
     return out
+
+
+#: Test 21's job 1 (A29): test 9's rule and analysis on ibm_kingston's qubits 11 and 95, with its own seeds (the
+#: analysis record's meta) and its usable rule (t21-rule.md section 3, rulings-t21.md ruling 1)
+T21_SEEDS = {"S_random_starts": 21304, "P_random_starts": 21305, "bootstrap_root": 21306}
+T21_E_MAX, T21_A_MIN = 0.03, 0.2
+
+
+def _t9_table(cl: dict) -> str:
+    if cl["S_within_the_margin_of_P_or_below"] and (
+        cl["delta_lower_bound_below_the_floor"] or cl["b_interval_reaches_an_edge"]
+    ):
+        return "NO RESOLVED SPLIT"
+    if (
+        cl["P_below_S_by_more_than_the_margin"]
+        and cl["delta_lower_bound_above_the_floor"]
+        and cl["b_interval_inside_the_edges"]
+    ):
+        return "TWO FIXED FREQUENCIES"
+    return "NOT SETTLED"
+
+
+def t21_job1(rec: dict) -> dict:
+    """Test 21's job 1 (finding 33): test 9's job 1 on qubits 11 and 95 at once, qubit 11 in classical bit 0 and 95 in
+    bit 1, by the package's ramsey_xy_fit with test 9's thresholds, at the scheduled waits the run recorded, and the
+    run's seeds (S's random starts 21304, P's 21305, the bootstrap SeedSequence([21306, qubit])); test 7's table read
+    from the clauses; the readout error from the job's own four readout circuits, the copies pooled; usable when that
+    error is at or below 0.03 and the larger of S's and P's amplitudes is at least 0.2; the count of verdicts."""
+    d = _t11_job(rec, 1)
+    n0 = int(d["shots"][0])
+    assert all(int(x) == n0 for x in d["shots"])
+    quads = {"X": 0, "Y": 1}
+    out = {}
+    for q, bit in ((11, 0), (95, 1)):
+        ones = [sum(n for key, n in c.items() if _bits(key)[bit] == "1") for c in d["counts"]]
+        y = np.zeros((2, 2, 64), int)
+        t = np.full((2, 64), np.nan)
+        ro = {"P10": [], "P01": []}
+        for k, lab in enumerate(d["labels"]):
+            if lab["circuit"] in quads:
+                qd, i = quads[lab["circuit"]], int(lab["t_requested_us"])
+                y[lab["copy"] - 1, qd, i] = ones[k]
+                t[qd, i] = float(lab["scheduled_wait_us"])
+            else:
+                ro[lab["circuit"]].append({"copy": lab["copy"], "ones": ones[k], "shots": n0})
+        ro = {c: sorted(v, key=lambda x: x["copy"]) for c, v in ro.items()}
+        seeds = (T21_SEEDS["S_random_starts"], T21_SEEDS["P_random_starts"], T21_SEEDS["bootstrap_root"] + (q << 32))
+        r = wait.ramsey_xy_fit(t, y, n0, np.arange(0, 64, 2), seeds=seeds, n_boot=2000, **T9_RULE)
+        v = _t9_table(r["clauses"])
+        p10 = sum(x["ones"] for x in ro["P10"]) / sum(x["shots"] for x in ro["P10"])
+        p01 = 1 - sum(x["ones"] for x in ro["P01"]) / sum(x["shots"] for x in ro["P01"])
+        e0 = (p10 + p01) / 2
+        a_max = max(r["S"]["params"]["A"], r["P"]["params"]["A"])
+        usable = e0 <= T21_E_MAX and a_max >= T21_A_MIN
+        pc = r["bootstrap"]["percentiles_5_50_95"]
+        t_max = float(np.max(t))
+        out[str(q)] = {
+            "qubit": q,
+            "clbit": bit,
+            "verdict": v if usable else "NOT USABLE",
+            "table_reading": v,
+            "usable": usable,
+            "usable_reasons": {
+                "e_in_job_four_readout_circuits": e0,
+                "e_at_or_below_0.03": e0 <= T21_E_MAX,
+                "A_max": a_max,
+                "A_max_at_least_0.2": a_max >= T21_A_MIN,
+            },
+            "S": r["S"],
+            "P": r["P"],
+            "band": r["band"],
+            "clauses": r["clauses"],
+            "bootstrap": {k: r["bootstrap"][k] for k in ("draws", "returned", "refits_failed", "percentiles_5_50_95")},
+            "deciding": {
+                "held_out_error_S": r["S"]["held_out_error"],
+                "held_out_error_P": r["P"]["held_out_error"],
+                "P_minus_S": r["P"]["held_out_error"] - r["S"]["held_out_error"],
+                "delta_ci90_kHz": [pc["delta_MHz"][0] * 1e3, pc["delta_MHz"][2] * 1e3],
+                "b_ci90": [pc["b"][0], pc["b"][2]],
+            },
+            "lines_kHz": [x * 1e3 for x in r["P"]["lines_MHz"]],
+            "seeds": list(seeds),
+            "per_wait": r["per_wait"],
+            "span": {
+                "t_max_us": t_max,
+                "split_with_first_node_at_the_span_end_kHz": 1e3 / (4 * t_max),
+                "delta_ci90_upper_kHz": pc["delta_MHz"][2] * 1e3,
+            },
+            "readout": {"P1_given_0": p10, "P0_given_1": p01, "e_in_job": e0, "per_copy": ro},
+            "t21": {
+                "usable": usable,
+                "verdict": v if usable else None,
+                "table_reading": v,
+                "word": (
+                    ("CONFIRMED ON A LATER DATE" if v == "TWO FIXED FREQUENCIES" else "NOT CONFIRMED ON A LATER DATE")
+                    if usable
+                    else None
+                ),
+                "this_date": {
+                    "delta_kHz": r["P"]["params"]["delta_MHz"] * 1e3,
+                    "delta_ci90_kHz": [pc["delta_MHz"][0] * 1e3, pc["delta_MHz"][2] * 1e3],
+                    "b": r["P"]["params"]["b"],
+                    "b_ci90": [pc["b"][0], pc["b"][2]],
+                    "lines_kHz": [x * 1e3 for x in r["P"]["lines_MHz"]],
+                    "Delta0_kHz": r["P"]["params"]["Delta0_MHz"] * 1e3,
+                },
+                "antiphase_wait_us": 1.0 / (4 * r["P"]["params"]["delta_MHz"]),
+            },
+        }
+    ok = [x for x in out.values() if x["usable"]]
+    count = {
+        w: sum(1 for x in ok if x["verdict"] == w)
+        for w in ("NO RESOLVED SPLIT", "TWO FIXED FREQUENCIES", "NOT SETTLED")
+    }
+    return {"qubits": out, "count": count | {"NOT USABLE": len(out) - len(ok)}}
+
+
+#: Test 19's classes and words (A29, t19-rule.md sections 4 and 5)
+T19_SE_FLOOR, T19_PUB_ABOVE, T19_MEAS_ABOVE, T19_AGREE = 0.0005, 0.05, 0.01, 0.01
+
+
+def t19_classes(rec: dict) -> dict:
+    """Test 19, a date of the readout series (finding 32): per qubit read, P(1|0) from S0 and P(0|1) from S1 with the
+    copies pooled, e their mean, its se floored at 0.0005, p the published readout error at the stamp in force at
+    submission, d = p - e and the class of section 4; the counts of the classes and the word of section 5."""
+    shots = {}
+    ones = {}
+    for lab, c, n in zip(rec["labels"], rec["counts"], rec["shots"]):
+        qs = lab["qubits_read"]
+        o = np.zeros(len(qs), int)
+        for key, m in c.items():
+            b = _bits(key)
+            o += m * (np.frombuffer(b.encode(), dtype=np.uint8) - 48)
+        for i, q in enumerate(qs):
+            ones.setdefault((lab["circuit"], q), []).append(int(o[i]))
+            shots.setdefault((lab["circuit"], q), []).append(int(n))
+    pub = rec["archived"]["published"]["tables"]["at_submission"]["qubits"]
+    out = {}
+    for q in sorted({q for _, q in ones}):
+        n0, n1 = sum(shots[("S0", q)]), sum(shots[("S1", q)])
+        p10 = sum(ones[("S0", q)]) / n0
+        p01 = 1 - sum(ones[("S1", q)]) / n1
+        e = (p10 + p01) / 2
+        se = max(T19_SE_FLOOR, 0.5 * math.sqrt(p10 * (1 - p10) / n0 + p01 * (1 - p01) / n1))
+        p = pub[str(q)]["readout_error"]
+        d = p - e
+        if d > T19_PUB_ABOVE and d > 3 * se:
+            cls = "PUBLISHED ABOVE"
+        elif -d > T19_MEAS_ABOVE and -d > 3 * se:
+            cls = "MEASURED ABOVE"
+        elif abs(d) <= max(T19_AGREE, 3 * se):
+            cls = "AGREE"
+        else:
+            cls = "BETWEEN"
+        out[str(q)] = {
+            "P1_given_0": p10,
+            "P0_given_1": p01,
+            "e": e,
+            "se": se,
+            "p": p,
+            "d": d,
+            "class": cls,
+            "P1_given_0_by_copy": [x / y for x, y in zip(ones[("S0", q)], shots[("S0", q)])],
+            "P0_given_1_by_copy": [1 - x / y for x, y in zip(ones[("S1", q)], shots[("S1", q)])],
+        }
+    n = len(out)
+    counts = {
+        c: sum(1 for x in out.values() if x["class"] == c)
+        for c in ("PUBLISHED ABOVE", "MEASURED ABOVE", "AGREE", "BETWEEN")
+    }
+    pa, ma = counts["PUBLISHED ABOVE"], counts["MEASURED ABOVE"]
+    if pa >= n / 4 and ma <= pa / 10:
+        word = "ONE-SIDED GAP"
+    elif pa < n / 20 and ma < n / 20:
+        word = "TABLE DESCRIBES THE DEVICE"
+    else:
+        word = "MIXED"
+    return {
+        "n_read": n,
+        "thresholds": {"quarter_of_n": n / 4, "one_in_twenty_of_n": n / 20, "measured_above_max_for_gap": pa / 10},
+        "counts": counts,
+        "word": word,
+        "qubits": out,
+    }
 
 
 def kingston_spans(rec: dict) -> dict:
@@ -4189,10 +4374,23 @@ def t17_read(rec: dict) -> dict:
     its rule fixed: each span's centre t as a fraction of the job's time from the provider's starts and stops, the
     contrast C of the spans with t in [1/3, 2/3] against the others with its sd, Z = (sum of C / sd) / sqrt(n) over the
     contributing jobs, and its word; beside, Z at the 20th to 80th threshold and the weighted line of duty on t."""
-    a = rec["archived"]["per_shot_read"]
-    keys = ("A1", "A2", "B1")
+    return monitor_per_shot_read(rec["archived"]["per_shot_read"], ("A1", "A2", "B1"))
+
+
+def monitor_per_shot_read(a: dict, keys, middle: bool = True) -> dict:
+    """A per-shot read of monitor jobs (tests 17, 18 and 20): every monitor span of the jobs named, from the read's
+    published sweep means through the package (per_shot_span); the boundary rows; the jobs' means and the rows between
+    adjacent jobs; and, where the rule has one, test 17's middle test (t17_read). Test 20's rule has no middle test."""
     jobs = {k: per_shot_job(a["jobs"][k]) for k in keys}
     js = {k: _job_mean(jobs[k]) for k in keys}
+    out = {
+        "jobs": jobs,
+        "boundaries": per_shot_boundaries(a, jobs, keys),
+        "between_jobs_job_rows": js,
+        "between_jobs": [_between(js[x], js[y]) for x, y in zip(keys, keys[1:])],
+    }
+    if not middle:
+        return out
     middle = []
     for k in keys:
         sp = sorted(a["jobs"][k]["spans"], key=lambda s: s["start_utc"])
@@ -4231,10 +4429,7 @@ def t17_read(rec: dict) -> dict:
     Z = sum(x["C_over_sd"] for x in middle) / math.sqrt(n)
     word = "MIDDLE HIGH" if Z >= T17_Z_HIGH else ("NOT SEEN" if Z < T17_Z_LOW else "UNDECIDED")
     return {
-        "jobs": jobs,
-        "boundaries": per_shot_boundaries(a, jobs, keys),
-        "between_jobs_job_rows": js,
-        "between_jobs": [_between(js[x], js[y]) for x, y in zip(keys, keys[1:])],
+        **out,
         "middle_test": {
             "jobs": middle,
             "pooled": {
@@ -4248,17 +4443,28 @@ def t17_read(rec: dict) -> dict:
     }
 
 
+#: Version 4.1's calibrated families (calibration_v4_1.FAMILIES); its other families carry no calibration
+V41_FAMILIES = ("duty", "correlation", "emissions")
+#: calibration_v4_1.calibrate widens shuffled_weight_A26's interval by 0.011 on each side, within 0 and 1
+V41_A26_WIDENING = 0.011
+
+
 def scorecard_t17_recount(card: dict, calibration: dict) -> dict:
     """A28, ruling R3, item 4: version 4.1's scorecard on test 17's long job (D2), recounted from its published files
     by the scorer's own definitions (`score_model_01_v4_1.score_entries`, with `calibration_v4_1.calibrate` and
-    `cutoff`, which the scorer calls through `apply_calibration`):
+    `cutoff`, which the scorer calls through `apply_calibration`); A29 applies it to tests 18 and 20 (D1 and D1, SECOND
+    RUN):
 
     - each quantity's interval is the 5th and 95th percentiles (numpy's default) of its finite values over the first
-      half of the calibration trials, in trial order;
-    - a bet misses when its observation lies outside its interval, the ends counting as inside;
-    - a family's cutoff is the smallest miss count c whose one-sided 95 percent Monte Carlo upper bound on
-      P(misses >= c), beta.ppf(0.95, h + 1, n - h) for h of the n trials of the second half with at least c misses (a
-      missing value counted as a miss), is under 0.05; the family counts against the model when its misses reach it;
+      half of the calibration trials, in trial order, none where it has no finite value; shuffled_weight_A26's is
+      widened by 0.011 on each side, within 0 and 1, as `calibrate` widens it;
+    - a bet is an observation with a value and an interval; it misses when the value lies outside its interval, the
+      ends counting as inside;
+    - for a calibrated family (duty, correlation and emissions), the cutoff is the smallest miss count c whose one-sided
+      95 percent Monte Carlo upper bound on P(misses >= c), beta.ppf(0.95, h + 1, n - h) for h of the n trials of the
+      second half with at least c misses (a missing value counted as a miss), is under 0.05, none if no c is; the
+      family counts against the model when it is complete (every observation a bet, as many as its calibration's k)
+      and its misses reach the cutoff; a family without a calibration, or not complete, is not fully testable;
     - the likelihood probability is the share of complete likelihood trials (every comparison with a p and no
       failure) in which any comparison has p under 0.01.
 
@@ -4268,33 +4474,45 @@ def scorecard_t17_recount(card: dict, calibration: dict) -> dict:
     trials = sorted(calibration["trials"], key=lambda t: t["trial"])
     half = len(trials) // 2
 
-    def interval(xs: list) -> list:
-        a = np.asarray(xs, dtype=np.float64)
-        return np.quantile(a[np.isfinite(a)], [0.05, 0.95]).tolist()
+    def interval(xs: list):
+        a = np.asarray([np.nan if x is None else x for x in xs], dtype=np.float64)
+        a = a[np.isfinite(a)]
+        return np.quantile(a, [0.05, 0.95]).tolist() if len(a) else None
 
     families = {f["family"]: f["quantities"] for f in card["families"]}
     ints = {q: interval([x for t in trials[:half] for x in t["values"][q]]) for qs in families.values() for q in qs}
+    if ints.get("shuffled_weight_A26"):
+        lo, hi = ints["shuffled_weight_A26"]
+        ints["shuffled_weight_A26"] = [max(0, lo - V41_A26_WIDENING), min(1, hi + V41_A26_WIDENING)]
     inside = {
-        (s["quantity"], o["unit"]): ints[s["quantity"]][0] <= o["value"] <= ints[s["quantity"]][1]
+        (s["quantity"], o["unit"]): (
+            ints[s["quantity"]][0] <= o["value"] <= ints[s["quantity"]][1]
+            if o["value"] is not None and ints[s["quantity"]] is not None
+            else None
+        )
         for s in card["prediction_scores"]
         for o in s["observations"]
     }
     out = {}
     for fam, qs in families.items():
-        bets = [v for (q, _), v in inside.items() if q in qs]
-        k = sum(len(trials[0]["values"][q]) for q in qs)
-        per = [
-            sum(x is None or not ints[q][0] <= x <= ints[q][1] for q in qs for x in t["values"][q])
-            for t in trials[half:]
-        ]
-        cut = None
-        for c in range(1, k + 1):
-            h, n = sum(m >= c for m in per), len(per)
-            if (float(beta.ppf(0.95, h + 1, n - h)) if h < n else 1.0) < 0.05:
-                cut = c
-                break
+        obs = [v for (q, _), v in inside.items() if q in qs]
+        bets = [v for v in obs if v is not None]
         misses = sum(not v for v in bets)
-        out[fam] = {"bets": len(bets), "k": k, "misses": misses, "cutoff": cut, "counts_against": misses >= cut}
+        cut, k = None, None
+        if fam in V41_FAMILIES:
+            k = sum(len(trials[0]["values"][q]) for q in qs)
+            per = [
+                sum(x is None or not ints[q][0] <= x <= ints[q][1] for q in qs for x in t["values"][q])
+                for t in trials[half:]
+            ]
+            for c in range(1, k + 1):
+                h, n = sum(m >= c for m in per), len(per)
+                if (float(beta.ppf(0.95, h + 1, n - h)) if h < n else 1.0) < 0.05:
+                    cut = c
+                    break
+        complete = k is not None and len(bets) == len(obs) == k
+        against = (misses >= cut if cut is not None else False) if complete else None
+        out[fam] = {"bets": len(bets), "k": k, "misses": misses, "cutoff": cut, "counts_against": against}
     complete = [t for t in trials if t["lr"] and all(x["p"] is not None and not x["failures"] for x in t["lr"])]
     lr = sum(any(x["p"] < 0.01 for x in t["lr"]) for t in complete) / len(complete)
     return {"intervals": ints, "inside": inside, "families": out, "lr_probability": lr, "lr_trials": len(complete)}
@@ -4315,7 +4533,8 @@ def scorecard_t17_differences(card: dict, calibration: dict) -> list:
     for f in card["families"]:
         g = r["families"][f["family"]]
         stored = (f["bets_scored"], f["misses"], f["smallest_miss_count_under_0p05"], f["counts_against"])
-        if stored != (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) or f["calibration"]["k"] != g["k"]:
+        k = (f["calibration"] or {}).get("k")
+        if stored != (g["bets"], g["misses"], g["cutoff"], g["counts_against"]) or k != g["k"]:
             diff.append(f"family {f['family']}")
     (actual,) = [x for x in card["scenario_scores"] if x["scenario"] == "actual"]
     (lr,) = [e for e in actual["probability_events"] if e["prediction"] == "any_LR_reject_probability"]

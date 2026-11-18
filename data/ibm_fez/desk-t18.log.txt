@@ -1,0 +1,47 @@
+{
+ "no middle effect": {
+  "fractions": {
+   "MIDDLE HIGH": 0.0115,
+   "UNDECIDED": 0.121,
+   "NOT SEEN": 0.8675,
+   "None": 0.0
+  },
+  "MIDDLE_HIGH_fraction": 0.0115,
+  "its_binomial_se": 0.0023840878758971955,
+  "beside_section5_normal_approximation": {
+   "expected_Z": 0.0,
+   "MIDDLE HIGH": 0.02275013194817921,
+   "UNDECIDED": 0.13590512198327787,
+   "NOT SEEN": 0.8413447460685429,
+   "source": "section 5: about 2 percent under no effect (test 17's section 5); an expected Z of about 0.8 at an effect of 0.05; the fractions are a unit normal about that mean"
+  },
+  "contributing_jobs_per_set": {
+   "2": 2000
+  },
+  "Z_mean": -0.051731246948891196,
+  "Z_sd": 0.9674485442906101
+ },
+ "middle effect 0.05": {
+  "fractions": {
+   "MIDDLE HIGH": 0.1335,
+   "UNDECIDED": 0.3405,
+   "NOT SEEN": 0.526,
+   "None": 0.0
+  },
+  "MIDDLE_HIGH_fraction": 0.1335,
+  "its_binomial_se": 0.007605187374417543,
+  "beside_section5_normal_approximation": {
+   "expected_Z": 0.8,
+   "MIDDLE HIGH": 0.11506967022170822,
+   "UNDECIDED": 0.3056706203391888,
+   "NOT SEEN": 0.579259709439103,
+   "source": "section 5: about 2 percent under no effect (test 17's section 5); an expected Z of about 0.8 at an effect of 0.05; the fractions are a unit normal about that mean"
+  },
+  "contributing_jobs_per_set": {
+   "2": 2000
+  },
+  "Z_mean": 0.9380764623295308,
+  "Z_sd": 0.9351104119449436
+ }
+}
+elapsed 30.1 s

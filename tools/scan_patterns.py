@@ -86,6 +86,20 @@ ALLOW = [
     # entropy drawn for the qubit, is not an AWS account number. Only inside such a list; a twelve-digit number
     # anywhere else is still a finding.
     ("bootstrap-seed-list", r"\"seeds\": \[\s*[0-9]{4},\s*[0-9]{4},\s*[0-9]{12}\s*\]", ""),
+    # Amendment A29: the same list as test 21's job 1 records it, with its two five-digit seeds (21304 and 21305) and
+    # the bootstrap's entropy for qubit 95, 21306 + 95 * 2**32. Only inside such a list; a twelve-digit number anywhere
+    # else is still a finding.
+    ("bootstrap-seed-list-five-digit", r"\"seeds\": \[\s*[0-9]{5},\s*[0-9]{5},\s*[0-9]{12}\s*\]", ""),
+    # Amendment A29, the three probes (data/rigetti_cepheus_1_108q/probes/): the device's public ARN, whose account
+    # field is empty; each task's results directory, named by its task ID (task IDs stay, as job IDs do; the task ARNs,
+    # which carry the account number, were redacted before the hand-back); the public issues the probes' goes cite; and
+    # three ways the probes' scripts and logs write the start of an ARN without any account number. Exactly these.
+    ("braket-device-arn", r"[a]rn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q", ""),
+    ("braket-task-directory", r"\"outputS3Directory\": \"tasks/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\"", ""),
+    ("probe-issue", r"issue 7[456] of `?d[o]gma-guru/manacitra`?", ""),
+    ("probe-arn-prose", r"[a]rn:aws strings carrying one", ""),
+    ("probe-arn-pattern", r"[a]rn:aws\[a-z-\]\*:\[a-z0-9-\]\*:\[a-z0-9-\]\*:\\d\{12\}:", ""),
+    ("probe-estimate-arn", r"[a]rn:aws:braket:\{region\}::quantum-task/estimate", ""),
     # Amendment A27: one field name of test 11's analysis record, forty-four letters, digits and underscores, is not
     # an API key. Exactly this quoted name (written with a character class, so that this file does not carry it).
     ("t11-field-name", r"\"weight_switches_within_spans_of_jobs_2_and_[3]\"", ""),

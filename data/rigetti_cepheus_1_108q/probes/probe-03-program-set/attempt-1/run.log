@@ -1,0 +1,8 @@
+2026-10-21T20:38:20Z qubit 99 (T2 3.48978147743928e-05, T1 3.086777375838068e-05), d 30900 ns, frames {'drive': 'Transmon_99_charge_tx', 'readout_tx': 'Transmon_99_readout_tx', 'readout_rx': 'Transmon_99_readout_rx'}
+2026-10-21T20:38:20Z price list estimate for one task of 200 shots: [cost]
+2026-10-21T20:38:21Z submitting the program set (2 entries, shots=200)
+2026-10-21T20:38:45Z creation error: An error occurred (ValidationException) when calling the CreateQuantumTask operation: Validation failed for one or more programs. See 'programSetValidationFailures' for details. First failure:
+{'programIndex': 0, 'errors': ['Validation timed out']}
+Rerun the task and catch the exception for more details
+2026-10-21T20:38:45Z stop: creation error recorded; no rewrite, no second task
+2026-10-21T20:38:45Z tracker end [cost]

@@ -1,0 +1,12 @@
+{
+ "cancel_requested_and_states_seen": [
+  [
+   "2026-10-21T14:51:27Z",
+   "CANCELLING"
+  ],
+  [
+   "2026-10-21T14:51:32Z",
+   "CANCELLED"
+  ]
+ ]
+}

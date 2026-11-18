@@ -1,0 +1,24 @@
+{
+ "braketSchemaHeader": {
+  "name": "braket.ir.openqasm.program_set",
+  "version": "1"
+ },
+ "programs": [
+  {
+   "braketSchemaHeader": {
+    "name": "braket.ir.openqasm.program",
+    "version": "1"
+   },
+   "source": "OPENQASM 3.0;\nbit[1] b;\ncal {\n    waveform wait_d = constant(30900ns, 0.0);\n}\n#pragma braket verbatim\nbox{\nrx(3.141592653589793) $99;\n}\ncal {\n    play(Transmon_99_charge_tx, wait_d);\n    barrier Transmon_99_charge_tx, Transmon_99_readout_tx, Transmon_99_readout_rx;\n}\nb[0] = measure $99;\n",
+   "inputs": null
+  },
+  {
+   "braketSchemaHeader": {
+    "name": "braket.ir.openqasm.program",
+    "version": "1"
+   },
+   "source": "OPENQASM 3.0;\nbit[1] b;\ncal {\n    waveform wait_d = constant(30900ns, 0.0);\n}\n#pragma braket verbatim\nbox{\nrx(3.141592653589793) $99;\n}\ncal {\n    play(Transmon_99_charge_tx, wait_d);\n    play(Transmon_99_charge_tx, wait_d);\n    barrier Transmon_99_charge_tx, Transmon_99_readout_tx, Transmon_99_readout_rx;\n}\nb[0] = measure $99;\n",
+   "inputs": null
+  }
+ ]
+}

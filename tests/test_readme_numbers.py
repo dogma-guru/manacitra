@@ -32,6 +32,15 @@ from _reproduce import (
 from manacitra import archive, wait
 
 ROOT = Path(__file__).resolve().parents[1]
+# Amendment A29: the three probes' folder, whose JSON files are records of probes, not run records
+PROBES = Path("rigetti_cepheus_1_108q") / "probes"
+
+
+def _records():
+    """archive.records() without the probes' files (A29)."""
+    return [p for p in archive.records() if PROBES not in p.relative_to(archive.data_dir()).parents]
+
+
 #: The README and the pages it links to for its findings, method, kickoffs and install details
 README_PAGES = (
     "README.md",
@@ -227,13 +236,14 @@ def _utc(s):
 
 
 def test_the_findings_dates():
-    assert "The findings come from runs on 5 to 19 October 2026." in README  # A28: test 11 on day 3, tests 16 and 17
-    assert "Thirty findings, from runs on 5 to 19 October 2026." in README
+    # A29: tests 18 to 21, on 21 October and 16 and 17 November 2026
+    assert "The findings come from runs on 5 October to 17 November 2026." in README
+    assert "Thirty three findings, from runs on 5 October to 17 November 2026." in README
     # a reconstruction (A18, ruling R1: Kickoff 47's Part B circuits) is a record about a run, not a run; nor is a
     # record of the provider's published calibration stamps (A23: calibration history 01)
     runs = [
         p
-        for p in archive.records()
+        for p in _records()
         if p.parent.name != "simulated"
         and "k33-workload" not in p.name
         and "reconstruction" not in p.name
@@ -253,7 +263,21 @@ def test_the_findings_dates():
         "2026-10-17",
         "2026-10-18",
         "2026-10-19",
+        "2026-10-21",
+        "2026-11-16",
+        "2026-11-17",
     }
+    # Amendment A29: findings 31 to 33, test 18 on 21 October, test 19's date 1 on 16 November, tests 20 and 21 on 17
+    later = {
+        d: sorted(p.name for p in runs if archive.load(p)["meta"]["utc"][:10] == d)
+        for d in ("2026-10-21", "2026-11-16", "2026-11-17")
+    }
+    assert later == {
+        "2026-10-21": ["t18-two-monitors.json"],
+        "2026-11-16": ["t19-readout-date1.json"],
+        "2026-11-17": ["t20-fifth-date.json", "t21-two-qubits.json"],
+    }
+    assert all("counts" in archive.load(p) for p in runs if p.name in sum(later.values(), []))
     # Amendment A28: finding 30, test 11 on a third day, test 16's read of it and test 17, on 19 October 2026
     day10 = sorted(p.name for p in runs if archive.load(p)["meta"]["utc"][:10] == "2026-10-19")
     assert day10 == ["t11-day3-monitor.json", "t16-day3-per-shot-read.json", "t17-long-monitor.json"]
@@ -814,6 +838,12 @@ RETIRED = [
     "To be released as 0.8.0",  # the 0.8.0 release: released, with its date
     "To be released as 0.9.0",  # the 0.9.0 release: released, with its date
     "To be released as 0.10.0",  # the 0.10.0 release: released, with its date
+    "Thirty findings, from runs on 5 to 19 October 2026",  # A29: thirty three, from 5 October to 17 November
+    "The findings come from runs on 5 to 19 October 2026",  # A29, the same
+    "the thirty findings in full",  # A29: thirty three
+    "Released as 0.10.0 on 20 October 2026",  # A29: the README opens with qubit 143 a month on
+    "**One qubit, three days.**",  # A29: four days of monitors, with 21 October and 17 November
+    "**One scored design.**",  # A29: one scored run of D2; D1's two runs have their own bullet
     "The ±0.15 margin held on one processor for two days and failed on a second",  # A24: the margin at the peak
 ]
 DIAGRAMS = Path(__file__).resolve().parents[1] / "docs" / "diagrams"
@@ -891,7 +921,7 @@ def test_the_findings_table_matches_the_findings():
     table = findings.split("\n## The findings in one table\n", 1)[1].split("\n## ", 1)[0]
     rows = re.findall(r"^\| \[(\d+)\]\(#finding-\1\) \| (.+?) \| [^|]+ \| ([^|]+) \| (.+?) \|$", table, re.M)
     rows = [(n, head, when.rsplit(", ", 1)[0], verdict) for n, head, when, verdict in rows]  # "37, 38, 6 Oct": 37, 38
-    assert [n for n, *_ in rows] == [str(i) for i in range(1, 31)] == list(full)
+    assert [n for n, *_ in rows] == [str(i) for i in range(1, 34)] == list(full)
     for n, head, kicks, verdict in rows:
         assert head == full[n], n
         item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("<a id=", 1)[0]
@@ -931,6 +961,9 @@ THREADS = {
     "The fringe on 143: one line or two": (28,),  # A25
     "When a qubit's fringe changes: the shared state within a span": (29,),  # A27; its first name retired by R2
     "The duty across spans, jobs and days": (30,),  # A28
+    "143 a month on, and the desk model's design D1 scored twice": (31,),  # A29
+    "The published readout table on a new date": (32,),  # A29
+    "Two kingston qubits on a faster clock": (33,),  # A29
 }
 
 
@@ -945,7 +978,7 @@ def test_the_readme_table_has_one_row_per_thread():
     kickoffs = (ROOT / "docs" / "kickoffs.md").read_text()
     section = readme.split("\n## Findings\n", 1)[1].split("\n## ", 1)[0]
     assert "](docs/findings.md#the-findings-in-one-table)" in section
-    assert "Thirty findings, from runs on 5 to 19 October 2026." in section  # A28: test 11 on day 3, tests 16, 17
+    assert "Thirty three findings, from runs on 5 October to 17 November 2026." in section  # A29: tests 18 to 21
     rows = re.findall(r"^\| ([^|\[]+?) \| (\[.+?) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$", section, re.M)
     assert [r_[0] for r_ in rows] == list(THREADS)
     seen = []
@@ -963,7 +996,7 @@ def test_the_readme_table_has_one_row_per_thread():
                     kick_rows += next(line for line in kickoffs.splitlines() if line.startswith(f"| {name}, "))
         words = set(re.findall(r"\b[A-Z]{3,}(?: [A-Z]{3,})*\b", verdict))
         assert words and all(w in kick_rows for w in words), (thread, words - {w for w in words if w in kick_rows})
-    assert sorted(seen) == list(range(1, 31))
+    assert sorted(seen) == list(range(1, 34))
     # the record beside finding 26, Kickoff 60, is named in its thread's row and in the kickoffs table
     assert "Kickoff 60" in dict((r_[0], r_[3]) for r_ in rows)["The rule can say no"]
     assert "| 60, 15 October 2026 |" in kickoffs
@@ -1573,9 +1606,9 @@ def test_what_was_known_before_findings_13_and_14():
     flat = " ".join(README.split())
     assert "with refocusing every idle qubit and with ADAPT's choice of qubits to refocus, has not been run." in flat
     assert (
-        "the thirty findings in full, with a table of all of them, what was known before them, and what has not "
-        "been shown." in flat
-    )  # A25
+        "the thirty three findings in full, with a table of all of them, what was known before them, and what has "
+        "not been shown." in flat
+    )  # A25; A29
 
 
 def test_the_wait_test_hardware_picture():
@@ -1609,7 +1642,7 @@ def test_the_wait_test_hardware_picture():
     assert "11 October 2026, 02:13 to 02:14 UTC" in text and "T_M = 10.45 µs" in text
     assert "predicted from M's Ramsey loss at T_M" in text
     index = " ".join((ROOT / "docs" / "index.md").read_text().split())
-    assert len(list(DIAGRAMS.glob("*.svg"))) == 16 and "# the sixteen diagrams, from data/" in index  # A28: sixteen
+    assert len(list(DIAGRAMS.glob("*.svg"))) == 18 and "# the eighteen diagrams, from data/" in index  # A29: eighteen
 
 
 # --------------------------------------------------------------------------- findings 15 to 19 (Amendment A22)
@@ -2341,7 +2374,7 @@ def test_the_readme_for_a_first_reader():
     readme = (ROOT / "README.md").read_text()
     flat = " ".join(readme.split())
     contents = readme.split("**Contents:** ", 1)[1].split("\n", 1)[0]
-    assert contents.startswith("[Who it is for](#who-it-is-for) · [Latest finding]")
+    assert contents.startswith("[Who it is for](#who-it-is-for) · [Latest findings]")  # A29: three findings
     assert contents.index("[Words used here](#words-used-here)") < contents.index("[Findings](#findings)")
     order = [
         readme.index(h)
@@ -2530,64 +2563,94 @@ def test_the_quick_start_prints_what_the_readme_shows():
 
 
 def test_the_readme_opens_with_the_latest_findings():
-    """A28 (A27's section, replaced): a short section at the top of the README, after the opening description and
-    before what it does, the findings table and installation, says that two runs on 143 on 19 October were read per
-    shot under rules hashed before them, that every boundary of one job's six spans read NO CHANGE, which does not show
-    the duties equal (ruling R3, item 2, in place of "the duty held"), the monitor means of three runs (with no
-    clause on the switching time, by the author's ruling R1, Q1: the per-span
-    correlation times of 17 and 19 October overlap), that the pattern noticed in the published weights was not seen
-    on new data, and the desk model's record, in at most five sentences, each claim checked here against the
-    records. It carries none of the words the kickoff keeps out, and ends "Released as 0.10.0 on 20 October 2026.",
-    as the release pull request dated it."""
+    """A29 (A28's section, replaced): a short section at the top of the README, after the opening description and
+    before what it does, the findings table and installation, headed "Latest findings: qubit 143 a month on", in at
+    most five sentences, each claim checked here against the records: 143's word and split on 17 November beside the
+    three October scans, every monitor span of tests 18 and 20 SHARED, the desk model's D1 bets scored twice unchanged
+    with one family counting against it on the second run only, the readout survey's word on the first date of its
+    series, and the two kingston qubits. It names no cause, carries none of the words the kickoff keeps out, and ends
+    "To be released as 0.11.0."."""
     import re
+    from datetime import date, timedelta
 
-    import _reuse_runs as rr
+    from _reproduce import reuse_doc
 
     front = (ROOT / "README.md").read_text()
-    head = "\n## Latest finding: the duty across spans, jobs and days\n"
+    head = "\n## Latest findings: qubit 143 a month on\n"
     assert head in front
     before, rest = front.split(head, 1)
     section = rest.split("\n## ", 1)[0]
     assert "**Manacitra makes a map of a quantum processor's qubit pairs" in before
     assert not any(h in before for h in ("\n## What it does", "\n## Findings", "\n## Install and try it"))
-    assert "[Latest finding](#latest-finding-the-duty-across-spans-jobs-and-days)" in before
+    assert "[Latest findings](#latest-findings-qubit-143-a-month-on)" in before
     flat = " ".join(section.split())
     assert len(re.findall(r"[.!?](?:\s|$)", flat + " ")) <= 5
-    d2, d3, t16, t17 = _t30_records()
-    for rec in (d3, t16, t17):
+    t18, t20 = reuse_doc("ibm_fez/t18-two-monitors.json"), reuse_doc("ibm_fez/t20-fifth-date.json")
+    t19, t21 = reuse_doc("ibm_fez/t19-readout-date1.json"), reuse_doc("ibm_kingston/t21-two-qubits.json")
+    for rec in (t18, t19, t20, t21):
         assert _utc(rec["meta"]["rule"]["posted"]["created_utc"]) < _utc(rec["meta"]["utc"])
-        assert rec["meta"]["utc"][:10] == "2026-10-19"
-    assert len(t17["jobs"]["B1"]["execution_metadata"]["execution_spans"]) == 6
-    assert (
-        "Two runs on ibm_fez's qubit 143 on 19 October 2026, test 11's design on a third day and one job of six "
-        "execution spans, were read per shot, each run and each read under a rule hashed before it ([finding 30]"
-        "(docs/findings.md#finding-30))." in flat
+    # 143 on the fifth date, beside the three October scans
+    j1 = t20["archived"]["analysis"]["jobs"]["1"]
+    octo = [
+        reuse_doc("ibm_fez/t11-day2-monitor.json")["archived"]["analysis"]["jobs"]["1"]["analysis"],
+        reuse_doc("ibm_fez/t11-day3-monitor.json")["archived"]["analysis"]["jobs"]["1"]["analysis"],
+        archive.load("ibm_fez/t7-ramsey-xy.json")["archived"]["analysis"],
+    ]
+    split = [a_["fits"]["P"]["params"]["delta_MHz"] * 1e3 for a_ in octo]
+    assert (j1["verdict"], _q(j1["analysis"]["fits"]["P"]["params"]["delta_MHz"] * 1e3, 2)) == (
+        "CONFIRMED ON THE FIFTH DATE",
+        "44.99",
     )
-    m16 = rr.t16_day3_read(t16, archive.load("ibm_fez/t15-error-model-read.json"), d3)
-    m17 = rr.t17_read(t17)
-    assert {b["word"] for b in m17["boundaries"][4:]} == {"NO CHANGE"} and len(m17["boundaries"][4:]) == 5
-    means = [*m16["beside_day_means"]["day_mean_duties"], m17["between_jobs_job_rows"]["B1"]["job_mean_w_duty"]]
-    assert [_q(x, 3) for x in means] == ["0.330", "0.341", "0.313"]
-    assert max(b["ratio"] for b in m17["boundaries"][4:]) < 2  # each pair within twice its combined error
+    assert _rng(split, 2) == "44.70 to 44.97"
+    assert t20["meta"]["utc"][:10] == "2026-11-17"
+    for rec, jobs in ((t18, ("job1", "job2")), (t20, ("job2", "job3"))):
+        ps = rec["archived"]["per_shot_read"]
+        assert all(set(ps["jobs"][j]["separable_span_words"]) == {"SHARED"} for j in jobs)
     assert (
-        "Across the six spans of one job every boundary read NO CHANGE, each adjacent pair differing by less than "
-        "twice its combined error, which does not show the duties equal; and the monitor means of runs on 17 and 19 "
-        "October were 0.330, 0.341 and 0.313. A pattern" in flat
+        "On 17 November 2026, under rules hashed and posted before each run, ibm_fez's qubit 143 read CONFIRMED ON THE "
+        "FIFTH DATE, two fixed frequencies with a split δ of 44.99 kHz against 44.70 to 44.97 kHz on three October "
+        "dates, and every monitor span read SHARED ([finding 31](docs/findings.md#finding-31))." in flat
     )
-    assert "switching time" not in flat and "moved" not in flat and "held" not in flat
-    assert m17["middle_test"]["pooled"]["word"] == "NOT SEEN"
+    # the desk model's D1 bets, twice, unchanged
+    c18, c20 = _scorecard("t18"), _scorecard("t20")
+    assert c18["prediction_sha256"] == c20["prediction_sha256"]
+    assert (c18["computed_utc"][:10], c20["computed_utc"][:10]) == ("2026-10-21", "2026-11-17")
+    assert not any(f["counts_against"] for f in c18["families"])
+    assert [f["family"] for f in c20["families"] if f["counts_against"]] == ["emissions"]
     assert (
-        "A pattern noticed in the published weights, a job's middle span above its ends, was tested on new data under "
-        "a rule fixed before them and not seen." in flat
+        "The desk model Sandhi's bets for its design D1, at version 4.1, were scored on 21 October and on 17 November, "
+        "unchanged between the runs, and on the second run one family of them, the emissions, counted against the "
+        "model." in flat
+    )
+    # the readout survey, on the first date of its series: at most seven dates, within 14 days of date 1
+    assert t19["archived"]["classes"]["word"] == "MIXED" and t19["archived"]["classes"]["date"] == 1
+    assert "Every date falls within 14 days of date 1." in (archive.data_dir() / "ibm_fez" / "t19-rule.md").read_text()
+    assert date.fromisoformat(t19["meta"]["date"]) + timedelta(days=14) == date(2026, 11, 30)
+    assert (
+        "A survey of ibm_fez's readout on 16 November read MIXED against the published table, on the first date of a "
+        "series that is open until 30 November ([finding 32](docs/findings.md#finding-32))." in flat
+    )
+    # the two kingston qubits
+    s21 = t21["archived"]["summary"]
+    assert s21["job1"]["qubits"]["11"]["word"] is None and not s21["job1"]["qubits"]["11"]["usable"]
+    assert s21["job1"]["qubits"]["95"]["word"] == "NOT CONFIRMED ON A LATER DATE"
+    sp = s21["monitors"]["2"]["qubits"]["95"]["spans"][0]
+    assert (sp["sharing"]["word"], sp["timing_word"], _q(1e3 * sp["sweep_s"], 1)) == (
+        "SHARED",
+        "FASTER THAN THE CLOCK",
+        "5.8",
     )
     assert (
-        "The desk model Sandhi, at version 4.1, had its bets for one design hashed before the run and none counted "
-        "against it, with its bets for the other design not yet scored; no cause is named." in flat
+        "On ibm_kingston, qubit 11 got no word for its readout error and qubit 95 read NOT CONFIRMED ON A LATER DATE, "
+        "with a shared state faster than a sweep of about 6 ms could time ([finding 33](docs/findings.md#finding-33)); "
+        "no cause is named." in flat
     )
-    assert flat.endswith("Released as 0.10.0 on 20 October 2026.")  # the release pull request dated it
-    for word in ("parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "constant", "telegraph", "defect", "first"):
+    assert flat.endswith("To be released as 0.11.0.")
+    for word in ("parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "constant", "telegraph", "defect"):
         assert word not in flat.lower(), word
-    assert "—" not in flat and "–" not in flat
+    for word in ("held", "moved", "switching time", "refuted", "falsified", "confirmed on test 18", "permanent"):
+        assert word not in flat.lower(), word
+    assert flat.lower().count("cause") == 1 and "—" not in flat and "–" not in flat
 
 
 # --------------------------------------------------------------------------- findings 20 and 21 (Amendment A23)
@@ -3018,7 +3081,7 @@ def test_findings_20_and_21_beside_the_findings():
     )
 
     readme = " ".join((ROOT / "README.md").read_text().split())
-    assert "the thirty findings in full, with a table of all of them, what was known before them" in readme  # A27
+    assert "the thirty three findings in full, with a table of all of them, what was known before them" in readme  # A29
     flat = " ".join((ROOT / "docs" / "findings.md").read_text().split())
     r53, r54, r55 = k53_recomputed(), k54_recomputed(), k55_recomputed()
     # the margin's bullet
@@ -3084,7 +3147,7 @@ def test_findings_20_and_21_beside_the_findings():
     # the changelog's lead: six runs on ibm_fez on 13 and 15 October and one on ibm_kingston on 14 October
     from manacitra import archive as ar
 
-    fez_runs = [p for p in ar.records() if p.parent.name == "ibm_fez" and ar.load(p)["meta"]["kickoff"][8:].isdigit()]
+    fez_runs = [p for p in _records() if p.parent.name == "ibm_fez" and ar.load(p)["meta"]["kickoff"][8:].isdigit()]
     fez_runs = [p for p in fez_runs if 49 <= int(ar.load(p)["meta"]["kickoff"][8:]) <= 55]
     assert sorted(ar.load(p)["meta"]["utc"][:10] for p in fez_runs) == ["2026-10-13"] * 5 + ["2026-10-15"]
     assert reuse_doc(K55)["meta"]["utc"].startswith("2026-10-14")
@@ -3111,14 +3174,14 @@ def test_findings_20_and_21_beside_the_findings():
     )
     assert reuse_doc(K53)["meta"]["processor"] == reuse_doc(K54)["meta"]["processor"] == "ibm_fez"
     # the data README's job IDs
-    ids = [ar.load(p)["meta"].get("job_id") for p in ar.records()]
-    many = [j for p in ar.records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
+    ids = [ar.load(p)["meta"].get("job_id") for p in _records()]
+    many = [j for p in _records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
     assert (len([i for i in ids if i]), len(many)) == (
         30,
-        30,
-    )  # A24: 56 and 61; 57 to 59, 62; A25: test 7; A27: 8 to 11; A27, R2: tests 12 and 14; A28: day 3 and test 17
+        39,
+    )  # A24: 56 and 61; 57 to 59, 62; A25: test 7; A27: 8 to 11; A27, R2: 12 and 14; A28: day 3, 17; A29: 18 to 21
     data = " ".join((ar.data_dir() / "README.md").read_text().split())
-    assert "the thirty IBM `meta.job_id` values and the thirty of the runs with several jobs" in data
+    assert "the thirty IBM `meta.job_id` values and the thirty-nine of the runs with several jobs" in data  # A29
     assert "as do the job IDs that tests 13, 15 and 16 read (`per_shot_results`; test 16's `meta.jobs_read`)" in data
     assert "(`first_submission.job_id`)" in data
 
@@ -5606,11 +5669,21 @@ def test_finding_30_beside_the_finding():
     )
     findings = " ".join((ROOT / "docs" / "findings.md").read_text().split())
     shown = findings.split("## What it has not shown", 1)[1]
-    for bullet in (
+    # A29 rewrote two of A28's bullets, each recorded here as before and after (the review packet lists both)
+    a28_before = (
         "- **One qubit, three days.** The duty measurements and boundary tests are a record of ibm_fez's 143 at one "
         "wait on 17 to 19 October 2026; nothing about other qubits, waits, days or processors.",
         "- **One scored design.** Sandhi version 4.1 has been scored on one run of one design (D2). Its other bets "
         "(D1) are not yet scored, and a model's record on one run is a record, not a calibration.",
+    )
+    assert not any(b_ in shown for b_ in a28_before)
+    for bullet in (
+        "- **One qubit, four days of monitors.** The duty measurements and boundary tests are a record of ibm_fez's "
+        "143 "
+        "at one wait on 17, 19 and 21 October and 17 November 2026; nothing about other qubits, waits, days or "
+        "processors.",
+        "- **One scored run of D2.** Sandhi version 4.1 has been scored on one run of its design D2, and a model's "
+        "record on one run is a record, not a calibration. Its D1 bets are in the bullet on one design, two runs.",
         "- **The middle test had modest power.** NOT SEEN counts against a difference of 0.05 and says little about "
         "smaller ones.",
         "Test 17's read reports the autocorrelation of its long job's sweep means at lags 490 to 510, from −0.144 to "
@@ -5837,7 +5910,8 @@ def test_the_changelog_0_10_0():
     dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
     assert log.index("## 0.10.0 (20 October 2026)") < log.index("## 0.9.0 (18 October 2026)")
-    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
+    # the release pull request dated it; A29: 0.11.0's heading, above it, waits for its own date
+    assert "(unreleased)" not in log.split("## 0.10.0 (20 October 2026)", 1)[1] and "## Unreleased" not in log
     entry = " ".join(log.split("## 0.10.0 (20 October 2026)", 1)[1].split("\n## ", 1)[0].split())
     lead = (
         "Two runs on ibm_fez's qubit 143 on 19 October 2026 were read per shot, each run and each read under a rule "
@@ -5867,4 +5941,862 @@ def test_the_changelog_0_10_0():
         assert f"`{name}`" in entry, name
     for path in ("`data/desk/sandhi/v4/`", "`data/desk/t7-power-check-round5c/`", "`t17-middle-note-excerpt.md`"):
         assert path in entry, path
+    assert "—" not in entry and "–" not in entry
+
+
+# --------------------------------------------------------------------------- Amendment A29: findings 31 to 33
+def _item_n(n: int) -> str:
+    """Finding n's item, whitespace joined, with its pictures' alt text left out (A28's _item30, for any finding)."""
+    import re
+
+    findings = (ROOT / "docs" / "findings.md").read_text()
+    item = findings.split(f'<a id="finding-{n}"></a>', 1)[1].split("\n## ", 1)[0]
+    lines = item.split("\n")
+    end = next((i for i, x in enumerate(lines) if i and x and not x.startswith(" ")), len(lines))
+    return " ".join(re.sub(r"!\[[^\]]*\]\([^)]*\)", "", "\n".join(lines[:end])).split())
+
+
+def _monitor_spans(ps: dict, jobs: tuple[str, ...]) -> dict:
+    """The per-shot read's span readings of 143, in job and span order: sharing ratio on the quadrature of record,
+    duty on the weight's branch, τ_c, and the ceilings."""
+    out = {"ratio": [], "duty": [], "tau": [], "ceiling": []}
+    for j in jobs:
+        rows = ps["between_jobs_job_rows"][j]
+        out["duty"] += rows["span_w_duties"]
+        out["tau"] += rows["span_tau_c_s"]
+        out["ceiling"] += rows["span_tau_c_ceiling"]
+        mon = ps["jobs"][j]["qubits"]["143"]["waits"]["monitor"]
+        out["ratio"] += [s[mon["quadrature_of_record"]]["ratio"] for s in mon["spans"]]
+        assert ps["jobs"][j]["job_word"] == "SHARED" and set(ps["jobs"][j]["separable_span_words"]) == {"SHARED"}
+    return out
+
+
+def _boundaries_read(ps: dict) -> list[float]:
+    for b_ in ps["boundaries"]:
+        assert b_["word"] == "NO CHANGE" and not b_["any_ceiling"] and not b_["word_changes_under_sensitivity"]
+        assert {v["word"] for v in b_["sensitivity"].values()} == {"NO CHANGE"}
+    (bj,) = ps["between_jobs"]
+    assert bj["word"] == "NO CHANGE"
+    return [b_["ratio"] for b_ in ps["boundaries"]] + [bj["ratio"]]
+
+
+def _scorecard(t: str) -> dict:
+    import json
+
+    return json.loads((archive.data_dir() / "desk" / "sandhi" / "v4.1" / f"scorecard-{t}.json").read_text())
+
+
+def _family(card: dict, name: str) -> dict:
+    return next(f for f in card["families"] if f["family"] == name)
+
+
+def _bet(card: dict, quantity: str) -> dict:
+    return next(p for p in card["prediction_scores"] if p["quantity"] == quantity)
+
+
+def test_finding_31_the_records():
+    """Finding 31's records, each number against the record it quotes: test 18's two monitor jobs (from the counts, per
+    shot, the middle test and its desk check) and Sandhi's first D1 scorecard; the first scorecard's digest; test 20's
+    scan beside the October scans, its monitor jobs and the run means; and the second scorecard. Times are rounded to
+    the minute."""
+    from _reproduce import reuse_doc
+
+    item = _item_n(31)
+    q = _q
+    t18, t20 = reuse_doc("ibm_fez/t18-two-monitors.json"), reuse_doc("ibm_fez/t20-fifth-date.json")
+    # the rules and their issues, each posted before its run
+    for rec, t, n in ((t18, "t18", 71), (t20, "t20", 78)):
+        r_ = rec["meta"]["rule"]
+        assert (r_["file"], r_["posted"]["issue"]) == (f"{t}-rule.md", n)
+        assert _utc(r_["posted"]["created_utc"]) < _utc(rec["meta"]["utc"])
+        assert f"[issue {n}](https://github.com/dogma-guru/manacitra/issues/{n})" in item
+        assert (archive.data_dir() / "ibm_fez" / r_["file"]).is_file()
+    assert "(`data/ibm_fez/t18-rule.md` and `t20-rule.md`)" in item
+    # test 18, from the counts
+    ac = t18["archived"]["analysis_counts"]
+    created = [hhmm(t18["jobs"][j]["timestamps"]["created"]) for j in "12"]
+    stamps = {row["stamp_utc"] for row in t18["calibration_record"]["stamps"] if row["kind"].startswith("job")}
+    assert created == ["00:49", "00:51"] and stamps == {"2026-10-21T00:19:02Z"}  # the hold's watch reads came before
+    assert "(ibm_fez, 21 October, submitted at 00:49 and 00:51 UTC, under one stamp, 00:19:02 UTC)" in item
+    durs = [s["duration_s"] for j in "12" for s in t18["jobs"][j]["execution_metadata"]["execution_spans"]]
+    gap = ac["beside_test11_gap_between_jobs"]["gap_s_from_the_execution_records"]
+    assert (_rng(durs, 1), q(gap, 2)) == ("27.3 to 27.8", "40.06")
+    assert "each job ran as three spans of 27.3 to 27.8 s, and the two jobs were 40.06 s apart" in item
+    v = {j: ac["jobs"][j]["verdicts"] for j in ("job1", "job2")}
+    assert q(ac["meta"]["R0"], 4) == "0.4770" and {ac["jobs"][j]["repeats"] for j in v} == {148}
+    assert (v["job1"]["phase"], v["job1"]["weight_by_pairs"], v["job1"]["weight_by_levels"]) == (
+        "QUIET",
+        "WEIGHT QUIET",
+        "LEVELS AGREE",
+    )
+    assert (v["job2"]["phase"], v["job2"]["weight_by_pairs"], v["job2"]["weight_by_levels"]) == (
+        "QUIET",
+        "WEIGHT QUIET",
+        "LEVELS DIFFER AT EVERY BOUNDARY",
+    )
+    for j in ("job1", "job2"):
+        a = ac["jobs"][j]["analysis"]
+        assert not a["phase_switches"] and not a["weight_switches"]
+    assert (
+        "by test 12's steps 1 to 10 at R0 0.4770 (ruling 1), job 1 returned QUIET, WEIGHT QUIET and LEVELS AGREE, and "
+        "job 2 QUIET, WEIGHT QUIET and LEVELS DIFFER AT EVERY BOUNDARY, with no phase or weight switch within any span"
+        in item
+    )
+    # test 18, per shot
+    ps = t18["archived"]["per_shot_read"]
+    s18 = _monitor_spans(ps, ("job1", "job2"))
+    b18 = _boundaries_read(ps)
+    assert _rng(s18["ratio"], 1) == "28.6 to 33.6" and not any(s18["ceiling"])
+    assert [q(x, 3) for x in s18["duty"]] == ["0.320", "0.310", "0.322", "0.327", "0.216", "0.304"]
+    assert (_rng(s18["tau"], 3), _rng(b18[:4], 2), q(b18[4], 2)) == ("0.164 to 0.276", "0.12 to 1.55", "0.78")
+    assert (
+        "both jobs read SHARED, all six spans with sharing ratios of 28.6 to 33.6. The span duties were 0.320, 0.310, "
+        "0.322, 0.327, 0.216 and 0.304, τ_c 0.164 to 0.276 s, none at a ceiling, and all four boundaries read NO "
+        "CHANGE "
+        "(ratios 0.12 to 1.55), and so did the two jobs (0.78), with no word changed at the 20th to 80th threshold or "
+        "at τ_c one sweep shorter or longer." in item
+    )
+    mt = ps["middle_test"]
+    cs = [q(j["C_over_sd"], 2) for j in mt["jobs"]]
+    assert (cs, q(mt["pooled"]["Z"], 2), mt["pooled"]["word"]) == (["−0.14", "−1.70"], "−1.30", "NOT SEEN")
+    assert "gave each job's contrast over its sd as −0.14 and −1.70, and Z = −1.30: NOT SEEN" in item
+    pooled = ac["beside_test11_pooled"]
+    run18 = ps["beside_section4"]["this_run"]
+    desk = t18["archived"]["desk"]
+    assert (pooled["phase"], pooled["weight"], q(run18["run_mean_w_duty"], 3)) == ("QUIET", "WEIGHT QUIET", "0.300")
+    assert desk["meta"]["sets"] == 2000
+    assert (q(100 * desk["false_alarm_rate_MIDDLE_HIGH"], 2), q(100 * desk["power_MIDDLE_HIGH_at_0p05"], 2)) == (
+        "1.15",
+        "13.35",
+    )
+    assert (
+        "test 11's pooled words over the two jobs, QUIET and WEIGHT QUIET; the run's mean duty over its six spans, "
+        "0.300; and the middle test's desk check under ruling 4, in which 2,000 synthetic sets of this run's jobs read "
+        "MIDDLE HIGH in 1.15 percent with no middle effect and in 13.35 percent with a middle higher by 0.05." in item
+    )
+    # Sandhi on test 18's run
+    c18 = _scorecard("t18")
+    fam = {f: _family(c18, f) for f in ("duty", "correlation", "emissions", "job_mean_duty_difference")}
+    assert [(fam[f]["misses"], fam[f]["bets_scored"], fam[f]["calibration"]["cutoff"]) for f in fam if f[0] != "j"] == [
+        (2, 12, 6),
+        (0, 24, 9),
+        (0, 8, 4),
+    ]
+    assert fam["job_mean_duty_difference"]["status"] == "not fully testable"
+    assert not any(f["counts_against"] for f in c18["families"]) and not c18["shuffled"]
+    assert {p["quantity"] for p in c18["prediction_scores"]} >= {"threshold_duty"}
+    assert not {"shuffled_weight_A26", "shuffled_sd"} & {f["family"] for f in c18["families"]}
+    duty = _bet(c18, "threshold_duty")
+    assert [q(x, 3) for x in duty["interval_90"]] == ["0.246", "0.449"]
+    missed = [o for o in duty["observations"] if not o["inside_90"]]
+    assert [(o["unit"], q(o["value"], 3)) for o in missed] == [("job2-q143-s1", "0.216")]
+    assert q(c18["scenario_scores"][0]["probability_events"][1]["probability"], 2) == "0.58"
+    assert (
+        "duty, 2 misses of 12 (cutoff 6), both job 2's span 1, whose threshold duty, 0.216, lies outside 0.246 to "
+        "0.449; correlation, 0 of 24 (cutoff 9); emissions, 0 of 8 (cutoff 4); the job mean duty difference, one bet "
+        'inside its interval, marked "not fully testable".' in item
+    )
+    assert "against its stated probability of 0.58 for any. No family counted against the model." in item
+    # the first scorecard's digest, posted before the second run's go
+    sandhi = " ".join((archive.data_dir() / "desk" / "sandhi" / "README.md").read_text().split())
+    digest = "01999991619b1180cbb223514e715a1a6b9ef6a99e8617088227fb4306e3345b"
+    assert digest in sandhi and f"`{digest}`" in item
+    assert _utc("2026-11-15T02:44:02Z") < _utc("2026-11-17T00:25:34Z") < _utc(t20["meta"]["utc"])
+    assert "at 2026-11-15T02:44:02Z (UTC). Test 20's go came after it, at 2026-11-17T00:25:34Z" in item
+    # test 20, the scan
+    an = t20["archived"]["analysis"]
+    j1 = an["jobs"]["1"]
+    sp1 = t20["jobs"]["1"]["execution_metadata"]["execution_spans"]
+    assert (hhmm(sp1[0]["start_utc"] + "Z"), hhmm(sp1[-1]["stop_utc"] + "Z")) == ("00:32", "00:34")
+    assert {row["stamp_utc"] for row in t20["calibration_record"]["stamps"]} == {"2026-11-13T16:27:59Z"}
+    assert (
+        "(ibm_fez, 17 November, job 1 from 00:32 to 00:34 UTC in the provider's execution record; all three jobs under "
+        "one stamp, 13 November 16:27:59 UTC, with no stamp in the 48 hours before the go)" in item
+    )
+    P, dec = j1["analysis"]["fits"]["P"]["params"], j1["analysis"]["deciding"]
+    assert j1["verdict"] == "CONFIRMED ON THE FIFTH DATE" and j1["package_verdict"] == "TWO FIXED FREQUENCIES"
+    assert (q(dec["held_out_error_P"], 4), q(dec["held_out_error_S"], 4)) == ("0.0165", "0.1056")
+    d20 = [q(x, 2) for x in (P["delta_MHz"] * 1e3, *dec["delta_ci90_kHz"])]
+    b20 = [q(x, 3) for x in (P["b"], *dec["b_ci90"])]
+    assert (d20, b20) == (["44.99", "44.92", "45.05"], ["0.485", "0.476", "0.495"])
+    assert (
+        "P's held-out error was 0.0165 against S's 0.1056, the split δ 44.99 kHz (90% interval 44.92 to 45.05) and the "
+        "weight b 0.485 (0.476 to 0.495)." in item
+    )
+    moved = an["lines_moved_note"]
+    assert (q(moved["split_2delta_kHz"], 2), moved["applies"]) == ("89.97", False)
+    assert "The split 2δ, 89.97 kHz, lies within 9 kHz of 89.6 kHz" in item
+    # the four scans' table, each row from its own record
+    scans = [
+        ("16 October", "test 7", archive.load("ibm_fez/t7-ramsey-xy.json")["archived"]["analysis"]),
+        (
+            "17 October",
+            "test 11, day 2",
+            reuse_doc("ibm_fez/t11-day2-monitor.json")["archived"]["analysis"]["jobs"]["1"],
+        ),
+        (
+            "19 October",
+            "test 11, day 3",
+            reuse_doc("ibm_fez/t11-day3-monitor.json")["archived"]["analysis"]["jobs"]["1"],
+        ),
+        ("17 November", "test 20", j1),
+    ]
+    for date, test, a in scans:
+        a_ = a.get("analysis", a)
+        word = a.get("verdict", a_.get("verdict"))
+        Pp, dd = a_["fits"]["P"]["params"], a_["deciding"]
+        cells = [
+            q(Pp["delta_MHz"] * 1e3, 2),
+            f"{q(dd['delta_ci90_kHz'][0], 2)} to {q(dd['delta_ci90_kHz'][1], 2)}",
+            q(Pp["b"], 3),
+            f"{q(dd['b_ci90'][0], 3)} to {q(dd['b_ci90'][1], 3)}",
+            q(Pp["Delta0_MHz"] * 1e3, 1, True).replace("+", "+"),
+        ]
+        row = f"| {date} | {test} | {word} | " + " | ".join(cells) + " |"
+        assert row in item, row
+    # beside the verdict
+    ws = [w["weighted_mean"] for w in j1["span_readings_A26"]["weight_per_span"]]
+    cb = j1["span_readings_A26"]["copies_by_span"]
+    ro = j1["readout"]
+    assert (q(j1["antiphase_wait_from_this_dates_split_us"], 3), q(j1["P_fit_at_5p6_us"], 4)) == ("5.557", "0.4608")
+    assert [q(w, 3) for w in ws] == ["0.465", "0.533", "0.438"]
+    assert (q(cb["same_span"]["per_dof"], 2), cb["same_span"]["n"], q(cb["cross_span"]["per_dof"], 2)) == (
+        "0.73",
+        43,
+        "3.27",
+    )
+    assert (
+        cb["cross_span"]["n"] == 85
+        and j1["readings_after_the_data"]["A_copy_agreement"]["ramsey"]["n_abs_z_over_3"] == 9
+    )
+    assert (q(ro["measured"]["e"], 4), q(ro["published_at_submission"]["q143_readout_error"], 4)) == (
+        "0.0033",
+        "0.0039",
+    )
+    assert (
+        "the wait at which this date's split puts the lines in antiphase, 5.557 µs, where the monitors ran at 5.6 µs, "
+        "fixed; R0 for the monitors, P's fit at 5.6 µs, 0.4608; the weight per span by A26's method, 0.465, 0.533 and "
+        "0.438; the copies check split by span, Σz² per dof 0.73 over 43 pairs within a span and 3.27 over 85 pairs "
+        "across spans, 9 of them over 3 in size; and job 1's measured readout error, 0.0033, beside the published "
+        "0.0039." in item
+    )
+    # test 20, the monitors
+    sp = {j: t20["jobs"][j]["execution_metadata"]["execution_spans"] for j in "23"}
+    assert (hhmm(sp["2"][0]["start_utc"] + "Z"), hhmm(sp["3"][-1]["stop_utc"] + "Z")) == ("00:34", "00:37")
+    assert _rng([s["duration_s"] for j in "23" for s in sp[j]], 2) == "27.45 to 27.49"
+    g20 = an["beside_test11_gap_between_jobs"]
+    assert q(g20["gap_s_from_the_execution_records"], 2) == "28.49"
+    assert "(jobs 2 and 3, 00:34 to 00:37 UTC, 28.49 s apart in the provider's record)" in item
+    assert "each three spans of 27.45 to 27.49 s" in item
+    v2, v3 = an["jobs"]["2"]["verdicts"], an["jobs"]["3"]["verdicts"]
+    assert q(an["R0"]["value"], 4) == "0.4608"
+    assert (v2["phase"], v2["weight_by_pairs"], v2["weight_by_levels"]) == (
+        "QUIET",
+        "WEIGHT QUIET",
+        "LEVELS DIFFER AT SOME",
+    )
+    assert (v3["phase"], v3["weight_by_pairs"], v3["weight_by_levels"]) == (
+        "QUIET",
+        "WEIGHT QUIET",
+        "LEVELS DIFFER AT EVERY BOUNDARY",
+    )
+    for j in "23":
+        a = an["jobs"][j]["analysis"]
+        assert not a["phase_switches"] and not a["weight_switches"]
+        assert not any(p["phase_switch"] or p["weight_switch"] for p in a["boundary_table"]["boundary_pairs"])
+    assert (
+        "job 2 returned QUIET, WEIGHT QUIET and LEVELS DIFFER AT SOME, and job 3 QUIET, WEIGHT QUIET and LEVELS DIFFER "
+        "AT EVERY BOUNDARY, with no phase or weight switch within a span or at a boundary pair." in item
+    )
+    ps20 = t20["archived"]["per_shot_read"]
+    s20 = _monitor_spans(ps20, ("job2", "job3"))
+    b20r = _boundaries_read(ps20)
+    assert _rng(s20["ratio"], 1) == "25.6 to 34.6" and not any(s20["ceiling"])
+    assert [q(x, 3) for x in s20["duty"]] == ["0.370", "0.397", "0.350", "0.451", "0.401", "0.384"]
+    assert (_rng(s20["tau"], 3), _rng(b20r[:4], 2), q(b20r[4], 2)) == ("0.165 to 0.275", "0.19 to 0.58", "0.80")
+    assert (
+        "both jobs read SHARED, all six spans with sharing ratios of 25.6 to 34.6. The span duties were 0.370, 0.397, "
+        "0.350, 0.451, 0.401 and 0.384, τ_c 0.165 to 0.275 s, none at a ceiling, and all four boundaries read NO "
+        "CHANGE "
+        "(ratios 0.19 to 0.58), and so did the two jobs (0.80)" in item
+    )
+    p20 = an["beside_test11_pooled"]
+    assert (p20["phase"], p20["weight"]) == ("QUIET", "WEIGHT QUIET")
+    assert (q(g20["d_phase"], 2), q(g20["se_phase"], 2)) == ("−0.16", "0.34")
+    assert "the phase across the gap between the jobs, −0.16 rad with a standard error of 0.34" in item
+    bs = ps20["beside_section4"]
+    assert (
+        q(bs["this_run"]["run_mean_w_duty"], 3) == "0.392" and "the run's mean duty over its six spans, 0.392" in item
+    )
+    means = [(r_["run"], q(r_["mean_duty"], 3)) for r_ in bs["finding_30_run_means"]]
+    means.append((bs["test_18_run_mean"]["run"], q(bs["test_18_run_mean"]["mean_duty"], 3)))
+    assert q(bs["test_18_run_mean"]["mean_duty"], 3) == q(run18["run_mean_w_duty"], 3)
+    dates = ["17 October", "19 October", "19 October", "21 October"]
+    for (run, m), date in zip(means, dates, strict=True):
+        assert f"| {run} | {date} | {m} |" in item, run
+    assert "| test 20, jobs 2 and 3 | 17 November | 0.392 |" in item
+    findings = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    for run, m in means[:3]:
+        assert f"| {run} | " in findings and f" | {m} | " in findings  # finding 30's table of run means
+    assert "The middle test was not applied under test 20's rule." in item
+    # Sandhi, D1, second run
+    c20 = _scorecard("t20")
+    f20 = {f["family"]: f for f in c20["families"]}
+    assert [
+        (f20[f]["misses"], f20[f]["bets_scored"], f20[f]["calibration"]["cutoff"])
+        for f in ("duty", "correlation", "emissions")
+    ] == [
+        (2, 12, 5),
+        (0, 24, 9),
+        (4, 8, 4),
+    ]
+    assert [f for f, x in f20.items() if x["counts_against"]] == ["emissions"]
+    duty = _bet(c20, "threshold_duty")
+    missed = [o for o in duty["observations"] if not o["inside_90"]]
+    assert [q(x, 3) for x in duty["interval_90"]] == ["0.241", "0.450"]
+    assert [(o["unit"], q(o["value"], 3)) for o in missed] == [("job3-q143-s0", "0.451")]
+    assert (
+        "duty, 2 misses of 12 (cutoff 5), both job 3's span 0, whose threshold duty, 0.451, lies outside 0.241 to "
+        "0.450; correlation, 0 of 24 (cutoff 9); emissions, 4 of 8 at a cutoff of 4, which counts against the model "
+        "for this run." in item
+    )
+    em = {k: [q(o["value"], 3) for o in c20["observations"][k]] for k in ("q_H_X", "q_L_X", "q_H_Y", "q_L_Y")}
+    iv = {k: [q(x, 3) for x in _bet(c20, k)["interval_90"]] for k in em}
+    assert em == {
+        "q_H_X": ["0.567", "0.598"],
+        "q_L_X": ["0.439", "0.411"],
+        "q_H_Y": ["0.864", "0.895"],
+        "q_L_Y": ["0.119", "0.088"],
+    }
+    assert iv["q_H_X"] == ["0.642", "0.734"] and iv["q_L_X"] == ["0.265", "0.364"]
+    for k in ("q_H_Y", "q_L_Y"):
+        assert all(lo <= o["value"] <= hi for o in c20["observations"][k] for lo, hi in [_bet(c20, k)["interval_90"]])
+    assert (
+        "`q_H_X`, 0.567 in job 2 and 0.598 in job 3, against 0.642 to 0.734, and `q_L_X`, 0.439 and 0.411, against "
+        "0.265 to 0.364. The Y levels lie inside theirs: `q_H_Y` 0.864 and 0.895, `q_L_Y` 0.119 and 0.088." in item
+    )
+    sw = _bet(c20, "shuffled_weight_A26")
+    obs = [o["value"] for o in c20["observations"]["shuffled_weight_A26"]]
+    assert [q(x, 3) for x in sw["interval_90"]] == ["0.240", "0.445"] and [q(x, 3) for x in obs] == [
+        q(w, 3) for w in ws
+    ]
+    assert (f20["shuffled_weight_A26"]["misses"], f20["shuffled_weight_A26"]["status"]) == (2, "not fully testable")
+    assert (f20["shuffled_sd"]["bets_scored"], len(f20["shuffled_sd"]["unavailable_outcomes"])) == (0, 3)
+    assert "two of three spans outside 0.240 to 0.445 (0.465 and 0.533; the third, 0.438, inside)" in item
+    assert q(c20["scenario_scores"][0]["probability_events"][1]["probability"], 2) == "0.66"
+    assert "against its stated probability of 0.66 for any" in item
+    for rec in (t18, t20):
+        sb = rec["archived"]["scorer_beside"]
+        assert (sb["quantities_compared"], sb["equal"], sb["differences"]) == (123, 123, [])
+    assert "The scorer's test 15 readings equal the rule's in all 123 quantities compared, in both runs." in item
+    for c in (c18, c20):
+        assert c["sharing_all_monitor_spans"] and c["monitor_dwell_tests_complete"]
+        assert c["monitor_dwell_failures_under_0p01"] == 0 and not c["any_monitor_boundary_LR_p_under_0p01"]
+        assert all(ci["inside_90"] for ci in c["scenario_scores"][0]["count_intervals"])
+    # each rule's error: the level changes test 12 counts, in the two runs, against test 15's error at all eight
+    lc = [
+        abs(x["in_errors"])
+        for a in [ac["jobs"][j]["analysis"] for j in ("job1", "job2")] + [an["jobs"][j]["analysis"] for j in "23"]
+        for x in a["level_changes"]
+        if x["level_change"]
+    ]
+    assert (len(lc), _rng(lc, 1), _rng(b18[:4] + b20r[:4], 2)) == (5, "5.5 to 30.6", "0.12 to 1.55")
+    assert (
+        "the level changes were 5.5 to 30.6 of it in the two runs, where test 15's error of a time average read all "
+        "eight of the runs' boundaries NO CHANGE at 0.12 to 1.55." in item
+    )
+    assert (
+        "The middle test's false-alarm rate is a normal approximation, which test 18's desk check measured at 1.15 "
+        "percent; its power against a middle higher by 0.05 was 13.35 percent." in item
+    )
+
+
+def _t19_class(p10: float, p01: float, p: float, n: int) -> tuple[str, float, float]:
+    """Test 19's section 4, for 15 October's survey described under the rule (finding 32): the class, d and e."""
+    import math
+
+    import _reuse_runs as rr
+
+    e = (p10 + p01) / 2
+    se = max(rr.T19_SE_FLOOR, 0.5 * math.sqrt(p10 * (1 - p10) / n + p01 * (1 - p01) / n))
+    d = p - e
+    if d > rr.T19_PUB_ABOVE and d > 3 * se:
+        return "PUBLISHED ABOVE", d, e
+    if -d > rr.T19_MEAS_ABOVE and -d > 3 * se:
+        return "MEASURED ABOVE", d, e
+    if abs(d) <= max(rr.T19_AGREE, 3 * se):
+        return "AGREE", d, e
+    return "BETWEEN", d, e
+
+
+def test_finding_32_the_records():
+    """Finding 32: test 19's date 1 from its counts and the published table saved before the job, and 15 October's
+    survey (Kickoff 62) classed under the same rule as description; the counts, medians, the four qubits, the rank
+    correlation and 143's class, each against the text."""
+    from collections import Counter
+
+    import _reuse_runs as rr
+    from _reproduce import reuse_doc, t19_recomputed
+    from scipy.stats import spearmanr
+
+    item = _item_n(32)
+    q = _q
+    rec = reuse_doc("ibm_fez/t19-readout-date1.json")
+    r_ = rec["meta"]["rule"]
+    assert (r_["file"], r_["posted"]["issue"]) == ("t19-rule.md", 77)
+    assert _utc(r_["posted"]["created_utc"]) < _utc(rec["meta"]["utc"])
+    assert (
+        "[issue 77](https://github.com/dogma-guru/manacitra/issues/77)" in item
+        and "(`data/ibm_fez/t19-rule.md`)" in item
+    )
+    # 15 October, described under the rule: Kickoff 62's survey, 2 copies of 2,000 shots per state
+    k62 = reuse_doc("ibm_fez/k62-peak-check.json")
+    errs, pub = rr.k62_survey(k62)
+    n = k62["design"]["survey"]["copies"] * k62["design"]["survey"]["shots"]
+    oct_ = {qb: _t19_class(v["P1_given_0"], v["P0_given_1"], pub[qb]["readout_error"], n) for qb, v in errs.items()}
+    c_oct = Counter(c for c, *_ in oct_.values())
+    assert (len(oct_), n) == (156, 4000)
+    assert [c_oct[w] for w in ("PUBLISHED ABOVE", "MEASURED ABOVE", "AGREE", "BETWEEN")] == [105, 1, 13, 37]
+    assert rec["archived"]["desk"]["cases_1_to_4"]["k62_roles"] == {"gap": 105, "within": 13, "between": 37, "below": 1}
+    med_p_oct = float(np.median([pub[qb]["readout_error"] for qb in oct_]))
+    med_e_oct = float(np.median([e for *_, e in oct_.values()]))
+    assert (q(med_p_oct, 3), q(med_e_oct, 4)) == ("0.166", "0.0098")
+    assert (
+        "the published value above on 105 qubits, the measured value above on 1, agreement on 13 and between on 37, "
+        "with a median published error of 0.166." in item
+    )
+    # date 1
+    r19 = t19_recomputed()
+    cl = rec["archived"]["classes"]
+    assert (cl["n_read"], cl["word"], cl["counts"]) == (
+        156,
+        "MIXED",
+        {"PUBLISHED ABOVE": 4, "MEASURED ABOVE": 13, "AGREE": 124, "BETWEEN": 15},
+    )
+    assert (r19["word"], r19["counts"]) == (cl["word"], cl["counts"])
+    nov = r19["qubits"]
+    pa = sorted((qb for qb in nov if nov[qb]["class"] == "PUBLISHED ABOVE"), key=int)
+    assert pa == ["5", "33", "63", "155"] and all(oct_[qb][0] == "PUBLISHED ABOVE" for qb in pa)
+    assert hhmm(rec["job"]["timestamps"]["created"]) == "22:58"
+    assert rec["job"]["stamp_at_submission"] == rec["job"]["stamp_after_fetch"] == "2026-11-13T16:27:59Z"
+    assert rec["window"]["n_stamps_in_48h"] == 0 and rec["window"]["n_distinct_stamps"] == 1
+    assert {row["stamp_utc"] for row in rec["calibration_record"]["stamps"]} == {"2026-11-13T16:27:59Z"}
+    assert "(16 November, the job submitted at 22:58 UTC; 156 qubits read)" in item
+    assert (
+        "The stamp in force was that of 13 November 2026, 16:27:59 UTC, with no stamp in the 48 hours before the job "
+        "and none between its submission and its fetch." in item
+    )
+    assert (
+        "The date's word is MIXED: PUBLISHED ABOVE on 4 qubits (5, 33, 63 and 155), MEASURED ABOVE on 13, AGREE on 124 "
+        "and BETWEEN on 15." in item
+    )
+    th = cl["thresholds"]
+    assert (q(th["one_in_twenty_of_n"], 1), 4 < th["one_in_twenty_of_n"] < 13) == ("7.8", True)
+    assert "PUBLISHED ABOVE (4) is under one in twenty of 156 (7.8) and MEASURED ABOVE (13) is not" in item
+    qs = sorted(nov, key=int)
+    assert set(qs) == set(oct_)
+    med_p, med_e = float(np.median([nov[x]["p"] for x in qs])), float(np.median([nov[x]["e"] for x in qs]))
+    assert (q(med_p, 4), q(med_e, 4)) == ("0.0122", "0.0105")
+    assert "The median published error was 0.0122 and the median measured error 0.0105." in item
+    rho = spearmanr([oct_[x][1] for x in qs], [nov[x]["d"] for x in qs]).statistic
+    assert q(rho, 3) == "0.067"
+    assert (
+        "of the 4 qubits PUBLISHED ABOVE on date 1, all 4 were PUBLISHED ABOVE on 15 October, and the rank correlation "
+        "of d between the two (Spearman, 156 qubits) was 0.067" in item
+    )
+    assert (nov["143"]["class"], q(nov["143"]["e"], 4), q(nov["143"]["p"], 4), oct_["143"][0]) == (
+        "AGREE",
+        "0.0059",
+        "0.0039",
+        "PUBLISHED ABOVE",
+    )
+    assert "qubit 143 read AGREE (e 0.0059, p 0.0039), where on 15 October it read PUBLISHED ABOVE" in item
+    assert rec["archived"]["desk"]["cases_1_to_4"]["all_required_met"] is True
+    rows = {
+        "PUBLISHED ABOVE": (105, 4),
+        "MEASURED ABOVE": (1, 13),
+        "AGREE": (13, 124),
+        "BETWEEN": (37, 15),
+        "median measured error": (q(med_e_oct, 4), q(med_e, 4)),
+        "median published error": (q(med_p_oct, 3), q(med_p, 4)),
+    }
+    for k, (a, b) in rows.items():
+        assert f"| {k} | {a} | {b} |" in item, k
+    assert "(`data/ibm_fez/withdrawn-go-t19-20261115.md`)" in item
+    assert (archive.data_dir() / "ibm_fez" / "withdrawn-go-t19-20261115.md").is_file()
+
+
+def test_finding_33_the_records():
+    """Finding 33: test 21's three jobs on ibm_kingston's qubits 11 and 95, each number against the record; qubit 11
+    with its readout numbers only; qubit 95's scan beside October's and its two monitors; the rule's section 7 quoted
+    whole; the rulings' times; the analysis script's two versions. A readout error that is an exact half at the places
+    quoted is quoted exactly (A19's lesson)."""
+    from fractions import Fraction
+
+    from _reproduce import reuse_doc
+
+    item = _item_n(33)
+    q = _q
+    rec = reuse_doc("ibm_kingston/t21-two-qubits.json")
+    r_ = rec["meta"]["rule"]
+    assert (r_["file"], r_["posted"]["issue"]) == ("t21-rule.md", 79)
+    assert _utc(r_["posted"]["created_utc"]) < _utc(rec["meta"]["utc"])
+    assert "[issue 79](https://github.com/dogma-guru/manacitra/issues/79)" in item
+    assert "(`data/ibm_kingston/t21-rule.md`)" in item and "No model was scored." in item
+    # the jobs
+    spans = {j: rec["jobs"][j]["execution_metadata"]["execution_spans"] for j in "123"}
+    assert (hhmm(spans["1"][0]["start_utc"] + "Z"), hhmm(spans["3"][-1]["stop_utc"] + "Z")) == ("03:41", "03:56")
+    stamps = {row["stamp_utc"] for row in rec["calibration_record"]["stamps"]}
+    assert stamps == {"2026-11-13T14:57:10Z"} and rec["window"]["n_stamps_in_48h"] == 0
+    assert (
+        "(ibm_kingston, 17 November, 03:41 to 03:56 UTC in the provider's execution record, all three under one stamp, "
+        "13 November 14:57:10 UTC, with no stamp in the 48 hours before the go)" in item
+    )
+    s = rec["archived"]["summary"]
+    mon = s["monitors"]
+    assert rec["jobs"]["1"]["positions"] == 260 and rec["meta"]["shots_by_job"] == {
+        "1": "1,500 shots",
+        "2": "3,200 shots",
+        "3": "1,800 shots",
+    }
+    assert s["job1"]["fit_commit"].startswith("b7313bb")
+    sweeps = {j: mon[j]["qubits"]["95"]["spans"][0]["sweep_s"] for j in "23"}
+    assert (mon["2"]["repeats"], mon["3"]["repeats"]) == (8, 16)
+    assert (q(1e3 * sweeps["2"], 3), q(1e3 * sweeps["3"], 3)) == ("5.774", "10.533")
+    for j in "23":
+        assert [x["kind"] for x in mon[j]["layout"]] == ["WHOLE POSITIONS"] and len(spans[j]) == 1
+        for qb in ("11", "95"):
+            assert mon[j]["qubits"][qb]["boundaries"] == []
+    assert (
+        "(260 positions of 1,500 shots, interleaving seed 21302), read by test 9's analysis at commit b7313bb" in item
+    )
+    assert (
+        "8 repeats of X then Y at 6.0 µs on qubit 11 and 20.0 µs on qubit 95, 3,200 shots, a sweep of 5.774 ms" in item
+    )
+    assert "Job 3: the wide monitor, 16 repeats, 1,800 shots, a sweep of 10.533 ms." in item
+    assert "Each monitor ran as one span of whole positions, so neither has a boundary word." in item
+    # qubit 11: no word, its readout numbers only
+    q11 = [s["job1"]["qubits"]["11"]["readout"]] + [mon[j]["qubits"]["11"]["readout"] for j in "23"]
+    e11 = [x.get("e_in_job", x.get("e")) for x in q11]
+    assert s["job1"]["qubits"]["11"]["word"] is None and not any(mon[j]["qubits"]["11"]["usable"] for j in "23")
+    assert all(sp["words"] is None for j in "23" for sp in mon[j]["qubits"]["11"]["spans"])
+    assert [q(e, 4) for e in e11] == ["0.0817", "0.0807", "0.0647"] and all(e > 0.03 for e in e11)
+    assert q(mon["2"]["qubits"]["11"]["readout"]["published_readout_error_at_the_stamp_in_force"], 4) == "0.0259"
+    assert [q(x["P0_given_1"], 3) for x in q11] == ["0.162", "0.160", "0.129"]
+    assert max(x["P1_given_0"] for x in q11) <= 0.001
+    assert (
+        "Its readout error from each job's own circuits was 0.0817, 0.0807 and 0.0647, against the rule's limit of "
+        "0.03 and a published 0.0259 at the stamp in force; its P(0|1) was 0.162, 0.160 and 0.129, and its P(1|0) "
+        "0.001 or less." in item
+    )
+    # qubit 95, the scan
+    j95 = s["job1"]["qubits"]["95"]
+    dec, td, octo = j95["deciding"], j95["this_date"], j95["beside_october_test9"]
+    assert (j95["word"], j95["table_reading"]) == ("NOT CONFIRMED ON A LATER DATE", "NO RESOLVED SPLIT")
+    assert j95["clauses"]["S_within_the_margin_of_P_or_below"] and j95["clauses"]["b_interval_reaches_an_edge"]
+    assert (q(dec["held_out_error_S"], 4), q(dec["held_out_error_P"], 4)) == ("0.0172", "0.0081")
+    assert [q(x, 3) for x in (*td["b_ci90"], td["b"])] == ["0.030", "0.057", "0.044"]
+    assert [q(x, 2) for x in (td["delta_kHz"], *td["delta_ci90_kHz"])] == ["12.18", "11.73", "12.63"]
+    assert j95["clauses"]["delta_lower_bound_above_the_floor"]
+    assert (octo["delta_kHz"], octo["delta_ci90_kHz"], octo["b"], octo["b_ci90"]) == (
+        12.67,
+        [12.43, 12.92],
+        0.061,
+        [0.05, 0.073],
+    )
+    assert (
+        "(S 0.0172, P 0.0081), and the weight's interval, 0.030 to 0.057 (b 0.044), reaches the 0.05 edge. δ was 12.18 "
+        "kHz (11.73 to 12.63), its lower bound above the 5 kHz floor, with October's 12.67 kHz (12.43 to 12.92) and b "
+        "0.061 (0.050 to 0.073) beside it; the differences are reported, not reconciled." in item
+    )
+    wb = j95["weight_in_execution_order"]
+    cc = j95["copies_check"]["ramsey"]
+    assert (q(j95["antiphase_wait_us"], 2), q(cc["per_dof"], 2), cc["dof"]) == ("20.52", "1.31", 128)
+    assert (len(wb["blocks"]), _rng([b_["weighted_mean"] for b_ in wb["blocks"]], 3), q(wb["weighted_mean"], 3)) == (
+        10,
+        "0.030 to 0.054",
+        "0.043",
+    )
+    assert (
+        "the wait at which this date's δ puts the two lines in antiphase, 20.52 µs, where the monitors ran at 20.0 µs, "
+        "fixed; the copies check over the Ramsey circuits, Σz² per dof 1.31 over 128 circuits; and the weight in "
+        "execution order, ten blocks of 0.030 to 0.054 with a weighted mean of 0.043." in item
+    )
+    # qubit 95, the monitors
+    m95 = {j: mon[j]["qubits"]["95"] for j in "23"}
+    sp = {j: m95[j]["spans"][0] for j in "23"}
+    assert {m95[j]["quadrature_of_record"]["quadrature"] for j in "23"} == {"X"}
+    assert [sp[j]["sharing"]["word"] for j in "23"] == ["SHARED", "SHARED"]
+    assert [q(sp[j]["sharing"]["ratio"], 3) for j in "23"] == ["3.848", "5.373"]
+    assert [q(sp[j]["sharing"]["perm_max"], 3) for j in "23"] == ["1.084", "1.077"]
+    assert all(sp[j]["sharing"]["n_perm_at_or_above_ratio"] == 0 for j in "23")
+    assert [(sp[j]["timing_word"], sp[j]["lag_sweeps"], sp[j]["tau_c_is_ceiling"]) for j in "23"] == [
+        ("FASTER THAN THE CLOCK", 2, True),
+        ("FASTER THAN THE CLOCK", 1, True),
+    ]
+    assert [q(sp[j]["tau_c_s"], 4) for j in "23"] == ["0.0173", "0.0316"]
+    assert [(sp[j]["duty_word"], q(sp[j]["separation"], 3)) for j in "23"] == [
+        ("DUTY NOT READ", "0.506"),
+        ("DUTY NOT READ", "0.255"),
+    ]
+    assert (
+        "SHARED in both (sharing ratios 3.848 and 5.373, against permuted maxima of 1.084 and 1.077 over 200 "
+        "permutations); FASTER THAN THE CLOCK in both (correlation lags of 2 and 1 sweeps; ceilings 0.0173 and 0.0316 "
+        "s); DUTY NOT READ in both (separations 0.506 and 0.255, under the rule's 0.55)." in item
+    )
+    # its readout error per job: job 3's is exactly 27 in 7,200, a half at four places, so it is quoted exactly
+    shots = {"1": 1500, "2": 3200, "3": 1800}
+    e95 = [j95["readout"]["e_in_job"]] + [m95[j]["readout"]["e"] for j in "23"]
+    exact = [Fraction(e).limit_denominator(4 * shots[j]) for e, j in zip(e95, "123", strict=True)]
+    assert [float(f) - e for f, e in zip(exact, e95, strict=True)] == pytest.approx([0, 0, 0], abs=1e-15)
+    assert exact[2] == Fraction(27, 7200) and Fraction(375, 100000) == exact[2]
+    assert (q(e95[0], 4), q(e95[1], 4)) == ("0.0058", "0.0069")
+    assert q(j95["readout"]["published_readout_error"], 4) == "0.0044"
+    assert q(s["two_clocks_beside"]["gap_between_jobs_s"], 2) == "649.12"
+    assert (
+        "its readout error from the jobs' circuits, 0.0058, 0.0069 and 0.00375 (exactly 27 in 7,200), beside a "
+        "published 0.0044; and the gap between jobs 2 and 3 in the execution records, 649.12 s, with no word." in item
+    )
+    # the rule's section 7, quoted whole
+    rule = (archive.data_dir() / "ibm_kingston" / "t21-rule.md").read_text()
+    sec7 = rule.split("## 7. What the words mean, fixed now\n", 1)[1].split("\n## ", 1)[0].strip()
+    assert f'in the rule\'s own words (its section 7): "{" ".join(sec7.split())}"' in item
+    # the rulings, and the script's two versions
+    rulings = (archive.data_dir() / "ibm_kingston" / "rulings-t21.md").read_text()
+    assert "2026-11-17T02:18:45Z" in rulings and "2026-11-17T13:57:24Z" in rulings
+    assert _utc("2026-11-17T02:18:45Z") < _utc(rec["meta"]["utc"]) < _utc("2026-11-17T13:57:24Z")
+    assert "(recorded 2026-11-17T02:18:45Z)" in item and "(recorded 2026-11-17T13:57:24Z)" in item
+    assert {"analyse_t21_job1-as-failed.py", "analyse_t21_job1.py"} <= set(rec["source_code"])
+    assert "`analyse_t21_job1-as-failed.py` and `analyse_t21_job1.py`" in item
+
+
+#: Amendment A29, section 5: IBM's reproduction, in these words, once on the findings page and once in the README
+IBM_NOTE = (
+    "IBM Quantum Support reproduced the two-line result on ibm_fez qubit 143 (support case, October 2026). IBM's "
+    "description of the observation is a frequency offset when the qubit is idle and during mid-circuit measurement; "
+    "its recommendation to users is dynamical decoupling. This does not indicate collaboration with or endorsement by "
+    "IBM."
+)
+
+
+def test_ibm_note_is_stated_twice_in_its_words():
+    """A29, section 5: the note in its fixed words, as a dated note after finding 31 and once in the README, and in no
+    other file; no case number."""
+    import re
+    import subprocess
+
+    files = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split()
+    seen = {}
+    for f in files:
+        if not f.endswith((".md", ".py", ".json", ".txt", ".cff", ".yml", ".toml")):
+            continue
+        n = " ".join((ROOT / f).read_text(errors="replace").split()).count(IBM_NOTE)
+        if n:
+            seen[f] = n
+    assert seen == {"README.md": 1, "docs/findings.md": 1}, seen
+    item = _item_n(31)
+    assert item.endswith(f"**A note, dated 18 November 2026.** {IBM_NOTE}")
+    readme = " ".join((ROOT / "README.md").read_text().split())
+    para = readme.split(IBM_NOTE, 1)
+    assert (
+        para[1].lstrip().startswith("What would discredit the map:")
+    )  # the paragraph before it, in the findings section
+    assert not re.search(r"(?i)case\s*(number|no\.?|#)?\s*\d", IBM_NOTE)
+
+
+def test_findings_31_to_33_pictures():
+    """Findings 31's two pictures: made from the data by docs/make_diagrams.py, referenced from finding 31, their alt
+    text carrying the numbers they show, each checked against the records."""
+    from _reproduce import reuse_doc
+
+    raw = (
+        (ROOT / "docs" / "findings.md")
+        .read_text()
+        .split('<a id="finding-31"></a>', 1)[1]
+        .split('<a id="finding-32"', 1)[0]
+    )
+    alt = " ".join(raw.split("![", 1)[1].split("](diagrams/split-by-date-143.svg)", 1)[0].split())
+    scans = [
+        ("16 October 2026 (test 7)", archive.load("ibm_fez/t7-ramsey-xy.json")["archived"]["analysis"]),
+        (
+            "17 October (test 11, day 2)",
+            reuse_doc("ibm_fez/t11-day2-monitor.json")["archived"]["analysis"]["jobs"]["1"]["analysis"],
+        ),
+        (
+            "19 October (test 11, day 3)",
+            reuse_doc("ibm_fez/t11-day3-monitor.json")["archived"]["analysis"]["jobs"]["1"]["analysis"],
+        ),
+        (
+            "17 November (test 20)",
+            reuse_doc("ibm_fez/t20-fifth-date.json")["archived"]["analysis"]["jobs"]["1"]["analysis"],
+        ),
+    ]
+    text = svg_text(DIAGRAMS / "split-by-date-143.svg")
+    for name, a in scans:
+        d, (lo, hi) = a["fits"]["P"]["params"]["delta_MHz"] * 1e3, a["deciding"]["delta_ci90_kHz"]
+        cell = f"{_q(d, 2)} kHz ({_q(lo, 2)} to {_q(hi, 2)})"
+        assert f"{name}, {cell}" in alt, name
+        assert cell in text, name
+    assert "The dates are drawn as categories, not to scale." in alt and "The dates are not to scale." in text
+    assert (DIAGRAMS / "split-by-date-143.png").is_file()
+    t20 = reuse_doc("ibm_fez/t20-fifth-date.json")
+    ps = t20["archived"]["per_shot_read"]
+    w = [x for j in ("job2", "job3") for x in ps["between_jobs_job_rows"][j]["span_w_duties"]]
+    alt2 = " ".join(
+        raw.split("](diagrams/split-by-date-143.svg)", 1)[1]
+        .split("![", 1)[1]
+        .split("](diagrams/duties-by-span-143-t20.svg)", 1)[0]
+        .split()
+    )
+    assert ", ".join(_q(x, 3) for x in w[:-1]) + f" and {_q(w[-1], 3)}, their mean {_q(np.mean(w), 3)} dashed" in alt2
+    assert "Every boundary within a job read NO CHANGE." in alt2
+    assert {b_["word"] for b_ in ps["boundaries"]} == {"NO CHANGE"}
+    text = svg_text(DIAGRAMS / "duties-by-span-143-t20.svg")
+    assert f"mean {_q(np.mean(w), 3)}" in text and "NO CHANGE at every boundary of both jobs" in text
+    assert (DIAGRAMS / "duties-by-span-143-t20.png").is_file()
+    for name in ("split_by_date", "duties_by_span_t20"):
+        assert f"def diagram_{name}(" in (ROOT / "docs" / "make_diagrams.py").read_text()
+
+
+def test_findings_31_to_33_beside_the_findings():
+    """A29, section 3: the rules byte for byte with the hashes their issues carry; what has not been shown, its four
+    new bullets in the kickoff's words, the weight-estimators bullet as it was, and the readout table's bullet; the
+    README's limits line; the reproduce page's pointers, commits and the scorer's lines; the kickoffs rows; the long
+    documentation's row; and the build report's section, with no CI run ID."""
+    import hashlib
+    import re
+
+    from _reproduce import reuse_doc
+
+    recs = {
+        "t18": reuse_doc("ibm_fez/t18-two-monitors.json"),
+        "t19": reuse_doc("ibm_fez/t19-readout-date1.json"),
+        "t20": reuse_doc("ibm_fez/t20-fifth-date.json"),
+        "t21": reuse_doc("ibm_kingston/t21-two-qubits.json"),
+    }
+    for t, rec in recs.items():
+        folder = "ibm_kingston" if t == "t21" else "ibm_fez"
+        text = (archive.data_dir() / folder / f"{t}-rule.md").read_bytes()
+        assert hashlib.sha256(text).hexdigest() == rec["meta"]["rule"]["sha256"], t
+    assert [recs[t]["meta"]["rule"]["posted"]["issue"] for t in recs] == [71, 77, 78, 79]
+    findings = " ".join((ROOT / "docs" / "findings.md").read_text().split())
+    shown = findings.split("## What it has not shown", 1)[1].split(" ## ", 1)[0]
+    for bullet in (
+        "- **One qubit, five dates.** The two lines of ibm_fez's 143 are a record of 16 October to 17 November 2026 at "
+        "one wait; nothing about other qubits, later dates or other processors.",
+        "- **One design, two runs.** Sandhi version 4.1's D1 has been scored twice, and one family counted against it "
+        "once. Two runs are a record, not a calibration.",
+        "- **One date of a readout series.** Test 19's first date does not say what the table reads on other dates.",
+        "- **No second qubit on a faster clock.** Test 21 gave no word for one qubit and no confirmation for the "
+        "other.",
+        "The screen on measured readout is a response to that; finding 32 sets the table beside a measured one on one "
+        "more date, and nothing is claimed about the table at other times or on other processors.",
+    ):
+        assert bullet in shown, bullet[:40]
+    assert "- **The weight has two estimators** that have not been calibrated against each other" in shown
+    readme = " ".join((ROOT / "README.md").read_text().split())
+    assert (
+        "- **One qubit on five dates, one date of a readout series, and two kingston qubits on one date, for findings "
+        "31 to 33.** Finding 31 is from two runs on ibm_fez's qubit 143, on 21 October and 17 November 2026, each "
+        "under one published calibration stamp, beside its October records; Sandhi version 4.1 has now been scored on "
+        "three runs, D2 once and D1 twice." in readme
+    )
+    stamps = {
+        t: {r_["stamp_utc"] for r_ in recs[t]["calibration_record"]["stamps"] if r_["kind"].startswith(("job", "d1"))}
+        for t in recs
+    }
+    assert [len(stamps[t]) for t in recs] == [1, 1, 1, 1]
+    # the reproduce page
+    rep = " ".join((ROOT / "docs" / "reproduce.md").read_text().split())
+    for t in ("t18", "t20", "t21"):
+        assert {j["built_from"]["manacitra_commit"][:7] for j in recs[t]["jobs"].values()} == {"b782d00"}, t
+    assert recs["t20"]["archived"]["analysis"]["jobs"]["1"]["code"]["commit"].startswith("09bdebd")
+    assert recs["t21"]["archived"]["summary"]["job1"]["fit_commit"].startswith("b7313bb")
+    assert "dd9727a" in recs["t21"]["archived"]["per_shot_read"]["meta"]["package"]
+    hw62 = recs["t19"]["job"]["meta"]["hw_62_sha256"]
+    assert f"`hw_62.py` (SHA-256 `{hw62}`)" in rep
+    for f in ("t18-two-monitors.json", "t19-readout-date1.json", "t20-fifth-date.json"):
+        assert f"`data/ibm_fez/{f}`" in rep
+    assert "`data/ibm_kingston/t21-two-qubits.json`" in rep
+    from _reproduce import CASES
+
+    for case in (
+        "Test 18, the per-shot read and the middle test",
+        "Test 19, date 1 of the readout series",
+        "Test 20, qubit 143 on a fifth date",
+        "Test 21, job 1 on qubits 11 and 95",
+    ):
+        assert case in CASES and f'"{case}"' in rep, case
+    for t in ("t18", "t20"):
+        assert f"--predictions predictions-model-01-v4.1.json --out scorecard-{t}.json" in rep
+    assert "--shuffled job1,shots-t20-job1.npz,shots-t20-job1-meta.json,counts-t20-job1.json" in rep
+    assert "sandhi-v41-scorer" not in rep and "../../" not in rep
+    # the kickoffs rows and the long documentation's row
+    kick = (ROOT / "docs" / "kickoffs.md").read_text()
+    for name, day in (
+        ("test 18", "21 October"),
+        ("test 19", "16 November"),
+        ("test 20", "17 November"),
+        ("test 21", "17 November"),
+    ):
+        assert any(x.startswith(f"| {name}, {day} 2026 |") for x in kick.splitlines()), name
+    index = (ROOT / "docs" / "index.md").read_text()
+    words = {
+        "t19": ("PUBLISHED ABOVE", "MEASURED ABOVE", "MIXED"),
+        "t20": ("CONFIRMED ON THE FIFTH DATE",),
+        "t21": ("NOT CONFIRMED ON A LATER DATE", "TIMED", "FASTER THAN THE CLOCK", "DUTY NOT READ"),
+    }
+    for t, ws in words.items():
+        rule = (archive.data_dir() / ("ibm_kingston" if t == "t21" else "ibm_fez") / f"{t}-rule.md").read_text()
+        assert all(w in rule for w in ws), t
+    assert (
+        "The words of tests 19 to 21 (PUBLISHED ABOVE, MEASURED ABOVE and MIXED; CONFIRMED ON THE FIFTH DATE; NOT "
+        "CONFIRMED ON A LATER DATE, TIMED, FASTER THAN THE CLOCK and DUTY NOT READ) are defined in "
+        "`data/ibm_fez/t19-rule.md`, `data/ibm_fez/t20-rule.md` and `data/ibm_kingston/t21-rule.md`, and stated in "
+        "findings 31 to 33." in " ".join(index.split())
+    )
+    row = next(x for x in index.splitlines() if x.startswith("| ibm_fez, tests 18 to 20, and ibm_kingston, test 21:"))
+    for f in ("monitor_per_shot_read", "t11_job1", "t19_classes", "t21_job1"):
+        assert f"`{f}`" in row
+        import _reuse_runs as rr
+
+        assert callable(getattr(rr, f)), f
+    # the build report's section
+    br = (ROOT / "build-report.md").read_text()
+    sec = br.split("## 51. Amendment A29:", 1)[1].split("\n## ", 1)[0]
+    assert not re.search(r"\b\d{10,11}\b", sec)  # no CI run IDs
+    assert "—" not in sec and "–" not in sec
+
+
+def test_the_changelog_0_11_0():
+    """Amendment A29, section 6: the changelog's 0.11.0 heading above 0.10.0, unreleased until the release pull request
+    dates it, with the lead the kickoff fixed, word for word, and the A29 entry naming the findings' data, Sandhi's two
+    scorecards, the three probes and IBM's reproduction; no dashes."""
+    log = (ROOT / "CHANGELOG.md").read_text()
+    assert log.index("## 0.11.0 (unreleased)") < log.index("## 0.10.0 (20 October 2026)")
+    entry = log.split("## 0.11.0 (unreleased)", 1)[1].split("\n## ", 1)[0]
+    lead = (
+        "Four records under rules hashed before them. On 17 November 2026 ibm_fez's qubit 143 read TWO FIXED "
+        "FREQUENCIES on a fifth date, with a split of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, "
+        "and every monitor span read SHARED. The desk model Sandhi, at version 4.1, was scored on its first design "
+        "twice, on 21 October and 17 November, with its bets unchanged and the first scorecard's digest posted "
+        "before the second run; on the second run one family of its bets, the emissions, counted against it. A "
+        "survey of ibm_fez's readout on 16 November read MIXED against the published table, where on 15 October the "
+        "published errors had sat above the measured ones on 105 of 156 qubits; the series is open. On ibm_kingston, "
+        "of two qubits that read two lines on 17 October, one could not be given a word for its readout error and "
+        "the other read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could "
+        "time. Three probes of a second provider's route are published as records. IBM Quantum Support reproduced "
+        "the two-line result on qubit 143; this does not indicate collaboration with or endorsement by IBM. No cause "
+        "is named."
+    )
+    assert entry.strip().split("\n\n", 1)[0] == lead
+    flat = " ".join(entry.split())
+    for part in (
+        "- Amendment A29: findings 31 to 33 (tests 18 to 21)",
+        "`scorecard-t18.json` and `scorecard-t20.json`, in `data/desk/sandhi/v4.1/`",
+        "`data/rigetti_cepheus_1_108q/probes/`, published as records with a README; a probe is not a test, and nothing "
+        'in one is a finding. Their rules are byte for byte; elsewhere each dollar figure is written "[cost]"',
+        "The package is unchanged.",
+    ):
+        assert part in flat, part
     assert "—" not in entry and "–" not in entry

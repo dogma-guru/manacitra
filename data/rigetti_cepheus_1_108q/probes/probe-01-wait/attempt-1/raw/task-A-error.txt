@@ -1,0 +1,1 @@
+An error occurred (ValidationException) when calling the CreateQuantumTask operation: Attempted to spend outside the spending limit time window for the device.

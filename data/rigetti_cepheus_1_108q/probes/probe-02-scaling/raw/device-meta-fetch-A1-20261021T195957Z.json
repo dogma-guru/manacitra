@@ -1,0 +1,24 @@
+{
+ "deviceArn": "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q",
+ "deviceName": "Cepheus-1-108Q",
+ "providerName": "Rigetti",
+ "deviceType": "QPU",
+ "deviceStatus": "ONLINE",
+ "deviceQueueInfo": [
+  {
+   "queue": "QUANTUM_TASKS_QUEUE",
+   "queueSize": "0",
+   "queuePriority": "Normal"
+  },
+  {
+   "queue": "QUANTUM_TASKS_QUEUE",
+   "queueSize": "0",
+   "queuePriority": "Priority"
+  },
+  {
+   "queue": "JOBS_QUEUE",
+   "queueSize": "0"
+  }
+ ],
+ "read_utc": "2026-10-21T19:59:57Z"
+}

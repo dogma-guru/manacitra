@@ -2176,6 +2176,124 @@ def t17():
     return rows, leaves
 
 
+# --------------------------------------------------------------------------- tests 18 to 21 (A29, findings 31 to 33)
+T18_RUN = "ibm_fez/t18-two-monitors.json"
+T19_DATE1 = "ibm_fez/t19-readout-date1.json"
+T20_RUN = "ibm_fez/t20-fifth-date.json"
+T21_RUN = "ibm_kingston/t21-two-qubits.json"
+T20_WORDS = ("CONFIRMED ON THE FIFTH DATE", "NOT CONFIRMED ON THE FIFTH DATE")
+
+
+@cache
+def t18_recomputed() -> dict:
+    return reuse.monitor_per_shot_read(reuse_doc(T18_RUN)["archived"]["per_shot_read"], ("job1", "job2"))
+
+
+@cache
+def t19_recomputed() -> dict:
+    return reuse.t19_classes(reuse_doc(T19_DATE1))
+
+
+@cache
+def t20_recomputed() -> tuple[dict, dict]:
+    doc = reuse_doc(T20_RUN)
+    j1 = reuse.t11_job1(doc, doc["archived"]["analysis"]["jobs"]["1"]["seeds"], T20_WORDS)
+    return j1, reuse.monitor_per_shot_read(doc["archived"]["per_shot_read"], ("job2", "job3"), middle=False)
+
+
+@cache
+def t21_recomputed() -> dict:
+    return reuse.t21_job1(reuse_doc(T21_RUN))
+
+
+def _per_shot_mirror(m: dict) -> dict:
+    return {"jobs": _mirror_jobs(m["jobs"]), **{k: v for k, v in m.items() if k != "jobs"}}
+
+
+def t18():
+    """Test 18, the per-shot read and the middle test: every monitor span of its two jobs, the four boundaries, the
+    jobs and the row between them, and the middle test's contrasts, Z and word, recomputed through manacitra.wait from
+    the sweep means the read published and the provider's span times, as test 17's (Amendment A29)."""
+    m = t18_recomputed()
+    docs = {T18_RUN: reuse_doc(T18_RUN)}
+    leaves = compare(
+        "Test 18, the per-shot read and the middle test",
+        {T18_RUN: {"archived": {"per_shot_read": _per_shot_mirror(m)}}},
+        docs,
+    )
+    a = docs[T18_RUN]["archived"]["per_shot_read"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["middle_test"]["pooled"]["word"], m["middle_test"]["pooled"]["word"]),
+            *(
+                (f"boundary {i}", b["word"], x["word"])
+                for i, (b, x) in enumerate(zip(a["boundaries"], m["boundaries"]))
+            ),
+            ("between the jobs", a["between_jobs"][0]["word"], m["between_jobs"][0]["word"]),
+        ]
+    )
+    return rows, leaves
+
+
+def t19_date1():
+    """Test 19, date 1 of the readout series: every qubit's P(1|0), P(0|1), measured readout error, its se, the
+    published error at the stamp in force at submission, their difference and class, the counts of the classes and the
+    date's word, from the survey's counts and the published table saved before the job (Amendment A29)."""
+    m = t19_recomputed()
+    docs = {T19_DATE1: reuse_doc(T19_DATE1)}
+    leaves = compare("Test 19, date 1 of the readout series", {T19_DATE1: {"archived": {"classes": m}}}, docs)
+    a = docs[T19_DATE1]["archived"]["classes"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["word"], m["word"]),
+            *((c, a["counts"][c], m["counts"][c]) for c in a["counts"]),
+        ]
+    )
+    return rows, leaves
+
+
+def t20():
+    """Test 20, qubit 143 on a fifth date: job 1's fits, held-out errors, bootstrap, verdict, readings and weight per
+    span by the functions test 11 used, with test 11's seeds and test 20's own bootstrap seed; and the per-shot read
+    of jobs 2 and 3, every span, boundary and the row between the jobs, as test 17's (Amendment A29)."""
+    j1, ps = t20_recomputed()
+    docs = {T20_RUN: reuse_doc(T20_RUN)}
+    mine = {"analysis": {"jobs": {"1": j1}}, "per_shot_read": _per_shot_mirror(ps)}
+    leaves = compare("Test 20, qubit 143 on a fifth date", {T20_RUN: {"archived": mine}}, docs)
+    a = docs[T20_RUN]["archived"]
+    P = a["analysis"]["jobs"]["1"]["analysis"]["fits"]["P"]["params"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["analysis"]["jobs"]["1"]["verdict"], j1["verdict"]),
+            ("job 1, delta (MHz)", P["delta_MHz"], j1["analysis"]["fits"]["P"]["params"]["delta_MHz"]),
+            ("job 1, b", P["b"], j1["analysis"]["fits"]["P"]["params"]["b"]),
+            *(
+                (f"boundary {i}", b["word"], x["word"])
+                for i, (b, x) in enumerate(zip(a["per_shot_read"]["boundaries"], ps["boundaries"]))
+            ),
+        ]
+    )
+    return rows, leaves
+
+
+def t21():
+    """Test 21, job 1 on ibm_kingston's qubits 11 and 95: test 9's rule on each qubit's bit by
+    manacitra.wait.ramsey_xy_fit with the run's seeds, the usable rule from the job's own readout circuits, each
+    qubit's verdict and word, and the count (Amendment A29)."""
+    m = t21_recomputed()
+    docs = {T21_RUN: reuse_doc(T21_RUN)}
+    leaves = compare("Test 21, job 1 on qubits 11 and 95", {T21_RUN: {"archived": {"job1": m}}}, docs)
+    a = docs[T21_RUN]["archived"]["job1"]["qubits"]
+    rows = _rows(
+        lambda: [
+            ("verdict", a["95"]["t21"]["word"], m["qubits"]["95"]["t21"]["word"]),
+            ("qubit 11, usable", a["11"]["usable"], m["qubits"]["11"]["usable"]),
+            ("qubit 11, table reading", a["11"]["table_reading"], m["qubits"]["11"]["table_reading"]),
+        ]
+    )
+    return rows, leaves
+
+
 def p11_from(counts, n_pairs):
     from manacitra.keptshare import p11_from_bitstrings
 
@@ -2243,6 +2361,10 @@ CASES = {
     "Test 11 on a third day": t11_day3,
     "Test 16, the per-shot read of day 3": t16,
     "Test 17, the per-shot read and the middle test": t17,
+    "Test 18, the per-shot read and the middle test": t18,
+    "Test 19, date 1 of the readout series": t19_date1,
+    "Test 20, qubit 143 on a fifth date": t20,
+    "Test 21, job 1 on qubits 11 and 95": t21,
 }
 
 #: The acceptance bar as the kickoff states it (the other cases are reproduced too)
@@ -2287,4 +2409,8 @@ REQUIRED = {
     "Test 7, two frequencies on qubit 143": "TWO FIXED FREQUENCIES",
     "Test 11 on a third day": "CONFIRMED ON DAY 2",
     "Test 17, the per-shot read and the middle test": "NOT SEEN",
+    "Test 18, the per-shot read and the middle test": "NOT SEEN",
+    "Test 19, date 1 of the readout series": "MIXED",
+    "Test 20, qubit 143 on a fifth date": "CONFIRMED ON THE FIFTH DATE",
+    "Test 21, job 1 on qubits 11 and 95": "NOT CONFIRMED ON A LATER DATE",
 }

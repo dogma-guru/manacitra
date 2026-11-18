@@ -1,0 +1,11 @@
+2026-10-21T21:17:10Z properties read for the record: qubit 99 {'T1_s': 3.086777375838068e-05, 'T2_s': 3.48978147743928e-05, 'readout_fidelity': 0.982, 'rb_fidelity': 0.9994198528389092, 'properties_updatedAt': '2026-10-21T21:02:03+00:00'}; longest T2 at this read {'qubit': 99, 'T2_s': 3.48978147743928e-05} (nothing re-chosen)
+2026-10-21T21:17:11Z price list estimate for one task of 200 shots: [cost]
+2026-10-21T21:17:11Z serialised set 7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2; attempt 1 7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2; equal True
+2026-10-21T21:17:11Z submitting the program set (2 entries, shots=200, tags {'probe-03': 'program-set', 'attempt-2': 'resubmission'})
+2026-10-21T21:17:36Z creation error: An error occurred (ValidationException) when calling the CreateQuantumTask operation: Validation failed for one or more programs. See 'programSetValidationFailures' for details. First failure:
+{'programIndex': 0, 'errors': ['Validation timed out']}
+Rerun the task and catch the exception for more details
+2026-10-21T21:17:36Z compared with attempt 1: {'same_file_text': True, 'same_response_fields': True, 'attempt_1_file_sha256': 'ac97c6ef33dd1d5328bbb57afac31734650e9223bfb026fadd2251134cc3b82e'}
+2026-10-21T21:17:36Z stop: creation error recorded; no rewrite, no further task
+2026-10-21T21:17:36Z tracker end [cost]
+exit 0

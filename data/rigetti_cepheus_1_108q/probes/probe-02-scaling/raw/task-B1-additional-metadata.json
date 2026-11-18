@@ -1,0 +1,16 @@
+{
+ "action": {
+  "braketSchemaHeader": {
+   "name": "braket.ir.openqasm.program",
+   "version": "1"
+  },
+  "source": "OPENQASM 3.0;\nbit[1] b;\ncal {\n    waveform wait_d = constant(30900ns, 0.0);\n}\n#pragma braket verbatim\nbox{\nrx(3.141592653589793) $99;\n}\ncal {\n    play(Transmon_99_charge_tx, wait_d);\n    barrier Transmon_99_charge_tx, Transmon_99_readout_tx, Transmon_99_readout_rx;\n}\nb[0] = measure $99;\n"
+ },
+ "rigettiMetadata": {
+  "braketSchemaHeader": {
+   "name": "braket.task_result.rigetti_metadata",
+   "version": "1"
+  },
+  "compiledProgram": "PRAGMA INITIAL_REWIRING \"NAIVE\"\nDECLARE ro BIT[1]\nPRAGMA PRESERVE_BLOCK\nRX(3.141592653589793) 99\nPRAGMA END_PRESERVE_BLOCK\nNONBLOCKING PULSE 99 \"Transmon-99_charge_tx\" flat(duration: 3.09e-05, iq: 0.0 + 0.0*i)\nFENCE 99\nMEASURE 99 ro[0]"
+ }
+}

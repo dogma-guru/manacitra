@@ -1,0 +1,2 @@
+Section 9, case "no middle effect": seed 18902001, recorded 2026-10-21T00:54:40Z (UTC) before the case ran.
+Section 9, case "middle effect 0.05": seed 18902002, recorded 2026-10-21T00:54:55Z (UTC) before the case ran.

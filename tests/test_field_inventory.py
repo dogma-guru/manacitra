@@ -5,7 +5,8 @@
 Every field of every file in data/ is either recomputed and compared (tests/expected_fields.json) or excluded with a
 reason (tests/excluded_fields.json), never both and never neither, so a new archived statistic cannot slip through
 unlisted. And the comparison fails, as it must, when an inventoried statistic is changed, removed, emptied or made
-NaN in memory; the files on disk are never touched."""
+NaN in memory; the files on disk are never touched. The three probes' JSON files (Amendment A29,
+`rigetti_cepheus_1_108q/probes/`) are records of probes, not run records, and are not in the inventory."""
 
 import copy
 import hashlib
@@ -21,7 +22,8 @@ from manacitra import archive as ar
 
 def _data_files():
     root = ar.data_dir()
-    return {str(p.relative_to(root)): p for p in ar.records(root)}
+    probes = root / "rigetti_cepheus_1_108q" / "probes"
+    return {str(p.relative_to(root)): p for p in ar.records(root) if probes not in p.parents}
 
 
 def _pattern(path: str) -> re.Pattern:
@@ -289,7 +291,8 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
     on their names. Nine intervals that also resample shots, Kickoff 42's nineteen bootstrap SDs, (Amendment A17) the
     283 interval fields of Kickoffs 43 to 47, (Amendment A19) Kickoff 48's 75, (Amendment A22) Kickoffs 49 to 53's
     336, (Amendment A23) Kickoffs 54 and 55's 147, (Amendment A24) Kickoffs 56 to 62's 385, (Amendment A25) test 7's
-    32 and (Amendment A27) test 11's job 1's 26, enumerated below."""
+    32, (Amendment A27) test 11's job 1's 26, (Amendment A28) day 3's 30 and (Amendment A29) test 20's job 1's
+    40 and test 21's job 1's 15, enumerated below."""
     marked = {
         (g["file"], f, o["compare"])
         for groups in load_inventory()["cases"].values()
@@ -327,10 +330,11 @@ def test_the_marked_fields_are_exactly_the_intended_ones():
         | A25_MARKED
         | A27_MARKED
         | A28_MARKED
+        | A29_MARKED
     )
     assert (len(shots), len(boot), len(REUSE_MARKED), len(WAIT_TEST_MARKED)) == (9, 19, 283, 75)
     assert (len(A22_MARKED), len(A23_MARKED), len(A24_MARKED), len(A25_MARKED)) == (336, 147, 385, 32)
-    assert (len(A27_MARKED), len(A28_MARKED)) == (26, 30)
+    assert (len(A27_MARKED), len(A28_MARKED), len(A29_MARKED)) == (26, 30, 55)
 
 
 def _reuse_marked() -> set:
@@ -820,6 +824,71 @@ A28_MARKED = {
     )
 }
 
+
+A29_MARKED = {
+    ("ibm_fez/t20-fifth-date.json", f, "resampled-shots")
+    for f in (
+        J1 + "analysis/fits/S/params/tau_us",
+        J1 + "analysis/fits/S/params/phi0_rad",
+        J1 + "analysis/fits/S/chi2",
+        J1 + "analysis/fits/S/largest_abs_residual_sigma",
+        J1 + "analysis/fits/P/params/tau_prime_us",
+        J1 + "analysis/fits/P_lines/P_lines_kHz",
+        J1 + "analysis/fits/P_lines/P_reach_kHz",
+        J1 + "analysis/beside/1_telegraph_T/fit/params/c",
+        J1 + "analysis/beside/1_telegraph_T/fit/params/A",
+        J1 + "analysis/beside/1_telegraph_T/fit/params/phi0_rad",
+        J1 + "analysis/beside/3_beat_nodes/tau_S_us",
+        J1 + "analysis/beside/3_beat_nodes/tau_prime_P_us",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/20_22_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_31_33_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/contrasts_in_se/41_43_over_52_54_in_se",
+        J1 + "analysis/beside/4_reading_23p7_kHz/running_mean_max_rise_in_se",
+        J1 + "analysis/beside/5_detuning_and_T2/S_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/S_abs_Delta_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/P_Delta0_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/P_lines_kHz",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_S_us",
+        J1 + "analysis/beside/5_detuning_and_T2/tau_prime_P_us",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/X",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/Y",
+        J1 + "analysis/beside/6_more_than_two/periodogram/floors_95/complex",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/fit/params/tau_us",
+        J1 + "analysis/beside/6_more_than_two/sideband_check/fit/params/phi0_rad",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/chi2",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/lines_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/Delta0_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/first half (positions 0 to 129)/P/tau_prime_us",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/chi2",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/S/Delta_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/lines_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/Delta0_kHz",
+        J1 + "readings_after_the_data/C_P_on_each_half_of_the_run/second half (positions 130 to 259)/P/tau_prime_us",
+        J1 + "readings_after_the_data/D_envelope_recentred_on_P_c/contrasts_in_se/41_43_over_52_54_in_se",
+        J1 + "span_readings_A26/weight_per_span/[0]/chi2_per_dof_against_one_weight",
+        J1 + "span_readings_A26/weight_per_span/[2]/chi2_per_dof_against_one_weight",
+    )
+} | {
+    ("ibm_kingston/t21-two-qubits.json", "archived/job1/qubits/" + f, "resampled-shots")
+    for f in (
+        "11/S/params/tau_us",
+        "11/S/params/phi0_rad",
+        "11/P/params/tau_prime_us",
+        "11/bootstrap/percentiles_5_50_95/Delta0_MHz",
+        "11/bootstrap/percentiles_5_50_95/delta_MHz",
+        "11/lines_kHz",
+        "11/t21/this_date/lines_kHz",
+        "11/t21/this_date/Delta0_kHz",
+        "95/S/params/c",
+        "95/S/params/phi0_rad",
+        "95/P/params/tau_prime_us",
+        "95/bootstrap/percentiles_5_50_95/Delta0_MHz",
+        "95/bootstrap/percentiles_5_50_95/delta_MHz",
+        "95/lines_kHz",
+        "95/t21/this_date/lines_kHz",
+    )
+}
 
 REUSE_CIRCUITS = ("XOR_5", "BV_10", "Mul_13", "Sym_9")
 REUSE_MARKED = _reuse_marked()

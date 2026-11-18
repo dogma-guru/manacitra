@@ -1,0 +1,254 @@
+{
+ "tasks": [
+  {
+   "label": "A0",
+   "shots": 100,
+   "program_sha256": "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T19:59:48Z",
+   "created_utc": "2026-10-21T19:59:52Z",
+   "outcome": "created",
+   "cost_after_submission_usd": "[cost]",
+   "cost_task_usd": "[cost]",
+   "states_seen": [
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T19:59:55Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 19:59:52.602000+00:00",
+   "endedAt": "2026-10-21 19:59:53.341000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 96,
+   "shots_returned": 100,
+   "fraction_ones": 0.96,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T19:59:55Z",
+   "properties_at_fetch": {
+    "read_utc": "2026-10-21T19:59:56Z",
+    "file": "raw/properties-fetch-A0-20261021T195956Z.json",
+    "T1_s": 3.086777375838068e-05,
+    "T2_s": 3.48978147743928e-05,
+    "properties_updatedAt": "2026-10-21T19:32:03+00:00"
+   },
+   "cost_after_result_usd": "[cost]"
+  },
+  {
+   "label": "A1",
+   "shots": 200,
+   "program_sha256": "640f4eb75a752688aa5d29a9b3c1ce17d5efcb0ed2bf0aee45196a1ef05bdffa",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T19:59:53Z",
+   "created_utc": "2026-10-21T19:59:53Z",
+   "outcome": "created",
+   "cost_after_submission_usd": "[cost]",
+   "cost_task_usd": "[cost]",
+   "states_seen": [
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T19:59:56Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 19:59:53.639000+00:00",
+   "endedAt": "2026-10-21 19:59:54.302000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 106,
+   "shots_returned": 200,
+   "fraction_ones": 0.53,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T19:59:56Z",
+   "properties_at_fetch": {
+    "read_utc": "2026-10-21T19:59:57Z",
+    "file": "raw/properties-fetch-A1-20261021T195957Z.json",
+    "T1_s": 3.086777375838068e-05,
+    "T2_s": 3.48978147743928e-05,
+    "properties_updatedAt": "2026-10-21T19:32:03+00:00"
+   },
+   "cost_after_result_usd": "[cost]"
+  },
+  {
+   "label": "A2",
+   "shots": 100,
+   "program_sha256": "6330fa0a2351b9146cb903d6a54410b069da42558a7c7134e1129187be066761",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T19:59:54Z",
+   "created_utc": "2026-10-21T19:59:54Z",
+   "outcome": "created",
+   "cost_after_submission_usd": "[cost]",
+   "cost_task_usd": "[cost]",
+   "states_seen": [
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T19:59:57Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 19:59:54.500000+00:00",
+   "endedAt": "2026-10-21 19:59:55.866000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 20,
+   "shots_returned": 100,
+   "fraction_ones": 0.2,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T19:59:57Z",
+   "properties_at_fetch": {
+    "read_utc": "2026-10-21T19:59:58Z",
+    "file": "raw/properties-fetch-A2-20261021T195958Z.json",
+    "T1_s": 3.086777375838068e-05,
+    "T2_s": 3.48978147743928e-05,
+    "properties_updatedAt": "2026-10-21T19:32:03+00:00"
+   },
+   "cost_after_result_usd": "[cost]"
+  },
+  {
+   "label": "B1",
+   "shots": 200,
+   "program_sha256": "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T19:59:54Z",
+   "created_utc": "2026-10-21T19:59:55Z",
+   "outcome": "created",
+   "cost_after_submission_usd": "[cost]",
+   "cost_task_usd": "[cost]",
+   "states_seen": [
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T19:59:58Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 19:59:55.269000+00:00",
+   "endedAt": "2026-10-21 19:59:56.170000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 78,
+   "shots_returned": 200,
+   "fraction_ones": 0.39,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T19:59:58Z",
+   "properties_at_fetch": {
+    "read_utc": "2026-10-21T19:59:59Z",
+    "file": "raw/properties-fetch-B1-20261021T195959Z.json",
+    "T1_s": 3.086777375838068e-05,
+    "T2_s": 3.48978147743928e-05,
+    "properties_updatedAt": "2026-10-21T19:32:03+00:00"
+   },
+   "cost_after_result_usd": "[cost]"
+  }
+ ],
+ "tracker_start_usd": "[cost]",
+ "properties_read_utc": "2026-10-21T19:59:47Z",
+ "properties_file": "raw/properties-presubmission-20261021T195947Z.json",
+ "choice": {
+  "qubit": 99,
+  "tied_on_T2": [
+   99
+  ],
+  "runner_up": [
+   [
+    90,
+    2.6041376341989775e-05
+   ],
+   [
+    7,
+    2.389714483030936e-05
+   ]
+  ],
+  "T1_s": 3.086777375838068e-05,
+  "T2_s": 3.48978147743928e-05,
+  "readout_fidelity": 0.982,
+  "rb_fidelity": 0.9994198528389092,
+  "rb_standard_error": 1.028969841584192e-05,
+  "simultaneous_rb_fidelity": 0.9985098599749525,
+  "properties_updatedAt": "2026-10-21T19:32:03+00:00",
+  "d_ns": 30900,
+  "d_capped": false,
+  "frames": {
+   "drive": "Transmon_99_charge_tx",
+   "readout_tx": "Transmon_99_readout_tx",
+   "readout_rx": "Transmon_99_readout_rx"
+  },
+  "frame_records": {
+   "drive": {
+    "frameId": "Transmon_99_charge_tx",
+    "portId": "q99_OmegaGateDriveChannel-0",
+    "frequency": 4617707951.225436,
+    "centerFrequency": 4500000000.0,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   },
+   "readout_tx": {
+    "frameId": "Transmon_99_readout_tx",
+    "portId": "q99_OmegaReadoutTransmitChannel-0",
+    "frequency": 7119308240.381463,
+    "centerFrequency": 7250000000.0,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   },
+   "readout_rx": {
+    "frameId": "Transmon_99_readout_rx",
+    "portId": "q99_OmegaReadoutReceiveChannel-0",
+    "frequency": 7119308240.381463,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   }
+  }
+ },
+ "filled": [
+  "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b  task-A0.qasm",
+  "640f4eb75a752688aa5d29a9b3c1ce17d5efcb0ed2bf0aee45196a1ef05bdffa  task-A1.qasm",
+  "6330fa0a2351b9146cb903d6a54410b069da42558a7c7134e1129187be066761  task-A2.qasm",
+  "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae  task-B1.qasm"
+ ],
+ "submissions_ended_utc": "2026-10-21T19:59:55Z",
+ "tracker_after_submissions_usd": "[cost]",
+ "tracker_end_usd": "[cost]",
+ "tracker_statistics": {
+  "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q": {
+   "shots": 600,
+   "tasks": {
+    "COMPLETED": 4
+   }
+  }
+ },
+ "ended_utc": "2026-10-21T19:59:59Z"
+}
