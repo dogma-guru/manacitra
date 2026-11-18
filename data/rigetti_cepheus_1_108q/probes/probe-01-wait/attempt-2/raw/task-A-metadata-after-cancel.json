@@ -1,0 +1,17 @@
+{
+ "quantumTaskArn": "[redacted]",
+ "status": "CANCELLED",
+ "deviceArn": "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q",
+ "deviceParameters": "{\"braketSchemaHeader\": {\"name\": \"braket.device_schema.rigetti.rigetti_device_parameters\", \"version\": \"1\"}, \"paradigmParameters\": {\"braketSchemaHeader\": {\"name\": \"braket.device_schema.gate_model_parameters\", \"version\": \"1\"}, \"qubitCount\": 1, \"disableQubitRewiring\": false}}",
+ "shots": 100,
+ "outputS3Bucket": "[redacted]",
+ "outputS3Directory": "tasks/e738db81-0434-4c6e-9d9f-f27851184171",
+ "createdAt": "2026-10-21 14:05:56.413000+00:00",
+ "endedAt": "2026-10-21 14:51:28.209000+00:00",
+ "tags": {
+  "probe-01": "A"
+ },
+ "actionMetadata": {
+  "actionType": "braket.ir.openqasm.program"
+ }
+}

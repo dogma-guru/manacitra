@@ -1,0 +1,150 @@
+{
+ "tasks": [
+  {
+   "letter": "A",
+   "program_sha256": "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T16:00:34Z",
+   "created_utc": "2026-10-21T16:00:37Z",
+   "states_seen": [
+    {
+     "state": "QUEUED",
+     "first_seen_utc": "2026-10-21T16:00:37Z"
+    },
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T16:00:47Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 16:00:37.270000+00:00",
+   "endedAt": "2026-10-21 16:00:38.426000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 95,
+   "shots_returned": 100,
+   "fraction_ones": 0.95,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T16:00:48Z",
+   "cost_after_usd": "[cost]",
+   "cost_task_usd": "[cost]"
+  },
+  {
+   "letter": "B",
+   "program_sha256": "f1b6c190c2c3ed4f773b5371f523d2312e3b836c5fb3aefbe970cf7184b443bb",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T16:00:48Z",
+   "outcome": "ValidationException at creation; runner to read before the next letter",
+   "error_code": "ValidationException",
+   "error_utc": "2026-10-21T16:00:49Z",
+   "cost_after_usd": "[cost]",
+   "runner_reading": {
+    "utc": "2026-10-21T16:01:06Z",
+    "outcome": "rejected at creation: a rejection of the program",
+    "why": "The ValidationException names line 6 of the submitted program, the delay statement. Section 3: go to Task C."
+   }
+  },
+  {
+   "letter": "C",
+   "program_sha256": "7b2f1cf8770eb0d1c54afceea7175649a4393ca7580af755abe81bff8fd4b7ab",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T16:01:15Z",
+   "outcome": "ValidationException at creation; runner to read before the next letter",
+   "error_code": "ValidationException",
+   "error_utc": "2026-10-21T16:01:16Z",
+   "cost_after_usd": "[cost]",
+   "runner_reading": {
+    "utc": "2026-10-21T16:01:24Z",
+    "outcome": "rejected at creation: a rejection of the program",
+    "why": "The ValidationException names line 4 of the submitted program, the delay statement. Section 3: go to Task D."
+   }
+  },
+  {
+   "letter": "D",
+   "program_sha256": "640f4eb75a752688aa5d29a9b3c1ce17d5efcb0ed2bf0aee45196a1ef05bdffa",
+   "cost_before_usd": "[cost]",
+   "submitted_utc": "2026-10-21T16:01:25Z",
+   "created_utc": "2026-10-21T16:01:27Z",
+   "states_seen": [
+    {
+     "state": "QUEUED",
+     "first_seen_utc": "2026-10-21T16:01:27Z"
+    },
+    {
+     "state": "COMPLETED",
+     "first_seen_utc": "2026-10-21T19:23:19Z"
+    }
+   ],
+   "status": "COMPLETED",
+   "failureReason": null,
+   "createdAt": "2026-10-21 16:01:27.208000+00:00",
+   "endedAt": "2026-10-21 19:23:11.932000+00:00",
+   "queueInfo": {
+    "queue": "QUANTUM_TASKS_QUEUE",
+    "position": "None",
+    "queuePriority": "Normal",
+    "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+   },
+   "ones": 47,
+   "shots_returned": 100,
+   "fraction_ones": 0.47,
+   "measuredQubits": [
+    99
+   ],
+   "result_utc": "2026-10-21T19:23:20Z",
+   "cost_after_usd": "[cost]",
+   "cost_task_usd": "[cost]"
+  }
+ ],
+ "tracker_start_usd": "[cost]",
+ "properties_read_utc": "2026-10-21T16:00:33Z",
+ "choice": {
+  "qubit": 99,
+  "tied_on_T2": [
+   99
+  ],
+  "runner_up": [
+   [
+    90,
+    2.6041376341989775e-05
+   ],
+   [
+    7,
+    2.389714483030936e-05
+   ]
+  ],
+  "T1_s": 3.086777375838068e-05,
+  "T2_s": 3.48978147743928e-05,
+  "readout_fidelity": 0.984,
+  "rb_fidelity": 0.9994198528389092,
+  "rb_standard_error": 1.028969841584192e-05,
+  "simultaneous_rb_fidelity": 0.9985098599749525,
+  "properties_updatedAt": "2026-10-21T15:32:05+00:00",
+  "d_ns": 30900,
+  "d_capped": false
+ },
+ "frame": "Transmon_99_charge_tx",
+ "filled": [
+  "de3530ac214f61e087ac7407a3e2762425178c9f590c5198c276c680f2f2015b  task-A.qasm",
+  "f1b6c190c2c3ed4f773b5371f523d2312e3b836c5fb3aefbe970cf7184b443bb  task-B.qasm",
+  "7b2f1cf8770eb0d1c54afceea7175649a4393ca7580af755abe81bff8fd4b7ab  task-C.qasm",
+  "640f4eb75a752688aa5d29a9b3c1ce17d5efcb0ed2bf0aee45196a1ef05bdffa  task-D.qasm"
+ ],
+ "tracker_end_usd": "[cost]",
+ "tracker_statistics": {
+  "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q": {
+   "shots": 100,
+   "tasks": {
+    "COMPLETED": 1
+   }
+  }
+ },
+ "ended_utc": "2026-10-21T19:23:20Z"
+}

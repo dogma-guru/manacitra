@@ -1,0 +1,23 @@
+{
+ "quantumTaskArn": "[redacted]",
+ "status": "COMPLETED",
+ "deviceArn": "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q",
+ "deviceParameters": "{\"braketSchemaHeader\": {\"name\": \"braket.device_schema.rigetti.rigetti_device_parameters\", \"version\": \"1\"}, \"paradigmParameters\": {\"braketSchemaHeader\": {\"name\": \"braket.device_schema.gate_model_parameters\", \"version\": \"1\"}, \"qubitCount\": 1, \"disableQubitRewiring\": false}}",
+ "shots": 100,
+ "outputS3Bucket": "[redacted]",
+ "outputS3Directory": "tasks/1b056b12-0bca-43c6-a71b-49eee9a412c3",
+ "createdAt": "2026-10-21 19:59:54.500000+00:00",
+ "endedAt": "2026-10-21 19:59:55.866000+00:00",
+ "tags": {
+  "probe-02": "A2"
+ },
+ "queueInfo": {
+  "queue": "QUANTUM_TASKS_QUEUE",
+  "position": "None",
+  "queuePriority": "Normal",
+  "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+ },
+ "actionMetadata": {
+  "actionType": "braket.ir.openqasm.program"
+ }
+}

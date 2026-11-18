@@ -1,0 +1,18 @@
+2026-10-21T19:59:47Z qubit 99 (T2 3.48978147743928e-05, T1 3.086777375838068e-05), d 30900 ns, frames {'drive': 'Transmon_99_charge_tx', 'readout_tx': 'Transmon_99_readout_tx', 'readout_rx': 'Transmon_99_readout_rx'}
+2026-10-21T19:59:48Z submitting task A0 (100 shots)
+2026-10-21T19:59:52Z task A0: created; tracker [cost] (task [cost])
+2026-10-21T19:59:53Z submitting task A1 (200 shots)
+2026-10-21T19:59:53Z task A1: created; tracker [cost] (task [cost])
+2026-10-21T19:59:54Z submitting task A2 (100 shots)
+2026-10-21T19:59:54Z task A2: created; tracker [cost] (task [cost])
+2026-10-21T19:59:54Z submitting task B1 (200 shots)
+2026-10-21T19:59:55Z task B1: created; tracker [cost] (task [cost])
+2026-10-21T19:59:55Z task A0: COMPLETED
+2026-10-21T19:59:56Z task A0: COMPLETED; ones 96 of 100; T1 3.086777375838068e-05 T2 3.48978147743928e-05 at fetch; tracker [cost]
+2026-10-21T19:59:56Z task A1: COMPLETED
+2026-10-21T19:59:57Z task A1: COMPLETED; ones 106 of 200; T1 3.086777375838068e-05 T2 3.48978147743928e-05 at fetch; tracker [cost]
+2026-10-21T19:59:57Z task A2: COMPLETED
+2026-10-21T19:59:58Z task A2: COMPLETED; ones 20 of 100; T1 3.086777375838068e-05 T2 3.48978147743928e-05 at fetch; tracker [cost]
+2026-10-21T19:59:58Z task B1: COMPLETED
+2026-10-21T19:59:59Z task B1: COMPLETED; ones 78 of 200; T1 3.086777375838068e-05 T2 3.48978147743928e-05 at fetch; tracker [cost]
+2026-10-21T19:59:59Z tracker end [cost]

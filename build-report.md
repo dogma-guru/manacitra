@@ -4562,6 +4562,22 @@ with their errors. Two clock times of the drafts were corrected to the minute co
 (test 20's job 1, 00:32 to 00:34 UTC; test 21's jobs, 03:41 to 03:56 UTC), test 19's submission is given to the minute,
 and qubit 95's readout error in test 21's job 3, exactly 27 in 7,200, is quoted as 0.00375 rather than rounded at a half.
 
+**The probes.** The author named the folder of the probes' hand-backs in chat, as the runner prompt asked; its name is
+in no file. Each hand-back was checked against its `SHA256SUMS`, probe 03's attempt 1 against its own as well, and each
+rule against its `rule.sha256` and the hash in its issue (74, 75 and 76): all matched. Probe 01's `go.log` quotes the
+author's rulings that allowed its second and third starts, and its report describes all three, so its two earlier
+attempts are published, as the author's instruction for probe 01 asked; probe 03 carries both its attempts and the
+ruling that allowed the second. By ruling R1 the three rules are published byte for byte with their dollar caps, and in
+every other file each dollar figure is written "[cost]" (173 replacements); the path of the hand-back folder, which four
+scripts named, is written "[the hand-back folder]". The folder's README lists the 48 changed files with both SHA-256
+values; every other file is byte for byte as handed back. The identifier scan allows six exact strings for these files:
+the device's ARN, which carries no account number; each task's results directory, named by its task ID; the probes'
+issue references; and three ways the scripts and logs write the start of an ARN without an account number. The probes'
+JSON files are not run records, and their programs belong to no run record: `tests/test_data_meta.py`,
+`tests/test_readme_numbers.py`, `tests/test_program_catalogue.py` and `tools/program_catalogue.py` leave the folder out,
+and `PROGRAMS.md` says so. `tests/test_probes.py` checks the rules, the sums, both digests of each changed file, and
+that no dollar figure is left outside the rules.
+
 **Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
 vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
 added line checked for dashes and the kickoff's words to avoid.

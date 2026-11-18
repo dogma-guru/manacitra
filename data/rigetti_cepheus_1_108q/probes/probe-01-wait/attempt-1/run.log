@@ -1,0 +1,6 @@
+2026-10-21T13:47:40Z qubit 99 (T2 3.727711859413674e-05, T1 3.785622702690006e-05), d 37900 ns
+2026-10-21T13:47:40Z submitting task A
+2026-10-21T13:47:44Z task A: ValidationException: An error occurred (ValidationException) when calling the CreateQuantumTask operation: Attempted to spend outside the spending limit time window for the device.
+2026-10-21T13:47:44Z stop after Task A: no control result
+2026-10-21T13:47:44Z tracker end [cost]
+2026-10-21T13:48:18Z correction: task A outcome is a service error (account spending limit window ended 2026-10-08T23:59:59Z), not a program rejection; no task created; run stopped after A

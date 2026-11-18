@@ -1,0 +1,20 @@
+2026-10-21T13:50:07Z waiting: status ONLINE, in window True, window seconds left 592
+2026-10-21T13:51:08Z waiting: status ONLINE, in window True, window seconds left 531
+2026-10-21T13:52:08Z waiting: status ONLINE, in window True, window seconds left 471
+2026-10-21T13:53:08Z waiting: status ONLINE, in window True, window seconds left 411
+2026-10-21T13:54:09Z waiting: status ONLINE, in window True, window seconds left 350
+2026-10-21T13:55:09Z waiting: status ONLINE, in window True, window seconds left 290
+2026-10-21T13:56:10Z waiting: status ONLINE, in window True, window seconds left 229
+2026-10-21T13:57:10Z waiting: status ONLINE, in window True, window seconds left 169
+2026-10-21T13:58:11Z waiting: status ONLINE, in window True, window seconds left 108
+2026-10-21T13:59:11Z waiting: status ONLINE, in window True, window seconds left 48
+2026-10-21T14:00:12Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:01:12Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:02:13Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:03:13Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:04:14Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:05:15Z waiting: status ONLINE, in window False, window seconds left 0
+2026-10-21T14:05:50Z author's override in force: availability windows not required (see go.log)
+2026-10-21T14:05:51Z qubit 99 (T2 3.727711859413674e-05, T1 3.785622702690006e-05), d 37900 ns
+2026-10-21T14:05:51Z submitting task A
+2026-10-21T14:05:56Z task A: QUEUED

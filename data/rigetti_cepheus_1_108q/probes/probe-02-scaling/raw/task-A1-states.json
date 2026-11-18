@@ -1,0 +1,19 @@
+{
+ "label": "A1",
+ "states_seen": [
+  {
+   "state": "COMPLETED",
+   "first_seen_utc": "2026-10-21T19:59:56Z"
+  }
+ ],
+ "status": "COMPLETED",
+ "failureReason": null,
+ "createdAt": "2026-10-21 19:59:53.639000+00:00",
+ "endedAt": "2026-10-21 19:59:54.302000+00:00",
+ "queueInfo": {
+  "queue": "QUANTUM_TASKS_QUEUE",
+  "position": "None",
+  "queuePriority": "Normal",
+  "message": "Task is in COMPLETED status. AmazonBraket does not show queue position for this status."
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "action": {
+  "braketSchemaHeader": {
+   "name": "braket.ir.openqasm.program",
+   "version": "1"
+  },
+  "source": "OPENQASM 3.0;\nbit[1] b;\n#pragma braket verbatim\nbox{\nrx(3.141592653589793) $99;\n}\nb[0] = measure $99;\n"
+ },
+ "rigettiMetadata": {
+  "braketSchemaHeader": {
+   "name": "braket.task_result.rigetti_metadata",
+   "version": "1"
+  },
+  "compiledProgram": "PRAGMA INITIAL_REWIRING \"NAIVE\"\nDECLARE ro BIT[1]\nPRAGMA PRESERVE_BLOCK\nRX(3.141592653589793) 99\nPRAGMA END_PRESERVE_BLOCK\nMEASURE 99 ro[0]"
+ }
+}

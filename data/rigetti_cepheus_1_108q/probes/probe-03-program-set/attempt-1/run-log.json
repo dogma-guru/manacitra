@@ -1,0 +1,108 @@
+{
+ "tracker_start_usd": "[cost]",
+ "properties_read_utc": "2026-10-21T20:38:20Z",
+ "properties_file": "raw/properties-presubmission-20261021T203820Z.json",
+ "choice": {
+  "qubit": 99,
+  "tied_on_T2": [
+   99
+  ],
+  "runner_up": [
+   [
+    90,
+    2.6041376341989775e-05
+   ],
+   [
+    7,
+    2.389714483030936e-05
+   ]
+  ],
+  "T1_s": 3.086777375838068e-05,
+  "T2_s": 3.48978147743928e-05,
+  "readout_fidelity": 0.982,
+  "rb_fidelity": 0.9994198528389092,
+  "rb_standard_error": 1.028969841584192e-05,
+  "simultaneous_rb_fidelity": 0.9985098599749525,
+  "properties_updatedAt": "2026-10-21T20:32:02+00:00",
+  "d_ns": 30900,
+  "d_capped": false,
+  "frames": {
+   "drive": "Transmon_99_charge_tx",
+   "readout_tx": "Transmon_99_readout_tx",
+   "readout_rx": "Transmon_99_readout_rx"
+  },
+  "frame_records": {
+   "drive": {
+    "frameId": "Transmon_99_charge_tx",
+    "portId": "q99_OmegaGateDriveChannel-0",
+    "frequency": 4617707951.225436,
+    "centerFrequency": 4500000000.0,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   },
+   "readout_tx": {
+    "frameId": "Transmon_99_readout_tx",
+    "portId": "q99_OmegaReadoutTransmitChannel-0",
+    "frequency": 7120183521.159646,
+    "centerFrequency": 7250000000.0,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   },
+   "readout_rx": {
+    "frameId": "Transmon_99_readout_rx",
+    "portId": "q99_OmegaReadoutReceiveChannel-0",
+    "frequency": 7120183521.159646,
+    "phase": 0.0,
+    "qubitMappings": [
+     99
+    ]
+   }
+  }
+ },
+ "filled": [
+  "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae  task-E1.qasm",
+  "a00a679a705fb7cae25e92687fe0228a81bc4ff1d943ed8a40c4e6be765e2761  task-E2.qasm"
+ ],
+ "estimate_usd": "[cost]",
+ "program_set": {
+  "ir_file_sha256": "7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2",
+  "total_executables": 2,
+  "shots_per_executable": 100,
+  "total_shots": 200,
+  "executables": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    0,
+    0
+   ]
+  ]
+ },
+ "task": {
+  "cost_before_usd": "[cost]",
+  "shots": 200,
+  "tags": {
+   "probe-03": "program-set"
+  },
+  "programs": {
+   "E1": "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae",
+   "E2": "a00a679a705fb7cae25e92687fe0228a81bc4ff1d943ed8a40c4e6be765e2761"
+  },
+  "submitted_utc": "2026-10-21T20:38:21Z",
+  "outcome": "ClientError at creation",
+  "error_code": "ValidationException",
+  "error_utc": "2026-10-21T20:38:45Z",
+  "cost_after_usd": "[cost]"
+ },
+ "tracker_end_usd": "[cost]",
+ "tracker_statistics": {},
+ "ended_utc": "2026-10-21T20:38:45Z"
+}

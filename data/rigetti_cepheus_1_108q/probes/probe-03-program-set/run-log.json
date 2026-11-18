@@ -1,0 +1,72 @@
+{
+ "tracker_start_usd": "[cost]",
+ "properties_read_utc": "2026-10-21T21:17:10Z",
+ "properties_file": "raw/properties-presubmission-20261021T211710Z.json",
+ "fixed": {
+  "qubit": 99,
+  "d_ns": 30900,
+  "programs": {
+   "E1": "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae",
+   "E2": "a00a679a705fb7cae25e92687fe0228a81bc4ff1d943ed8a40c4e6be765e2761"
+  }
+ },
+ "qubit_at_read": {
+  "T1_s": 3.086777375838068e-05,
+  "T2_s": 3.48978147743928e-05,
+  "readout_fidelity": 0.982,
+  "rb_fidelity": 0.9994198528389092,
+  "properties_updatedAt": "2026-10-21T21:02:03+00:00"
+ },
+ "longest_T2_at_read": {
+  "qubit": 99,
+  "T2_s": 3.48978147743928e-05
+ },
+ "estimate_usd": "[cost]",
+ "program_set": {
+  "saved_form_sha256": "7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2",
+  "attempt_1_sha256": "7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2",
+  "equal": true,
+  "ir_file_sha256": "7b283c57b488513b9cd0a489d8db53e69df6b88aab8befac3a5fb4e6f5ba89d2",
+  "compact_action_sha256": "9afd5c89507a5873251930fadfd0c1db94de87306b2e91e06f1145503e0a2be8",
+  "total_executables": 2,
+  "shots_per_executable": 100,
+  "total_shots": 200,
+  "executables": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    0,
+    0
+   ]
+  ]
+ },
+ "task": {
+  "cost_before_usd": "[cost]",
+  "shots": 200,
+  "tags": {
+   "probe-03": "program-set",
+   "attempt-2": "resubmission"
+  },
+  "programs": {
+   "E1": "63eb31af921a4fb2e6c844c32b404c51da7725972ea90742a519e8603ebcdaae",
+   "E2": "a00a679a705fb7cae25e92687fe0228a81bc4ff1d943ed8a40c4e6be765e2761"
+  },
+  "submitted_utc": "2026-10-21T21:17:11Z",
+  "outcome": "ClientError at creation",
+  "error_code": "ValidationException",
+  "error_utc": "2026-10-21T21:17:36Z",
+  "cost_after_usd": "[cost]",
+  "compared_with_attempt_1": {
+   "same_file_text": true,
+   "same_response_fields": true,
+   "attempt_1_file_sha256": "ac97c6ef33dd1d5328bbb57afac31734650e9223bfb026fadd2251134cc3b82e"
+  }
+ },
+ "tracker_end_usd": "[cost]",
+ "tracker_statistics": {},
+ "ended_utc": "2026-10-21T21:17:36Z"
+}

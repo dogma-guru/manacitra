@@ -161,6 +161,7 @@ the README are rounded to the nearest minute.
   - Kickoff 38 sent them again, with a third, `k38-P53i-A-no.qasm`, as sent.
   - For the Amazon Braket runs, `rigetti_cepheus_1_108q/programs/k40/` (by stage) and `programs/k42/` hold the programs as sent (Kickoff 41 re-sent Kickoff 40's files; `k41-figures.json` gives each file's SHA-256), and `compiled/k40/`, `compiled/k41/` and `compiled/k42/` hold the compiled program Amazon Braket returned with each task, exactly as returned, one per task: these are the placement records.
   - `meta` blocks belong to the JSON records; the program files (`.qasm`, `.quil`) are data too, under [`LICENSE`](LICENSE), and [`PROGRAMS.md`](PROGRAMS.md) indexes every one of them: the run and task it belongs to, the processor and route, the task's UTC times and shots, and its SHA-256, generated from the run records by `tools/program_catalogue.py`.
+- **21 October, three probes.** `rigetti_cepheus_1_108q/probes/` holds three probes of the Amazon Braket route, run on 21 October 2026, each under a rule whose SHA-256 was posted before its go (issues 74, 75 and 76), each folder one probe's hand-back with its rule byte for byte. A probe is not a test, and nothing in one is a finding; its JSON files are records of the probe, not run records, and its programs are listed in its own `programs/` folder, not in `PROGRAMS.md`. The folder's README gives each probe's question and word, and every change made when copying, with both SHA-256 values of each changed file.
 - **The simulated files.** The simulated files are a local simulation of the noise model that Cirq publishes for willow_pink (median calibration of 16 August 2024): they are not a measurement of any device.
 
 ## Formats
@@ -315,3 +316,4 @@ Nothing in the counts or the analyses.
   - Test 21's analysis is kept in both versions, as it failed and as it ran, as its report describes them.
   - Not copied: the hand-backs' reports, logs other than those named above, and the per-shot arrays.
   - Test 18's and test 20's scorecards are published beside the desk model's version 4.1, in `desk/sandhi/v4.1/`, each local path the scorer wrote written "[local path]".
+- From the three probes (Amendment A29, ruling R1): every file of each hand-back, the rules byte for byte with their dollar caps; in every other file each dollar figure is written "[cost]", and the path of the folder each runner wrote its hand-back to, in four scripts, is written "[the hand-back folder]". The probes' README lists the 48 changed files with both SHA-256 values.

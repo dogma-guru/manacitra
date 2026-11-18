@@ -32,6 +32,15 @@ from _reproduce import (
 from manacitra import archive, wait
 
 ROOT = Path(__file__).resolve().parents[1]
+# Amendment A29: the three probes' folder, whose JSON files are records of probes, not run records
+PROBES = Path("rigetti_cepheus_1_108q") / "probes"
+
+
+def _records():
+    """archive.records() without the probes' files (A29)."""
+    return [p for p in archive.records() if PROBES not in p.relative_to(archive.data_dir()).parents]
+
+
 #: The README and the pages it links to for its findings, method, kickoffs and install details
 README_PAGES = (
     "README.md",
@@ -234,7 +243,7 @@ def test_the_findings_dates():
     # record of the provider's published calibration stamps (A23: calibration history 01)
     runs = [
         p
-        for p in archive.records()
+        for p in _records()
         if p.parent.name != "simulated"
         and "k33-workload" not in p.name
         and "reconstruction" not in p.name
@@ -3138,7 +3147,7 @@ def test_findings_20_and_21_beside_the_findings():
     # the changelog's lead: six runs on ibm_fez on 13 and 15 October and one on ibm_kingston on 14 October
     from manacitra import archive as ar
 
-    fez_runs = [p for p in ar.records() if p.parent.name == "ibm_fez" and ar.load(p)["meta"]["kickoff"][8:].isdigit()]
+    fez_runs = [p for p in _records() if p.parent.name == "ibm_fez" and ar.load(p)["meta"]["kickoff"][8:].isdigit()]
     fez_runs = [p for p in fez_runs if 49 <= int(ar.load(p)["meta"]["kickoff"][8:]) <= 55]
     assert sorted(ar.load(p)["meta"]["utc"][:10] for p in fez_runs) == ["2026-10-13"] * 5 + ["2026-10-15"]
     assert reuse_doc(K55)["meta"]["utc"].startswith("2026-10-14")
@@ -3165,8 +3174,8 @@ def test_findings_20_and_21_beside_the_findings():
     )
     assert reuse_doc(K53)["meta"]["processor"] == reuse_doc(K54)["meta"]["processor"] == "ibm_fez"
     # the data README's job IDs
-    ids = [ar.load(p)["meta"].get("job_id") for p in ar.records()]
-    many = [j for p in ar.records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
+    ids = [ar.load(p)["meta"].get("job_id") for p in _records()]
+    many = [j for p in _records() for j in ar.load(p)["meta"].get("job_ids", {}).values()]
     assert (len([i for i in ids if i]), len(many)) == (
         30,
         39,

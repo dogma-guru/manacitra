@@ -11,7 +11,12 @@ from manacitra import archive
 NA = "not applicable"
 STANDARD = ("processor", "provider", "kickoff", "utc", "shots_per_circuit", "sources")
 try:
-    FILES = sorted(p.relative_to(archive.data_dir()).as_posix() for p in archive.records())
+    # Amendment A29: the three probes' JSON files are records of probes, not run records, and carry no meta block
+    FILES = sorted(
+        p.relative_to(archive.data_dir()).as_posix()
+        for p in archive.records()
+        if not p.relative_to(archive.data_dir()).as_posix().startswith("rigetti_cepheus_1_108q/probes/")
+    )
 except archive.DataNotFound as e:
     pytest.skip(f"needs the dataset: {e}", allow_module_level=True)
 

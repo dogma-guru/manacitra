@@ -1,0 +1,26 @@
+An error occurred (ValidationException) when calling the CreateQuantumTask operation: Validation failed for one or more programs. See 'programSetValidationFailures' for details. First failure:
+{'programIndex': 0, 'errors': ['Validation timed out']}
+Rerun the task and catch the exception for more details
+
+{
+ "Error": {
+  "Message": "Validation failed for one or more programs. See 'programSetValidationFailures' for details. First failure:\n{'programIndex': 0, 'errors': ['Validation timed out']}\nRerun the task and catch the exception for more details",
+  "Code": "ValidationException"
+ },
+ "message": "Validation failed for one or more programs. See 'programSetValidationFailures' for details.",
+ "reason": "ProgramSetValidationFailed",
+ "programSetValidationFailures": [
+  {
+   "programIndex": 0,
+   "errors": [
+    "Validation timed out"
+   ]
+  },
+  {
+   "programIndex": 1,
+   "errors": [
+    "Validation timed out"
+   ]
+  }
+ ]
+}

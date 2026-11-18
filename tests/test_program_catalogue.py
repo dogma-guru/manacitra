@@ -22,6 +22,10 @@ def test_every_program_file_has_a_row_and_every_row_an_existing_file():
     text = (DATA / "PROGRAMS.md").read_text()
     rows = dict(re.findall(r"^\| `([^`]+)` \|.*\| `([0-9a-f]{64})` \|$", text, re.M))
     files = {p.relative_to(DATA).as_posix() for p in DATA.rglob("*") if p.suffix in (".qasm", ".quil")}
+    # Amendment A29: the three probes' programs are listed in each probe's programs/ folder, not here
+    probes = {f for f in files if f.startswith("rigetti_cepheus_1_108q/probes/")}
+    assert len(probes) == 30
+    files -= probes
     assert set(rows) == files and len(files) == 187
     for rel, sha in rows.items():
         assert hashlib.sha256((DATA / rel).read_bytes()).hexdigest() == sha, rel
