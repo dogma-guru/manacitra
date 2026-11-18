@@ -86,9 +86,9 @@ ALLOW = [
     # entropy drawn for the qubit, is not an AWS account number. Only inside such a list; a twelve-digit number
     # anywhere else is still a finding.
     ("bootstrap-seed-list", r"\"seeds\": \[\s*[0-9]{4},\s*[0-9]{4},\s*[0-9]{12}\s*\]", ""),
-    # Amendment A29: the same list as test 21's job 1 records it, with its two five-digit seeds (21304 and 21305) and the
-    # bootstrap's entropy for qubit 95, 21306 + 95 * 2**32. Only inside such a list; a twelve-digit number anywhere else
-    # is still a finding.
+    # Amendment A29: the same list as test 21's job 1 records it, with its two five-digit seeds (21304 and 21305) and
+    # the bootstrap's entropy for qubit 95, 21306 + 95 * 2**32. Only inside such a list; a twelve-digit number anywhere
+    # else is still a finding.
     ("bootstrap-seed-list-five-digit", r"\"seeds\": \[\s*[0-9]{5},\s*[0-9]{5},\s*[0-9]{12}\s*\]", ""),
     # Amendment A27: one field name of test 11's analysis record, forty-four letters, digits and underscores, is not
     # an API key. Exactly this quoted name (written with a character class, so that this file does not carry it).

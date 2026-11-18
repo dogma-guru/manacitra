@@ -62,4 +62,35 @@ As Kickoff 36 tested the map's rule on a simulation with planted answers, `tests
 
 Beside these, a control the rule must say no to: white dephasing on M, which no refocusing removes, reads NOT REFOCUSABLE, and refocusing does not raise the wait test's F. These are tests of the code and the rule on a simulation, not findings.
 
+## The records of tests 18 to 21
+
+Tests 18 to 21 (findings 31 to 33) were run under rules posted before them; their records are in `data/`, and their per-shot arrays are named there by SHA-256 and not published. Rerunning one on hardware is a new measurement on a new date, as above. What is published lets anyone recompute the numbers from the counts and the archived reads: `pytest tests/test_reproduction.py tests/test_field_inventory.py` runs the four cases below.
+
+- **Test 18** (finding 31): `data/ibm_fez/t18-two-monitors.json`, with its rule, `t18-rule.md`, its rulings, hash check and desk checks beside it. The circuits were built at commit b782d00. The counts were read by test 12's `monitor_t12.py` and the per-shot arrays by test 15's `read_t15.py`, both unchanged; the case in `tests/_reproduce.py` is "Test 18, the per-shot read and the middle test".
+- **Test 19, date 1** (finding 32): `data/ibm_fez/t19-readout-date1.json`, with `t19-rule.md`, its rulings, hash check and the withdrawn go's record beside it. The circuits were built by Kickoff 62's own `hw_62.py` (SHA-256 `c06bfd45f1d397be39f16f7d58a94ab86ae32f43c7a6b7eda02dcf3ec4f625ae`), imported unchanged by the date's script; the case is "Test 19, date 1 of the readout series".
+- **Test 20** (finding 31): `data/ibm_fez/t20-fifth-date.json`, with `t20-rule.md`, its rulings, hash check, the shuffled job's record and the desk check's rerun beside it. The circuits were built at commit b782d00; job 1 was read by test 7's analysis at the v0.8.0 release (commit 09bdebd), and the monitors as test 18's were; the case is "Test 20, qubit 143 on a fifth date".
+- **Test 21** (finding 33): `data/ibm_kingston/t21-two-qubits.json`, with `t21-rule.md`, its rulings, hash check and desk check beside it. The circuits were built at commit b782d00; job 1 was read by test 9's analysis at commit b7313bb, and the monitors by the package's own functions at v0.10.0 (commit dd9727a); the case is "Test 21, job 1 on qubits 11 and 95". No scorer ran.
+
+**The scorer's command lines,** as tests 18 and 20's reports give them, with the scorer and its bets named by their file names alone, as for test 17 above. Each ran once, with its defaults, from the run's hand-back with the scorer's folder beside it; that folder holds the files of `data/desk/sandhi/v4.1/`, as its `FORECAST-SHA256SUMS` lists them. The per-shot arrays it read are not published; the scorecards it wrote are in `data/desk/sandhi/v4.1/`.
+
+Test 18 (D1):
+
+```bash
+python -I -B score_model_01_v4_1.py \
+  --job job1,shots-t18-job1.npz,shots-t18-job1-meta.json,counts-t18-job1.json \
+  --job job2,shots-t18-job2.npz,shots-t18-job2-meta.json,counts-t18-job2.json \
+  --predictions predictions-model-01-v4.1.json --out scorecard-t18.json
+```
+
+Test 20 (D1, SECOND RUN):
+
+```bash
+python -I -B score_model_01_v4_1.py \
+  --job job2,shots-t20-job2.npz,shots-t20-job2-meta.json,counts-t20-job2.json \
+  --job job3,shots-t20-job3.npz,shots-t20-job3-meta.json,counts-t20-job3.json \
+  --shuffled job1,shots-t20-job1.npz,shots-t20-job1-meta.json,counts-t20-job1.json \
+  --shuffled-fits job1,fits-t20-job1.json \
+  --predictions predictions-model-01-v4.1.json --out scorecard-t20.json
+```
+
 Back to the [README](../README.md).

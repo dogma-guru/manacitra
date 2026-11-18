@@ -81,6 +81,8 @@ and each condition as tested. The thresholds were fixed before the data they wer
 
 The later per-shot words (SHARED, NO CHANGE, BETWEEN, CHANGE, MIDDLE HIGH, NOT SEEN) are defined in `data/ibm_fez/t15-rule.md` and `data/ibm_fez/t17-rule.md`, and stated in findings 29 and 30.
 
+The words of tests 19 to 21 (PUBLISHED ABOVE, MEASURED ABOVE and MIXED; CONFIRMED ON THE FIFTH DATE; NOT CONFIRMED ON A LATER DATE, TIMED, FASTER THAN THE CLOCK and DUTY NOT READ) are defined in `data/ibm_fez/t19-rule.md`, `data/ibm_fez/t20-rule.md` and `data/ibm_kingston/t21-rule.md`, and stated in findings 31 to 33.
+
 ### The map rule (Kickoff 31)
 
 The statistics, across pairs (Pearson r, with Spearman's ρ reported beside each):
@@ -319,7 +321,7 @@ pytest tests/test_readme_numbers.py   # the statistics, times, ranges and counts
 python tools/acceptance_table.py      # the table of archived against reproduced values
 python examples/02_map_from_archive.py
 python examples/03_pick_pairs.py
-python docs/make_diagrams.py          # the sixteen diagrams, from data/
+python docs/make_diagrams.py          # the eighteen diagrams, from data/
 ```
 
 (*) Except the seeded resampling fields (Amendment A7, the author's ruling of 7 October 2026). numpy does not keep its
@@ -363,6 +365,7 @@ Where each README number comes from:
 | ibm_fez, test 7: the two-quadrature Ramsey on 143, TWO FIXED FREQUENCIES (held-out error 0.0200 for two lines against 0.0733 for one; δ 44.82 kHz, b 0.355, lines at 93.5 and 3.8 kHz); the copies' sum of z² (871.7 on 128) and the weight in execution order, read after the data | `ibm_fez/t7-ramsey-xy.json` | `tests/_reuse_runs.py`: `t7_ramsey_xy` (with `manacitra.wait.ramsey_xy_fit`) and `t7_readings` (with `copies_check`) |
 | ibm_kingston and ibm_fez, tests 8 to 11: test 10's 192 records, 189 QUIET and 1 SWITCHES AT BOUNDARIES ONLY, 17,398 qubit-seconds within spans; test 11 CONFIRMED ON DAY 2 (δ 44.70 kHz, b 0.466), QUIET and WEIGHT QUIET; test 9's 43 and 134 NOT CONFIRMED ON DAY 2; every job's execution spans; the desk model's counts (16 of the 47 kingston qubits compared across two stamps, by 4 kHz or more in the one-line fit; the weight at 4 of 4 of the monitor's boundaries) | `ibm_kingston/t10-monitor.json`, `ibm_fez/t11-day2-monitor.json`, `ibm_kingston/t9-day2-scan.json`, `ibm_kingston/spans-t8-t9.json`, `desk/sandhi/` | `tests/_reuse_runs.py`: `t10_monitor`, `t11_job1`, `t11_monitor`, `t9_job1_43_134` and `kingston_spans` (with `manacitra.wait.monitor_phase` and `monitor_weight`); `tests/test_sandhi.py` |
 | ibm_fez, test 11 on a third day and tests 16 and 17: CONFIRMED ON DAY 2 (δ 44.97 kHz, b 0.452), QUIET and WEIGHT QUIET; SHARED in all eighteen monitor spans read; the duty at every boundary of the long job NO CHANGE; the monitor means 0.330, 0.341 and 0.313; the middle test NOT SEEN (Z = −0.97); the desk model's scorecard on test 17 | `ibm_fez/t11-day3-monitor.json`, `ibm_fez/t16-day3-per-shot-read.json`, `ibm_fez/t17-long-monitor.json`, `desk/sandhi/` | `tests/_reuse_runs.py`: `t11_job1` and `t11_monitor` on day 3, `t16_day3_read` and `t17_read` (with `manacitra.wait.two_state_reading`, `time_average_sd` and `boundary_ratio`); `tests/test_sandhi.py` |
+| ibm_fez, tests 18 to 20, and ibm_kingston, test 21: SHARED in all twelve monitor spans of 143 read, with NO CHANGE at all eight boundaries; the middle test NOT SEEN (Z = −1.30); CONFIRMED ON THE FIFTH DATE (δ 44.99 kHz, b 0.485); the desk model's two D1 scorecards; the readout survey's date 1, MIXED (4, 13, 124 and 15); qubit 95 NOT CONFIRMED ON A LATER DATE, SHARED, FASTER THAN THE CLOCK and DUTY NOT READ | `ibm_fez/t18-two-monitors.json`, `ibm_fez/t19-readout-date1.json`, `ibm_fez/t20-fifth-date.json`, `ibm_kingston/t21-two-qubits.json`, `desk/sandhi/v4.1/` | `tests/_reuse_runs.py`: `monitor_per_shot_read` on tests 18 and 20, `t11_job1` on test 20's job 1, `t19_classes` and `t21_job1`; `tests/test_sandhi.py` |
 
 The two simulated persistence sets (`simulated/k36-persistence.json`) give PARTIAL under the original rule on both,
 as Kickoff 36 reported. Under Amendment A1 the same data give NOT SETTLED (too noisy) for the static days (only Day 3

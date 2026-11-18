@@ -4507,3 +4507,61 @@ is `release-0.10.0-report.md`.
   sentences that wrote the four assets as to be attached to the 0.10.0 release (Sandhi's and round 5c's READMEs,
   `data/README.md` and the changelog's 0.10.0 entry twice each, and a test's docstring) are in the present tense again,
   as ruling R5, item 5, set, and `data/SHA256SUMS` is regenerated.
+
+## 51. Amendment A29: findings 31 to 33, qubit 143 a month on, and release 0.11.0 (18 November 2026)
+
+**Why.** By the author's approval of A29 on 18 November 2026 (UTC), in chat ("I approve the draft and go with your
+recommendations."), and the author's ruling in chat that day: "Release 0.11.0 and close corresponding issues." The
+amendment executes the rulings recorded in the hand-backs (test 18's six, test 19's five, test 20's four and test 21's
+four, the fourth given after its hand-back) and states IBM Quantum Support's reproduction in the words the kickoff
+fixes, under the permission IBM gave on 14 November 2026. The release and the issue steps each wait for their own go.
+
+**Order.** A new branch, `findings/t20-a-month-on`, from `5a64434` (the bundles for 0.10.0's version-DOI merge),
+worked in a git worktree of its own. No hardware, no provider job, and no contact with anyone. One commit per step: the
+data and rules, the findings and the pages beside them, the probes, the changelog.
+
+**Sources.** The four rules (`t18-rule.md`, `t19-rule.md`, `t20-rule.md`, `t21-rule.md`), each checked against its
+`.sha256` sidecar and against the public issue that carries it (issues 71, 77, 78 and 79); the hand-backs of tests 18
+to 21, every file checked against its folder's `SHA256SUMS` before anything was taken from it; the SHA-256 of
+`scorecard-t18.json` as the scorer wrote it against the comment posted on issue 71 before test 20's go. Nothing whose
+name contains "SEALED", "mantri-read", "mantri-check", "expectations", "sandhi-v5" or "scorecard-and" was read.
+
+**The data.**
+- `ibm_fez/t18-two-monitors.json`, `t19-readout-date1.json` and `t20-fifth-date.json`, and
+  `ibm_kingston/t21-two-qubits.json`: one record per test, in A28's layout. The per-shot arrays are named by their
+  SHA-256 and not published. Left out of the records: the snapshots' names, the private input and output folders that
+  the stamp walks named, and the instance's label, already a placeholder in the hand-backs. Local paths that a script
+  wrote into a copied record are written "[local path]", each listed in the record's `meta.local_paths_replaced`.
+- The four rules byte for byte; each test's hash check, rulings and desk checks beside its record, the logs renamed
+  `.log.txt`; test 19's withdrawn go of 15 November, `withdrawn-go-t19-20261115.md`.
+- `desk/sandhi/v4.1/scorecard-t18.json` and `scorecard-t20.json`, with their calibration files, the local paths the
+  scorer wrote written "[local path]", each replacement and both SHA-256 values listed in the folder's README.
+- `tools/scan_patterns.py` allows test 21's bootstrap seed list, whose third seed is twelve digits, only inside that list.
+
+**The recompute.** `tests/_reproduce.py` gains four cases, each against its record:
+- "Test 18, the per-shot read and the middle test": 316 fields, by `monitor_per_shot_read` on the archived reads, with
+  the middle test's contrasts, Z and word.
+- "Test 19, date 1 of the readout series": 1,413 fields, every qubit's P(1|0), P(0|1), e, se, d and class from the
+  counts and the published table saved before the job, by `t19_classes`.
+- "Test 20, qubit 143 on a fifth date": 4,167 fields, job 1 by `t11_job1` with the run's seeds and the monitors as test
+  18's. Under A25's rule for test 7, job 1 was recomputed under 40 other seeds of its random streams: 40 fields that
+  moved, each by less than 10⁻³, are compared at 10⁻³, and the fields that moved more are excluded with their movement.
+- "Test 21, job 1 on qubits 11 and 95": 173 fields, by `t21_job1` with the run's seeds; on the same rule, 15 fields that
+  moved are compared at 10⁻³.
+The field inventory lists 55 new fields compared at 10⁻³ and every other field of the four records, compared or
+excluded with its reason.
+
+**The text.** Findings 31 to 33 in `docs/findings.md`, with their table rows; IBM's reproduction as a dated note after
+finding 31, in the kickoff's words; four new bullets in what has not been shown and three edits to it, each listed
+before and after in the review packet. The README's opening, "Latest findings: qubit 143 a month on", its three thread
+rows, the count of thirty three, one line under its limits and IBM's reproduction once, in the same words;
+`docs/reproduce.md`, the records' pointers, the commits that built and read them and the scorer's two command lines;
+`docs/kickoffs.md`, four rows; `docs/index.md`, one row and the count of diagrams. Two figures, made from the data by
+`docs/make_diagrams.py`: 143's split by date, each scan with its interval, and the duty by span of test 20's monitors
+with their errors. Two clock times of the drafts were corrected to the minute convention from the execution records
+(test 20's job 1, 00:32 to 00:34 UTC; test 21's jobs, 03:41 to 03:56 UTC), test 19's submission is given to the minute,
+and qubit 95's readout error in test 21's job 3, exactly 27 in 7,200, is quoted as 0.00375 rather than rounded at a half.
+
+**Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
+vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
+added line checked for dashes and the kickoff's words to avoid.

@@ -1588,6 +1588,102 @@ def diagram_duties_by_span(out: Path):
     save(fig, out, "duties-by-span-143")
 
 
+# --------------------------------------------------------------------------- 17 and 18. finding 31
+def _scan_split(job1: dict) -> tuple:
+    """A scan's δ in kHz, from P's fit, with the 90% interval of its deciding bootstrap."""
+    a = job1["analysis"] if "analysis" in job1 else job1
+    lo, hi = a["deciding"]["delta_ci90_kHz"]
+    return a["fits"]["P"]["params"]["delta_MHz"] * 1e3, lo, hi
+
+
+def diagram_split_by_date(out: Path):
+    """Finding 31: qubit 143's split δ on the four dates its scan ran (test 7, test 11 on days 2 and 3, test 20), each
+    from its own record, with the 90% interval of its deciding bootstrap. The dates are categories, not to scale."""
+    scans = [
+        ("16 October\ntest 7", archive.load("ibm_fez/t7-ramsey-xy.json")["archived"]["analysis"]),
+        (
+            "17 October\ntest 11, day 2",
+            archive.load("ibm_fez/t11-day2-monitor.json")["archived"]["analysis"]["jobs"]["1"],
+        ),
+        (
+            "19 October\ntest 11, day 3",
+            archive.load("ibm_fez/t11-day3-monitor.json")["archived"]["analysis"]["jobs"]["1"],
+        ),
+        ("17 November\ntest 20", archive.load("ibm_fez/t20-fifth-date.json")["archived"]["analysis"]["jobs"]["1"]),
+    ]
+    fig, ax = plt.subplots(figsize=(7.6, 4.0))
+    for i, (_name, rec) in enumerate(scans):
+        d, lo, hi = _scan_split(rec)
+        colour = SERIES_2 if i == len(scans) - 1 else SERIES_1
+        ax.errorbar(
+            [i], [d], yerr=[[d - lo], [hi - d]], fmt="o", ms=6, color=colour, ecolor=colour, elinewidth=1.3, capsize=4
+        )
+        ax.text(i + 0.12, d, f"{d:.2f} kHz\n({lo:.2f} to {hi:.2f})", fontsize=8, color=INK, va="center")
+    ax.set_xticks(range(len(scans)))
+    ax.set_xticklabels([n for n, _ in scans], fontsize=8.5)
+    ax.set_xlim(-0.4, len(scans) - 0.1)
+    ax.set_ylim(44.5, 45.2)
+    ax.set_ylabel("δ, half the split (kHz)")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.set_title(
+        "Qubit 143: the split on four dates, with its 90% interval", loc="left", fontsize=10.5, color=INK, pad=38
+    )
+    ax.text(
+        0.0,
+        1.02,
+        "ibm_fez; each point is P's δ from test 7's analysis of that date's scan, each bar its bootstrap's 90% "
+        "interval.\nThe dates are not to scale.",
+        fontsize=8.5,
+        color=INK_2,
+        va="bottom",
+        transform=ax.transAxes,
+    )
+    save(fig, out, "split-by-date-143")
+
+
+def diagram_duties_by_span_t20(out: Path):
+    """Finding 31: the duty of each monitor span of test 20 (jobs 2 and 3, 17 November 2026), on the weight's branch,
+    each with its error as a time average, and the run's mean over its six spans. The numbers are the read's, as test
+    20's record publishes them."""
+    t20 = archive.load("ibm_fez/t20-fifth-date.json")["archived"]["per_shot_read"]["jobs"]
+    rows = [s for k in ("job2", "job3") for s in _span_rows(t20[k])]
+    labels = ["job 2, span 0", "span 1", "span 2", "job 3, span 0", "span 1", "span 2"]
+    fig, ax = plt.subplots(figsize=(7.6, 4.0))
+    x = np.arange(len(rows))
+    w = [s["w_duty"] for s, _ in rows]
+    sd = [r["telegraph_sd"] for _, r in rows]
+    ax.errorbar(x, w, yerr=sd, fmt="o", ms=5, color=SERIES_1, ecolor=SERIES_1, elinewidth=1.1, capsize=3)
+    mean = float(np.mean(w))
+    ax.plot([x[0] - 0.3, x[-1] + 0.3], [mean, mean], color=SERIES_1, lw=1.2, ls=(0, (4, 3)))
+    ax.text(x[-1] + 0.4, mean, f"mean {mean:.3f}", fontsize=8, color=INK, va="center")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=8)
+    ax.set_xlim(-0.5, len(rows) + 0.6)
+    ax.set_ylim(0.1, 0.6)
+    ax.set_ylabel("duty on the weight's branch")
+    ax.yaxis.grid(True, color=GRID, lw=0.8)
+    ax.set_axisbelow(True)
+    ax.set_title(
+        "Qubit 143 on 17 November 2026: the duty of each monitor span, with its error as a time average",
+        loc="left",
+        fontsize=10.5,
+        color=INK,
+        pad=38,
+    )
+    ax.text(
+        0.0,
+        1.02,
+        "ibm_fez, test 20's jobs 2 and 3; bars, each span's error as a time average; dashed, the run's mean over "
+        "its six spans.\nNO CHANGE at every boundary of both jobs.",
+        fontsize=8.5,
+        color=INK_2,
+        va="bottom",
+        transform=ax.transAxes,
+    )
+    save(fig, out, "duties-by-span-143-t20")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "diagrams")
@@ -1608,7 +1704,9 @@ def main(argv=None):
     diagram_two_lines(a.out)
     diagram_sweep_series(a.out)
     diagram_duties_by_span(a.out)
-    print(f"wrote 16 diagrams (SVG and PNG) to {a.out}")
+    diagram_split_by_date(a.out)
+    diagram_duties_by_span_t20(a.out)
+    print(f"wrote 18 diagrams (SVG and PNG) to {a.out}")
 
 
 if __name__ == "__main__":
