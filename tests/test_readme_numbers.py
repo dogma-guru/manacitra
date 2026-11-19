@@ -838,6 +838,7 @@ RETIRED = [
     "To be released as 0.8.0",  # the 0.8.0 release: released, with its date
     "To be released as 0.9.0",  # the 0.9.0 release: released, with its date
     "To be released as 0.10.0",  # the 0.10.0 release: released, with its date
+    "To be released as 0.11.0",  # the 0.11.0 release: released, with its date
     "Thirty findings, from runs on 5 to 19 October 2026",  # A29: thirty three, from 5 October to 17 November
     "The findings come from runs on 5 to 19 October 2026",  # A29, the same
     "the thirty findings in full",  # A29: thirty three
@@ -2569,7 +2570,7 @@ def test_the_readme_opens_with_the_latest_findings():
     three October scans, every monitor span of tests 18 and 20 SHARED, the desk model's D1 bets scored twice unchanged
     with one family counting against it on the second run only, the readout survey's word on the first date of its
     series, and the two kingston qubits. It names no cause, carries none of the words the kickoff keeps out, and ends
-    "To be released as 0.11.0."."""
+    "Released as 0.11.0 on 19 November 2026.", as the release pull request dated it."""
     import re
     from datetime import date, timedelta
 
@@ -2645,7 +2646,7 @@ def test_the_readme_opens_with_the_latest_findings():
         "with a shared state faster than a sweep of about 6 ms could time ([finding 33](docs/findings.md#finding-33)); "
         "no cause is named." in flat
     )
-    assert flat.endswith("To be released as 0.11.0.")
+    assert flat.endswith("Released as 0.11.0 on 19 November 2026.")  # the release pull request dated it
     for word in ("parit", "veri" + "fied", "valid" + "ated", "prov" + "en", "constant", "telegraph", "defect"):
         assert word not in flat.lower(), word
     for word in ("held", "moved", "switching time", "refuted", "falsified", "confirmed on test 18", "permanent"):
@@ -5910,7 +5911,7 @@ def test_the_changelog_0_10_0():
     dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
     assert log.index("## 0.10.0 (20 October 2026)") < log.index("## 0.9.0 (18 October 2026)")
-    # the release pull request dated it; A29: 0.11.0's heading, above it, waits for its own date
+    # the release pull request dated it, as 0.11.0's did
     assert "(unreleased)" not in log.split("## 0.10.0 (20 October 2026)", 1)[1] and "## Unreleased" not in log
     entry = " ".join(log.split("## 0.10.0 (20 October 2026)", 1)[1].split("\n## ", 1)[0].split())
     lead = (
@@ -6769,12 +6770,13 @@ def test_findings_31_to_33_beside_the_findings():
 
 
 def test_the_changelog_0_11_0():
-    """Amendment A29, section 6: the changelog's 0.11.0 heading above 0.10.0, unreleased until the release pull request
-    dates it, with the lead the kickoff fixed, word for word, and the A29 entry naming the findings' data, Sandhi's two
-    scorecards, the three probes and IBM's reproduction; no dashes."""
+    """Amendment A29, section 6: the changelog's 0.11.0 heading above 0.10.0, dated 19 November 2026 by the release
+    pull request, with the lead the kickoff fixed, word for word, and the A29 entry naming the findings' data, Sandhi's
+    two scorecards, the three probes and IBM's reproduction; no dashes."""
     log = (ROOT / "CHANGELOG.md").read_text()
-    assert log.index("## 0.11.0 (unreleased)") < log.index("## 0.10.0 (20 October 2026)")
-    entry = log.split("## 0.11.0 (unreleased)", 1)[1].split("\n## ", 1)[0]
+    assert log.index("## 0.11.0 (19 November 2026)") < log.index("## 0.10.0 (20 October 2026)")
+    assert "(unreleased)" not in log and "## Unreleased" not in log  # the release pull request dated it
+    entry = log.split("## 0.11.0 (19 November 2026)", 1)[1].split("\n## ", 1)[0]
     lead = (
         "Four records under rules hashed before them. On 17 November 2026 ibm_fez's qubit 143 read TWO FIXED "
         "FREQUENCIES on a fifth date, with a split of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, "
