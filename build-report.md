@@ -4607,12 +4607,17 @@ other pattern; the signing step of `sign.yml` uses `sigstore/gh-action-sigstore-
 signing run that passed, on `4f62f76` (21 October), ran the same `sign.yml`. The failed run gives no message through
 GitHub's API, so it does not show whether the list is why it did not start.
 
-**What waits for signing.** The tree check (`docs/index.md` section 9, step 2) needs every signed file to carry a bundle
-that matches it, so it waits for signing on `main`, and the tag waits for the tree check. A signing run on a later push
-would sign the 206 files with no bundle but not the four changed ones: `tools/sign_targets.py` signs a file that has a
-bundle only when that push changed it. A re-run of that run compares `5a64434` with `4cdd3de` and signs all 210. It
-commits its bundles by pushing `main`, so it can land only while `main` is still at `4cdd3de`, that is, before this pull
-request is merged. The release's own signing job, `sign-release`, uses the same action.
+**What waits for signing, and how it is done.** The tree check (`docs/index.md` section 9, step 2) needs every signed
+file to carry a bundle that matches it, so it waits for signing on `main`, and the tag waits for the tree check.
+`tools/sign_targets.py` signs a file that has no bundle, or that the push changed; a signing run on a later push would
+sign the 206 files with no bundle but not the four changed ones. On 19 November the author added the signing action and
+the one it calls to attach release bundles, `softprops/action-gh-release`, each pinned to the commit the workflow uses,
+to the list of allowed actions, which is set above the repository. GitHub then refused to re-run the signing run on
+`4cdd3de` ("This workflow run cannot be retried"), the run having never started. By the author's choice that day, this
+pull request deletes the four bundles that no longer match (`data/PROGRAMS.md.sigstore.json`,
+`data/README.md.sigstore.json`, `data/SHA256SUMS.sigstore.json` and `data/desk/sandhi/README.md.sigstore.json`), so that
+all 210 files have no bundle and the signing run on this pull request's merge commit signs them, in one bundle commit.
+Between the merge and that commit, the four files have no bundle.
 
 **The version, 0.11.0, as the kickoff of A29 names it,** and the author's go for this pull request, given in chat:
 - **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (`version`, and `date-released` 2026-11-19) and
@@ -4632,16 +4637,16 @@ request is merged. The release's own signing job, `sign-release`, uses the same 
 version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.10.0's DOI until Zenodo has minted v0.11.0's
 (release step 5).
 
-**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file.
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file;
+it deletes four bundles, as above, and changes no other bundle.
 
 **The release assets.** None but what the workflow's `build-release` job builds and `sign-release` signs: the sdist, the
 wheel and their `SHA256SUMS`. A29 names no file to attach.
 
 **The release path,** the rest of kickoff section 8, each step on the author's go:
-3. signing on `main` of A29's files, by a re-run of the signing run on `4cdd3de` before this pull request is merged
-   (above); the merge of this pull request with a merge commit, then signing on `main`; the tree check against
-   `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a v0.11.0 -m "Manacitra
-   0.11.0"`, on the bundle commit if there is one, otherwise on the merge commit;
+3. the merge of this pull request with a merge commit, then signing on `main`, which signs A29's 210 files (above); the
+   tree check against `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a
+   v0.11.0 -m "Manacitra 0.11.0"`, on the bundle commit;
 4. the release, with the changelog's entry as its notes and the assets attached; its signed assets checked from a fresh
    download against `@refs/tags/v0.11.0`, with the negative control against `@refs/tags/v0.10.0`;
 5. the version DOI, once Zenodo has minted it (`docs/v0.11.0-doi`); if the Zenodo webhook times out, the author
