@@ -4589,3 +4589,68 @@ outside the rules, and the withheld cells.
 **Checks.** The full suite and ruff; the identifier scan over the tree, the staged files and the git history, with the
 vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
 added line checked for dashes and the kickoff's words to avoid.
+
+## 52. Release v0.11.0 (19 November 2026)
+
+**What it carries.** Amendment A29 (pull request 80), section 51: findings 31 to 33, on tests 18 to 21; the records of
+those tests; the desk model Sandhi's two D1 scorecards; the three probes of a second provider's route, published as
+records; and IBM Quantum Support's reproduction, in the words the kickoff fixes. Pull request 80 was marked ready and
+merged as `4cdd3de` with a merge commit, at 19:27:05 UTC on 18 November, on the author's go ("Merge only, after CI")
+after every check had passed on its head, `141b11b`. The `ci` run on `4cdd3de` passed.
+
+**Signing on `main` did not run.** The signing run on `4cdd3de` (at 19:27:09 UTC) ended with GitHub's status
+`startup_failure` and no job, so no bundle was written. At `4cdd3de`, 662 files in `data/` are signed targets: 456 have
+a bundle, and 206, all new in A29, have none. Four files A29 changed (`data/PROGRAMS.md`, `data/README.md`,
+`data/SHA256SUMS` and `data/desk/sandhi/README.md`) still carry the bundles of their versions before A29, which do not
+match them. The repository's list of allowed actions, read on 19 November (UTC), allows GitHub's own actions and one
+other pattern; the signing step of `sign.yml` uses `sigstore/gh-action-sigstore-python`, which is not on it. The last
+signing run that passed, on `4f62f76` (21 October), ran the same `sign.yml`. The failed run gives no message through
+GitHub's API, so it does not show whether the list is why it did not start.
+
+**What waits for signing, and how it is done.** The tree check (`docs/index.md` section 9, step 2) needs every signed
+file to carry a bundle that matches it, so it waits for signing on `main`, and the tag waits for the tree check.
+`tools/sign_targets.py` signs a file that has no bundle, or that the push changed; a signing run on a later push would
+sign the 206 files with no bundle but not the four changed ones. On 19 November the author added the signing action and
+the one it calls to attach release bundles, `softprops/action-gh-release`, each pinned to the commit the workflow uses,
+to the list of allowed actions, which is set above the repository. GitHub then refused to re-run the signing run on
+`4cdd3de` ("This workflow run cannot be retried"), the run having never started. By the author's choice that day, this
+pull request deletes the four bundles that no longer match (`data/PROGRAMS.md.sigstore.json`,
+`data/README.md.sigstore.json`, `data/SHA256SUMS.sigstore.json` and `data/desk/sandhi/README.md.sigstore.json`), so that
+all 210 files have no bundle and the signing run on this pull request's merge commit signs them, in one bundle commit.
+Between the merge and that commit, the four files have no bundle.
+
+**The version, 0.11.0, as the kickoff of A29 names it,** and the author's go for this pull request, given in chat:
+- **Where it is set.** In `pyproject.toml`, the package, `CITATION.cff` (`version`, and `date-released` 2026-11-19) and
+  the README's citation. The changelog heading `## 0.11.0 (unreleased)` becomes `## 0.11.0 (19 November 2026)`, and the
+  README's "To be released as 0.11.0." becomes "Released as 0.11.0 on 19 November 2026.". The date is the UTC date of
+  this pull request, as every date of a run and a record here is the UTC date; if the release is published on a later
+  UTC date, the date is changed before the tag.
+- **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`,
+  as they stand. The README's sentence is checked by `test_the_readme_opens_with_the_latest_findings` and the changelog
+  heading by `test_the_changelog_0_11_0`, and "To be released as 0.11.0" joins the retired phrases.
+- **The package.** Since 0.10.0, `src/` changes only in the version line (kickoff rule 5). The build takes the package
+  from `src/` with one data file, `pinned_circuits.json`, and has no manifest, so `data/` is not built into either
+  package. The workflow's `build-release` job builds them from the tag as `manacitra-0.11.0`, and the release step
+  checks the built packages for it.
+
+**The citation.** `CITATION.cff` and the README's citation keep the concept DOI, `10.5281/zenodo.23228518`. The README's
+version-DOI parenthetical, and `CITATION.cff`'s identifiers, name v0.10.0's DOI until Zenodo has minted v0.11.0's
+(release step 5).
+
+**Signing.** Only the files in `data/` and `*.commit.json` are signed. This release pull request changes no signed file;
+it deletes four bundles, as above, and changes no other bundle.
+
+**The release assets.** None but what the workflow's `build-release` job builds and `sign-release` signs: the sdist, the
+wheel and their `SHA256SUMS`. A29 names no file to attach.
+
+**The release path,** the rest of kickoff section 8, each step on the author's go:
+3. the merge of this pull request with a merge commit, then signing on `main`, which signs A29's 210 files (above); the
+   tree check against `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a
+   v0.11.0 -m "Manacitra 0.11.0"`, on the bundle commit;
+4. the release, with the changelog's entry as its notes and the assets attached; its signed assets checked from a fresh
+   download against `@refs/tags/v0.11.0`, with the negative control against `@refs/tags/v0.10.0`;
+5. the version DOI, once Zenodo has minted it (`docs/v0.11.0-doi`); if the Zenodo webhook times out, the author
+   redelivers it.
+
+Section 9's issue steps follow the release's check from a fresh download, on their own go. The merge, the tag, the
+release and its check, and the DOI are recorded here as each step is taken. The hand-back is `release-0.11.0-report.md`.

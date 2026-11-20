@@ -14,7 +14,7 @@ Manacitra is for people who run work on shared quantum processors and want to ch
 
 ## Latest findings: qubit 143 a month on
 
-On 17 November 2026, under rules hashed and posted before each run, ibm_fez's qubit 143 read CONFIRMED ON THE FIFTH DATE, two fixed frequencies with a split δ of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, and every monitor span read SHARED ([finding 31](docs/findings.md#finding-31)). The desk model Sandhi's bets for its design D1, at version 4.1, were scored on 21 October and on 17 November, unchanged between the runs, and on the second run one family of them, the emissions, counted against the model. A survey of ibm_fez's readout on 16 November read MIXED against the published table, on the first date of a series that is open until 30 November ([finding 32](docs/findings.md#finding-32)). On ibm_kingston, qubit 11 got no word for its readout error and qubit 95 read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could time ([finding 33](docs/findings.md#finding-33)); no cause is named. To be released as 0.11.0.
+On 17 November 2026, under rules hashed and posted before each run, ibm_fez's qubit 143 read CONFIRMED ON THE FIFTH DATE, two fixed frequencies with a split δ of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, and every monitor span read SHARED ([finding 31](docs/findings.md#finding-31)). The desk model Sandhi's bets for its design D1, at version 4.1, were scored on 21 October and on 17 November, unchanged between the runs, and on the second run one family of them, the emissions, counted against the model. A survey of ibm_fez's readout on 16 November read MIXED against the published table, on the first date of a series that is open until 30 November ([finding 32](docs/findings.md#finding-32)). On ibm_kingston, qubit 11 got no word for its readout error and qubit 95 read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could time ([finding 33](docs/findings.md#finding-33)); no cause is named. Released as 0.11.0 on 19 November 2026.
 
 ## What it does
 
@@ -204,7 +204,7 @@ Every statistic listed in `tests/expected_fields.json` is recomputed from the ar
 
 Please cite the software and, if you use them, the data, using [`CITATION.cff`](CITATION.cff):
 
-> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.10.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
+> Patel, A. (2026). *Manacitra: a map of your qubits* (version 0.11.0) [Software and data]. Zenodo. https://doi.org/10.5281/zenodo.23228518. Source: https://github.com/dogma-guru/manacitra
 
 That DOI is the concept DOI, which the badge at the top also points to: it always resolves to the latest version. Each version also has its own DOI, on its Zenodo record; to cite one version exactly, use that (version 0.10.0: [10.5281/zenodo.23519346](https://doi.org/10.5281/zenodo.23519346)).
 
