@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.11.0 (19 November 2026)
+## 0.11.0 (20 November 2026)
 
 Four records under rules hashed before them. On 17 November 2026 ibm_fez's qubit 143 read TWO FIXED FREQUENCIES on a fifth date, with a split of 44.99 kHz against 44.70 to 44.97 kHz on three October dates, and every monitor span read SHARED. The desk model Sandhi, at version 4.1, was scored on its first design twice, on 21 October and 17 November, with its bets unchanged and the first scorecard's digest posted before the second run; on the second run one family of its bets, the emissions, counted against it. A survey of ibm_fez's readout on 16 November read MIXED against the published table, where on 15 October the published errors had sat above the measured ones on 105 of 156 qubits; the series is open. On ibm_kingston, of two qubits that read two lines on 17 October, one could not be given a word for its readout error and the other read NOT CONFIRMED ON A LATER DATE, with a shared state faster than a sweep of about 6 ms could time. Three probes of a second provider's route are published as records. IBM Quantum Support reproduced the two-line result on qubit 143; this does not indicate collaboration with or endorsement by IBM. No cause is named.
 
