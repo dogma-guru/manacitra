@@ -4652,6 +4652,13 @@ November in the changelog heading, `CITATION.cff`'s `date-released`, the README'
 the tests that check them, and "Released as 0.11.0 on 19 November 2026" joins the retired phrases. That pull request
 changes no signed file, so its merge has no bundle commit, and the tag goes on its merge commit.
 
+**The probe test and the bundles.** The full suite, run on the date change from `79ef276`, failed three tests,
+`test_every_file_is_as_handed_back_or_listed_as_changed` for each probe: the bundle commit put a bundle beside every
+probe file, and the test, written in A29 before any probe file was signed, counted each bundle as a file its folder's
+`SHA256SUMS` does not list. The `ci` workflow does not run on the signing workflow's push, so no run showed it. By the
+author's choice, the same pull request makes the test leave out bundles with `archive.is_bundle`, as the tests of
+Sandhi's run and of the grid's run record already do. The test changes; no probe file and no `SHA256SUMS` changes.
+
 **The release path,** the rest of kickoff section 8, each step on the author's go:
 3. the merge of this pull request with a merge commit, then signing on `main`, which signs A29's 210 files (above); the
    tree check against `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a
