@@ -4590,7 +4590,7 @@ outside the rules, and the withheld cells.
 vocabulary list; the DCO check; `tools/sha256sums.py --check`; every copied file scanned before it was copied; every
 added line checked for dashes and the kickoff's words to avoid.
 
-## 52. Release v0.11.0 (19 November 2026)
+## 52. Release v0.11.0 (20 November 2026)
 
 **What it carries.** Amendment A29 (pull request 80), section 51: findings 31 to 33, on tests 18 to 21; the records of
 those tests; the desk model Sandhi's two D1 scorecards; the three probes of a second provider's route, published as
@@ -4624,7 +4624,7 @@ Between the merge and that commit, the four files have no bundle.
   the README's citation. The changelog heading `## 0.11.0 (unreleased)` becomes `## 0.11.0 (19 November 2026)`, and the
   README's "To be released as 0.11.0." becomes "Released as 0.11.0 on 19 November 2026.". The date is the UTC date of
   this pull request, as every date of a run and a record here is the UTC date; if the release is published on a later
-  UTC date, the date is changed before the tag.
+  UTC date, the date is changed before the tag. It was (below).
 - **What keeps them together.** `test_the_version_is_the_same_everywhere` and `test_the_citation_uses_the_concept_doi`,
   as they stand. The README's sentence is checked by `test_the_readme_opens_with_the_latest_findings` and the changelog
   heading by `test_the_changelog_0_11_0`, and "To be released as 0.11.0" joins the retired phrases.
@@ -4643,10 +4643,26 @@ it deletes four bundles, as above, and changes no other bundle.
 **The release assets.** None but what the workflow's `build-release` job builds and `sign-release` signs: the sdist, the
 wheel and their `SHA256SUMS`. A29 names no file to attach.
 
+**The merge, signing on `main`, and the date.** Pull request 81 merged as `a145779` with a merge commit, at 01:26:50 UTC
+on 20 November, on the author's go ("Merge after CI") after every check had passed on its head, `d548306`. The signing
+run on `a145779` passed and pushed the bundle commit `79ef276`, which adds 210 bundles and changes nothing else; at
+`79ef276` every one of the 662 signed targets carries a bundle. The merge fell on 20 November (UTC), a day after the
+date pull request 81 set. By the author's choice, the pull request from `release/v0.11.0-date` changes the date to 20
+November in the changelog heading, `CITATION.cff`'s `date-released`, the README's sentence, this section's heading and
+the tests that check them, and "Released as 0.11.0 on 19 November 2026" joins the retired phrases. That pull request
+changes no signed file, so its merge has no bundle commit, and the tag goes on its merge commit.
+
+**The probe test and the bundles.** The full suite, run on the date change from `79ef276`, failed three tests,
+`test_every_file_is_as_handed_back_or_listed_as_changed` for each probe: the bundle commit put a bundle beside every
+probe file, and the test, written in A29 before any probe file was signed, counted each bundle as a file its folder's
+`SHA256SUMS` does not list. The `ci` workflow does not run on the signing workflow's push, so no run showed it. By the
+author's choice, the same pull request makes the test leave out bundles with `archive.is_bundle`, as the tests of
+Sandhi's run and of the grid's run record already do. The test changes; no probe file and no `SHA256SUMS` changes.
+
 **The release path,** the rest of kickoff section 8, each step on the author's go:
 3. the merge of this pull request with a merge commit, then signing on `main`, which signs A29's 210 files (above); the
    tree check against `…/sign.yml@refs/heads/main` and the git identity scan; then the annotated tag, `git tag -a
-   v0.11.0 -m "Manacitra 0.11.0"`, on the bundle commit;
+   v0.11.0 -m "Manacitra 0.11.0"`, on the merge commit of `release/v0.11.0-date` (above);
 4. the release, with the changelog's entry as its notes and the assets attached; its signed assets checked from a fresh
    download against `@refs/tags/v0.11.0`, with the negative control against `@refs/tags/v0.10.0`;
 5. the version DOI, once Zenodo has minted it (`docs/v0.11.0-doi`); if the Zenodo webhook times out, the author

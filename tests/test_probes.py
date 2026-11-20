@@ -12,6 +12,8 @@ from pathlib import Path
 
 import pytest
 
+from manacitra import archive
+
 ROOT = Path(__file__).resolve().parent.parent
 PROBES = ROOT / "data" / "rigetti_cepheus_1_108q" / "probes"
 README = (PROBES / "README.md").read_text()
@@ -69,7 +71,9 @@ def test_the_rule_is_byte_for_byte(probe):
 def test_every_file_is_as_handed_back_or_listed_as_changed(probe):
     folder = PROBES / probe
     sums = _sums(folder)
-    files = sorted(p.relative_to(folder).as_posix() for p in folder.rglob("*") if p.is_file())
+    # the signing workflow's bundles (FILE.sigstore.json) sit beside the files on main, and are not the folder's files
+    kept = (p for p in folder.rglob("*") if p.is_file() and not archive.is_bundle(p))
+    files = sorted(p.relative_to(folder).as_posix() for p in kept)
     # in probes 01 and 02, redaction-log.md was written after SHA256SUMS (their runner prompts' order)
     outside = {"SHA256SUMS"} | ({"redaction-log.md"} if probe != "probe-03-program-set" else set())
     assert set(files) == set(sums) | outside
