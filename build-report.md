@@ -4670,3 +4670,45 @@ Sandhi's run and of the grid's run record already do. The test changes; no probe
 
 Section 9's issue steps follow the release's check from a fresh download, on their own go. The merge, the tag, the
 release and its check, and the DOI are recorded here as each step is taken. The hand-back is `release-0.11.0-report.md`.
+
+**The release, each step by the author's go given in chat.**
+- **The merge of the release and its date.** Pull request 81 was merged as `a145779`, and its signing run wrote the
+  bundle commit `79ef276` (above). Pull request 82, from `release/v0.11.0-date`, was merged as `938cb4a` with a merge
+  commit, at 03:58:42 UTC on 20 November, on the author's go ("Merge after CI") after every check had passed on its
+  head, `9e1f833`. No signed file changed, and the signing run on `938cb4a` committed nothing, so the tag is on the
+  merge commit.
+- **The tree check, before tagging,** at 17:54:33 to 17:54:35 UTC on 20 November, on `938cb4a`: all 662 files in `data/`
+  have a bundle, and all 662 gave OK offline against `…/sign.yml@refs/heads/main`, each once. The negative control:
+  `data/ibm_fez/t18-two-monitors.json`, new in A29, against `…/sign.yml@refs/tags/v0.10.0` fails (exit status 1), its
+  certificate naming `…/sign.yml@refs/heads/main`. The git identity scan was clean (227 reachable commits). The DCO
+  check over `4cdd3de..938cb4a` names GitHub's merge commits `a145779` and `938cb4a`, which have no Signed-off-by line,
+  as at earlier releases; the bot's bundle commit is exempt, and every contributor commit is signed off.
+- **The tool.** `sigstore` 4.5.0 (wheel `f045b207…`), with Python 3.14.8 and pip 26.2.1 on macOS (arm64), installed by
+  the author's standing leave (A20, C2) into a throwaway environment outside the repository: its 31 wheels downloaded
+  first, then installed from that folder alone, `pip check` clean, no credentials. A fresh environment served the tree
+  check and the release's check, and each was deleted afterwards.
+- **The tag and the release.** `v0.11.0` is annotated and unsigned, as every earlier tag (tag object `23595de`, message
+  "Manacitra 0.11.0"), on `938cb4a`, pushed at 17:56 UTC on 20 November. The release is at
+  <https://github.com/dogma-guru/manacitra/releases/tag/v0.11.0>, published at 17:57:30 UTC, with the changelog's 0.11.0
+  entry as its notes. No file was attached beyond what the workflow builds.
+- **The release's signing run.** `gate`, `build-release` and `sign-release` passed. The release carries the sdist, the
+  wheel and `SHA256SUMS`, and GitHub's two source archives, each with its `.sigstore.json` bundle.
+- **Its assets, from a fresh download,** at 03:52:24 to 03:52:25 UTC on 21 November, each file checked one at a time:
+  all five gave OK offline against `…/sign.yml@refs/tags/v0.11.0`, the wheel (158,970 bytes), the sdist (388,854 bytes),
+  `SHA256SUMS` and GitHub's two source archives; `SHA256SUMS` matches both packages. The negative control: the wheel
+  against `…@refs/tags/v0.10.0` fails (exit status 1). The wheel carries version 0.11.0, and neither package contains
+  `data/` (27 and 73 entries).
+- **Zenodo.** GitHub's release events reached Zenodo: `released` was answered with HTTP 202, and `created` and
+  `published` with HTTP 409; the 13 edits that followed, as signing attached the bundles, with 202. Zenodo archived
+  v0.11.0 with its own DOI, `10.5281/zenodo.24404529` (record created 17:57:51 UTC, linked to the `v0.11.0` tree), under
+  the concept DOI `10.5281/zenodo.23228518`, which now resolves to it. Zenodo dates the record 2026-11-20, the date this
+  repository gives the release.
+- **The issues (section 9 of the kickoff),** at 00:51:39 to 00:52:03 UTC on 24 November, after the release's check from
+  a fresh download. Each issue was read first and is what the kickoff's table says, and every SHA-256 posted in them is
+  that of a file in the `v0.11.0` tree. Issue 71's comment of 15 November also posted the SHA-256 of
+  `scorecard-t18.json` as delivered, which Sandhi's README gives beside the published one, and of `report-t18.md`, which
+  `data/ibm_fez/hash-check-t20.md` records. Issues 68, 71, 74, 75, 76, 78 and 79 are closed, each with the kickoff's one
+  comment and no other text. Issue 77 stays open, with the kickoff's one comment: the series is open until 30 November
+  2026 (UTC).
+- **Step 5.** The README's version-DOI parenthetical names v0.11.0's DOI, `CITATION.cff` lists it among its
+  `identifiers` beside the concept DOI (its `doi` stays the concept DOI), and `VERSION_DOIS` gains its line.
